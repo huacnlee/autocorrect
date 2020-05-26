@@ -17,7 +17,7 @@ impl Strategery {
     };
   }
 
-  pub fn format(&self, text: &str) -> &str {
+  pub fn format(&self, text: &str) -> String {
     if self.space {
       return self.add_space(text);
     } else {
@@ -25,34 +25,35 @@ impl Strategery {
     }
   }
 
-  fn add_space(&self, text: &str) -> &str {
-    let out = text;
+  fn add_space(&self, text: &str) -> String {
+    let mut out = String::from(text);
+
     let re_str = format!("{}{}{}{}{}", "(", self.one, ")(", self.other, ")");
     let re = Regex::new(&re_str).unwrap();
-    out = &re.replace_all(&out, "$1 $2");
+    out = (&re.replace_all(&text, "$1 $2")).to_string();
 
     if self.reverse {
       let re_str = format!("{}{}{}{}{}", "(", self.other, ")(", self.one, ")");
       let re = Regex::new(&re_str).unwrap();
-      out = &re.replace_all(&out, "$1 $2");
+      out = (&re.replace_all(&out, "$1 $2")).to_string();
     }
 
-    out;
+    return out;
   }
 
-  fn remove_space(&self, text: &str) -> &str {
-    let mut out = text;
+  fn remove_space(&self, text: &str) -> String {
+    let mut out = String::from(text);
     let re_str = format!("{}{}{}{}{}", "(", self.one, r")\s+(", self.other, ")");
     let re = Regex::new(&re_str).unwrap();
 
-    out = &re.replace_all(&out, "$1 $2");
+    out = (&re.replace_all(&out, "$1 $2")).to_string();
 
     if self.reverse {
       let re_str = format!("{}{}{}{}{}", "(", self.other, r")\s+(", self.one, ")");
       let re = Regex::new(&re_str).unwrap();
-      out = &re.replace_all(&out, "$1 $2");
+      out = (&re.replace_all(&out, "$1 $2")).to_string();
     }
 
-    out;
+    return out;
   }
 }
