@@ -1,5 +1,7 @@
 # AutoCorrrect for Rust
 
+[![Build Status](https://travis-ci.org/huacnlee/auto-correct.rs.svg?branch=master)](https://travis-ci.org/huacnlee/auto-correct.rs)
+
 Automatically add spaces between Chinese and English words.
 
 ## Other implements
