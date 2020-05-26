@@ -1,6 +1,6 @@
 mod strategery;
 use crate::strategery::*;
-use regex::{Captures, Regex};
+use regex::Regex;
 
 #[macro_use]
 extern crate lazy_static;

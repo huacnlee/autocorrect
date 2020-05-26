@@ -3,6 +3,11 @@ name = "auto-correct"
 version = "0.1.0"
 authors = ["Jason Lee <huacnlee@gmail.com>"]
 edition = "2018"
+description = "Automatically add whitespace between Chinese and half-width characters (alphabetical letters, numerical digits and symbols)."
+homepage = "https://github.com/huacnlee/auto-correct.rs"
+repository = "https://github.com/huacnlee/auto-correct.rs"
+license = "MIT"
+keywords = ["auto-correct", "fmt", "format", "spacing"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
