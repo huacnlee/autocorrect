@@ -130,4 +130,62 @@ mod tests {
 
         assert_cases(cases);
     }
+
+    #[test]
+    fn it_format_for_english_letter() {
+        let cases = map![
+            "长桥LongBridge App下载" => "长桥 LongBridge App 下载"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_number() {
+        let cases = map![
+            "在Ubuntu 11.10 64位系统安装Go出错" => "在 Ubuntu 11.10 64 位系统安装 Go 出错",
+            "喜欢暗黑2却对 D3不满意的可以看看这个。" =>     "喜欢暗黑 2 却对 D3 不满意的可以看看这个。",
+            "Ruby 2.7版本第3次发布"=>          "Ruby 2.7 版本第 3 次发布"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_special_symbols() {
+        let cases = map![
+            "公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!" =>          "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报!",
+            "消息http://github.com解禁了" =>                     "消息 http://github.com 解禁了",
+            "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" =>     "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
+            "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_fullwidth_symbols() {
+        let cases = map![
+            "（美股）市场：发布「最新」100消息【BABA.US】“大涨”50%；同比上涨20%！" => "（美股）市场：发布「最新」100 消息【BABA.US】“大涨” 50%；同比上涨 20%！",
+            "第3季度财报发布看涨看跌？敬请期待。" =>                         "第 3 季度财报发布看涨看跌？敬请期待。"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_space_dash_with_hans() {
+        let cases = map![
+            "第3季度-财报发布看涨看跌？敬请期待。" => "第 3 季度 - 财报发布看涨看跌？敬请期待。",
+            "腾讯-ADR-已发行" =>     "腾讯-ADR-已发行",
+            "（腾讯）-发布-（新版）本微信" => "（腾讯）- 发布 -（新版）本微信",
+            "【腾讯】-发布-【新版】本微信" => "【腾讯】- 发布 -【新版】本微信",
+            "「腾讯」-发布-「新版」本微信" => "「腾讯」- 发布 -「新版」本微信",
+            "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
+            "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版” 本微信",
+            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’ 本微信"
+        ];
+
+        assert_cases(cases);
+    }
 }
