@@ -32,7 +32,7 @@ lazy_static! {
     ];
 }
 
-pub(crate) fn format(text: &str) -> String {
+pub fn format(text: &str) -> String {
     let mut out = String::from(text);
     for rule in STRATEGIES.iter() {
         out = rule.format(&out)

@@ -1,6 +1,6 @@
 [package]
 name = "autocorrect"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Jason Lee <huacnlee@gmail.com>"]
 edition = "2018"
 description = "Automatically add whitespace between Chinese and half-width characters (alphabetical letters, numerical digits and symbols)."
