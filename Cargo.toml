@@ -1,5 +1,5 @@
 [package]
-name = "auto-correct"
+name = "autocorrect"
 version = "0.1.0"
 authors = ["Jason Lee <huacnlee@gmail.com>"]
 edition = "2018"
