@@ -30,7 +30,7 @@ impl Strategery {
 
         let re_str = format!("{}{}{}{}{}", "(", self.one, ")(", self.other, ")");
         let re = Regex::new(&re_str).unwrap();
-        out = (&re.replace_all(&text, "$1 $2")).to_string();
+        out = (&re.replace_all(&out, "$1 $2")).to_string();
 
         if self.reverse {
             let re_str = format!("{}{}{}{}{}", "(", self.other, ")(", self.one, ")");
