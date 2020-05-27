@@ -1,37 +1,100 @@
-mod strategery;
-use crate::strategery::*;
-use regex::Regex;
+/*!
+Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
+## Other implements
+
+- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct).
+- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct).
+- Rust - [auto-correct.rs](https://github.com/huacnlee/auto-correct.rs).
+
+## Features
+
+- Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
+- HTML content support.
+
+## Example
+
+Use `autocorrect::format` to format plain text.
+
+```rust
+extern crate autocorrect;
+
+fn main() {
+    println!("{}", autocorrect::format("长桥LongBridge App下载"));
+    // => "长桥 LongBridge App 下载"
+
+    println!("{}", autocorrect::format("Ruby 2.7版本第1次发布"));
+    // => "Ruby 2.7 版本第 1 次发布"
+
+    println!("{}", autocorrect::format("于3月10日开始"));
+    // => "于 3 月 10 日开始"
+
+    println!("{}", autocorrect::format("包装日期为2013年3月10日"));
+    // => "包装日期为2013年3月10日"
+
+    println!("{}", autocorrect::format("全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。"));
+    // => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。"
+
+    println!("{}", autocorrect::format("既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"));
+    // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
+
+    println!("{}", autocorrect::format("전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."));
+    // => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."
+}
+```
+*/
 #[macro_use]
 extern crate lazy_static;
 
+#[macro_use]
+extern crate regex_cjk;
+
+mod strategery;
+use crate::strategery::Strategery;
+use regex::Regex;
+
 lazy_static! {
-    static ref FULL_DATE_RE: Regex =
-        Regex::new(r"[\s]{0,}\d+[\s]{0,}年[\s]{0,}\d+[\s]{0,}月[\s]{0,}\d+[\s]{0,}[日号][\s]{0,}")
-            .unwrap();
-    static ref SPACE_RE: Regex = Regex::new(r"\s+").unwrap();
-    static ref DASH_HANS_RE: Regex =
-        Regex::new(r"([\p{Han}）】」》”’])([\-]+)([\p{Han}（【「《“‘])").unwrap();
-    static ref LEFT_QUOTE_RE: Regex = Regex::new(r"\s([（【「《])").unwrap();
-    static ref RIGHT_QUOTE_RE: Regex = Regex::new(r"([）】」》])\s").unwrap();
+    static ref FULL_DATE_RE: Regex = regexp!(r"[\s]{0,}\d+[\s]{0,}年[\s]{0,}\d+[\s]{0,}月[\s]{0,}\d+[\s]{0,}[日号][\s]{0,}");
+    static ref SPACE_RE: Regex = regexp!(r"\s+");
+    static ref DASH_HANS_RE: Regex = regexp!(r"([\p{CJK}）】」》”’])([\-]+)([\p{CJK}}}（【「《“‘])");
+    static ref LEFT_QUOTE_RE: Regex = regexp!(r"\s([（【「《])");
+    static ref RIGHT_QUOTE_RE: Regex = regexp!(r"([）】」》])\s");
 
     // Strategies all rules
     static ref STRATEGIES: Vec<Strategery> = vec![
         // EnglishLetter
-        Strategery::new(r"\p{Han}", r"[a-zA-Z]", true, true),
+        Strategery::new(r"\p{CJK}", r"[a-zA-Z]", true, true),
         // Number
-        Strategery::new(r"\p{Han}", r"[0-9]", true, true),
+        Strategery::new(r"\p{CJK}", r"[0-9]", true, true),
         // SpecialSymbol
-        Strategery::new(r"\p{Han}", r"[\|+$@#*]", true, true),
-        Strategery::new(r"\p{Han}", r"[\[\(‘“]", true, false),
-        Strategery::new(r"[’”\]\)!%]", r"\p{Han}", true, false),
+        Strategery::new(r"\p{CJK}", r"[\|+$@#*]", true, true),
+        Strategery::new(r"\p{CJK}", r"[\[\(‘“]", true, false),
+        Strategery::new(r"[’”\]\)!%]", r"\p{CJK}", true, false),
         Strategery::new(r"[”\]\)!]", r"[a-zA-Z0-9]+", true, false),
         // FullwidthPunctuation
-        Strategery::new(r"[\w\p{Han}]", r"[，。！？：；）」》】”’]", false, true),
-        Strategery::new(r"[‘“【「《（]", r"[\w\p{Han}]", false, true),
+        Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]", false, true),
+        Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]", false, true),
     ];
 }
 
+/// Automatically add spaces between Chinese and English words.
+///
+/// This method only work for plain text.
+///
+/// # Example
+///
+/// ```
+/// extern crate autocorrect;
+///
+/// println!("{}", autocorrect::format("学习如何用Rust构建Application"));
+/// // => "学习如何用 Rust 构建 Application"
+///
+/// println!("{}", autocorrect::format("于3月10日开始"));
+/// // => "于 3 月 10 日开始"
+///
+/// println!("{}", autocorrect::format("既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"));
+/// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
+/// ```
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
     for rule in STRATEGIES.iter() {
@@ -184,6 +247,18 @@ mod tests {
             "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
             "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版” 本微信",
             "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’ 本微信"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_cjk() {
+        let cases = map![
+            "全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如Firefox、 Dropbox和Cloudflare都在使用Rust。" => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如 Firefox、 Dropbox 和 Cloudflare 都在使用 Rust。",
+            "現今全世界上百家公司企業為了尋求快速、節約資源而且能跨平台的解決辦法，都已在正式環境中使用Rust。許多耳熟能詳且受歡迎的軟體，諸如Firefox、Dropbox以及Cloudflare都在使用Rust。" => "現今全世界上百家公司企業為了尋求快速、節約資源而且能跨平台的解決辦法，都已在正式環境中使用 Rust。許多耳熟能詳且受歡迎的軟體，諸如 Firefox、Dropbox 以及 Cloudflare 都在使用 Rust。",
+            "既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。皆さんがご存じで愛用しているソフトウェア、例えばFirefox、DropboxやCloudflareも、Rustを採用しています。" => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。皆さんがご存じで愛用しているソフトウェア、例えば Firefox、Dropbox や Cloudflare も、Rust を採用しています。",
+            "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust를 사용하고 있습니다." => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare 와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust 를 사용하고 있습니다."
         ];
 
         assert_cases(cases);

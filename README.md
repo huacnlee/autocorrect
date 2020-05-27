@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/huacnlee/auto-correct.rs.svg?branch=master)](https://travis-ci.org/huacnlee/auto-correct.rs)
 
-Automatically add spaces between Chinese and English words.
+Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
 ## Other implements
 
@@ -12,7 +12,7 @@ Automatically add spaces between Chinese and English words.
 
 ## Features
 
-- Auto add spacings between Chinese and English words.
+- Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
 - HTML content support.
 
 ## Install
@@ -43,6 +43,15 @@ fn main() {
 
     println!("{}", autocorrect::format("包装日期为2013年3月10日"));
     // => "包装日期为2013年3月10日"
+
+    println!("{}", autocorrect::format("全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。"));
+    // => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。"
+
+    println!("{}", autocorrect::format("既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"));
+    // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
+
+    println!("{}", autocorrect::format("전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."));
+    // => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."
 }
 ```
 

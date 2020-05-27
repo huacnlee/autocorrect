@@ -12,5 +12,7 @@ keywords = ["auto-correct", "fmt", "format", "spacing"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+regex_cjk = {path = "lib/regex_cjk"}
 lazy_static = "1.4.0"
 regex = "1"
+
