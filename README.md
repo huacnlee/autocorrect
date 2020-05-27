@@ -21,7 +21,7 @@ In your Cargo.toml
 
 ```toml
 [dependencies]
-autocorrect = "0.1.1"
+autocorrect = "0.2.0"
 ```
 
 ## Usage
