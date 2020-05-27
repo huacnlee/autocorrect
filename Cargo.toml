@@ -1,6 +1,6 @@
 [package]
 name = "autocorrect"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Jason Lee <huacnlee@gmail.com>"]
 edition = "2018"
 description = "Automatically add whitespace between Chinese and half-width characters (alphabetical letters, numerical digits and symbols)."
@@ -12,7 +12,7 @@ keywords = ["auto-correct", "fmt", "format", "spacing"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-regex_cjk = {path = "lib/regex_cjk"}
+regex_cjk = {path = "lib/regex_cjk", version = "0"}
 lazy_static = "1.4.0"
 regex = "1"
 
