@@ -59,6 +59,7 @@ macro_rules! regexp {
     }};
 }
 
+mod html;
 mod strategery;
 use crate::strategery::Strategery;
 use regex::Regex;
