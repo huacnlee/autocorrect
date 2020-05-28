@@ -15,3 +15,5 @@ readme = "README.md"
 [dependencies]
 lazy_static = "1.4.0"
 regex = "1"
+html5ever = "0.25.1"
+markup5ever_rcdom = "*"
