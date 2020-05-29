@@ -59,7 +59,20 @@ fn main() {
 
 ### Format
 
-TODO
+Use `cargo bench` to run benchmark tests.
+
+```
+test tests::bench_format_100 ... bench:      19,410 ns/iter (+/- 1,571)
+test tests::bench_format_400 ... bench:      45,957 ns/iter (+/- 3,444)
+test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
+```
+
+| Total chars | Duration |
+| ----- | ------- |
+| 50  | 0.014 ms |
+| 100  | 0.019 ms |
+| 400  | 0.045 ms |
+
 
 ### FormatHTML
 

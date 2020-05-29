@@ -1,3 +1,8 @@
+0.2.1
+-----
+
+- Avoid create regexp in call for improve performance.
+
 0.2.0
 -----
 
