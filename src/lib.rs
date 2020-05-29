@@ -62,7 +62,6 @@ macro_rules! regexp {
 mod strategery;
 use crate::strategery::Strategery;
 use regex::Regex;
-use std::ffi::{CStr, CString};
 
 lazy_static! {
     static ref FULL_DATE_RE: Regex = regexp!(r"[\s]{0,}\d+[\s]{0,}年[\s]{0,}\d+[\s]{0,}月[\s]{0,}\d+[\s]{0,}[日号][\s]{0,}");
