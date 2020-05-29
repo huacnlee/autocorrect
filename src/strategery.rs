@@ -1,17 +1,27 @@
 pub struct Strategery {
-    pub one: &'static str,
-    pub other: &'static str,
-    pub space: bool,
-    pub reverse: bool,
+    space: bool,
+    reverse: bool,
+    add_space_re: regex::Regex,
+    add_space_reverse_re: regex::Regex,
+    remove_space_re: regex::Regex,
+    remove_space_reverse_re: regex::Regex,
 }
 
 impl Strategery {
     pub fn new(one: &'static str, other: &'static str, space: bool, reverse: bool) -> Self {
+        let add_space_str = format!("{}{}{}{}{}", "(", one, ")(", other, ")");
+        let add_space_reverse_str = format!("{}{}{}{}{}", "(", other, ")(", one, ")");
+
+        let remove_space_str = format!("{}{}{}{}{}", "(", one, r")\s+(", other, ")");
+        let remove_space_reverse_str = format!("{}{}{}{}{}", "(", other, r")\s+(", one, ")");
+
         return Strategery {
-            one: one,
-            other: other,
             space: space,
             reverse: reverse,
+            add_space_re: regexp!(add_space_str),
+            add_space_reverse_re: regexp!(add_space_reverse_str),
+            remove_space_re: regexp!(remove_space_str),
+            remove_space_reverse_re: regexp!(remove_space_reverse_str),
         };
     }
 
@@ -26,14 +36,10 @@ impl Strategery {
     fn add_space(&self, text: &str) -> String {
         let mut out = String::from(text);
 
-        let re_str = format!("{}{}{}{}{}", "(", self.one, ")(", self.other, ")");
-        let re = regexp!(re_str);
-        out = (&re.replace_all(&out, "$1 $2")).to_string();
+        out = (&self.add_space_re.replace_all(&out, "$1 $2")).to_string();
 
         if self.reverse {
-            let re_str = format!("{}{}{}{}{}", "(", self.other, ")(", self.one, ")");
-            let re = regexp!(re_str);
-            out = (&re.replace_all(&out, "$1 $2")).to_string();
+            out = (&self.add_space_reverse_re.replace_all(&out, "$1 $2")).to_string();
         }
 
         return out;
@@ -41,15 +47,11 @@ impl Strategery {
 
     fn remove_space(&self, text: &str) -> String {
         let mut out = String::from(text);
-        let re_str = format!("{}{}{}{}{}", "(", self.one, r")\s+(", self.other, ")");
-        let re = regexp!(re_str);
 
-        out = (&re.replace_all(&out, "$1 $2")).to_string();
+        out = (&self.remove_space_re.replace_all(&out, "$1 $2")).to_string();
 
         if self.reverse {
-            let re_str = format!("{}{}{}{}{}", "(", self.other, r")\s+(", self.one, ")");
-            let re = regexp!(re_str);
-            out = (&re.replace_all(&out, "$1 $2")).to_string();
+            out = (&self.remove_space_reverse_re.replace_all(&out, "$1 $2")).to_string();
         }
 
         return out;
