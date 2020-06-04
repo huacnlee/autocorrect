@@ -1,37 +1,12 @@
 use super::*;
+use html5ever::parse_document;
 use html5ever::serialize;
+use html5ever::serialize::SerializeOpts;
 use html5ever::tendril::TendrilSink;
-use html5ever::tree_builder::TreeBuilderOpts;
-use html5ever::{parse_document, ParseOpts};
 use markup5ever_rcdom::{Handle, NodeData, RcDom, SerializableHandle};
 
-/// Format a html content.
-///
-/// Example:
-///
-/// ```
-/// let html = r#"
-/// <article>
-///   <h1>这是Heading标题</h1>
-///   <div class="content">
-///     <p>你好Rust世界<strong>Bold文本</strong></p>
-///     <p>这是第二行p标签</p>
-///   </div>
-/// </article>
-/// "#;
-///
-/// autocorrect.format_html(html)
-/// ```
 pub fn format_html(html_str: &str) -> String {
-  let opts = ParseOpts {
-    tree_builder: TreeBuilderOpts {
-      drop_doctype: true,
-      ..Default::default()
-    },
-    ..Default::default()
-  };
-
-  let mut dom = parse_document(RcDom::default(), opts)
+  let mut dom = parse_document(RcDom::default(), Default::default())
     .from_utf8()
     .read_from(&mut html_str.as_bytes())
     .unwrap();
@@ -40,8 +15,10 @@ pub fn format_html(html_str: &str) -> String {
 
   let mut bytes = vec![];
   let document: SerializableHandle = dom.document.clone().into();
-  serialize(&mut bytes, &document, Default::default()).unwrap();
-  let result = String::from_utf8(bytes).unwrap();
+  serialize(&mut bytes, &document, SerializeOpts::default()).unwrap();
+  let mut result = String::from_utf8(bytes).unwrap();
+  result = result.replace("<html><head></head><body>", "");
+  result = result.replace("</body></html>", "");
   return String::from(result.as_str());
 }
 
@@ -67,31 +44,31 @@ fn traverse_nodes(handle: &Handle) {
     traverse_nodes(&child);
   }
 }
+#[cfg(test)]
+mod tests {
+  use super::*;
+  #[test]
+  fn test_format_html() {
+    let html = r#"
+    <article>
+      <h1>这是Heading标题</h1>
+      <div class="content">
+        <p>你好Rust世界<strong>Bold文本</strong></p>
+        <p>这是第二行p标签</p>
+      </div>
+    </article>
+    "#;
 
-#[test]
+    let expected = r#"
+    <article>
+      <h1>这是 Heading 标题</h1>
+      <div class="content">
+        <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+        <p>这是第二行 p 标签</p>
+      </div>
+    </article>
+    "#;
 
-fn test_format_html() {
-  let html = r#"
-  <article>
-    <h1>这是Heading标题</h1>
-    <div class="content">
-      <p>你好Rust世界<strong>Bold文本</strong></p>
-      <p>这是第二行p标签</p>
-    </div>
-  </article>
-  "#;
-
-  let expected = r#"
-  <html><head></head><body>
-  <article>
-    <h1>这是 Heading 标题</h1>
-    <div class="content">
-      <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-      <p>这是第二行 p 标签</p>
-    </div>
-  </article>
-  </body></html>
-  "#;
-
-  assert_html_eq!(expected, format_html(html))
+    assert_html_eq!(expected, format_html(html))
+  }
 }

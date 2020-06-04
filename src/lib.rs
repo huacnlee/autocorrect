@@ -46,7 +46,6 @@ fn main() {
 #[macro_use]
 extern crate lazy_static;
 
-#[macro_use]
 macro_rules! regexp {
     ($arg:tt) => {{
         let rule_str = String::from($arg).replace(
@@ -58,11 +57,11 @@ macro_rules! regexp {
         res
     }};
 }
-#[macro_use]
+
 macro_rules! assert_html_eq {
     ($expected:expr, $actual:expr) => {{
         let re = Regex::new(">\\s+<").unwrap();
-        let expected = $expected;
+        let expected = &$expected;
         let actual = $actual;
         let expected_clean = &re.replace_all(expected.trim(), "><");
         let actual_clean = &re.replace_all(actual.trim(), "><");
@@ -133,6 +132,28 @@ pub fn format(text: &str) -> String {
     out = space_dash_with_hans(&out);
 
     out
+}
+
+/// Format a html content.
+///
+/// Example:
+///
+/// ```
+//  extern crate autocorrect;
+//
+/// let html = r#"
+/// <article>
+///   <h1>这是Heading标题</h1>
+///   <div class="content">
+///     <p>你好Rust世界<strong>Bold文本</strong></p>
+///     <p>这是第二行p标签</p>
+///   </div>
+/// </article>
+/// "#;
+/// autocorrect::format_html(html);
+/// ```
+pub fn format_html(html_str: &str) -> String {
+    html::format_html(html_str)
 }
 
 // removeFullDateSpacing

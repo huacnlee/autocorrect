@@ -55,6 +55,33 @@ fn main() {
 }
 ```
 
+Use `autocorrect::format_html` to format html content.
+
+```rust
+extern crate autocorrect;
+
+fn main() {
+    let html = r#"
+    <article>
+      <h1>这是Heading标题</h1>
+      <div class="content">
+        <p>你好Rust世界<strong>Bold文本</strong></p>
+        <p>这是第二行p标签</p>
+      </div>
+    </article>
+    "#;
+
+    println!("{}", autocorrect::format_html(html));
+    // <article>
+    // <h1>这是 Heading 标题</h1>
+    // <div class="content">
+    //     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+    //     <p>这是第二行 p 标签</p>
+    // </div>
+    // </article>
+}
+```
+
 ## Benchmark
 
 ### Format
