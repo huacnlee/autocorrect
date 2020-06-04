@@ -1,3 +1,8 @@
+0.3.0
+-----
+
+- Add `format_html` method for auto correct a html content.
+
 0.2.1
 -----
 
