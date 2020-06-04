@@ -69,6 +69,7 @@ fn traverse_nodes(handle: &Handle) {
 }
 
 #[test]
+
 fn test_format_html() {
   let html = r#"
   <article>
@@ -81,6 +82,7 @@ fn test_format_html() {
   "#;
 
   let expected = r#"
+  <html><head></head><body>
   <article>
     <h1>这是 Heading 标题</h1>
     <div class="content">
@@ -88,6 +90,7 @@ fn test_format_html() {
       <p>这是第二行 p 标签</p>
     </div>
   </article>
+  </body></html>
   "#;
 
   assert_html_eq!(expected, format_html(html))
