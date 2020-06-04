@@ -58,6 +58,19 @@ macro_rules! regexp {
         res
     }};
 }
+#[macro_use]
+macro_rules! assert_html_eq {
+    ($expected:expr, $actual:expr) => {{
+        let expected = $expected;
+        let actual = $actual;
+        if expected != actual {
+            panic!(format!(
+                "\nexpected:\n{}\n\n----------------------------------------\nactual:\n{}",
+                expected, actual
+            ))
+        }
+    }};
+}
 
 mod html;
 mod strategery;
