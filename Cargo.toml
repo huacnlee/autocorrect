@@ -3,14 +3,21 @@ name = "autocorrect"
 version = "0.3.0"
 authors = ["Jason Lee <huacnlee@gmail.com>"]
 edition = "2018"
-description = "Automatically add whitespace between Chinese and half-width characters (alphabetical letters, numerical digits and symbols)."
+description = "Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols)."
 homepage = "https://github.com/huacnlee/auto-correct.rs"
 repository = "https://github.com/huacnlee/auto-correct.rs"
 license = "MIT"
 keywords = ["auto-correct", "fmt", "format", "spacing"]
 readme = "README.md"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "autocorrect"
+path = "src/lib.rs"
+
+[[bin]]
+name = "autocorrect"
+path = "src/main.rs"
+required-features = ["bin"]
 
 [dependencies]
 lazy_static = "1.4.0"
@@ -18,3 +25,8 @@ regex = "1"
 html5ever = "0.25.1"
 markup5ever = "0.10.0"
 markup5ever_rcdom = "0.1.0"
+clap = { version = "2.33", optional = true }
+glob = { version = "0.3", optional = true }
+
+[features]
+bin = ["clap", "glob"]
