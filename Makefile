@@ -1,6 +1,6 @@
 bench:
 	rustup run nightly cargo bench
-build:
-	cargo build --features="bin"
+release:
+	cargo release --features="bin"
 run:
 	cargo run --features="bin"
