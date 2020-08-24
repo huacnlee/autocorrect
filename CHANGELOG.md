@@ -1,3 +1,8 @@
+0.3.1
+-----
+
+- Fix Regexp for avoid change `\r` `\n`;
+
 0.3.0
 -----
 
