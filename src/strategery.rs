@@ -12,8 +12,8 @@ impl Strategery {
         let add_space_str = format!("{}{}{}{}{}", "(", one, ")(", other, ")");
         let add_space_reverse_str = format!("{}{}{}{}{}", "(", other, ")(", one, ")");
 
-        let remove_space_str = format!("{}{}{}{}{}", "(", one, r")\s+(", other, ")");
-        let remove_space_reverse_str = format!("{}{}{}{}{}", "(", other, r")\s+(", one, ")");
+        let remove_space_str = format!("{}{}{}{}{}", "(", one, r")[ ](", other, ")");
+        let remove_space_reverse_str = format!("{}{}{}{}{}", "(", other, r")[ ](", one, ")");
 
         return Strategery {
             space: space,

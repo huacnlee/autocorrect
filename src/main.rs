@@ -27,11 +27,13 @@ pub fn main() {
     let file_name = matches.value_of("file").unwrap();
 
     for f in glob(file_name).unwrap() {
-      let path: &str;
+      let path: String;
+
       match f {
-        Ok(_path) => path = _path.to_str().unwrap(),
-        Err(e) => continue,
+        Ok(_path) => path = String::from(_path.to_str().unwrap()),
+        Err(_e) => break,
       }
+
       let raw = fs::read_to_string(path).unwrap();
       let raw = raw.as_str();
 
