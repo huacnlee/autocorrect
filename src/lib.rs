@@ -77,7 +77,8 @@ lazy_static! {
         // Number
         Strategery::new(r"\p{CJK}", r"[0-9]", true, true),
         // SpecialSymbol
-        Strategery::new(r"\p{CJK}", r"[\|+$@#*]", true, true),
+        Strategery::new(r"\p{CJK}", r"[\|+*]", true, true),
+        Strategery::new(r"\p{CJK}", r"[@]", true, false),
         Strategery::new(r"\p{CJK}", r"[\[\(‘“]", true, false),
         Strategery::new(r"[’”\]\)!%]", r"\p{CJK}", true, false),
         Strategery::new(r"[”\]\)!]", r"[a-zA-Z0-9]+", true, false),
@@ -193,8 +194,6 @@ mod tests {
             "[成都](团800)招聘Rails工程师" => "[成都](团 800) 招聘 Rails 工程师",
             "Teahour.fm第18期发布" => "Teahour.fm 第 18 期发布",
             "Yes!升级到了Rails 4" => "Yes! 升级到了 Rails 4",
-            "记事本,记事本显示阅读次数#149" => "记事本,记事本显示阅读次数 #149",
-            "里面用@foo符号的话后面的变量名会被替换成userN" => "里面用 @foo 符号的话后面的变量名会被替换成 userN",
             "WWDC上讲到的Objective C/LLVM改进" => "WWDC 上讲到的 Objective C/LLVM 改进",
             "在Ubuntu11.10 64位系统安装newrelic出错" => "在 Ubuntu11.10 64 位系统安装 newrelic 出错",
             "升级了macOS 10.9 附遇到的Bug概率有0.1%或更少" => "升级了 macOS 10.9 附遇到的 Bug 概率有 0.1% 或更少",
@@ -206,6 +205,20 @@ mod tests {
             "小米集团-W调整目标价为13.5港币" => "小米集团-W 调整目标价为 13.5 港币",
             "（路透社）-预计全年净亏损约1.3亿港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿港元 * 预期因出售汽车",
             "（路透社）-预计全年净亏损约1.3亿\n\n港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿\n\n港元 * 预期因出售汽车"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_specials() {
+        let cases = map![
+            "记事本,记事本显示阅读次数#149" => "记事本,记事本显示阅读次数#149",
+            "HashTag的演示 #标签" => "HashTag 的演示 #标签",
+            "HashTag 的演示 #标签# 演示" =>         "HashTag 的演示 #标签# 演示",
+            "Mention里面有关于中文的@某某人" =>        "Mention 里面有关于中文的 @某某人",
+            "里面用@foo符号的话后面的变量名会被替换成userN" => "里面用 @foo 符号的话后面的变量名会被替换成 userN",
+            "Dollar的演示 $阿里巴巴.US$ 股票标签" =>    "Dollar 的演示 $阿里巴巴.US$ 股票标签"
         ];
 
         assert_cases(cases);
