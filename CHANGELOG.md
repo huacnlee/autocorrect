@@ -1,3 +1,10 @@
+0.4.0
+-----
+
+- Change rule for ignore spacing between `#`, `$` chars.
+- Convert punctuation into Fullwidth near the CJK.
+- Add halfwidth autocorrect.
+
 0.3.1
 -----
 
