@@ -21,7 +21,7 @@ In your Cargo.toml
 
 ```toml
 [dependencies]
-autocorrect = "0.2.0"
+autocorrect = "0.4.0"
 ```
 
 ## Usage
@@ -95,11 +95,10 @@ test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
 ```
 
 | Total chars | Duration |
-| ----- | ------- |
-| 50  | 0.014 ms |
-| 100  | 0.019 ms |
-| 400  | 0.045 ms |
-
+| ----------- | -------- |
+| 50          | 0.014 ms |
+| 100         | 0.019 ms |
+| 400         | 0.045 ms |
 
 ### FormatHTML
 
