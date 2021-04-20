@@ -70,6 +70,7 @@ macro_rules! map {
 }
 
 mod fullwidth;
+mod halfwidth;
 mod html;
 mod strategery;
 
@@ -125,6 +126,7 @@ pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
     out = fullwidth::fullwidth(&out);
+    out = halfwidth::halfwidth(&out);
 
     for rule in STRATEGIES.iter() {
         out = rule.format(&out)
@@ -199,7 +201,7 @@ mod tests {
             "[北京]美企聘site/web大型应用开发高手-Ruby" => "[北京] 美企聘 site/web 大型应用开发高手-Ruby",
             "[成都](团800)招聘Rails工程师" => "[成都](团 800) 招聘 Rails 工程师",
             "Teahour.fm第18期发布" => "Teahour.fm 第 18 期发布",
-            "Yes!升级到了Rails 4" => "Yes! 升级到了 Rails 4",
+            "Yes!升级到了Rails 4" => "Yes！升级到了 Rails 4",
             "WWDC上讲到的Objective C/LLVM改进" => "WWDC 上讲到的 Objective C/LLVM 改进",
             "在Ubuntu11.10 64位系统安装newrelic出错" => "在 Ubuntu11.10 64 位系统安装 newrelic 出错",
             "升级了macOS 10.9 附遇到的Bug概率有0.1%或更少" => "升级了 macOS 10.9 附遇到的 Bug 概率有 0.1% 或更少",
@@ -219,7 +221,7 @@ mod tests {
     #[test]
     fn it_format_for_specials() {
         let cases = map![
-            "记事本,记事本显示阅读次数#149" => "记事本,记事本显示阅读次数#149",
+            "记事本,记事本显示阅读次数#149" => "记事本，记事本显示阅读次数#149",
             "HashTag的演示 #标签" => "HashTag 的演示 #标签",
             "HashTag 的演示 #标签# 演示" =>         "HashTag 的演示 #标签# 演示",
             "Mention里面有关于中文的@某某人" =>        "Mention 里面有关于中文的 @某某人",
@@ -269,7 +271,7 @@ mod tests {
     #[test]
     fn it_format_for_special_symbols() {
         let cases = map![
-            "公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!" =>          "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报!",
+            "公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!" =>          "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报！",
             "消息http://github.com解禁了" =>                     "消息 http://github.com 解禁了",
             "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" =>     "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
             "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。"
@@ -310,7 +312,7 @@ mod tests {
             "全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如Firefox、 Dropbox和Cloudflare都在使用Rust。" => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如 Firefox、 Dropbox 和 Cloudflare 都在使用 Rust。",
             "現今全世界上百家公司企業為了尋求快速、節約資源而且能跨平台的解決辦法，都已在正式環境中使用Rust。許多耳熟能詳且受歡迎的軟體，諸如Firefox、Dropbox以及Cloudflare都在使用Rust。" => "現今全世界上百家公司企業為了尋求快速、節約資源而且能跨平台的解決辦法，都已在正式環境中使用 Rust。許多耳熟能詳且受歡迎的軟體，諸如 Firefox、Dropbox 以及 Cloudflare 都在使用 Rust。",
             "既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。皆さんがご存じで愛用しているソフトウェア、例えばFirefox、DropboxやCloudflareも、Rustを採用しています。" => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。皆さんがご存じで愛用しているソフトウェア、例えば Firefox、Dropbox や Cloudflare も、Rust を採用しています。",
-            "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust를 사용하고 있습니다." => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare 와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust 를 사용하고 있습니다."
+            "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust를 사용하고 있습니다." => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고， 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare 와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust 를 사용하고 있습니다。"
         ];
 
         assert_cases(cases);
