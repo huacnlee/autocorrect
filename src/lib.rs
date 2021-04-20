@@ -58,23 +58,6 @@ macro_rules! regexp {
     }};
 }
 
-macro_rules! assert_html_eq {
-    ($expected:expr, $actual:expr) => {{
-        let re = Regex::new(">\\s+<").unwrap();
-        let expected = &$expected;
-        let actual = $actual;
-        let expected_clean = &re.replace_all(expected.trim(), "><");
-        let actual_clean = &re.replace_all(actual.trim(), "><");
-
-        if expected_clean != actual_clean {
-            panic!(format!(
-                "\nexpected:\n{}\n\n----------------------------------------\nactual:\n{}",
-                expected, actual
-            ))
-        }
-    }};
-}
-
 mod html;
 mod strategery;
 use crate::strategery::Strategery;

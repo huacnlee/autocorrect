@@ -47,27 +47,45 @@ fn traverse_nodes(handle: &Handle) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    macro_rules! assert_html_eq {
+        ($expected:expr, $actual:expr) => {{
+            let re = Regex::new(">\\s+<").unwrap();
+            let expected = &$expected;
+            let actual = $actual;
+            let expected_clean = &re.replace_all(expected.trim(), "><");
+            let actual_clean = &re.replace_all(actual.trim(), "><");
+
+            if expected_clean != actual_clean {
+                panic!(
+                    "\nexpected:\n{}\n\n----------------------------------------\nactual:\n{}",
+                    expected, actual
+                )
+            }
+        }};
+    }
+
     #[test]
     fn test_format_html() {
         let html = r#"
-    <article>
-      <h1>这是Heading标题</h1>
-      <div class="content">
-        <p>你好Rust世界<strong>Bold文本</strong></p>
-        <p>这是第二行p标签</p>
-      </div>
-    </article>
-    "#;
+        <article>
+        <h1>这是Heading标题</h1>
+        <div class="content">
+            <p>你好Rust世界<strong>Bold文本</strong></p>
+            <p>这是第二行p标签</p>
+        </div>
+        </article>
+        "#;
 
         let expected = r#"
-    <article>
-      <h1>这是 Heading 标题</h1>
-      <div class="content">
-        <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-        <p>这是第二行 p 标签</p>
-      </div>
-    </article>
-    "#;
+        <article>
+        <h1>这是 Heading 标题</h1>
+        <div class="content">
+            <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+            <p>这是第二行 p 标签</p>
+        </div>
+        </article>
+        "#;
 
         assert_html_eq!(expected, format_html(html))
     }
