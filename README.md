@@ -14,6 +14,8 @@ Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-wi
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
 - HTML content support.
+- Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
+- Correct punctuations into Fullwidth near the CJK.
 
 ## Install
 
@@ -52,6 +54,9 @@ fn main() {
 
     println!("{}", autocorrect::format("전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."));
     // => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."
+
+    println!("{}", autocorrect::format("需要符号?自动转换全角字符、数字:我们将在１６：３２分出发去ＣＢＤ中心.")
+    // => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
 }
 ```
 
