@@ -47,8 +47,9 @@ fn main() {
 extern crate lazy_static;
 
 macro_rules! regexp {
-    ($arg:tt) => {{
-        let rule_str = String::from($arg).replace(
+    ($($arg:tt)*) => {{
+        let reg_str = format!($($arg)*);
+        let rule_str = String::from(reg_str).replace(
             r"\p{CJK}",
             r"\p{Han}|\p{Hangul}|\p{Hanunoo}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}",
         );
@@ -58,18 +59,32 @@ macro_rules! regexp {
     }};
 }
 
+macro_rules! map {
+    {$($key:expr => $value:expr),+} => {{
+        let mut m = HashMap::new();
+        $(
+            m.insert($key, $value);
+        )+
+        m
+    }};
+}
+
+mod fullwidth;
 mod html;
 mod strategery;
+
 use crate::strategery::Strategery;
 use regex::Regex;
 
 lazy_static! {
-    static ref FULL_DATE_RE: Regex = regexp!(r"[ ]{0,}\d+[ ]{0,}年[ ]{0,}\d+[ ]{0,}月[ ]{0,}\d+[ ]{0,}[日号][ ]{0,}");
-    static ref SPACE_RE: Regex = regexp!(r"[ ]");
-    static ref DASH_HANS_RE: Regex = regexp!(r"([\p{CJK}）】」》”’])([\-]+)([\p{CJK}}}（【「《“‘])");
-    static ref LEFT_QUOTE_RE: Regex = regexp!(r" ([（【「《])");
-    static ref RIGHT_QUOTE_RE: Regex = regexp!(r"([）】」》]) ");
-
+    static ref FULL_DATE_RE: Regex = regexp!(
+        "{}",
+        r"[ ]{0,}\d+[ ]{0,}年[ ]{0,}\d+[ ]{0,}月[ ]{0,}\d+[ ]{0,}[日号][ ]{0,}"
+    );
+    static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
+    static ref DASH_HANS_RE: Regex = regexp!("{}", r"([\p{CJK}）】」》”’])([\-]+)([\p{CJK}}}（【「《“‘])");
+    static ref LEFT_QUOTE_RE: Regex = regexp!("{}", r" ([（【「《])");
+    static ref RIGHT_QUOTE_RE: Regex = regexp!("{}", r"([）】」》]) ");
     // Strategies all rules
     static ref STRATEGIES: Vec<Strategery> = vec![
         // EnglishLetter
@@ -108,6 +123,9 @@ lazy_static! {
 /// ```
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
+
+    out = fullwidth::fullwidth(&out);
+
     for rule in STRATEGIES.iter() {
         out = rule.format(&out)
     }
@@ -166,18 +184,6 @@ fn space_dash_with_hans(text: &str) -> String {
 mod tests {
     use super::*;
     use std::collections::HashMap;
-
-    macro_rules! map(
-        { $($key:expr => $value:expr),+ } => {
-            {
-                let mut m = HashMap::new();
-                $(
-                    m.insert($key, $value);
-                )+
-                m
-            }
-        };
-    );
 
     fn assert_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {

@@ -9,19 +9,13 @@ pub struct Strategery {
 
 impl Strategery {
     pub fn new(one: &'static str, other: &'static str, space: bool, reverse: bool) -> Self {
-        let add_space_str = format!("{}{}{}{}{}", "(", one, ")(", other, ")");
-        let add_space_reverse_str = format!("{}{}{}{}{}", "(", other, ")(", one, ")");
-
-        let remove_space_str = format!("{}{}{}{}{}", "(", one, r")[ ](", other, ")");
-        let remove_space_reverse_str = format!("{}{}{}{}{}", "(", other, r")[ ](", one, ")");
-
         return Strategery {
             space: space,
             reverse: reverse,
-            add_space_re: regexp!(add_space_str),
-            add_space_reverse_re: regexp!(add_space_reverse_str),
-            remove_space_re: regexp!(remove_space_str),
-            remove_space_reverse_re: regexp!(remove_space_reverse_str),
+            add_space_re: regexp!("({})({})", one, other),
+            add_space_reverse_re: regexp!("({})({})", other, one),
+            remove_space_re: regexp!("({})[ ]({})", one, other),
+            remove_space_reverse_re: regexp!("({})[ ]({})", other, one),
         };
     }
 
