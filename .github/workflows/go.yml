@@ -1,0 +1,16 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Rust
+        run: rustup update stable && rustup default stable
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+
+      - name: Test
+        run: cargo test

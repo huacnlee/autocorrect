@@ -1,6 +1,6 @@
 # AutoCorrrect for Rust
 
-[![Build Status](https://travis-ci.org/huacnlee/auto-correct.rs.svg?branch=master)](https://travis-ci.org/huacnlee/auto-correct.rs) [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect) [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
+[![Go](https://github.com/huacnlee/auto-correct.rs/workflows/CI/badge.svg)](https://github.com/huacnlee/auto-correct.rs/actions?query=workflow%3ACI) [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect) [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
 
 Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
