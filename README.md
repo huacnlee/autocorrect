@@ -93,7 +93,7 @@ fn main() {
 
 Use `cargo bench` to run benchmark tests.
 
-```
+```bash
 test tests::bench_format_100 ... bench:      19,410 ns/iter (+/- 1,571)
 test tests::bench_format_400 ... bench:      45,957 ns/iter (+/- 3,444)
 test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
