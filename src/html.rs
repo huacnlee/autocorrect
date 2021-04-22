@@ -6,6 +6,7 @@ use html5ever::tendril::TendrilSink;
 use markup5ever_rcdom::{Handle, NodeData, RcDom, SerializableHandle};
 
 pub fn format_html(html_str: &str) -> String {
+    let has_html_tag = html_str.trim().to_lowercase().starts_with("<html");
     let mut dom = parse_document(RcDom::default(), Default::default())
         .from_utf8()
         .read_from(&mut html_str.as_bytes())
@@ -17,8 +18,12 @@ pub fn format_html(html_str: &str) -> String {
     let document: SerializableHandle = dom.document.clone().into();
     serialize(&mut bytes, &document, SerializeOpts::default()).unwrap();
     let mut result = String::from_utf8(bytes).unwrap();
-    result = result.replace("<html><head></head><body>", "");
-    result = result.replace("</body></html>", "");
+
+    if !has_html_tag {
+        result = result.replace("<html><head></head><body>", "");
+        result = result.replace("</body></html>", "");
+    }
+
     return String::from(result.as_str());
 }
 
@@ -51,7 +56,7 @@ mod tests {
     macro_rules! assert_html_eq {
         ($expected:expr, $actual:expr) => {{
             let re = Regex::new(">\\s+<").unwrap();
-            let expected = &$expected;
+            let expected = $expected;
             let actual = $actual;
             let expected_clean = &re.replace_all(expected.trim(), "><");
             let actual_clean = &re.replace_all(actual.trim(), "><");
@@ -85,6 +90,39 @@ mod tests {
             <p>这是第二行 p 标签</p>
         </div>
         </article>
+        "#;
+
+        assert_html_eq!(expected, format_html(html))
+    }
+
+    #[test]
+    fn test_format_html_with_fullpage() {
+        let html = r#"
+        <html><head><title>Hello</title></head>
+        <body>
+        <article>
+        <h1>这是Heading标题</h1>
+        <div class="content">
+            <p>你好Rust世界<strong>Bold文本</strong></p>
+            <p>这是第二行p标签</p>
+        </div>
+        </article>
+        </body>
+        </html>
+        "#;
+
+        let expected = r#"
+        <html><head><title>Hello</title></head>
+        <body>
+        <article>
+        <h1>这是 Heading 标题</h1>
+        <div class="content">
+            <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+            <p>这是第二行 p 标签</p>
+        </div>
+        </article>
+        </body>
+        </html>
         "#;
 
         assert_html_eq!(expected, format_html(html))
