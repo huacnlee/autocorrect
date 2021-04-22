@@ -1,3 +1,7 @@
+## 0.4.1
+
+- Fix format_html for support fullpage html to keep html>body.
+
 ## 0.4.0
 
 - Change rule for ignore spacing between `#`, `$` chars.
