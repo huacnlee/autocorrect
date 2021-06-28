@@ -19,14 +19,59 @@ Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-wi
 
 ## Install
 
+```bash
+$ curl -sSL https://git.io/JckA6 | bash
+```
+
+after that, you will get `/usr/local/bin/autocorrect` command.
+
+```bash
+$ autocorrect -h
+AutoCorrect 0.4.4
+Jason Lee <huacnlee@gmail.com
+Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters,
+numerical digits and symbols).
+
+USAGE:
+    autocorrect [FLAGS] [text]
+
+FLAGS:
+    -h, --help       Prints help information
+        --html       Use for HTML format
+    -V, --version    Prints version information
+
+ARGS:
+    <text>    Target filepath or string (Plain text) for format
+```
+
+## Usage
+
+```bash
+$ autocorrect 你好Hello世界
+你好 Hello 世界
+$ autocorrect text.md
+你好 Hello 世界
+
+$ autocorrect text.md > text-new.md
+```
+
+Format HTML
+
+```bash
+$ autocorrect --html '<p>你好hello世界</p><p>你好world世界</p>'
+<p>你好 hello 世界</p><p>你好 world 世界</p>
+
+$ autocorrect --html text.html
+```
+
+## Usage in Rust
+
 In your Cargo.toml
 
 ```toml
 [dependencies]
 autocorrect = "0.4.0"
 ```
-
-## Usage
 
 Use `autocorrect::format` to format plain text.
 
