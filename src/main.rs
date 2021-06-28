@@ -24,7 +24,12 @@ lazy_static! {
     "html" => "html",
     "htm" => "html",
     "yaml" => "yaml",
-    "yml" => "yaml"
+    "yml" => "yaml",
+    "plain" => "text",
+    "text" => "text",
+    "txt" => "text",
+    "markdown" => "text",
+    "md" => "text"
   );
 }
 
@@ -37,7 +42,7 @@ pub fn main() {
       Arg::with_name("text").help("Target filepath or string (Plain text) for format").takes_value(true).required(false)
     )
     .arg(
-      Arg::with_name("type").long("type").short("t").help("File content type [html, yaml], default detect with file extension.").takes_value(true)
+      Arg::with_name("type").long("type").short("t").help("File content type [text, html, yaml], default detect with file extension.").takes_value(true)
     )
     .get_matches();
 
@@ -78,12 +83,16 @@ fn format_and_output(ext: &str, raw: &str) {
       "yaml" => {
         println!("{}", format_yaml(raw));
       }
-      _ => {
+      "text" => {
         println!("{}", format(raw));
+      }
+      _ => {
+        println!("{}", raw);
       }
     }
   } else {
-    println!("{}", format(raw));
+    // else return raw
+    println!("{}", raw);
   }
 }
 
