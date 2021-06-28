@@ -1,4 +1,4 @@
-name: Continuous Deployment
+name: Release
 
 on:
   push:
@@ -15,15 +15,15 @@ jobs:
         rust: [stable]
         include:
           - os: macos-latest
-            artifact_prefix: macos
+            artifact_prefix: darwin-amd64
             target: x86_64-apple-darwin
             binary_postfix: ""
           - os: ubuntu-latest
-            artifact_prefix: linux
+            artifact_prefix: linux-amd64
             target: x86_64-unknown-linux-gnu
             binary_postfix: ""
           - os: windows-latest
-            artifact_prefix: windows
+            artifact_prefix: windows-amd64
             target: x86_64-pc-windows-msvc
             binary_postfix: ".exe"
 
@@ -48,14 +48,14 @@ jobs:
         with:
           command: build
           toolchain: ${{ matrix.rust }}
-          args: --release --features="bin" --target ${{ matrix.target }}
+          args: --release --features bin --target ${{ matrix.target }}
 
       - name: Packaging final binary
         shell: bash
         run: |
           cd target/${{ matrix.target }}/release
-          BINARY_NAME=autocorrect
-          RELEASE_NAME=autocorrect
+          BINARY_NAME=autocorrect${{ matrix.binary_postfix }}
+          RELEASE_NAME=autocorrect-${{ matrix.artifact_prefix }}
           tar czvf $RELEASE_NAME.tar.gz $BINARY_NAME
           if [[ ${{ runner.os }} == 'Windows' ]]; then
             certutil -hashfile $RELEASE_NAME.tar.gz sha256 | grep -E [A-Fa-f0-9]{64} > $RELEASE_NAME.sha256
