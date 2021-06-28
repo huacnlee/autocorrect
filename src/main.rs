@@ -1,12 +1,12 @@
-use clap::{Arg, App, SubCommand};
-use std::fs;
 use autocorrect::{format, format_html};
+use clap::{App, Arg, SubCommand};
 use glob::glob;
+use std::fs;
 
 pub fn main() {
   let matches = App::new("AutoCorrect")
     .author("Jason Lee <huacnlee@gmail.com")
-    .version("0.3.0")
+    .version("0.4.3")
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .subcommand(
       SubCommand::with_name("format")
@@ -39,10 +39,9 @@ pub fn main() {
 
       if matches.is_present("html") {
         println!("{}", format(raw));
-      } else  {
+      } else {
         println!("{}", format_html(raw));
       }
     }
   }
-
 }
