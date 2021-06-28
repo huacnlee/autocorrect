@@ -1,5 +1,5 @@
 #!/bin/bash
-version='0.4.3'
+version='0.4.4'
 if [[ `uname` == 'Darwin' ]]; then
    platform='darwin'
 else
