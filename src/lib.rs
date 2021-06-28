@@ -45,6 +45,7 @@ fn main() {
 */
 #[macro_use]
 extern crate lazy_static;
+extern crate pest_derive;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{
@@ -69,10 +70,13 @@ macro_rules! map {
     }};
 }
 
+extern crate pest;
+
 mod fullwidth;
 mod halfwidth;
 mod html;
 mod strategery;
+mod yaml;
 
 use crate::strategery::Strategery;
 use regex::Regex;
@@ -158,6 +162,10 @@ pub fn format(text: &str) -> String {
 /// ```
 pub fn format_html(html_str: &str) -> String {
     html::format_html(html_str)
+}
+
+pub fn format_yaml(yaml_str: &str) -> String {
+    yaml::format_yaml(yaml_str)
 }
 
 // removeFullDateSpacing

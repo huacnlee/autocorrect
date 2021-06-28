@@ -13,7 +13,7 @@ Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-wi
 ## Features
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
-- HTML content support.
+- Multiple file content support (HTML, YAML).
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
 
@@ -55,13 +55,22 @@ $ autocorrect text.md
 $ autocorrect text.md > text-new.md
 ```
 
-Format HTML
+### Format HTML
 
 ```bash
-$ autocorrect --html '<p>你好hello世界</p><p>你好world世界</p>'
+$ autocorrect --type html '<p>你好hello世界</p><p>你好world世界</p>'
 <p>你好 hello 世界</p><p>你好 world 世界</p>
 
-$ autocorrect --html text.html
+$ autocorrect text.html
+```
+
+### Format YAML
+
+````bash
+$ autocorrect --type yaml 'foo: "你好hello"'
+foo: "你好 hello"
+
+$ autocorrect /path/to/yml/zh-CN.yml
 ```
 
 ## Usage in Rust
@@ -71,7 +80,7 @@ In your Cargo.toml
 ```toml
 [dependencies]
 autocorrect = "0.4.0"
-```
+````
 
 Use `autocorrect::format` to format plain text.
 
