@@ -1,21 +1,21 @@
 #!/bin/bash
-version='0.4.4'
+version='0.5.0'
 if [[ `uname` == 'Darwin' ]]; then
-   platform='darwin'
+	platform='darwin'
 else
-   platform='linux'
+	platform='linux'
 fi
 if [[ `arch` == 'arm64' ]]; then
-   arch='arm64'
+	arch='arm64'
 else
-   arch='amd64'
+	arch='amd64'
 fi
 curl -Lo autocorrect.tar.gz https://github.com/huacnlee/auto-correct.rs/releases/download/v$version/autocorrect-$platform-$arch.tar.gz
 tar zxf autocorrect.tar.gz
 
 if [[ `whoami` == 'root' ]]; then
-   mv autocorrect /usr/local/bin/autocorrect
+	mv autocorrect /usr/local/bin/autocorrect
 else
-   sudo mv autocorrect /usr/local/bin/autocorrect
+	sudo mv autocorrect /usr/local/bin/autocorrect
 fi
 rm autocorrect.tar.gz
