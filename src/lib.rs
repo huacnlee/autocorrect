@@ -107,7 +107,6 @@ lazy_static! {
         Strategery::new(r"\p{CJK}", r"[@]", true, false),
         Strategery::new(r"\p{CJK}", r"[\[\(‘“]", true, false),
         Strategery::new(r"[’”\]\)!%]", r"\p{CJK}", true, false),
-        Strategery::new(r"[”\]\)!]", r"[a-zA-Z0-9]+", true, false),
         // FullwidthPunctuation
         Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]", false, true),
         Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]", false, true),
@@ -315,7 +314,8 @@ mod tests {
             "公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!" =>          "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报！",
             "消息http://github.com解禁了" =>                     "消息 http://github.com 解禁了",
             "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" =>     "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
-            "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。"
+            "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。",
+            "[b]Foo bar dar[/b]" => "[b]Foo bar dar[/b]"
         ];
 
         assert_cases(cases);
@@ -324,7 +324,7 @@ mod tests {
     #[test]
     fn it_format_for_fullwidth_symbols() {
         let cases = map![
-            "（美股）市场：发布「最新」100消息【BABA.US】“大涨”50%；同比上涨20%！" => "（美股）市场：发布「最新」100 消息【BABA.US】“大涨” 50%；同比上涨 20%！",
+            "（美股）市场：发布「最新」100消息【BABA.US】“大涨”50%；同比上涨20%！" => "（美股）市场：发布「最新」100 消息【BABA.US】“大涨”50%；同比上涨 20%！",
             "第3季度财报发布看涨看跌？敬请期待。" =>                         "第 3 季度财报发布看涨看跌？敬请期待。"
         ];
 
