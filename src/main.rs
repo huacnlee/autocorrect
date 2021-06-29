@@ -51,28 +51,18 @@ pub fn main() {
     .version(crate_version!())
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .arg(
-      Arg::with_name("text").help("Target filepath or string (Plain text) for format").takes_value(true).required(false)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false).multiple(true)
     )
     .arg(
       Arg::with_name("type").long("type").short("t").help("File content type [text, html, yaml], default detect with file extension.").takes_value(true)
     )
     .arg(
-      Arg::with_name("auto_correct_all").long("auto-correct-all").short("A").help("Auto-correct and rewrite file.")
+      Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.")
     )
     .get_matches();
 
-  let auto_correct_all = matches.is_present("auto_correct_all");
-  if let Some(file_name) = matches.value_of("text") {
-    let path_exist = Path::new(file_name).exists();
-    if !path_exist {
-      let mut ext = "";
-      if let Some(_type) = matches.value_of("type") {
-        ext = _type;
-      }
-      format_and_output("", false, ext, file_name);
-      return;
-    }
-
+  let fix = matches.is_present("fix");
+  if let Some(file_name) = matches.value_of("file") {
     for f in glob(file_name).unwrap() {
       let path: String;
       match f {
@@ -85,12 +75,12 @@ pub fn main() {
         ext = _type;
       }
 
-      format_and_output(path.as_str(), auto_correct_all, ext, raw.as_str());
+      format_and_output(path.as_str(), fix, ext, raw.as_str());
     }
   }
 }
 
-fn format_and_output(path: &str, auto_correct_all: bool, ext: &str, raw: &str) {
+fn format_and_output(path: &str, fix: bool, ext: &str, raw: &str) {
   let mut out = String::from(raw);
   if EXT_MAPS.contains_key(ext) {
     match EXT_MAPS[ext] {
@@ -122,7 +112,7 @@ fn format_and_output(path: &str, auto_correct_all: bool, ext: &str, raw: &str) {
     }
   }
 
-  if auto_correct_all && path.len() > 0 {
+  if fix && path.len() > 0 {
     fs::write(Path::new(path), out).unwrap();
   } else {
     println!("{}", out);
