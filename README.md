@@ -36,6 +36,7 @@ USAGE:
     autocorrect [OPTIONS] [text]
 
 FLAGS:
+    -A, --auto-correct-all    Auto-correct and rewrite file.
     -h, --help       Prints help information
     -V, --version    Prints version information
 
