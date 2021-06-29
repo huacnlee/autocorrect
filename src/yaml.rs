@@ -51,6 +51,7 @@ mod tests {
   #[test]
   fn it_format_yaml() {
     let example = r#"# this is comment line
+foo: 'hello世界'
 "en":
   name: "你好Hello世界"
   foo: Bar
@@ -61,6 +62,7 @@ mod tests {
 "#;
 
     let expect = r#"# this is comment line
+foo: 'hello 世界'
 "en":
   name: "你好 Hello 世界"
   foo: Bar
