@@ -73,8 +73,11 @@ macro_rules! map {
 extern crate pest;
 
 mod fullwidth;
+mod go;
 mod halfwidth;
 mod html;
+mod javascript;
+mod ruby;
 mod rust;
 mod sql;
 mod strategery;
@@ -176,6 +179,18 @@ pub fn format_sql(raw: &str) -> String {
 
 pub fn format_rust(raw: &str) -> String {
     rust::format_rust(raw)
+}
+
+pub fn format_ruby(raw: &str) -> String {
+    ruby::format_ruby(raw)
+}
+
+pub fn format_go(raw: &str) -> String {
+    go::format_go(raw)
+}
+
+pub fn format_javascript(raw: &str) -> String {
+    javascript::format_javascript(raw)
 }
 
 // removeFullDateSpacing

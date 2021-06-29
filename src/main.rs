@@ -1,4 +1,7 @@
-use autocorrect::{format, format_html, format_rust, format_sql, format_yaml};
+use autocorrect::{
+  format, format_go, format_html, format_javascript, format_ruby, format_rust, format_sql,
+  format_yaml,
+};
 use clap::{crate_version, App, Arg};
 use glob::glob;
 use std::collections::HashMap;
@@ -32,7 +35,13 @@ lazy_static! {
     "md" => "text",
     "rust" => "rust",
     "rs" => "rust",
-    "sql" => "sql"
+    "sql" => "sql",
+    "ruby" => "ruby",
+    "rb" => "ruby",
+    "js" => "javascript",
+    "jsx" => "javascript",
+    "javascript" => "javascript",
+    "go" => "go"
   );
 }
 
@@ -91,6 +100,15 @@ fn format_and_output(ext: &str, raw: &str) {
       }
       "rust" => {
         println!("{}", format_rust(raw));
+      }
+      "ruby" => {
+        println!("{}", format_ruby(raw));
+      }
+      "go" => {
+        println!("{}", format_go(raw));
+      }
+      "javascript" => {
+        println!("{}", format_javascript(raw));
       }
       "text" => {
         println!("{}", format(raw));

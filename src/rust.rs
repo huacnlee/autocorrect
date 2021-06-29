@@ -40,7 +40,7 @@ mod tests {
   use super::*;
 
   #[test]
-  fn it_format_sql() {
+  fn it_format_rust() {
     let example = r###"
 fn main() {
   let number_list = vec![34, 50, 25, 100, 65];
