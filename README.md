@@ -27,53 +27,32 @@ after that, you will get `/usr/local/bin/autocorrect` command.
 
 ```bash
 $ autocorrect -h
-AutoCorrect 0.5.0
+AutoCorrect 0.5.1
 Jason Lee <huacnlee@gmail.com
 Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters,
 numerical digits and symbols).
 
 USAGE:
-    autocorrect [OPTIONS] [text]
+    autocorrect [FLAGS] [file]...
 
 FLAGS:
-    -A, --auto-correct-all    Auto-correct and rewrite file.
+        --fix        Automatically fix problems and rewrite file.
     -h, --help       Prints help information
     -V, --version    Prints version information
 
-OPTIONS:
-    -t, --type <type>    File content type [text, html, yaml], default detect with file extension.
-
 ARGS:
-    <text>    Target filepath or string (Plain text) for format
+    <file>...    Target filepath or dir for format
 ```
 
 ## Usage
 
 ```bash
-$ autocorrect 你好Hello世界
-你好 Hello 世界
-$ autocorrect text.md
+$ autocorrect text.txt
 你好 Hello 世界
 
-$ autocorrect text.md > text-new.md
-```
-
-### Format HTML
-
-```bash
-$ autocorrect --type html '<p>你好hello世界</p><p>你好world世界</p>'
-<p>你好 hello 世界</p><p>你好 world 世界</p>
-
-$ autocorrect text.html
-```
-
-### Format YAML
-
-````bash
-$ autocorrect --type yaml 'foo: "你好hello"'
-foo: "你好 hello"
-
-$ autocorrect /path/to/yml/zh-CN.yml
+$ autocorrect --fix text.txt
+$ autocorrect --fix zh-CN.yml
+$ autocorrect --fix ./
 ```
 
 ## Usage in Rust
@@ -82,8 +61,8 @@ In your Cargo.toml
 
 ```toml
 [dependencies]
-autocorrect = "0.4.0"
-````
+autocorrect = "0.5.0"
+```
 
 Use `autocorrect::format` to format plain text.
 
