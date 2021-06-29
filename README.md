@@ -13,7 +13,7 @@ Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-wi
 ## Features
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
-- Multiple file content support (HTML, YAML).
+- Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, JavaScript ...).
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
 
@@ -27,18 +27,20 @@ after that, you will get `/usr/local/bin/autocorrect` command.
 
 ```bash
 $ autocorrect -h
-AutoCorrect 0.4.4
+AutoCorrect 0.5.0
 Jason Lee <huacnlee@gmail.com
 Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters,
 numerical digits and symbols).
 
 USAGE:
-    autocorrect [FLAGS] [text]
+    autocorrect [OPTIONS] [text]
 
 FLAGS:
     -h, --help       Prints help information
-        --html       Use for HTML format
     -V, --version    Prints version information
+
+OPTIONS:
+    -t, --type <type>    File content type [text, html, yaml], default detect with file extension.
 
 ARGS:
     <text>    Target filepath or string (Plain text) for format
