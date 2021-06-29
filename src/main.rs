@@ -1,4 +1,4 @@
-use autocorrect::{format, format_html, format_yaml};
+use autocorrect::{format, format_html, format_rust, format_sql, format_yaml};
 use clap::{crate_version, App, Arg};
 use glob::glob;
 use std::collections::HashMap;
@@ -29,7 +29,10 @@ lazy_static! {
     "text" => "text",
     "txt" => "text",
     "markdown" => "text",
-    "md" => "text"
+    "md" => "text",
+    "rust" => "rust",
+    "rs" => "rust",
+    "sql" => "sql"
   );
 }
 
@@ -82,6 +85,12 @@ fn format_and_output(ext: &str, raw: &str) {
       }
       "yaml" => {
         println!("{}", format_yaml(raw));
+      }
+      "sql" => {
+        println!("{}", format_sql(raw));
+      }
+      "rust" => {
+        println!("{}", format_rust(raw));
       }
       "text" => {
         println!("{}", format(raw));

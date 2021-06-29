@@ -75,6 +75,8 @@ extern crate pest;
 mod fullwidth;
 mod halfwidth;
 mod html;
+mod rust;
+mod sql;
 mod strategery;
 mod yaml;
 
@@ -166,6 +168,14 @@ pub fn format_html(html_str: &str) -> String {
 
 pub fn format_yaml(yaml_str: &str) -> String {
     yaml::format_yaml(yaml_str)
+}
+
+pub fn format_sql(raw: &str) -> String {
+    sql::format_sql(raw)
+}
+
+pub fn format_rust(raw: &str) -> String {
+    rust::format_rust(raw)
 }
 
 // removeFullDateSpacing
