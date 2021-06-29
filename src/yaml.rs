@@ -27,13 +27,8 @@ pub fn format_yaml(text: &str) -> String {
 fn format_yaml_pair(item: Pair<Rule>) -> String {
   let mut text = String::new();
   match item.as_rule() {
-    Rule::value => text.push_str(format(item.as_str()).as_str()),
+    Rule::value | Rule::comment => text.push_str(format(item.as_str()).as_str()),
     Rule::item => {
-      for sub in item.into_inner() {
-        text.push_str(format_yaml_pair(sub).as_str());
-      }
-    }
-    Rule::pair => {
       for sub in item.into_inner() {
         text.push_str(format_yaml_pair(sub).as_str());
       }
@@ -52,6 +47,8 @@ mod tests {
   fn it_format_yaml() {
     let example = r#"# this is comment line
 foo: 'hello世界'
+region:
+  cn-north-1
 "en":
   name: "你好Hello世界"
   foo: Bar
@@ -63,6 +60,8 @@ foo: 'hello世界'
 
     let expect = r#"# this is comment line
 foo: 'hello 世界'
+region:
+  cn-north-1
 "en":
   name: "你好 Hello 世界"
   foo: Bar

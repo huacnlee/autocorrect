@@ -1,21 +1,21 @@
-null = @{ "" } 
-other = ${ !(value) ~ ANY }
-string_key = _{ "\"" ~ key_str* ~ "\""  }
-simple_key = _{ key_str* }
-key_str = _{ !(":" | "\n" | "\r" | "\"" | "'") ~ ANY }
-
-simple_value = _{ value_str* }
-string_value = _{ ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") | ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") }
-value_str = _{ !("\n" | "\r" | "\"" | "'") ~ ANY }
-
-key_part = _{ indent ~ key }
-
-comment = ${ "#" ~ (!("\n" | "\r") ~ ANY)+ }
 indent = ${ (^" "+)? }
 newline = ${ "\n" | "\r" }
 
+other = ${ !(pair) ~ ANY }
+
+string_key = _{ "\"" ~ key_str* ~ "\""  }
+simple_key = _{ key_str* }
+key_str = _{ !(newline | ":" | "\"" | "'") ~ ANY }
+
+simple_value = _{ value_str* }
+string_value = _{ ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") | ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") }
+value_str = _{ !(newline | "\"" | "'") ~ ANY }
+key_part = _{ indent ~ key }
+
+comment = ${ "#" ~ (!(newline) ~ ANY)* }
+
+
 key = ${ (string_key | simple_key) ~ (":" ~ " "?) }
 value = ${ string_value | simple_value }
-value_or_item = _{ item | value }
-pair = ${ (key_part ~ value_or_item) ~ " "? }
-item = ${ (pair | comment | newline | other)+  }
+pair = _{ key_part ~ value }
+item = _{ (pair | comment | newline | other)+  }
