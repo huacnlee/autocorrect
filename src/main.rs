@@ -56,8 +56,12 @@ pub fn main() {
     .arg(
       Arg::with_name("type").long("type").short("t").help("File content type [text, html, yaml], default detect with file extension.").takes_value(true)
     )
+    .arg(
+      Arg::with_name("auto_correct_all").long("auto-correct-all").short("A").help("Auto-correct and rewrite file.")
+    )
     .get_matches();
 
+  let auto_correct_all = matches.is_present("auto_correct_all");
   if let Some(file_name) = matches.value_of("text") {
     let path_exist = Path::new(file_name).exists();
     if !path_exist {
@@ -65,7 +69,7 @@ pub fn main() {
       if let Some(_type) = matches.value_of("type") {
         ext = _type;
       }
-      format_and_output(ext, file_name);
+      format_and_output("", false, ext, file_name);
       return;
     }
 
@@ -81,45 +85,47 @@ pub fn main() {
         ext = _type;
       }
 
-      format_and_output(ext, raw.as_str());
+      format_and_output(path.as_str(), auto_correct_all, ext, raw.as_str());
     }
   }
 }
 
-fn format_and_output(ext: &str, raw: &str) {
+fn format_and_output(path: &str, auto_correct_all: bool, ext: &str, raw: &str) {
+  let mut out = String::from(raw);
   if EXT_MAPS.contains_key(ext) {
     match EXT_MAPS[ext] {
       "html" => {
-        println!("{}", format_html(raw));
+        out = format_html(raw);
       }
       "yaml" => {
-        println!("{}", format_yaml(raw));
+        out = format_yaml(raw);
       }
       "sql" => {
-        println!("{}", format_sql(raw));
+        out = format_sql(raw);
       }
       "rust" => {
-        println!("{}", format_rust(raw));
+        out = format_rust(raw);
       }
       "ruby" => {
-        println!("{}", format_ruby(raw));
+        out = format_ruby(raw);
       }
       "go" => {
-        println!("{}", format_go(raw));
+        out = format_go(raw);
       }
       "javascript" => {
-        println!("{}", format_javascript(raw));
+        out = format_javascript(raw);
       }
       "text" => {
-        println!("{}", format(raw));
+        out = format(raw);
       }
-      _ => {
-        println!("{}", raw);
-      }
+      _ => {}
     }
+  }
+
+  if auto_correct_all && path.len() > 0 {
+    fs::write(Path::new(path), out).unwrap();
   } else {
-    // else return raw
-    println!("{}", raw);
+    println!("{}", out);
   }
 }
 
