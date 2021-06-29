@@ -91,6 +91,7 @@ lazy_static! {
         "{}",
         r"[ ]{0,}\d+[ ]{0,}年[ ]{0,}\d+[ ]{0,}月[ ]{0,}\d+[ ]{0,}[日号][ ]{0,}"
     );
+    static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
     static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
     static ref DASH_HANS_RE: Regex = regexp!("{}", r"([\p{CJK}）】」》”’])([\-]+)([\p{CJK}}}（【「《“‘])");
     static ref LEFT_QUOTE_RE: Regex = regexp!("{}", r" ([（【「《])");
@@ -133,6 +134,11 @@ lazy_static! {
 /// ```
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
+
+    // skip if not has CJK
+    if !CJK_RE.is_match(text) {
+        return out;
+    }
 
     out = fullwidth::fullwidth(&out);
     out = halfwidth::halfwidth(&out);
@@ -230,6 +236,8 @@ mod tests {
     #[test]
     fn it_format() {
         let cases = map![
+            "!sm" => "!sm",
+            "Hello world!" => "Hello world!",
             "部署到heroku有问题网页不能显示" => "部署到 heroku 有问题网页不能显示",
             "[北京]美企聘site/web大型应用开发高手-Ruby" => "[北京] 美企聘 site/web 大型应用开发高手-Ruby",
             "[成都](团800)招聘Rails工程师" => "[成都](团 800) 招聘 Rails 工程师",
