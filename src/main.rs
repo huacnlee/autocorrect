@@ -1,7 +1,7 @@
 // autocorrect: false
 use autocorrect::{
-  format, format_go, format_html, format_javascript, format_python, format_ruby, format_rust,
-  format_sql, format_yaml, get_file_extension, is_ignore_auto_correct,
+  format, format_css, format_go, format_html, format_javascript, format_json, format_python,
+  format_ruby, format_rust, format_sql, format_yaml, get_file_extension, is_ignore_auto_correct,
 };
 use clap::{crate_version, App, Arg};
 use glob::glob;
@@ -37,6 +37,9 @@ lazy_static! {
     // ruby
     "ruby" => "ruby",
     "rb" => "ruby",
+    // crystal
+    "cr" => "ruby",
+    "crystal" => "ruby",
     // javascript
     "js" => "javascript",
     "jsx" => "javascript",
@@ -44,6 +47,14 @@ lazy_static! {
     "ts" => "javascript",
     "tsx" => "javascript",
     "typescript" => "javascript",
+    // css
+    "css" => "css",
+    "scss" => "css",
+    "sass" => "css",
+    "less" => "css",
+    // json
+    "json" => "json",
+    // go
     "go" => "go",
     // python
     "python" => "python",
@@ -128,6 +139,12 @@ fn format_and_output(path: &str, fix: bool) {
         }
         "javascript" => {
           out = format_javascript(raw);
+        }
+        "css" => {
+          out = format_css(raw);
+        }
+        "json" => {
+          out = format_json(raw);
         }
         "python" => {
           out = format_python(raw);

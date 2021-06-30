@@ -46,7 +46,7 @@ mod tests {
 # 第1行注释
 # 第2行注释
 def hello(a, b: "第1个参数")
-  a = "你好hello世界#{a}"
+  a = "hello世界#{a}"
   b = '你好hello世界'
 end
 "###;
@@ -55,7 +55,7 @@ end
 # 第 1 行注释
 # 第 2 行注释
 def hello(a, b: "第 1 个参数")
-  a = "你好 hello 世界#{a}"
+  a = "hello 世界#{a}"
   b = '你好 hello 世界'
 end
 "###;

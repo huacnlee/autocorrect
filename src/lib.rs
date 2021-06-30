@@ -73,11 +73,13 @@ macro_rules! map {
 
 extern crate pest;
 
+mod css;
 mod fullwidth;
 mod go;
 mod halfwidth;
 mod html;
 mod javascript;
+mod json;
 mod python;
 mod ruby;
 mod rust;
@@ -202,8 +204,16 @@ pub fn format_javascript(raw: &str) -> String {
     javascript::format_javascript(raw)
 }
 
+pub fn format_css(raw: &str) -> String {
+    css::format_css(raw)
+}
+
 pub fn format_python(raw: &str) -> String {
     python::format_python(raw)
+}
+
+pub fn format_json(raw: &str) -> String {
+    json::format_json(raw)
 }
 
 // removeFullDateSpacing
