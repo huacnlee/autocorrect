@@ -86,7 +86,7 @@ fn format_and_output(path: &str, fix: bool) {
 
     let raw = raw.as_str();
 
-    if (is_ignore_auto_correct(raw)) {
+    if is_ignore_auto_correct(raw) {
       return;
     }
 

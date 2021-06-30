@@ -222,13 +222,13 @@ fn space_dash_with_hans(text: &str) -> String {
     return out;
 }
 
-fn is_ignore_auto_correct(raw: &str) -> bool {
+pub fn is_ignore_auto_correct(raw: &str) -> bool {
     let re = Regex::new(r"autocorrect:([ ]*)(0|false)").unwrap();
     return re.is_match(raw);
 }
 
 // get file extension from filepath
-fn get_file_extension(filepath: &str) -> &str {
+pub fn get_file_extension(filepath: &str) -> &str {
     if let Some(ext) = Path::new(filepath).extension().and_then(OsStr::to_str) {
         return ext;
     }
