@@ -12,6 +12,10 @@ It also supports programming source code correcting, based on Parser, can recogn
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（级少数异常情况），你可以放心用来辅助你完整自动纠正动作。
 
+## VS Code Extension
+
+https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
+
 ## Features
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
