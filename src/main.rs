@@ -1,6 +1,7 @@
+// autocorrect: false
 use autocorrect::{
-  format, format_go, format_html, format_javascript, format_ruby, format_rust, format_sql,
-  format_yaml, get_file_extension, is_ignore_auto_correct,
+  format, format_go, format_html, format_javascript, format_python, format_ruby, format_rust,
+  format_sql, format_yaml, get_file_extension, is_ignore_auto_correct,
 };
 use clap::{crate_version, App, Arg};
 use glob::glob;
@@ -25,25 +26,34 @@ lazy_static! {
   static ref EXT_MAPS: HashMap<&'static str, &'static str> = map!(
     "html" => "html",
     "htm" => "html",
+    // yaml
     "yaml" => "yaml",
     "yml" => "yaml",
-    "plain" => "text",
-    "text" => "text",
-    "txt" => "text",
-    "markdown" => "text",
-    "md" => "text",
+    // rust
     "rust" => "rust",
     "rs" => "rust",
+    // sql
     "sql" => "sql",
+    // ruby
     "ruby" => "ruby",
     "rb" => "ruby",
+    // javascript
     "js" => "javascript",
     "jsx" => "javascript",
     "javascript" => "javascript",
     "ts" => "javascript",
     "tsx" => "javascript",
     "typescript" => "javascript",
-    "go" => "go"
+    "go" => "go",
+    // python
+    "python" => "python",
+    "py" => "python",
+    // text
+    "plain" => "text",
+    "txt" => "text",
+    "markdown" => "text",
+    "md" => "text",
+    "text" => "text"
   );
 }
 
@@ -118,6 +128,9 @@ fn format_and_output(path: &str, fix: bool) {
         }
         "javascript" => {
           out = format_javascript(raw);
+        }
+        "python" => {
+          out = format_python(raw);
         }
         "text" => {
           out = format(raw);

@@ -1,3 +1,4 @@
+// autocorrect: false
 pub struct Strategery {
     space: bool,
     reverse: bool,

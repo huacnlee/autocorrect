@@ -1,3 +1,4 @@
+// autocorrect: false
 use regex::Regex;
 use std::collections::HashMap;
 

@@ -1,3 +1,4 @@
+// autocorrect: false
 use super::*;
 use html5ever::parse_document;
 use html5ever::serialize;

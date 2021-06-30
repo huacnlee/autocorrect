@@ -1,3 +1,4 @@
+// autocorrect: false
 /*!
 Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
@@ -77,6 +78,7 @@ mod go;
 mod halfwidth;
 mod html;
 mod javascript;
+mod python;
 mod ruby;
 mod rust;
 mod sql;
@@ -198,6 +200,10 @@ pub fn format_go(raw: &str) -> String {
 
 pub fn format_javascript(raw: &str) -> String {
     javascript::format_javascript(raw)
+}
+
+pub fn format_python(raw: &str) -> String {
+    python::format_python(raw)
 }
 
 // removeFullDateSpacing

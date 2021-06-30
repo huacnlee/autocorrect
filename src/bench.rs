@@ -1,3 +1,4 @@
+// autocorrect: false
 #![feature(test)]
 extern crate test;
 
