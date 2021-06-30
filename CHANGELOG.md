@@ -1,3 +1,7 @@
+## 0.5.3
+
+- Add for `autocorrect: false` option for ignore file.
+
 ## 0.4.1
 
 - Fix format_html for support fullpage html to keep html>body.

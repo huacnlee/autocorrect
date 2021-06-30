@@ -1,11 +1,10 @@
 use autocorrect::{
   format, format_go, format_html, format_javascript, format_ruby, format_rust, format_sql,
-  format_yaml,
+  format_yaml, get_file_extension, is_ignore_auto_correct,
 };
 use clap::{crate_version, App, Arg};
 use glob::glob;
 use std::collections::HashMap;
-use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
@@ -86,6 +85,11 @@ fn format_and_output(path: &str, fix: bool) {
     println!("{}", path);
 
     let raw = raw.as_str();
+
+    if (is_ignore_auto_correct(raw)) {
+      return;
+    }
+
     let mut out = String::from(raw);
     let ext = get_file_extension(path);
 
@@ -125,12 +129,4 @@ fn format_and_output(path: &str, fix: bool) {
       println!("{}", out);
     }
   }
-}
-
-fn get_file_extension(filepath: &str) -> &str {
-  if let Some(ext) = Path::new(filepath).extension().and_then(OsStr::to_str) {
-    return ext;
-  }
-
-  return "";
 }

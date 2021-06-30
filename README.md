@@ -55,6 +55,17 @@ $ autocorrect --fix zh-CN.yml
 $ autocorrect --fix ./
 ```
 
+## Ignore for file
+
+If you want ignore AutoCorrect for a file, you can put `autocorrect: false`.
+
+```js
+// autocorrect: false
+function hello() {
+  console.log("这整个文件不会被autocorrect修改");
+}
+```
+
 ## Usage in Rust
 
 In your Cargo.toml
