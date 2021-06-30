@@ -1,3 +1,9 @@
+## 0.6.0
+
+- Use JavaScript for TypeScript, avoid update file if not support file type;
+- Add to support Python;
+- Add for support JSON, CSS, Sass, Less;
+
 ## 0.5.3
 
 - Add for `autocorrect: false` option for ignore file.
