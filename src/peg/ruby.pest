@@ -1,4 +1,3 @@
-autocorrect_disable = @{ "#" ~ " "+ ~ "autocorrect:" ~ " "? ~ ("false" | "0") }
 newline = ${ "\n" | "\r" }
 space = ${ " "+ }
 
@@ -11,5 +10,5 @@ string = ${
   ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
-line = _{ autocorrect_disable | string | comment | space | other | newline }
+line = _{ string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

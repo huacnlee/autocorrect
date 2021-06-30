@@ -40,6 +40,9 @@ lazy_static! {
     "js" => "javascript",
     "jsx" => "javascript",
     "javascript" => "javascript",
+    "ts" => "javascript",
+    "tsx" => "javascript",
+    "typescript" => "javascript",
     "go" => "go"
   );
 }
@@ -119,7 +122,7 @@ fn format_and_output(path: &str, fix: bool) {
         "text" => {
           out = format(raw);
         }
-        _ => {}
+        _ => return,
       }
     }
 
