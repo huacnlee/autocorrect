@@ -1,5 +1,16 @@
 #!/bin/bash
-version='0.5.2'
+get_latest_release() {
+  curl --silent "https://api.github.com/repos/$repo/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
+
+repo='huacnlee/auto-correct.rs'
+bin_name='autocorrect'
+version=`get_latest_release`
+
+echo "Downloading $bin_name@$version ..."
+
 if [[ `uname` == 'Darwin' ]]; then
 	platform='darwin'
 else
@@ -10,12 +21,12 @@ if [[ `arch` == 'arm64' ]]; then
 else
 	arch='amd64'
 fi
-curl -Lo autocorrect.tar.gz https://github.com/huacnlee/auto-correct.rs/releases/download/v$version/autocorrect-$platform-$arch.tar.gz
-tar zxf autocorrect.tar.gz
+curl -Lo $bin_name.tar.gz https://github.com/$repo/releases/download/$version/$bin_name-$platform-$arch.tar.gz
+tar zxf $bin_name.tar.gz
 
 if [[ `whoami` == 'root' ]]; then
-	mv autocorrect /usr/local/bin/autocorrect
+	mv $bin_name /usr/local/bin/$bin_name
 else
-	sudo mv autocorrect /usr/local/bin/autocorrect
+	sudo mv $bin_name /usr/local/bin/$bin_name
 fi
-rm autocorrect.tar.gz
+rm $bin_name.tar.gz
