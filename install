@@ -5,7 +5,7 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
 
-repo='huacnlee/auto-correct.rs'
+repo='huacnlee/autocorrect'
 bin_name='autocorrect'
 version=`get_latest_release`
 

@@ -5,7 +5,7 @@ Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-wi
 
 - Ruby - [auto-correct](https://github.com/huacnlee/auto-correct).
 - Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct).
-- Rust - [auto-correct.rs](https://github.com/huacnlee/auto-correct.rs).
+- Rust - [autocorrect](https://github.com/huacnlee/autocorrect).
 
 ## Features
 

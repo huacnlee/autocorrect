@@ -1,14 +1,16 @@
 # AutoCorrrect for Rust
 
-[![Go](https://github.com/huacnlee/auto-correct.rs/workflows/CI/badge.svg)](https://github.com/huacnlee/auto-correct.rs/actions?query=workflow%3ACI) [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect) [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
+[![Go](https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg)](https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI) [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect) [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
 
-Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
+The CLI tool based on Rust is used to automatically correct, for add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
-## Other implements
+It also supports programming source code correcting, based on Parser, can recognize the file name, and can find the strings and the comment part to correct.
 
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct).
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct).
-- Rust - [auto-correct.rs](https://github.com/huacnlee/auto-correct.rs).
+基于 Rust 编写的 CLI 工具，用于自动纠正文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，同时尝试以安全的方式自动纠正标点符号等等。
+
+除了纯文本的自动纠正以外，AutoCorrect 基于 Parser 的方式对各种类型源代码文件支持，能自动识别文件名，并准确找到字符串、注释做自动纠正。
+
+> 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（级少数异常情况），你可以放心用来辅助你完整自动纠正动作。
 
 ## Features
 
@@ -17,10 +19,16 @@ Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-wi
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
 
+## Other implements for programming
+
+- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
+- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
+- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
+
 ## Install
 
 ```bash
-$ curl -sSL https://git.io/JckA6 | bash
+$ curl -sSL https://git.io/JcGER | bash
 ```
 
 after that, you will get `/usr/local/bin/autocorrect` command.
