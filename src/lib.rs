@@ -47,6 +47,7 @@ fn main() {
 #[macro_use]
 extern crate lazy_static;
 extern crate pest_derive;
+extern crate serde_json;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{
@@ -96,6 +97,7 @@ mod yaml;
 
 use crate::strategery::Strategery;
 use regex::Regex;
+use serde_json::json;
 use std::ffi::OsStr;
 use std::path::Path;
 
@@ -187,6 +189,35 @@ pub fn format_html(html_str: &str) -> String {
     html::format_html(html_str)
 }
 
+pub fn format_or_lint(
+    text: &mut String,
+    part: &str,
+    correct: bool,
+    lint: bool,
+    line: usize,
+    col: usize,
+) {
+    if lint {
+        if correct {
+            let new_part = format(part);
+            if new_part == part {
+                return;
+            }
+
+            let message = json!({"l": line,"c": col, "old": part, "new": new_part });
+
+            text.push_str(message.to_string().as_str());
+            text.push_str("\n")
+        }
+    } else {
+        if correct {
+            text.push_str(format(part).as_str());
+        } else {
+            text.push_str(part);
+        }
+    }
+}
+
 pub fn format_yaml(yaml_str: &str) -> String {
     yaml::format_yaml(yaml_str)
 }
@@ -220,7 +251,11 @@ pub fn format_python(raw: &str) -> String {
 }
 
 pub fn format_json(raw: &str) -> String {
-    json::format_json(raw)
+    json::format_json(raw, false)
+}
+
+pub fn lint_json(raw: &str) -> String {
+    json::format_json(raw, true)
 }
 
 pub fn format_swift(raw: &str) -> String {

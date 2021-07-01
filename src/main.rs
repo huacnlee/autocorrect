@@ -1,7 +1,7 @@
 // autocorrect: false
 use autocorrect::{
   format, format_csharp, format_css, format_dart, format_go, format_html, format_java,
-  format_javascript, format_json, format_kotlin, format_objective_c, format_php, format_python,
+  format_javascript, format_kotlin, format_objective_c, format_or_lint, format_php, format_python,
   format_ruby, format_rust, format_sql, format_swift, format_yaml, get_file_extension,
   is_ignore_auto_correct,
 };
@@ -10,6 +10,8 @@ use glob::glob;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
+
+mod json;
 
 #[macro_use]
 extern crate lazy_static;
@@ -100,9 +102,15 @@ pub fn main() {
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.")
     )
+    .arg(
+      Arg::with_name("lint").long("lint").help("Lint and output problems.")
+    )
     .get_matches();
 
   let fix = matches.is_present("fix");
+  // disable lint when fix mode
+  let lint = matches.is_present("lint") && !fix;
+
   if let Some(file_names) = matches.values_of("file") {
     for file_name in file_names {
       let filepath = Path::new(file_name);
@@ -117,7 +125,7 @@ pub fn main() {
       for f in glob(file_name.as_str()).unwrap() {
         match f {
           Ok(_path) => {
-            format_and_output(_path.to_str().unwrap(), fix);
+            format_and_output(_path.to_str().unwrap(), fix, lint);
           }
           Err(_e) => {}
         }
@@ -126,7 +134,7 @@ pub fn main() {
   }
 }
 
-fn format_and_output(path: &str, fix: bool) {
+fn format_and_output(path: &str, fix: bool, lint: bool) {
   if let Ok(raw) = fs::read_to_string(path) {
     let raw = raw.as_str();
     let mut out = String::from(raw);
@@ -162,7 +170,7 @@ fn format_and_output(path: &str, fix: bool) {
           out = format_css(raw);
         }
         "json" => {
-          out = format_json(raw);
+          out = json::format_json(raw, lint);
         }
         "python" => {
           out = format_python(raw);
