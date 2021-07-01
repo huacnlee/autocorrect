@@ -82,6 +82,7 @@ lazy_static! {
     // text
     "plain" => "text",
     "txt" => "text",
+    // markdown
     "markdown" => "text",
     "md" => "text",
     "text" => "text"
@@ -102,7 +103,6 @@ pub fn main() {
     .get_matches();
 
   let fix = matches.is_present("fix");
-
   if let Some(file_names) = matches.values_of("file") {
     for file_name in file_names {
       let filepath = Path::new(file_name);
@@ -116,8 +116,10 @@ pub fn main() {
 
       for f in glob(file_name.as_str()).unwrap() {
         match f {
-          Ok(_path) => format_and_output(_path.to_str().unwrap(), fix),
-          Err(_e) => break,
+          Ok(_path) => {
+            format_and_output(_path.to_str().unwrap(), fix);
+          }
+          Err(_e) => {}
         }
       }
     }
@@ -126,18 +128,14 @@ pub fn main() {
 
 fn format_and_output(path: &str, fix: bool) {
   if let Ok(raw) = fs::read_to_string(path) {
-    // println!("{}", path);
-
     let raw = raw.as_str();
-
-    if is_ignore_auto_correct(raw) {
-      return;
-    }
-
     let mut out = String::from(raw);
+
     let ext = get_file_extension(path);
 
-    if EXT_MAPS.contains_key(ext) {
+    let ignore = is_ignore_auto_correct(raw);
+
+    if EXT_MAPS.contains_key(ext) && !ignore {
       match EXT_MAPS[ext] {
         "html" => {
           out = format_html(raw);
@@ -193,14 +191,19 @@ fn format_and_output(path: &str, fix: bool) {
         "text" => {
           out = format(raw);
         }
-        _ => return,
+        _ => {}
       }
     }
 
-    if fix && path.len() > 0 {
-      fs::write(Path::new(path), out).unwrap();
+    if fix {
+      // do not rewrite ignored file
+      if !ignore && path.len() > 0 {
+        fs::write(Path::new(path), out).unwrap();
+      }
     } else {
       println!("{}", out);
+      // only print once
+      std::process::exit(0);
     }
   }
 }
