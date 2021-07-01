@@ -8,13 +8,14 @@ use pest_derive::Parser;
 #[grammar = "peg/rust.pest"]
 struct RustParser;
 
-pub fn format_rust(text: &str) -> String {
+#[allow(dead_code)]
+pub fn format_rust(text: &str, lint: bool) -> String {
   let result = RustParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_rust_pair(&mut out, item);
+        format_rust_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +25,17 @@ pub fn format_rust(text: &str) -> String {
   }
 }
 
-fn format_rust_pair(text: &mut String, item: Pair<Rule>) {
+fn format_rust_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        format_rust_pair(text, sub);
+        format_rust_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -106,6 +109,6 @@ fn main() {
 }
 "###;
 
-    assert_eq!(expect, format_rust(example));
+    assert_eq!(expect, format_rust(example, false));
   }
 }

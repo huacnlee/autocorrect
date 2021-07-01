@@ -8,13 +8,14 @@ use pest_derive::Parser;
 #[grammar = "peg/go.pest"]
 struct GoParser;
 
-pub fn format_go(text: &str) -> String {
+#[allow(dead_code)]
+pub fn format_go(text: &str, lint: bool) -> String {
   let result = GoParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_go_pair(&mut out, item);
+        format_go_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +25,18 @@ pub fn format_go(text: &str) -> String {
   }
 }
 
-fn format_go_pair(text: &mut String, item: Pair<Rule>) {
+fn format_go_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        format_go_pair(text, sub);
+        format_go_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -72,6 +76,6 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
 }
 "###;
 
-    assert_eq!(expect, format_go(example));
+    assert_eq!(expect, format_go(example, false));
   }
 }

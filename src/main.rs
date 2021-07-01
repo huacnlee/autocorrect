@@ -1,9 +1,8 @@
 // autocorrect: false
 use autocorrect::{
-  format, format_csharp, format_css, format_dart, format_go, format_html, format_java,
-  format_javascript, format_kotlin, format_objective_c, format_or_lint, format_php, format_python,
-  format_ruby, format_rust, format_sql, format_swift, format_yaml, get_file_extension,
-  is_ignore_auto_correct,
+  format, format_csharp, format_css, format_dart, format_html, format_java, format_kotlin,
+  format_objective_c, format_or_lint, format_php, format_python, format_sql, format_swift,
+  format_yaml, get_file_extension, is_ignore_auto_correct,
 };
 use clap::{crate_version, App, Arg};
 use glob::glob;
@@ -11,7 +10,11 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
+mod go;
+mod javascript;
 mod json;
+mod ruby;
+mod rust;
 
 #[macro_use]
 extern crate lazy_static;
@@ -155,16 +158,16 @@ fn format_and_output(path: &str, fix: bool, lint: bool) {
           out = format_sql(raw);
         }
         "rust" => {
-          out = format_rust(raw);
+          out = rust::format_rust(raw, lint);
         }
         "ruby" => {
-          out = format_ruby(raw);
+          out = ruby::format_ruby(raw, lint);
         }
         "go" => {
-          out = format_go(raw);
+          out = go::format_go(raw, lint);
         }
         "javascript" => {
-          out = format_javascript(raw);
+          out = javascript::format_javascript(raw, lint);
         }
         "css" => {
           out = format_css(raw);

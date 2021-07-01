@@ -8,6 +8,7 @@ use pest_derive::Parser;
 #[grammar = "peg/json.pest"]
 struct JSONParser;
 
+#[allow(dead_code)]
 pub fn format_json(text: &str, lint: bool) -> String {
   let result = JSONParser::parse(Rule::item, text);
   match result {
@@ -82,7 +83,5 @@ mod tests {
 "###;
 
     assert_eq!(expect, format_json(example, false));
-
-    assert_eq!("", format_json(example, true));
   }
 }
