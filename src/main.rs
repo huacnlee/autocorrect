@@ -126,7 +126,7 @@ pub fn main() {
 
 fn format_and_output(path: &str, fix: bool) {
   if let Ok(raw) = fs::read_to_string(path) {
-    println!("{}", path);
+    // println!("{}", path);
 
     let raw = raw.as_str();
 
