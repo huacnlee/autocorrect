@@ -168,6 +168,12 @@ test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
 
 TODO
 
+## TODO
+
+- [ ] Lint
+- [ ] Vim plugin
+- [ ] Git Commit message format hook
+
 ## License
 
 This project under MIT license.
