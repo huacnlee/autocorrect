@@ -1,0 +1,17 @@
+newline = ${ "\n" | "\r" }
+space = ${ " "+ }
+
+other = ${ !(php) ~ ANY }
+comment = ${ 
+  ("//" | "#") ~ (!(newline) ~ ANY)* 
+  | "/*" ~ (!("*/") ~ ANY)* ~ "*/" 
+}
+string = ${ 
+  ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
+  | ("\"" ~ (!("\"") ~ ANY)* ~ "\"") 
+}
+php_script_start = ${ "<?php" }
+php_script_end = ${ "?>" }
+php = ${ php_script_start ~ (!(php_script_end) ~ (string | comment | space | other | newline))* ~ php_script_end }
+line = _{ php | other }
+item = _{ SOI ~ line* ~ EOI } 

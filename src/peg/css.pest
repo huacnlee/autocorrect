@@ -3,9 +3,9 @@ newline = ${ "\n" | "\r" }
 space = ${ " "+ }
 
 other = ${ !(comment) ~ ANY }
-comment = ${ single_line_comment | multiple_line_comment }
+comment = ${ single_line_comment | multiline_comment }
 single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiple_line_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
 line = _{ comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

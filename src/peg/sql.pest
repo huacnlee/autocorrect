@@ -3,9 +3,9 @@ space = ${ " "+ }
 
 other = ${ !(string) ~ ANY }
 string_val = _{ (!(newline |  "'") ~ ANY)* }
-comment = ${ single_line_comment | multiple_line_comment }
+comment = ${ single_line_comment | multiline_comment }
 single_line_comment = _{ "--" ~ (!(newline) ~ ANY)* }
-multiple_line_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
 string = ${ ("'" ~ string_val ~ "'") }
 line = _{  string | comment | space | other | newline }

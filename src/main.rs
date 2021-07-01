@@ -1,7 +1,9 @@
 // autocorrect: false
 use autocorrect::{
-  format, format_css, format_go, format_html, format_javascript, format_json, format_python,
-  format_ruby, format_rust, format_sql, format_yaml, get_file_extension, is_ignore_auto_correct,
+  format, format_csharp, format_css, format_dart, format_go, format_html, format_java,
+  format_javascript, format_json, format_kotlin, format_objective_c, format_php, format_python,
+  format_ruby, format_rust, format_sql, format_swift, format_yaml, get_file_extension,
+  is_ignore_auto_correct,
 };
 use clap::{crate_version, App, Arg};
 use glob::glob;
@@ -59,6 +61,24 @@ lazy_static! {
     // python
     "python" => "python",
     "py" => "python",
+    // objective-c
+    "objective_c" => "objective_c",
+    "objective-c" => "objective_c",
+    "m" => "objective_c",
+    "h" => "objective_c",
+    // csharp
+    "csharp" => "csharp",
+    "cs" => "csharp",
+    // java
+    "java" => "java",
+    // swift
+    "swift" => "swift",
+    // kotlin
+    "kotlin" => "kotlin",
+    // php
+    "php" => "php",
+    // dart
+    "dart" => "dart",
     // text
     "plain" => "text",
     "txt" => "text",
@@ -148,6 +168,27 @@ fn format_and_output(path: &str, fix: bool) {
         }
         "python" => {
           out = format_python(raw);
+        }
+        "objective_c" => {
+          out = format_objective_c(raw);
+        }
+        "csharp" => {
+          out = format_csharp(raw);
+        }
+        "swift" => {
+          out = format_swift(raw);
+        }
+        "java" => {
+          out = format_java(raw);
+        }
+        "kotlin" => {
+          out = format_kotlin(raw);
+        }
+        "php" => {
+          out = format_php(raw);
+        }
+        "dart" => {
+          out = format_dart(raw);
         }
         "text" => {
           out = format(raw);

@@ -3,12 +3,13 @@ space = ${ " "+ }
 
 other = ${ !(string) ~ ANY }
 comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "#" ~ (!(newline) ~ ANY)* }
+single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
 string = ${ 
-  ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") 
+  ("@\"" ~ (!("\"") ~ ANY)* ~ "\"") 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+  | ("$\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
 line = _{ string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

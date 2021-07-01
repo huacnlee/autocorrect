@@ -19,7 +19,7 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 ## Features
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
-- Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, JavaScript ...).
+- Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, Python, Objective-C, Swift, Java, Kotlin, Dart, JavaScript, CSharp ...).
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
 

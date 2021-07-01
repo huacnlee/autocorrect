@@ -73,18 +73,25 @@ macro_rules! map {
 
 extern crate pest;
 
+mod csharp;
 mod css;
+mod dart;
 mod fullwidth;
 mod go;
 mod halfwidth;
 mod html;
+mod java;
 mod javascript;
 mod json;
+mod kotlin;
+mod objective_c;
+mod php;
 mod python;
 mod ruby;
 mod rust;
 mod sql;
 mod strategery;
+mod swift;
 mod yaml;
 
 use crate::strategery::Strategery;
@@ -214,6 +221,34 @@ pub fn format_python(raw: &str) -> String {
 
 pub fn format_json(raw: &str) -> String {
     json::format_json(raw)
+}
+
+pub fn format_swift(raw: &str) -> String {
+    swift::format_swift(raw)
+}
+
+pub fn format_objective_c(raw: &str) -> String {
+    objective_c::format_objective_c(raw)
+}
+
+pub fn format_java(raw: &str) -> String {
+    java::format_java(raw)
+}
+
+pub fn format_kotlin(raw: &str) -> String {
+    kotlin::format_kotlin(raw)
+}
+
+pub fn format_csharp(raw: &str) -> String {
+    csharp::format_csharp(raw)
+}
+
+pub fn format_php(raw: &str) -> String {
+    php::format_php(raw)
+}
+
+pub fn format_dart(raw: &str) -> String {
+    dart::format_dart(raw)
 }
 
 // removeFullDateSpacing
