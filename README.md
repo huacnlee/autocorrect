@@ -74,7 +74,7 @@ If you want ignore AutoCorrect for a file, you can put `autocorrect: false`.
 ```js
 // autocorrect: false
 function hello() {
-	console.log("这整个文件不会被autocorrect修改");
+  console.log("这整个文件不会被autocorrect修改");
 }
 ```
 
@@ -89,7 +89,7 @@ autocorrect = "0.5.0"
 
 Use `autocorrect::format` to format plain text.
 
-```rust
+````rust
 extern crate autocorrect;
 
 fn main() {
@@ -144,7 +144,7 @@ fn main() {
 			// </div>
 			// </article>
 			}
-```
+````
 
 ## Benchmark
 
@@ -170,7 +170,8 @@ TODO
 
 ## TODO
 
-- [ ] Lint
+- [x] Lint
+- [ ] Lint for HTML and Plain
 - [ ] Vim plugin
 - [ ] Git Commit message format hook
 - [ ] Ignore next line
