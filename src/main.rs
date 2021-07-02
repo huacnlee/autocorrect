@@ -1,15 +1,29 @@
 // autocorrect: false
 use autocorrect::{
-  format, format_csharp, format_css, format_dart, format_go, format_html, format_java,
-  format_javascript, format_json, format_kotlin, format_objective_c, format_php, format_python,
-  format_ruby, format_rust, format_sql, format_swift, format_yaml, get_file_extension,
-  is_ignore_auto_correct,
+  format, format_html, format_or_lint, get_file_extension, is_ignore_auto_correct,
 };
 use clap::{crate_version, App, Arg};
 use glob::glob;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
+
+mod csharp;
+mod css;
+mod dart;
+mod go;
+mod java;
+mod javascript;
+mod json;
+mod kotlin;
+mod objective_c;
+mod php;
+mod python;
+mod ruby;
+mod rust;
+mod sql;
+mod swift;
+mod yaml;
 
 #[macro_use]
 extern crate lazy_static;
@@ -100,9 +114,15 @@ pub fn main() {
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.")
     )
+    .arg(
+      Arg::with_name("lint").long("lint").help("Lint and output problems.")
+    )
     .get_matches();
 
   let fix = matches.is_present("fix");
+  // disable lint when fix mode
+  let lint = matches.is_present("lint") && !fix;
+
   if let Some(file_names) = matches.values_of("file") {
     for file_name in file_names {
       let filepath = Path::new(file_name);
@@ -117,7 +137,7 @@ pub fn main() {
       for f in glob(file_name.as_str()).unwrap() {
         match f {
           Ok(_path) => {
-            format_and_output(_path.to_str().unwrap(), fix);
+            format_and_output(_path.to_str().unwrap(), fix, lint);
           }
           Err(_e) => {}
         }
@@ -126,7 +146,7 @@ pub fn main() {
   }
 }
 
-fn format_and_output(path: &str, fix: bool) {
+fn format_and_output(path: &str, fix: bool, lint: bool) {
   if let Ok(raw) = fs::read_to_string(path) {
     let raw = raw.as_str();
     let mut out = String::from(raw);
@@ -141,52 +161,52 @@ fn format_and_output(path: &str, fix: bool) {
           out = format_html(raw);
         }
         "yaml" => {
-          out = format_yaml(raw);
+          out = yaml::format_yaml(raw, lint);
         }
         "sql" => {
-          out = format_sql(raw);
+          out = sql::format_sql(raw, lint);
         }
         "rust" => {
-          out = format_rust(raw);
+          out = rust::format_rust(raw, lint);
         }
         "ruby" => {
-          out = format_ruby(raw);
+          out = ruby::format_ruby(raw, lint);
         }
         "go" => {
-          out = format_go(raw);
+          out = go::format_go(raw, lint);
         }
         "javascript" => {
-          out = format_javascript(raw);
+          out = javascript::format_javascript(raw, lint);
         }
         "css" => {
-          out = format_css(raw);
+          out = css::format_css(raw, lint);
         }
         "json" => {
-          out = format_json(raw);
+          out = json::format_json(raw, lint);
         }
         "python" => {
-          out = format_python(raw);
+          out = python::format_python(raw, lint);
         }
         "objective_c" => {
-          out = format_objective_c(raw);
+          out = objective_c::format_objective_c(raw, lint);
         }
         "csharp" => {
-          out = format_csharp(raw);
+          out = csharp::format_csharp(raw, lint);
         }
         "swift" => {
-          out = format_swift(raw);
+          out = swift::format_swift(raw, lint);
         }
         "java" => {
-          out = format_java(raw);
+          out = java::format_java(raw, lint);
         }
         "kotlin" => {
-          out = format_kotlin(raw);
+          out = kotlin::format_kotlin(raw, lint);
         }
         "php" => {
-          out = format_php(raw);
+          out = php::format_php(raw, lint);
         }
         "dart" => {
-          out = format_dart(raw);
+          out = dart::format_dart(raw, lint);
         }
         "text" => {
           out = format(raw);

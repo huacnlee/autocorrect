@@ -8,13 +8,13 @@ use pest_derive::Parser;
 #[grammar = "peg/objective_c.pest"]
 struct ObjectiveCParser;
 
-pub fn format_objective_c(text: &str) -> String {
+pub fn format_objective_c(text: &str, lint: bool) -> String {
   let result = ObjectiveCParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_objective_c_pair(&mut out, item);
+        format_objective_c_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +24,18 @@ pub fn format_objective_c(text: &str) -> String {
   }
 }
 
-fn format_objective_c_pair(text: &mut String, item: Pair<Rule>) {
+fn format_objective_c_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        format_objective_c_pair(text, sub);
+        format_objective_c_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -60,6 +63,6 @@ mod tests {
 }
 "###;
 
-    assert_eq!(expect, format_objective_c(example));
+    assert_eq!(expect, format_objective_c(example, false));
   }
 }

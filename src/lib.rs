@@ -47,6 +47,7 @@ fn main() {
 #[macro_use]
 extern crate lazy_static;
 extern crate pest_derive;
+extern crate serde_json;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{
@@ -73,29 +74,14 @@ macro_rules! map {
 
 extern crate pest;
 
-mod csharp;
-mod css;
-mod dart;
 mod fullwidth;
-mod go;
 mod halfwidth;
 mod html;
-mod java;
-mod javascript;
-mod json;
-mod kotlin;
-mod objective_c;
-mod php;
-mod python;
-mod ruby;
-mod rust;
-mod sql;
 mod strategery;
-mod swift;
-mod yaml;
 
 use crate::strategery::Strategery;
 use regex::Regex;
+use serde_json::json;
 use std::ffi::OsStr;
 use std::path::Path;
 
@@ -187,68 +173,33 @@ pub fn format_html(html_str: &str) -> String {
     html::format_html(html_str)
 }
 
-pub fn format_yaml(yaml_str: &str) -> String {
-    yaml::format_yaml(yaml_str)
-}
+pub fn format_or_lint(
+    text: &mut String,
+    part: &str,
+    correct: bool,
+    lint: bool,
+    line: usize,
+    col: usize,
+) {
+    if lint {
+        if correct {
+            let new_part = format(part);
+            if new_part == part {
+                return;
+            }
 
-pub fn format_sql(raw: &str) -> String {
-    sql::format_sql(raw)
-}
+            let message = json!({"l": line,"c": col, "old": part, "new": new_part });
 
-pub fn format_rust(raw: &str) -> String {
-    rust::format_rust(raw)
-}
-
-pub fn format_ruby(raw: &str) -> String {
-    ruby::format_ruby(raw)
-}
-
-pub fn format_go(raw: &str) -> String {
-    go::format_go(raw)
-}
-
-pub fn format_javascript(raw: &str) -> String {
-    javascript::format_javascript(raw)
-}
-
-pub fn format_css(raw: &str) -> String {
-    css::format_css(raw)
-}
-
-pub fn format_python(raw: &str) -> String {
-    python::format_python(raw)
-}
-
-pub fn format_json(raw: &str) -> String {
-    json::format_json(raw)
-}
-
-pub fn format_swift(raw: &str) -> String {
-    swift::format_swift(raw)
-}
-
-pub fn format_objective_c(raw: &str) -> String {
-    objective_c::format_objective_c(raw)
-}
-
-pub fn format_java(raw: &str) -> String {
-    java::format_java(raw)
-}
-
-pub fn format_kotlin(raw: &str) -> String {
-    kotlin::format_kotlin(raw)
-}
-
-pub fn format_csharp(raw: &str) -> String {
-    csharp::format_csharp(raw)
-}
-
-pub fn format_php(raw: &str) -> String {
-    php::format_php(raw)
-}
-
-pub fn format_dart(raw: &str) -> String {
-    dart::format_dart(raw)
+            text.push_str(message.to_string().as_str());
+            text.push_str("\n")
+        }
+    } else {
+        if correct {
+            text.push_str(format(part).as_str());
+        } else {
+            text.push_str(part);
+        }
+    }
 }
 
 // removeFullDateSpacing

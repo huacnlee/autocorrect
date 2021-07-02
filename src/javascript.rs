@@ -8,13 +8,14 @@ use pest_derive::Parser;
 #[grammar = "peg/javascript.pest"]
 struct JavaScriptParser;
 
-pub fn format_javascript(text: &str) -> String {
+#[allow(dead_code)]
+pub fn format_javascript(text: &str, lint: bool) -> String {
   let result = JavaScriptParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_javascript_pair(&mut out, item);
+        format_javascript_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +25,18 @@ pub fn format_javascript(text: &str) -> String {
   }
 }
 
-fn format_javascript_pair(text: &mut String, item: Pair<Rule>) {
+fn format_javascript_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        format_javascript_pair(text, sub);
+        format_javascript_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -60,6 +64,6 @@ function helloWorld(a) {
 }
 "###;
 
-    assert_eq!(expect, format_javascript(example));
+    assert_eq!(expect, format_javascript(example, false));
   }
 }

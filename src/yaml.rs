@@ -8,14 +8,14 @@ use pest_derive::Parser;
 #[grammar = "peg/yaml.pest"]
 struct YAMLParser;
 
-pub fn format_yaml(text: &str) -> String {
+pub fn format_yaml(text: &str, lint: bool) -> String {
   let result = YAMLParser::parse(Rule::item, text);
 
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        out.push_str(format_yaml_pair(item).as_str());
+        format_yaml_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -25,19 +25,19 @@ pub fn format_yaml(text: &str) -> String {
   }
 }
 
-fn format_yaml_pair(item: Pair<Rule>) -> String {
-  let mut text = String::new();
+fn format_yaml_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::value | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::value | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        text.push_str(format_yaml_pair(sub).as_str());
+        format_yaml_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   };
-
-  return text;
 }
 
 #[cfg(test)]
@@ -72,6 +72,6 @@ region:
   "abc字段": abc 字段
 "#;
 
-    assert_eq!(expect, format_yaml(example))
+    assert_eq!(expect, format_yaml(example, false))
   }
 }

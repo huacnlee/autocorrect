@@ -8,13 +8,13 @@ use pest_derive::Parser;
 #[grammar = "peg/python.pest"]
 struct PythonParser;
 
-pub fn format_python(text: &str) -> String {
+pub fn format_python(text: &str, lint: bool) -> String {
   let result = PythonParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_python_pair(&mut out, item);
+        format_python_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +24,18 @@ pub fn format_python(text: &str) -> String {
   }
 }
 
-fn format_python_pair(text: &mut String, item: Pair<Rule>) {
+fn format_python_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        format_python_pair(text, sub);
+        format_python_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -76,6 +79,6 @@ def hello(a):
   print('你好 hello 世界')
 "###;
 
-    assert_eq!(expect, format_python(example));
+    assert_eq!(expect, format_python(example, false));
   }
 }
