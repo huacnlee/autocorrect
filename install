@@ -1,9 +1,9 @@
 #!/bin/bash
 get_latest_release() {
-  curl --silent "https://api.github.com/repos/$repo/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
-}
+	curl --silent "https://api.github.com/repos/$repo/releases/latest" | # Get latest release from GitHub api
+		grep '"tag_name":' |                                            # Get tag line
+		sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+	}
 
 repo='huacnlee/autocorrect'
 bin_name='autocorrect'
@@ -30,3 +30,4 @@ else
 	sudo mv $bin_name /usr/local/bin/$bin_name
 fi
 rm $bin_name.tar.gz
+echo "AutoCorrect $version has installed successfully."
