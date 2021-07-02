@@ -8,13 +8,13 @@ use pest_derive::Parser;
 #[grammar = "peg/php.pest"]
 struct PHPParser;
 
-pub fn format_php(text: &str) -> String {
+pub fn format_php(text: &str, lint: bool) -> String {
   let result = PHPParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_php_pair(&mut out, item);
+        format_php_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +24,18 @@ pub fn format_php(text: &str) -> String {
   }
 }
 
-fn format_php_pair(text: &mut String, item: Pair<Rule>) {
+fn format_php_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item | Rule::php => {
       for sub in item.into_inner() {
-        format_php_pair(text, sub);
+        format_php_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -78,6 +81,6 @@ mod tests {
 </div>
 "###;
 
-    assert_eq!(expect, format_php(example));
+    assert_eq!(expect, format_php(example, false));
   }
 }

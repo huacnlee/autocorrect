@@ -8,13 +8,13 @@ use pest_derive::Parser;
 #[grammar = "peg/sql.pest"]
 struct SQLParser;
 
-pub fn format_sql(text: &str) -> String {
+pub fn format_sql(text: &str, lint: bool) -> String {
   let result = SQLParser::parse(Rule::item, text);
   match result {
     Ok(items) => {
       let mut out = String::new();
       for item in items {
-        format_sql_pair(&mut out, item);
+        format_sql_pair(&mut out, item, lint);
       }
       return out;
     }
@@ -24,15 +24,18 @@ pub fn format_sql(text: &str) -> String {
   }
 }
 
-fn format_sql_pair(text: &mut String, item: Pair<Rule>) {
+fn format_sql_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
+  let (line, col) = item.as_span().start_pos().line_col();
+  let part = item.as_str();
+
   match item.as_rule() {
-    Rule::string | Rule::comment => text.push_str(format(item.as_str()).as_str()),
+    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
       for sub in item.into_inner() {
-        format_sql_pair(text, sub);
+        format_sql_pair(text, sub, lint);
       }
     }
-    _ => text.push_str(item.as_str()),
+    _ => format_or_lint(text, part, true, lint, line, col),
   }
 }
 
@@ -66,6 +69,6 @@ COMMENT ON COLUMN "topics"."status" IS '3 屏蔽 1 审核中 2 已发布';
 COMMENT ON COLUMN "topics"."kind" IS '0 普通 1 转发';
 "#;
 
-    assert_eq!(expect, format_sql(example));
+    assert_eq!(expect, format_sql(example, false));
   }
 }

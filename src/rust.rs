@@ -28,6 +28,7 @@ pub fn format_rust(text: &str, lint: bool) -> String {
 fn format_rust_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
   let (line, col) = item.as_span().start_pos().line_col();
   let part = item.as_str();
+
   match item.as_rule() {
     Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
     Rule::item => {
