@@ -5,6 +5,8 @@ use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
 use std::result::Result;
 
+use serde_json::json;
+
 pub fn format_pairs<R: RuleType>(
   text: &str,
   pairs: Result<Pairs<R>, Error<R>>,

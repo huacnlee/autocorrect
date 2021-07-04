@@ -1,13 +1,12 @@
 // autocorrect: false
-use autocorrect::{
-  format, format_html, format_or_lint, get_file_extension, is_ignore_auto_correct,
-};
+use autocorrect::{format, format_html, get_file_extension, is_ignore_auto_correct};
 use clap::{crate_version, App, Arg};
 use glob::glob;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
+mod code;
 mod csharp;
 mod css;
 mod dart;

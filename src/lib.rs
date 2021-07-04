@@ -47,7 +47,6 @@ fn main() {
 #[macro_use]
 extern crate lazy_static;
 extern crate pest_derive;
-extern crate serde_json;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{
@@ -88,6 +87,7 @@ mod java;
 mod javascript;
 mod json;
 mod kotlin;
+mod markdown;
 mod objective_c;
 mod php;
 mod python;
@@ -99,7 +99,6 @@ mod yaml;
 
 use crate::strategery::Strategery;
 use regex::Regex;
-use serde_json::json;
 use std::ffi::OsStr;
 use std::path::Path;
 
