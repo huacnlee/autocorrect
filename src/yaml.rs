@@ -7,6 +7,7 @@ use pest_derive::Parser;
 #[grammar = "peg/yaml.pest"]
 struct YAMLParser;
 
+#[allow(dead_code)]
 pub fn format_yaml(text: &str, lint: bool) -> String {
   let pairs = YAMLParser::parse(Rule::item, text);
   return code::format_pairs(text, pairs, lint);

@@ -1,6 +1,5 @@
 // autocorrect: false
 use super::*;
-use pest::iterators::Pair;
 use pest::Parser as P;
 use pest_derive::Parser;
 
@@ -8,6 +7,7 @@ use pest_derive::Parser;
 #[grammar = "peg/swift.pest"]
 struct SwiftParser;
 
+#[allow(dead_code)]
 pub fn format_swift(text: &str, lint: bool) -> String {
   let pairs = SwiftParser::parse(Rule::item, text);
   return code::format_pairs(text, pairs, lint);

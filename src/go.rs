@@ -1,6 +1,5 @@
 // autocorrect: false
 use super::*;
-use pest::iterators::Pair;
 use pest::Parser as P;
 use pest_derive::Parser;
 
