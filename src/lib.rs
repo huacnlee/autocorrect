@@ -74,10 +74,28 @@ macro_rules! map {
 
 extern crate pest;
 
+mod code;
 mod fullwidth;
 mod halfwidth;
 mod html;
 mod strategery;
+
+mod csharp;
+mod css;
+mod dart;
+mod go;
+mod java;
+mod javascript;
+mod json;
+mod kotlin;
+mod objective_c;
+mod php;
+mod python;
+mod ruby;
+mod rust;
+mod sql;
+mod swift;
+mod yaml;
 
 use crate::strategery::Strategery;
 use regex::Regex;
@@ -171,35 +189,6 @@ pub fn format(text: &str) -> String {
 /// ```
 pub fn format_html(html_str: &str) -> String {
     html::format_html(html_str)
-}
-
-pub fn format_or_lint(
-    text: &mut String,
-    part: &str,
-    correct: bool,
-    lint: bool,
-    line: usize,
-    col: usize,
-) {
-    if lint {
-        if correct {
-            let new_part = format(part);
-            if new_part == part {
-                return;
-            }
-
-            let message = json!({"l": line,"c": col, "old": part, "new": new_part });
-
-            text.push_str(message.to_string().as_str());
-            text.push_str("\n")
-        }
-    } else {
-        if correct {
-            text.push_str(format(part).as_str());
-        } else {
-            text.push_str(part);
-        }
-    }
 }
 
 // removeFullDateSpacing

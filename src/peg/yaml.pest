@@ -16,6 +16,6 @@ comment = ${ "#" ~ (!(newline) ~ ANY)* }
 
 
 key = ${ (string_key | simple_key) ~ (":" ~ " "?) }
-value = ${ string_value | simple_value }
-pair = _{ key_part ~ value }
+string = ${ string_value | simple_value }
+pair = _{ key_part ~ string }
 item = _{ (pair | comment | newline | other)+  }

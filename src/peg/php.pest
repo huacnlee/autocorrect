@@ -12,6 +12,6 @@ string = ${
 }
 php_script_start = ${ "<?php" }
 php_script_end = ${ "?>" }
-php = ${ php_script_start ~ (!(php_script_end) ~ (string | comment | space | other | newline))* ~ php_script_end }
+php = _{ php_script_start ~ (!(php_script_end) ~ (string | comment | space | other | newline))* ~ php_script_end }
 line = _{ php | other }
 item = _{ SOI ~ line* ~ EOI } 

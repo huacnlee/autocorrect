@@ -9,34 +9,8 @@ use pest_derive::Parser;
 struct KotlinParser;
 
 pub fn format_kotlin(text: &str, lint: bool) -> String {
-  let result = KotlinParser::parse(Rule::item, text);
-  match result {
-    Ok(items) => {
-      let mut out = String::new();
-      for item in items {
-        format_kotlin_pair(&mut out, item, lint);
-      }
-      return out;
-    }
-    Err(_err) => {
-      return String::from(text);
-    }
-  }
-}
-
-fn format_kotlin_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
-  let (line, col) = item.as_span().start_pos().line_col();
-  let part = item.as_str();
-
-  match item.as_rule() {
-    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
-    Rule::item => {
-      for sub in item.into_inner() {
-        format_kotlin_pair(text, sub, lint);
-      }
-    }
-    _ => format_or_lint(text, part, true, lint, line, col),
-  }
+  let pairs = KotlinParser::parse(Rule::item, text);
+  return code::format_pairs(text, pairs, lint);
 }
 
 #[cfg(test)]

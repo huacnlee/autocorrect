@@ -6,12 +6,12 @@ comment = ${ single_line_comment | multiline_comment }
 single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
-string = _{ 
+string_type = _{ 
   ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
-key = ${ string ~ (" ")* ~ ":" ~ (" ")* }
-value = ${ string  }
-pair = _{ key ~ value }
+key = ${ string_type ~ (" ")* ~ ":" ~ (" ")* }
+string = ${ string_type  }
+pair = _{ key ~ string }
 
 line = _{ pair | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

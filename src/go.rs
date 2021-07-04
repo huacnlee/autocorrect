@@ -10,34 +10,8 @@ struct GoParser;
 
 #[allow(dead_code)]
 pub fn format_go(text: &str, lint: bool) -> String {
-  let result = GoParser::parse(Rule::item, text);
-  match result {
-    Ok(items) => {
-      let mut out = String::new();
-      for item in items {
-        format_go_pair(&mut out, item, lint);
-      }
-      return out;
-    }
-    Err(_err) => {
-      return String::from(text);
-    }
-  }
-}
-
-fn format_go_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
-  let (line, col) = item.as_span().start_pos().line_col();
-  let part = item.as_str();
-
-  match item.as_rule() {
-    Rule::string | Rule::comment => format_or_lint(text, part, true, lint, line, col),
-    Rule::item => {
-      for sub in item.into_inner() {
-        format_go_pair(text, sub, lint);
-      }
-    }
-    _ => format_or_lint(text, part, true, lint, line, col),
-  }
+  let pairs = GoParser::parse(Rule::item, text);
+  return code::format_pairs(text, pairs, lint);
 }
 
 #[cfg(test)]

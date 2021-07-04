@@ -9,34 +9,8 @@ use pest_derive::Parser;
 struct CSSParser;
 
 pub fn format_css(text: &str, lint: bool) -> String {
-  let result = CSSParser::parse(Rule::item, text);
-  match result {
-    Ok(items) => {
-      let mut out = String::new();
-      for item in items {
-        format_css_pair(&mut out, item, lint);
-      }
-      return out;
-    }
-    Err(_err) => {
-      return String::from(text);
-    }
-  }
-}
-
-fn format_css_pair(text: &mut String, item: Pair<Rule>, lint: bool) {
-  let (line, col) = item.as_span().start_pos().line_col();
-  let part = item.as_str();
-
-  match item.as_rule() {
-    Rule::comment => format_or_lint(text, part, true, lint, line, col),
-    Rule::item => {
-      for sub in item.into_inner() {
-        format_css_pair(text, sub, lint);
-      }
-    }
-    _ => format_or_lint(text, part, true, lint, line, col),
-  }
+  let pairs = CSSParser::parse(Rule::item, text);
+  return code::format_pairs(text, pairs, lint);
 }
 
 #[cfg(test)]
