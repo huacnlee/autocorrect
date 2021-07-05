@@ -171,7 +171,8 @@ TODO
 ## TODO
 
 - [x] Lint
-- [ ] Lint for HTML and Plain
+- [x] Lint for HTML, Markdown
+- [ ] Lint for Plain text by each line
 - [ ] Vim plugin
 - [ ] Git Commit message format hook
 - [ ] Ignore next line
