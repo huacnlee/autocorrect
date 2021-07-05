@@ -39,7 +39,7 @@ fn format_pair<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
   // println!("rule: {}", rule_name);
 
   match rule_name.as_str() {
-    "string" | "text" | "comment" => format_or_lint(text, item, lint),
+    "string" | "link_string" | "text" | "comment" => format_or_lint(text, item, lint),
     _ => {
       let mut child_count = 0;
       let item_str = item.as_str();

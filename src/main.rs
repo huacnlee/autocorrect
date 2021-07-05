@@ -16,6 +16,7 @@ mod java;
 mod javascript;
 mod json;
 mod kotlin;
+mod markdown;
 mod objective_c;
 mod php;
 mod python;
@@ -97,8 +98,9 @@ lazy_static! {
     "plain" => "text",
     "txt" => "text",
     // markdown
-    "markdown" => "text",
-    "md" => "text",
+    "markdown" => "markdown",
+    "md" => "markdown",
+    // plain
     "text" => "text"
   );
 }
@@ -207,6 +209,9 @@ fn format_and_output(path: &str, fix: bool, lint: bool) {
         }
         "dart" => {
           out = dart::format_dart(raw, lint);
+        }
+        "markdown" => {
+          out = markdown::format_markdown(raw, lint);
         }
         "text" => {
           out = format(raw);

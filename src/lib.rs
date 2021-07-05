@@ -87,6 +87,7 @@ mod java;
 mod javascript;
 mod json;
 mod kotlin;
+mod markdown;
 mod objective_c;
 mod php;
 mod python;

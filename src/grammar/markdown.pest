@@ -1,0 +1,27 @@
+para = { ANY* ~ NEWLINE{2} }
+expr = { img | link | mark }
+text = { (!(expr | NEWLINE) ~ ANY)+ }
+code = ${ 
+  PUSH("```") ~ code_block_lang ~ code_block_value ~ PUSH("```")
+}
+code_block_lang = { ASCII_ALPHA* }
+code_block_value = { (!(PEEK) ~ ANY)* }
+code_inline_value = { (!(PEEK | NEWLINE) ~ ANY)*  }
+mark_tag = @{
+  "**"
+  | "*"
+  | "~~"
+  | "__"
+  | "_"
+  | "`"
+}
+img_start = @{ "!" }
+img = ${ img_start ~ link }
+link = ${ link_string ~ link_url }
+link_string = { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" } 
+link_url = { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
+mark = ${ PUSH(mark_tag) ~ string ~ PUSH(mark_tag) }
+string = ${ (!(PEEK | NEWLINE) ~ ANY)* }
+
+line = { expr | text | NEWLINE }
+item = { SOI ~ line* ~ EOI }
