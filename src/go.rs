@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "peg/go.pest"]
+#[grammar = "grammar/go.pest"]
 struct GoParser;
 
 #[allow(dead_code)]

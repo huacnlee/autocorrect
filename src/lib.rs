@@ -186,7 +186,7 @@ pub fn format(text: &str) -> String {
 /// autocorrect::format_html(html);
 /// ```
 pub fn format_html(html_str: &str) -> String {
-    html::format_html(html_str)
+    html::format_html(html_str, false)
 }
 
 // removeFullDateSpacing

@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "peg/csharp.pest"]
+#[grammar = "grammar/csharp.pest"]
 struct CSharpParser;
 
 #[allow(dead_code)]

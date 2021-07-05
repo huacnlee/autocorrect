@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "peg/sql.pest"]
+#[grammar = "grammar/sql.pest"]
 struct SQLParser;
 
 #[allow(dead_code)]

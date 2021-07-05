@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "peg/yaml.pest"]
+#[grammar = "grammar/yaml.pest"]
 struct YAMLParser;
 
 #[allow(dead_code)]

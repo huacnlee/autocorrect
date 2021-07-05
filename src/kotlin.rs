@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "peg/kotlin.pest"]
+#[grammar = "grammar/kotlin.pest"]
 struct KotlinParser;
 
 #[allow(dead_code)]

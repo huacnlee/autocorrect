@@ -1,5 +1,5 @@
 // autocorrect: false
-use autocorrect::{format, format_html, get_file_extension, is_ignore_auto_correct};
+use autocorrect::{format, get_file_extension, is_ignore_auto_correct};
 use clap::{crate_version, App, Arg};
 use glob::glob;
 use std::collections::HashMap;
@@ -11,6 +11,7 @@ mod csharp;
 mod css;
 mod dart;
 mod go;
+mod html;
 mod java;
 mod javascript;
 mod json;
@@ -157,7 +158,7 @@ fn format_and_output(path: &str, fix: bool, lint: bool) {
     if EXT_MAPS.contains_key(ext) && !ignore {
       match EXT_MAPS[ext] {
         "html" => {
-          out = format_html(raw);
+          out = html::format_html(raw, lint);
         }
         "yaml" => {
           out = yaml::format_yaml(raw, lint);

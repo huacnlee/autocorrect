@@ -1,55 +1,19 @@
 // autocorrect: false
 use super::*;
-use html5ever::parse_document;
-use html5ever::serialize;
-use html5ever::serialize::SerializeOpts;
-use html5ever::tendril::TendrilSink;
-use markup5ever_rcdom::{Handle, NodeData, RcDom, SerializableHandle};
 
-pub fn format_html(html_str: &str) -> String {
-    let has_html_tag = html_str.trim().to_lowercase().starts_with("<html");
-    let mut dom = parse_document(RcDom::default(), Default::default())
-        .from_utf8()
-        .read_from(&mut html_str.as_bytes())
-        .unwrap();
+use pest::Parser as P;
+use pest_derive::Parser;
 
-    traverse_nodes(&mut dom.document);
+#[derive(Parser)]
+#[grammar = "grammar/html.pest"]
+struct JavaParser;
 
-    let mut bytes = vec![];
-    let document: SerializableHandle = dom.document.clone().into();
-    serialize(&mut bytes, &document, SerializeOpts::default()).unwrap();
-    let mut result = String::from_utf8(bytes).unwrap();
-
-    if !has_html_tag {
-        result = result.replace("<html><head></head><body>", "");
-        result = result.replace("</body></html>", "");
-    }
-
-    return String::from(result.as_str());
+#[allow(dead_code)]
+pub fn format_html(text: &str, lint: bool) -> String {
+    let pairs = JavaParser::parse(Rule::item, text);
+    return code::format_pairs(text, pairs, lint);
 }
 
-// traverse nodes to format
-fn traverse_nodes(handle: &Handle) {
-    let node = handle;
-    match node.data {
-        NodeData::Text { ref contents } => {
-            let mut text = contents.borrow_mut();
-            let new_text = format(&text);
-            if text.len() == 0 {
-                return;
-            }
-
-            text.clear();
-            text.push_slice(&new_text);
-            // println!("{}", text)
-        }
-        _ => {}
-    }
-
-    for child in node.children.borrow_mut().iter() {
-        traverse_nodes(&child);
-    }
-}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -64,7 +28,7 @@ mod tests {
 
             if expected_clean != actual_clean {
                 panic!(
-                    "\nexpected:\n{}\n\n----------------------------------------\nactual:\n{}",
+                    "\nexpected:\n{}\n----------------------------------------\nactual:\n{}",
                     expected, actual
                 )
             }
@@ -73,27 +37,65 @@ mod tests {
 
     #[test]
     fn test_format_html() {
-        let html = r#"
+        let html = r###"
+        <!DOCTYPE html>
+        <html xmlns=http://www.w3.org/1999/xhtml>
         <article>
-        <h1>这是Heading标题</h1>
+        <h1>编译Rust为WebAssembly</h1>
+        <style type="text/css" nofollow>
+        .body { font-size: 14px; }
+        </style>
+        <script type="text/javascript">
+        // 这个不能script里面不能转换
+        window['__abbaidu_2036_subidgetf'] = function () {var subid = 'feed_landing_super';return subid;};window['__abbaidu_2036_cb'] = function (responseData) {};
+        </script>
+        <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
         <div class="content">
-            <p>你好Rust世界<strong>Bold文本</strong></p>
-            <p>这是第二行p标签</p>
+            <p>如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p>
+            <a href="#rust_和_webassembly_用例" title="Permalink to Rust 和 WebAssembly 用例">Rust和WebAssembly用例</a>
+            <h2>Rust和WebAssembly用例</h2>
+            <div><p>Rust 和 WebAssembly 有两大主要用例：</p>
+            <ul>
+            <li>构建完整应用——整个Web应用都基于Rust开发！</li>
+            <li>构建应用的组成部分——在现存的JavaScript前端中使用Rust。</li>
+            </ul>
+            <p>目前，Rust团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;<code><a href="https://github.com/DenisKolodin/yew" class="external" rel=" noopener">yew</a></code>&nbsp;这类项目。</p>
+            <p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
         </div>
         </article>
-        "#;
+        </html>
+        "###;
 
-        let expected = r#"
+        let expected = r###"
+        <!DOCTYPE html>
+        <html xmlns=http://www.w3.org/1999/xhtml>
         <article>
-        <h1>这是 Heading 标题</h1>
+        <h1>编译 Rust 为 WebAssembly</h1>
+        <style type="text/css" nofollow>
+        .body { font-size: 14px; }
+        </style>
+        <script type="text/javascript">
+        // 这个不能script里面不能转换
+        window['__abbaidu_2036_subidgetf'] = function () {var subid = 'feed_landing_super';return subid;};window['__abbaidu_2036_cb'] = function (responseData) {};
+        </script>
+        <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
         <div class="content">
-            <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-            <p>这是第二行 p 标签</p>
+            <p>如果你写了一些 Rust 代码，你可以把它编译成 WebAssembly！这份教程将带你编译 Rust 项目为 wasm 并在一个现存的 web 应用中使用它。</p>
+            <a href="#rust_和_webassembly_用例" title="Permalink to Rust 和 WebAssembly 用例">Rust 和 WebAssembly 用例</a>
+            <h2>Rust 和 WebAssembly 用例</h2>
+            <div><p>Rust 和 WebAssembly 有两大主要用例：</p>
+            <ul>
+            <li>构建完整应用——整个 Web 应用都基于 Rust 开发！</li>
+            <li>构建应用的组成部分——在现存的 JavaScript 前端中使用 Rust。</li>
+            </ul>
+            <p>目前，Rust 团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;<code><a href="https://github.com/DenisKolodin/yew" class="external" rel=" noopener">yew</a></code>&nbsp;这类项目。</p>
+            <p>在本教程中，我们将使用 Rust 的 npm 包构建工具<code>wasm-pack</code>来构建一个 npm 包。这个包只包含 WebAssembly 和 JavaScript 代码，以便包的用户无需安装 Rust 就能使用。他们甚至不需要知道这里包含 WebAssembly！</p></div>
         </div>
         </article>
-        "#;
+        </html>
+        "###;
 
-        assert_html_eq!(expected, format_html(html))
+        assert_html_eq!(expected, format_html(html, false))
     }
 
     #[test]
@@ -109,8 +111,7 @@ mod tests {
         </div>
         </article>
         </body>
-        </html>
-        "#;
+        </html>"#;
 
         let expected = r#"
         <html><head><title>Hello</title></head>
@@ -123,9 +124,8 @@ mod tests {
         </div>
         </article>
         </body>
-        </html>
-        "#;
+        </html>"#;
 
-        assert_html_eq!(expected, format_html(html))
+        assert_html_eq!(expected, format_html(html, false))
     }
 }
