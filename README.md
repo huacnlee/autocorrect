@@ -115,35 +115,34 @@ fn main() {
 	// => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."
 
 	println!("{}", autocorrect::format("需要符号?自动转换全角字符、数字:我们将在１６：３２分出发去ＣＢＤ中心.")
-			// => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
-			}
-			```
+	// => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
+```
 
-			Use `autocorrect::format_html` to format html content.
+Use `autocorrect::format_html` to format html content.
 
-			```rust
-			extern crate autocorrect;
+```rust
+extern crate autocorrect;
 
-			fn main() {
-			let html = r#"
-			<article>
-			<h1>这是Heading标题</h1>
-			<div class="content">
-			<p>你好Rust世界<strong>Bold文本</strong></p>
-			<p>这是第二行p标签</p>
-			</div>
-			</article>
-			"#;
+fn main() {
+	let html = r#"
+	<article>
+	<h1>这是Heading标题</h1>
+	<div class="content">
+	<p>你好Rust世界<strong>Bold文本</strong></p>
+	<p>这是第二行p标签</p>
+	</div>
+	</article>
+	"#;
 
-			println!("{}", autocorrect::format_html(html));
-			// <article>
-			// <h1>这是 Heading 标题</h1>
-			// <div class="content">
-			//     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-			//     <p>这是第二行 p 标签</p>
-			// </div>
-			// </article>
-			}
+	println!("{}", autocorrect::format_html(html));
+	// <article>
+	// <h1>这是 Heading 标题</h1>
+	// <div class="content">
+	//     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+	//     <p>这是第二行 p 标签</p>
+	// </div>
+	// </article>
+}
 ````
 
 ## Benchmark
