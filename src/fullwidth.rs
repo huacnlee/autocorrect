@@ -2,8 +2,8 @@
 use regex::Regex;
 use std::collections::HashMap;
 
-const SPCIAL_PUNCTUATIONS: &str = "[.:]";
-const NORMAL_PUNCTUATIONS: &str = "[,!?~]";
+const SPCIAL_PUNCTUATIONS: &str = "[.:]([ ]*)";
+const NORMAL_PUNCTUATIONS: &str = "[,!?~]([ ]*)";
 
 lazy_static! {
     static ref FULLWIDTH_MAPS: HashMap<&'static str, &'static str> = map!(
@@ -67,7 +67,7 @@ pub fn fullwidth(text: &str) -> String {
 fn fullwidth_replace_part(part: &str) -> String {
     let out = PUNCTUATIONS_RE.replace_all(part, |cap: &regex::Captures| {
         let str = &cap[0];
-        return FULLWIDTH_MAPS[str];
+        return FULLWIDTH_MAPS[String::from(str).trim()];
     });
 
     out.to_string()
