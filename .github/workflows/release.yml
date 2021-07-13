@@ -1,72 +1,113 @@
 name: Release
-
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
 
 jobs:
-  publish:
-    name: Publishing for ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  # Build sources for every OS
+  github_build:
+    name: Build release binaries
     strategy:
+      fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        rust: [stable]
         include:
-          - os: macos-latest
-            artifact_prefix: darwin-amd64
-            target: x86_64-apple-darwin
-            binary_postfix: ""
-          - os: ubuntu-latest
-            artifact_prefix: linux-amd64
-            target: x86_64-unknown-linux-gnu
-            binary_postfix: ""
-          - os: windows-latest
-            artifact_prefix: windows-amd64
-            target: x86_64-pc-windows-msvc
-            binary_postfix: ".exe"
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: autocorrect-linux-amd64.tar.gz
 
+          - target: x86_64-apple-darwin
+            os: macOS-latest
+            name: autocorrect-darwin-amd64.tar.gz
+
+          - target: aarch64-apple-darwin
+            os: macOS-latest
+            name: autocorrect-darwin-arm64.tar.gz
+
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            name: autocorrect-windows-amd64.tar.gz
+
+          - target: aarch64-pc-windows-msvc
+            os: windows-latest
+            name: autocorrect-windows-arm64.tar.gz
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
-      - name: Installing Rust toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Setup | Checkout
+        uses: actions/checkout@v2.3.4
+
+      # Cache files between builds
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v2.1.6
         with:
-          toolchain: ${{ matrix.rust }}
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Setup | Rust
+        uses: actions-rs/toolchain@v1.0.7
+        with:
+          toolchain: stable
           override: true
-      - name: Installing needed macOS dependencies
-        if: matrix.os == 'macos-latest'
-        run: brew install openssl@1.1
-      - name: Installing needed Ubuntu dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y -qq pkg-config libssl-dev libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev
-      - name: Checking out sources
-        uses: actions/checkout@v1
-      - name: Running cargo build
-        uses: actions-rs/cargo@v1
+          profile: minimal
+          target: ${{ matrix.target }}
+
+      - name: Build | Build
+        uses: actions-rs/cargo@v1.0.3
+        # TODO: Remove this once it's the default
+        env:
+          SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
         with:
           command: build
-          toolchain: ${{ matrix.rust }}
           args: --release --features bin --target ${{ matrix.target }}
+          use-cross: ${{ matrix.os == 'ubuntu-latest' }}
 
-      - name: Packaging final binary
-        shell: bash
+      - name: Post Build | Prepare artifacts [Windows]
+        if: matrix.os == 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
-          BINARY_NAME=autocorrect${{ matrix.binary_postfix }}
-          RELEASE_NAME=autocorrect-${{ matrix.artifact_prefix }}
-          tar czvf $RELEASE_NAME.tar.gz $BINARY_NAME
-          if [[ ${{ runner.os }} == 'Windows' ]]; then
-            certutil -hashfile $RELEASE_NAME.tar.gz sha256 | grep -E [A-Fa-f0-9]{64} > $RELEASE_NAME.sha256
-          else
-            shasum -a 256 $RELEASE_NAME.tar.gz > $RELEASE_NAME.sha256
-          fi
-      - name: Releasing assets
+          strip autocorrect.exe
+          7z a ../../../${{ matrix.name }} autocorrect.exe
+          cd -
+
+      - name: Post Build | Prepare artifacts [-nix]
+        if: matrix.os != 'windows-latest'
+        run: |
+          cd target/${{ matrix.target }}/release
+          # TODO: investigate better cross platform stripping
+          strip autocorrect || true
+          tar czvf ../../../${{ matrix.name }} autocorrect
+          cd -
+
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}
+
+  # Create GitHub release with Rust build targets and release notes
+  github_release:
+    name: Create GitHub Release
+    needs: github_build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0
+
+      - name: Setup | Artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Setup | Checksums
+        run: for file in autocorrect-*/autocorrect-*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
+
+      - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            target/${{ matrix.target }}/release/autocorrect-${{ matrix.artifact_prefix }}.tar.gz
-            target/${{ matrix.target }}/release/autocorrect-${{ matrix.artifact_prefix }}.sha256
+          files: autocorrect-*/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
