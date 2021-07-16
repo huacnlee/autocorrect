@@ -32,34 +32,36 @@ pub fn format_pairs<R: RuleType>(
     }
 }
 
-fn format_pair<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
+fn format_pair<R: RuleType>(results: &mut StringOrLintResult, item: Pair<R>, lint: bool) {
     let rule = item.as_rule();
     let rule_name = format!("{:?}", rule);
 
     // println!("rule: {}", rule_name);
 
     match rule_name.as_str() {
-        "string" | "link_string" | "text" | "comment" => format_or_lint(text, item, lint),
+        "string" | "link_string" | "text" | "comment" => format_or_lint(results, item, lint),
         _ => {
             let mut child_count = 0;
             let item_str = item.as_str();
             for child in item.into_inner() {
-                format_pair(text, child, lint);
+                format_pair(results, child, lint);
                 child_count += 1;
             }
 
             if child_count == 0 {
-                if !lint {
-                    text.push_str(item_str);
-                }
+                results.push_ignore_str(item_str);
             }
         }
     };
 }
 
-fn format_or_lint<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
+fn format_or_lint<R: RuleType>(results: &mut StringOrLintResult, item: Pair<R>, lint: bool) {
     let (part_line, part_col) = item.as_span().start_pos().line_col();
     let part = item.as_str();
+
+    match results {
+        StringOrLintResult::String(str) => {}
+    }
 
     if lint {
         let lines = part.split("\n");
@@ -76,7 +78,9 @@ fn format_or_lint<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
 
             // format trimmed string
             let new_line = format(trimmed);
+
             // println!("{}||{},{}", new_line, trimmed, new_line.eq(trimmed));
+
             if new_line.eq(trimmed) {
                 sub_line += 1;
                 continue;
@@ -90,14 +94,52 @@ fn format_or_lint<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
                 part_col
             };
 
-            let message =
-                json!({"l": current_line,"c": current_col, "old": trimmed, "new": new_line });
-
-            text.push_str(message.to_string().as_str());
-            text.push_str("\n");
+            results.push_result(LineResult {
+                line: current_line,
+                col: current_col,
+                old: trimmed,
+                new: new_line,
+            });
             sub_line += 1;
         }
     } else {
-        text.push_str(format(part).as_str());
+        results.push_result(LineResult {
+            line: part_line,
+            col: part_col,
+            old: String::from(part),
+            new: format(part),
+        });
+    }
+}
+
+pub struct LineResult {
+    line: usize,
+    col: usize,
+    new: String,
+    old: String,
+}
+
+pub trait StringOrLintResult {
+    fn push_result(&mut self, lineResult: LineResult);
+    fn push_ignore_str(&mut self, str: &str);
+}
+
+impl StringOrLintResult for String {
+    fn push_result(&mut self, lineResult: LineResult) {
+        self.push_str(lineResult.new.as_str());
+    }
+
+    fn push_ignore_str(&mut self, str: &str) {
+        self.push_str(str)
+    }
+}
+
+impl StringOrLintResult for Vec<LineResult> {
+    fn push_result(&mut self, lineResult: LineResult) {
+        self.push(lineResult);
+    }
+
+    fn push_ignore_str(&mut self, str: &str) {
+        // do nothing
     }
 }
