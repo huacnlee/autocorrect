@@ -174,6 +174,7 @@ impl LintResult {
         }
     }
 
+    #[allow(dead_code)]
     pub fn to_json(&self) -> String {
         match serde_json::to_string(self) {
             Ok(json) => json,
@@ -181,6 +182,7 @@ impl LintResult {
         }
     }
 
+    #[allow(dead_code)]
     pub fn to_json_pretty(&self) -> String {
         match serde_json::to_string_pretty(self) {
             Ok(json) => json,
@@ -188,6 +190,7 @@ impl LintResult {
         }
     }
 
+    #[allow(dead_code)]
     pub fn to_diff(&self) -> String {
         let mut out = String::from("");
 
@@ -217,7 +220,7 @@ impl Results for LintResult {
         self.lines.push(line_result);
     }
 
-    fn ignore(&mut self, str: &str) {
+    fn ignore(&mut self, _: &str) {
         // do nothing
     }
 

@@ -103,5 +103,6 @@ function helloWorld(a) {
     "###;
 
         assert_json_eq!(expect, lint_javascript(example).to_json());
+        assert_json_eq!(expect, lint_javascript(example).to_json_pretty());
     }
 }
