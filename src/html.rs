@@ -27,8 +27,6 @@ pub fn lint_html(text: &str) -> code::LintResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use assert_json_diff::assert_json_eq;
-    use serde_json::json;
 
     macro_rules! assert_html_eq {
         ($expected:expr, $actual:expr) => {{
