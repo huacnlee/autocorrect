@@ -119,27 +119,46 @@ pub struct LineResult {
     old: String,
 }
 
-pub trait StringOrLintResult {
+pub trait Results {
     fn push_result(&mut self, lineResult: LineResult);
     fn push_ignore_str(&mut self, str: &str);
+    fn push_error(&self, err: &str);
 }
 
-impl StringOrLintResult for String {
+pub struct FormatResult<'a> {
+    out: &'a mut String,
+    error: String,
+}
+
+pub struct LintResult<'a> {
+    lines: &'a mut Vec<LineResult>,
+    error: String,
+}
+
+impl<'a> Results for FormatResult<'a> {
     fn push_result(&mut self, lineResult: LineResult) {
-        self.push_str(lineResult.new.as_str());
+        self.out.push_str(lineResult.new.as_str());
     }
 
     fn push_ignore_str(&mut self, str: &str) {
-        self.push_str(str)
+        self.out.push_str(str)
+    }
+
+    fn push_error(&self, err: &str) {
+        self.error = String::from(err);
     }
 }
 
-impl StringOrLintResult for Vec<LineResult> {
+impl<'a> Results for LintResult<'a> {
     fn push_result(&mut self, lineResult: LineResult) {
-        self.push(lineResult);
+        self.lines.push(lineResult);
     }
 
     fn push_ignore_str(&mut self, str: &str) {
         // do nothing
+    }
+
+    fn push_error(&self, err: &str) {
+        self.error = String::from(err);
     }
 }
