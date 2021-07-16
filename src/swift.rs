@@ -8,18 +8,26 @@ use pest_derive::Parser;
 struct SwiftParser;
 
 #[allow(dead_code)]
-pub fn format_swift(text: &str, lint: bool) -> String {
-  let pairs = SwiftParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+pub fn format_swift(text: &str) -> code::FormatResult {
+    let pairs = SwiftParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_swift(text: &str) -> code::LintResult {
+    let pairs = SwiftParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_swift() {
-    let example = r###"
+    #[test]
+    fn it_format_swift() {
+        let example = r###"
 // 第1行注释
 // 第2行注释
 func helloWorld(name: String) -> String {
@@ -33,7 +41,7 @@ func helloWorld(name: String) -> String {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 // 第 1 行注释
 // 第 2 行注释
 func helloWorld(name: String) -> String {
@@ -47,6 +55,6 @@ func helloWorld(name: String) -> String {
 }
 "###;
 
-    assert_eq!(expect, format_swift(example, false));
-  }
+        assert_eq!(expect, format_swift(example).to_string());
+    }
 }

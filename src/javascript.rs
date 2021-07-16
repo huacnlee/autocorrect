@@ -8,9 +8,17 @@ use pest_derive::Parser;
 struct JavaScriptParser;
 
 #[allow(dead_code)]
-pub fn format_javascript(text: &str, lint: bool) -> String {
+pub fn format_javascript(text: &str) -> code::FormatResult {
     let pairs = JavaScriptParser::parse(Rule::item, text);
-    return code::format_pairs(text, pairs, lint);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_javascript(text: &str) -> code::LintResult {
+    let pairs = JavaScriptParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
@@ -50,7 +58,7 @@ function helloWorld(a) {
 }
 "###;
 
-        assert_eq!(expect, format_javascript(example, false));
+        assert_eq!(expect, format_javascript(example).to_string());
     }
 
     #[test]
@@ -76,6 +84,6 @@ function helloWorld(a) {
 {"c":7,"l":9,"new":"这是 string 第 2 行","old":"这是string第2行"}
     "###;
 
-        assert_eq!(expect.trim(), format_javascript(example, true).trim());
+        assert_eq!(expect.trim(), lint_javascript(example).to_json());
     }
 }

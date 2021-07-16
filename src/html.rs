@@ -12,16 +12,16 @@ struct JavaParser;
 pub fn format_html(text: &str) -> code::FormatResult {
     let pairs = JavaParser::parse(Rule::item, text);
 
-    let out = code::FormatResult::new(text);
-    return code::format_pairs(out, pairs);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_html(text: &str) -> code::LintResult {
     let pairs = JavaParser::parse(Rule::item, text);
 
-    let out = code::LintResult::new(text);
-    return code::format_pairs(out, pairs);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]

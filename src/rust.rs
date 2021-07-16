@@ -8,18 +8,26 @@ use pest_derive::Parser;
 struct RustParser;
 
 #[allow(dead_code)]
-pub fn format_rust(text: &str, lint: bool) -> String {
-  let pairs = RustParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+pub fn format_rust(text: &str) -> code::FormatResult {
+    let pairs = RustParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_rust(text: &str) -> code::LintResult {
+    let pairs = RustParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_rust() {
-    let example = r###"
+    #[test]
+    fn it_format_rust() {
+        let example = r###"
 fn main() {
   let number_list = vec![34, 50, 25, 100, 65];
 
@@ -51,7 +59,7 @@ fn main() {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 fn main() {
   let number_list = vec![34, 50, 25, 100, 65];
 
@@ -83,6 +91,6 @@ fn main() {
 }
 "###;
 
-    assert_eq!(expect, format_rust(example, false));
-  }
+        assert_eq!(expect, format_rust(example).to_string());
+    }
 }

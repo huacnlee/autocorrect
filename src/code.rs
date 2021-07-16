@@ -1,6 +1,5 @@
 // autocorrect: false
 use super::*;
-use difference::Difference;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;

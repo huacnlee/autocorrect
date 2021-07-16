@@ -8,18 +8,26 @@ use pest_derive::Parser;
 struct PHPParser;
 
 #[allow(dead_code)]
-pub fn format_php(text: &str, lint: bool) -> String {
-  let pairs = PHPParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+pub fn format_php(text: &str) -> code::FormatResult {
+    let pairs = PHPParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_php(text: &str) -> code::LintResult {
+    let pairs = PHPParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_php() {
-    let example = r###"
+    #[test]
+    fn it_format_php() {
+        let example = r###"
 <div class="container">
   <p>目前html tag里的无法处理</p>
   <?php
@@ -37,7 +45,7 @@ mod tests {
 </div>
 "###;
 
-    let expect = r###"
+        let expect = r###"
 <div class="container">
   <p>目前html tag里的无法处理</p>
   <?php
@@ -55,6 +63,6 @@ mod tests {
 </div>
 "###;
 
-    assert_eq!(expect, format_php(example, false));
-  }
+        assert_eq!(expect, format_php(example).to_string());
+    }
 }
