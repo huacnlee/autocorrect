@@ -190,9 +190,26 @@ impl LintResult {
 
     pub fn to_diff(&self) -> String {
         let mut out = String::from("");
+
+        if self.lines.len() == 0 {
+            return out;
+        }
+
+        out.push_str(
+            format!(
+                "AutoCorrect has found {} issues need to fix.\n\n",
+                self.lines.len()
+            )
+            .as_str(),
+        );
+
         for line in self.lines.iter() {
+            let line_info = format!("--> {}:{}:{}", self.filepath, line.line, line.col);
+            out.push_str(line_info.as_str());
+            out.push_str("\n");
+
             let changeset = difference::Changeset::new(line.old.as_str(), line.new.as_str(), "\n");
-            out.push_str(format!("{}", changeset).as_str());
+            out.push_str(format!("{}\n\n", changeset).as_str());
         }
 
         return out;

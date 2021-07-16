@@ -119,11 +119,15 @@ pub fn main() {
     .arg(
       Arg::with_name("lint").long("lint").help("Lint and output problems.")
     )
+    .arg(
+        Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("").possible_values(&["json", "diff"])
+    )
     .get_matches();
 
     let fix = matches.is_present("fix");
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
+    let formatter = matches.value_of("formatter").unwrap();
 
     if let Some(file_names) = matches.values_of("file") {
         for file_name in file_names {
@@ -142,13 +146,13 @@ pub fn main() {
                         let filepath = _path.to_str().unwrap();
                         let filetype = get_file_extension(filepath);
 
-                        if EXT_MAPS.contains_key(filetype) {
+                        if !EXT_MAPS.contains_key(filetype) {
                             continue;
                         }
 
                         if let Ok(raw) = fs::read_to_string(filepath) {
                             if lint {
-                                lint_and_output(filepath, filetype, raw.as_str(), true)
+                                lint_and_output(filepath, filetype, raw.as_str(), formatter)
                             } else {
                                 format_and_output(filepath, filetype, raw.as_str(), fix);
                             }
@@ -204,7 +208,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
     }
 }
 
-fn lint_and_output(filepath: &str, filetype: &str, raw: &str, output_json: bool) {
+fn lint_and_output(filepath: &str, filetype: &str, raw: &str, formatter: &str) {
     let ignore = is_ignore_auto_correct(raw);
 
     // skip lint ignored file, just return
@@ -212,7 +216,7 @@ fn lint_and_output(filepath: &str, filetype: &str, raw: &str, output_json: bool)
         return;
     }
 
-    let result = match EXT_MAPS[filetype] {
+    let mut result = match EXT_MAPS[filetype] {
         "html" => html::lint_html(raw),
         "yaml" => yaml::lint_yaml(raw),
         "sql" => sql::lint_sql(raw),
@@ -240,7 +244,9 @@ fn lint_and_output(filepath: &str, filetype: &str, raw: &str, output_json: bool)
         return;
     }
 
-    if output_json {
+    result.filepath = String::from(filepath);
+
+    if formatter.to_lowercase() == "json" {
         eprintln!("{}", result.to_json());
     } else {
         eprintln!("{}", result.to_diff());
