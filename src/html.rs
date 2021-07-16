@@ -9,9 +9,11 @@ use pest_derive::Parser;
 struct JavaParser;
 
 #[allow(dead_code)]
-pub fn format_html(text: &str, lint: bool) -> String {
+pub fn format_html(text: &str) -> code::FormatResult {
     let pairs = JavaParser::parse(Rule::item, text);
-    return code::format_pairs(text, pairs, lint);
+
+    let out = code::FormatResult::new("", text);
+    return code::format_pairs(out, pairs);
 }
 
 #[cfg(test)]
@@ -95,7 +97,7 @@ mod tests {
         </html>
         "###;
 
-        assert_html_eq!(expected, format_html(html, false))
+        assert_html_eq!(expected, format_html(html).to_string())
     }
 
     #[test]
@@ -126,6 +128,6 @@ mod tests {
         </body>
         </html>"#;
 
-        assert_html_eq!(expected, format_html(html, false))
+        assert_html_eq!(expected, format_html(html).to_string())
     }
 }

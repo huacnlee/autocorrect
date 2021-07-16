@@ -76,28 +76,29 @@ extern crate pest;
 mod code;
 mod fullwidth;
 mod halfwidth;
-mod html;
 mod strategery;
 
-mod csharp;
-mod css;
-mod dart;
-mod go;
-mod java;
-mod javascript;
-mod json;
-mod kotlin;
-mod markdown;
-mod objective_c;
-mod php;
-mod python;
-mod ruby;
-mod rust;
-mod sql;
-mod swift;
-mod yaml;
+mod html;
+// mod csharp;
+// mod css;
+// mod dart;
+// mod go;
+// mod java;
+// mod javascript;
+// mod json;
+// mod kotlin;
+// mod markdown;
+// mod objective_c;
+// mod php;
+// mod python;
+// mod ruby;
+// mod rust;
+// mod sql;
+// mod swift;
+// mod yaml;
 
 use crate::strategery::Strategery;
+use code::Results;
 use regex::Regex;
 use std::ffi::OsStr;
 use std::path::Path;
@@ -187,7 +188,7 @@ pub fn format(text: &str) -> String {
 /// autocorrect::format_html(html);
 /// ```
 pub fn format_html(html_str: &str) -> String {
-    html::format_html(html_str, false)
+    html::format_html(html_str).to_string()
 }
 
 // removeFullDateSpacing
