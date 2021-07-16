@@ -9,6 +9,7 @@ multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 string = ${ 
   ("'" ~ (!("'") ~ ANY)* ~ "'") 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+  | ("`" ~ (!("`") ~ ANY)* ~ "`"+) 
 }
 line = _{ string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 
