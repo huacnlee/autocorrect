@@ -26,6 +26,10 @@ mod tests {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
+  /**
+   * Hello你好
+   * 这是第2行
+   */
   const c = `这是string第1行
   这是string第2行`;
 }
@@ -37,6 +41,10 @@ function helloWorld(a) {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
+  /**
+   * Hello 你好
+   * 这是第 2 行
+   */
   const c = `这是 string 第 1 行
   这是 string 第 2 行`;
 }
@@ -61,11 +69,11 @@ function helloWorld(a) {
     "###;
 
         let expect = r###"
-{"c":4,"l":2,"new":"* Hello 你好","old":"* Hello你好"}
-{"c":1,"l":3,"new":"* 这是第 2 行","old":"* 这是第2行"}
-{"c":0,"l":7,"new":"\"这是 single line 单行注释\"","old":"\"这是single line单行注释\""}
-{"c":0,"l":8,"new":"`这是 string 第 1 行","old":"`这是string第1行"}
-{"c":13,"l":9,"new":"这是 string 第 2 行","old":"这是string第2行"}
+{"c":5,"l":3,"new":"* Hello 你好","old":"* Hello你好"}
+{"c":5,"l":4,"new":"* 这是第 2 行","old":"* 这是第2行"}
+{"c":21,"l":7,"new":"\"这是 single line 单行注释\"","old":"\"这是single line单行注释\""}
+{"c":19,"l":8,"new":"`这是 string 第 1 行","old":"`这是string第1行"}
+{"c":7,"l":9,"new":"这是 string 第 2 行","old":"这是string第2行"}
     "###;
 
         assert_eq!(expect.trim(), format_javascript(example, true).trim());

@@ -78,15 +78,16 @@ fn format_or_lint<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
             let new_line = format(trimmed);
             // println!("{}||{},{}", new_line, trimmed, new_line.eq(trimmed));
             if new_line.eq(trimmed) {
+                sub_line += 1;
                 continue;
             }
 
             let current_line = part_line + sub_line;
             let current_col = if sub_line > 0 {
                 // col will equal numner of removed leading whitespace
-                part_col - leading_spaces
+                leading_spaces + 1
             } else {
-                leading_spaces
+                part_col
             };
 
             let message =
@@ -94,7 +95,6 @@ fn format_or_lint<R: RuleType>(text: &mut String, item: Pair<R>, lint: bool) {
 
             text.push_str(message.to_string().as_str());
             text.push_str("\n");
-
             sub_line += 1;
         }
     } else {
