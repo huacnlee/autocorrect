@@ -114,13 +114,16 @@ pub fn main() {
       Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false).multiple(true)
     )
     .arg(
-      Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.")
+      Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
     )
     .arg(
       Arg::with_name("lint").long("lint").help("Lint and output problems.")
     )
     .arg(
-        Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("").possible_values(&["json", "diff"])
+        Arg::with_name("filetype").long("type").help("Directly use set file type").default_value("").required(false)
+      )
+    .arg(
+        Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("diff").possible_values(&["json", "diff"]).required(false)
     )
     .get_matches();
 
@@ -128,6 +131,7 @@ pub fn main() {
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
     let formatter = matches.value_of("formatter").unwrap();
+    let arg_filetype = matches.value_of("filetype").unwrap();
 
     if let Some(file_names) = matches.values_of("file") {
         for file_name in file_names {
@@ -144,7 +148,10 @@ pub fn main() {
                 match f {
                     Ok(_path) => {
                         let filepath = _path.to_str().unwrap();
-                        let filetype = get_file_extension(filepath);
+                        let mut filetype = get_file_extension(filepath);
+                        if arg_filetype != "" {
+                            filetype = arg_filetype;
+                        }
 
                         if !EXT_MAPS.contains_key(filetype) {
                             continue;
@@ -247,8 +254,9 @@ fn lint_and_output(filepath: &str, filetype: &str, raw: &str, formatter: &str) {
     result.filepath = String::from(filepath);
 
     if formatter.to_lowercase() == "json" {
-        eprintln!("{}", result.to_json());
+        println!("{}", result.to_json());
     } else {
+        // diff will use stderr output
         eprintln!("{}", result.to_diff());
     }
 }
