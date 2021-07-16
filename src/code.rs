@@ -1,12 +1,11 @@
 // autocorrect: false
 use super::*;
+use difference::Difference;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
-use std::fmt;
+use serde::{Deserialize, Serialize};
 use std::result::Result;
-
-use serde_json::json;
 
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
     let mut out = out;
@@ -101,15 +100,18 @@ fn format_or_lint<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct LineResult {
+    #[serde(rename(serialize = "l"))]
     pub line: usize,
+    #[serde(rename(serialize = "c"))]
     pub col: usize,
     pub new: String,
     pub old: String,
 }
 
 pub trait Results {
-    fn push(&mut self, lineResult: LineResult);
+    fn push(&mut self, line_result: LineResult);
     fn ignore(&mut self, str: &str);
     fn error(&mut self, err: &str);
     fn to_string(&self) -> String;
@@ -117,23 +119,23 @@ pub trait Results {
 }
 
 pub struct FormatResult {
-    out: String,
-    error: String,
-    filename: String,
-    raw: String,
+    pub out: String,
+    pub error: String,
+    pub raw: String,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct LintResult {
-    filename: String,
-    raw: String,
-    lines: Vec<LineResult>,
-    error: String,
+    #[serde(skip)]
+    pub raw: String,
+    pub filepath: String,
+    pub lines: Vec<LineResult>,
+    pub error: String,
 }
 
 impl<'a> FormatResult {
-    pub fn new(filename: &str, raw: &str) -> Self {
+    pub fn new(raw: &str) -> Self {
         FormatResult {
-            filename: filename.to_string(),
             raw: String::from(raw),
             out: String::from(""),
             error: String::from(""),
@@ -142,8 +144,8 @@ impl<'a> FormatResult {
 }
 
 impl<'a> Results for FormatResult {
-    fn push(&mut self, lineResult: LineResult) {
-        self.out.push_str(lineResult.new.as_str());
+    fn push(&mut self, line_result: LineResult) {
+        self.out.push_str(line_result.new.as_str());
     }
 
     fn ignore(&mut self, str: &str) {
@@ -164,19 +166,43 @@ impl<'a> Results for FormatResult {
 }
 
 impl LintResult {
-    pub fn new(filename: &str, raw: &str) -> Self {
+    pub fn new(raw: &str) -> Self {
         LintResult {
-            filename: filename.to_string(),
+            filepath: String::from(""),
             raw: String::from(raw),
             lines: Vec::new(),
             error: String::from(""),
         }
     }
+
+    pub fn to_json(&self) -> String {
+        match serde_json::to_string(self) {
+            Ok(json) => json,
+            _ => String::from("{}"),
+        }
+    }
+
+    pub fn to_json_pretty(&self) -> String {
+        match serde_json::to_string_pretty(self) {
+            Ok(json) => json,
+            _ => String::from("{}"),
+        }
+    }
+
+    pub fn to_diff(&self) -> String {
+        let mut out = String::from("");
+        for line in self.lines.iter() {
+            let changeset = difference::Changeset::new(line.old.as_str(), line.new.as_str(), "\n");
+            out.push_str(format!("{}", changeset).as_str());
+        }
+
+        return out;
+    }
 }
 
 impl Results for LintResult {
-    fn push(&mut self, lineResult: LineResult) {
-        self.lines.push(lineResult);
+    fn push(&mut self, line_result: LineResult) {
+        self.lines.push(line_result);
     }
 
     fn ignore(&mut self, str: &str) {

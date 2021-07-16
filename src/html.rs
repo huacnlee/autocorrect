@@ -12,13 +12,23 @@ struct JavaParser;
 pub fn format_html(text: &str) -> code::FormatResult {
     let pairs = JavaParser::parse(Rule::item, text);
 
-    let out = code::FormatResult::new("", text);
+    let out = code::FormatResult::new(text);
+    return code::format_pairs(out, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_html(text: &str) -> code::LintResult {
+    let pairs = JavaParser::parse(Rule::item, text);
+
+    let out = code::LintResult::new(text);
     return code::format_pairs(out, pairs);
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use assert_json_diff::assert_json_eq;
+    use serde_json::json;
 
     macro_rules! assert_html_eq {
         ($expected:expr, $actual:expr) => {{
@@ -129,5 +139,38 @@ mod tests {
         </html>"#;
 
         assert_html_eq!(expected, format_html(html).to_string())
+    }
+
+    #[test]
+    fn test_lint_html() {
+        let html = r#"
+        <html><head><title>Hello</title></head>
+        <body>
+        <article>
+        <h1>这是Heading标题</h1>
+        <div class="content">
+            <p>你好Rust世界<strong>Bold文本</strong></p>
+            <p>这是第二行p标签</p>
+        </div>
+        </article>
+        </body>
+        </html>"#;
+
+        let json = r#"""
+        {
+            "filepath": "",
+            "lines": [
+              { "l": 5, "c": 13, "new": "这是 Heading 标题", "old": "这是Heading标题" },
+              { "l": 7, "c": 16, "new": "你好 Rust 世界", "old": "你好Rust世界" },
+              { "l": 7, "c": 32, "new": "Bold 文本", "old": "Bold文本" },
+              { "l": 8, "c": 16, "new": "这是第二行 p 标签", "old": "这是第二行p标签" }
+            ],
+            "error": ""
+        }
+        """#;
+
+        let lint_result = lint_html(html);
+        assert_eq!("", lint_result.error);
+        assert_eq!(4, lint_result.lines.len());
     }
 }
