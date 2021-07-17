@@ -16,18 +16,17 @@ It also supports programming source code correcting, based on Parser, can recogn
 
 https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
+<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/126027685-cee6f91d-1a10-4fcc-b5f4-1a99ac4cd5ae.png">
+
 ## Features
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
 - Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, Python, Objective-C, Swift, Java, Kotlin, Dart, JavaScript, CSharp ...).
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
+- Lint checking and output diff or JSON result, so you can integrating to everwhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 
-## Other implements for programming
-
-- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
+<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
 
 ## Install
 
@@ -38,25 +37,31 @@ $ curl -sSL https://git.io/JcGER | bash
 after that, you will get `/usr/local/bin/autocorrect` command.
 
 ```bash
-$ autocorrect -h
-AutoCorrect 0.5.1
+AutoCorrect 1.0.0
 Jason Lee <huacnlee@gmail.com
 Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters,
-		numerical digits and symbols).
+numerical digits and symbols).
 
 USAGE:
-autocorrect [FLAGS] [file]...
+    autocorrect [FLAGS] [OPTIONS] [file]...
 
 FLAGS:
---fix        Automatically fix problems and rewrite file.
--h, --help       Prints help information
--V, --version    Prints version information
+        --fix        Automatically fix problems and rewrite file.
+    -h, --help       Prints help information
+        --lint       Lint and output problems.
+    -V, --version    Prints version information
+
+OPTIONS:
+        --type <filetype>       Directly use set file type [default: ]
+        --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
 
 ARGS:
-<file>...    Target filepath or dir for format
+    <file>...    Target filepath or dir for format
 ```
 
 ## Usage
+
+### Get correct result
 
 ```bash
 $ autocorrect text.txt
@@ -67,6 +72,26 @@ $ autocorrect --fix zh-CN.yml
 $ autocorrect --fix ./
 ```
 
+### Lint
+
+```bash
+$ autocorrect --lint --format json text.txt
+
+$ autocorrect --lint text.txt
+```
+
+```diff
+  --> text.txt:1:3
+- 你好Hello世界
++ 你好 Hello 世界
+```
+
+You also can lint multiple files:
+
+```bash
+$ autocorrect --lint ./
+```
+
 ## Ignore for file
 
 If you want ignore AutoCorrect for a file, you can put `autocorrect: false`.
@@ -74,17 +99,23 @@ If you want ignore AutoCorrect for a file, you can put `autocorrect: false`.
 ```js
 // autocorrect: false
 function hello() {
-  console.log("这整个文件不会被autocorrect修改");
+  console.log('这整个文件不会被autocorrect修改');
 }
 ```
 
 ## Usage in Rust
 
+## Other implements for programming
+
+- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
+- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
+- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
+
 In your Cargo.toml
 
 ```toml
 [dependencies]
-autocorrect = "0.5.0"
+autocorrect = "1.0.0"
 ```
 
 Use `autocorrect::format` to format plain text.
@@ -103,7 +134,7 @@ fn main() {
 	// => "于 3 月 10 日开始"
 
 	println!("{}", autocorrect::format("包装日期为2013年3月10日"));
-	// => "包装日期为2013年3月10日"
+	// => "包装日期为 2013 年 3 月 10 日"
 
 	println!("{}", autocorrect::format("全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。"));
 	// => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。"
@@ -171,7 +202,7 @@ TODO
 
 - [x] Lint
 - [x] Lint for HTML, Markdown
-- [ ] Lint for Plain text by each line
+- [x] Lint for Plain text by each line
 - [ ] Vim plugin
 - [ ] Git Commit message format hook
 - [ ] Ignore next line

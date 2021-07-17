@@ -9,9 +9,19 @@ use pest_derive::Parser;
 struct JavaParser;
 
 #[allow(dead_code)]
-pub fn format_html(text: &str, lint: bool) -> String {
+pub fn format_html(text: &str) -> code::FormatResult {
     let pairs = JavaParser::parse(Rule::item, text);
-    return code::format_pairs(text, pairs, lint);
+
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_html(text: &str) -> code::LintResult {
+    let pairs = JavaParser::parse(Rule::item, text);
+
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
@@ -95,7 +105,7 @@ mod tests {
         </html>
         "###;
 
-        assert_html_eq!(expected, format_html(html, false))
+        assert_html_eq!(expected, format_html(html).to_string())
     }
 
     #[test]
@@ -126,6 +136,26 @@ mod tests {
         </body>
         </html>"#;
 
-        assert_html_eq!(expected, format_html(html, false))
+        assert_html_eq!(expected, format_html(html).to_string())
+    }
+
+    #[test]
+    fn test_lint_html() {
+        let html = r#"
+        <html><head><title>Hello</title></head>
+        <body>
+        <article>
+        <h1>这是Heading标题</h1>
+        <div class="content">
+            <p>你好Rust世界<strong>Bold文本</strong></p>
+            <p>这是第二行p标签</p>
+        </div>
+        </article>
+        </body>
+        </html>"#;
+
+        let lint_result = lint_html(html);
+        assert_eq!("", lint_result.error);
+        assert_eq!(4, lint_result.lines.len());
     }
 }

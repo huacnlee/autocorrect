@@ -8,18 +8,26 @@ use pest_derive::Parser;
 struct ObjectiveCParser;
 
 #[allow(dead_code)]
-pub fn format_objective_c(text: &str, lint: bool) -> String {
-  let pairs = ObjectiveCParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+pub fn format_objective_c(text: &str) -> code::FormatResult {
+    let pairs = ObjectiveCParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_objective_c(text: &str) -> code::LintResult {
+    let pairs = ObjectiveCParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_objective_c() {
-    let example = r###"
+    #[test]
+    fn it_format_objective_c() {
+        let example = r###"
 // 第1行注释
 // 第2行注释
 - (void) helloWorld {
@@ -28,7 +36,7 @@ mod tests {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 // 第 1 行注释
 // 第 2 行注释
 - (void) helloWorld {
@@ -37,6 +45,6 @@ mod tests {
 }
 "###;
 
-    assert_eq!(expect, format_objective_c(example, false));
-  }
+        assert_eq!(expect, format_objective_c(example).to_string());
+    }
 }

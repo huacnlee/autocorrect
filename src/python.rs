@@ -8,18 +8,26 @@ use pest_derive::Parser;
 struct PythonParser;
 
 #[allow(dead_code)]
-pub fn format_python(text: &str, lint: bool) -> String {
-  let pairs = PythonParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+pub fn format_python(text: &str) -> code::FormatResult {
+    let pairs = PythonParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_python(text: &str) -> code::LintResult {
+    let pairs = PythonParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_python() {
-    let example = r###"
+    #[test]
+    fn it_format_python() {
+        let example = r###"
 '''
 这是多行1注释
 这是多行2注释
@@ -36,7 +44,7 @@ def hello(a):
   print('你好hello世界')
 "###;
 
-    let expect = r###"
+        let expect = r###"
 '''
 这是多行 1 注释
 这是多行 2 注释
@@ -53,6 +61,6 @@ def hello(a):
   print('你好 hello 世界')
 "###;
 
-    assert_eq!(expect, format_python(example, false));
-  }
+        assert_eq!(expect, format_python(example).to_string());
+    }
 }

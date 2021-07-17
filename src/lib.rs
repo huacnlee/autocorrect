@@ -76,13 +76,13 @@ extern crate pest;
 mod code;
 mod fullwidth;
 mod halfwidth;
-mod html;
 mod strategery;
 
 mod csharp;
 mod css;
 mod dart;
 mod go;
+mod html;
 mod java;
 mod javascript;
 mod json;
@@ -98,6 +98,7 @@ mod swift;
 mod yaml;
 
 use crate::strategery::Strategery;
+use code::Results;
 use regex::Regex;
 use std::ffi::OsStr;
 use std::path::Path;
@@ -162,7 +163,7 @@ pub fn format(text: &str) -> String {
         out = rule.format(&out)
     }
 
-    out = remove_full_date_spacing(&out);
+    // out = remove_full_date_spacing(&out);
     out = space_dash_with_hans(&out);
 
     out
@@ -187,11 +188,12 @@ pub fn format(text: &str) -> String {
 /// autocorrect::format_html(html);
 /// ```
 pub fn format_html(html_str: &str) -> String {
-    html::format_html(html_str, false)
+    html::format_html(html_str).to_string()
 }
 
 // removeFullDateSpacing
 // 发布2013年3月10号公布 -> 发布2013年3月10号公布
+#[allow(dead_code)]
 fn remove_full_date_spacing(text: &str) -> String {
     let mut out = String::from(text);
     for ma in FULL_DATE_RE.find_iter(&text) {
@@ -287,9 +289,9 @@ mod tests {
             "于 3 月 10 日开始" => "于 3 月 10 日开始",
             "于 3 月开始" =>    "于 3 月开始",
             "于 2009 年开始" => "于 2009 年开始",
-            "正式发布2013年3月10日-Ruby Saturday 活动召集" => "正式发布2013年3月10日-Ruby Saturday 活动召集",
-            "正式发布2013年3月10号发布" =>                 "正式发布2013年3月10号发布",
-            "2013年12月22号开始出发" =>                  "2013年12月22号开始出发",
+            "正式发布2013年3月10日-Ruby Saturday 活动召集" => "正式发布 2013 年 3 月 10 日-Ruby Saturday 活动召集",
+            "正式发布2013年3月10号发布" =>                 "正式发布 2013 年 3 月 10 号发布",
+            "2013年12月22号开始出发" =>                  "2013 年 12 月 22 号开始出发",
             "12 月 22 号开始出发" =>                       "12 月 22 号开始出发",
             "22 号开始出发" =>                          "22 号开始出发"
         ];

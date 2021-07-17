@@ -8,9 +8,17 @@ use pest_derive::Parser;
 struct JSONParser;
 
 #[allow(dead_code)]
-pub fn format_json(text: &str, lint: bool) -> String {
+pub fn format_json(text: &str) -> code::FormatResult {
   let pairs = JSONParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+  let text = code::FormatResult::new(text);
+  return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_json(text: &str) -> code::LintResult {
+  let pairs = JSONParser::parse(Rule::item, text);
+  let text = code::LintResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
@@ -55,6 +63,6 @@ mod tests {
 }
 "###;
 
-    assert_eq!(expect, format_json(example, false));
+    assert_eq!(expect, format_json(example).to_string());
   }
 }

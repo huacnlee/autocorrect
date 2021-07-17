@@ -9,18 +9,26 @@ use pest_derive::Parser;
 struct MarkdownParser;
 
 #[allow(dead_code)]
-pub fn format_markdown(text: &str, lint: bool) -> String {
-  let pairs = MarkdownParser::parse(Rule::item, text);
-  return code::format_pairs(text, pairs, lint);
+pub fn format_markdown(text: &str) -> code::FormatResult {
+    let pairs = MarkdownParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    return code::format_pairs(text, pairs);
+}
+
+#[allow(dead_code)]
+pub fn lint_markdown(text: &str) -> code::LintResult {
+    let pairs = MarkdownParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn test_format_markdown() {
-    let raw = r###"
+    #[test]
+    fn test_format_markdown() {
+        let example = r###"
     # 这是Heading 1大标题
 
     这是**Bold加粗**在1个段落中，这端会correct掉，如果是inline code，例如`Rust语言`，也可以应该处理。
@@ -36,7 +44,7 @@ mod tests {
     - [link链接](https://google.com/a/b/url不处理)
     "###;
 
-    let expected = r###"
+        let expected = r###"
     # 这是 Heading 1 大标题
 
     这是**Bold 加粗**在 1 个段落中，这端会 correct 掉，如果是 inline code，例如`Rust 语言`，也可以应该处理。
@@ -52,6 +60,6 @@ mod tests {
     - [link 链接](https://google.com/a/b/url不处理)
     "###;
 
-    assert_eq!(expected, format_markdown(raw, false))
-  }
+        assert_eq!(expected, format_markdown(example).to_string())
+    }
 }

@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   build:
-    name: Build
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -14,3 +14,20 @@ jobs:
 
       - name: Test
         run: cargo test
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Rust
+        run: rustup update stable && rustup default stable
+
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Lint output
+        run: make test:lint
+
+      - name: Lint output JSON
+        run: make test:lint-json
