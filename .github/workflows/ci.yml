@@ -14,3 +14,21 @@ jobs:
 
       - name: Test
         run: cargo test
+
+  test_bin:
+    name: Test binary
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        filename: ["go.go", "javascript.js"]
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Rust
+        run: rustup update stable && rustup default stable
+
+      - name: Build binary
+        run: |
+          cargo run -q --features="bin" -- --lint --format json tests/fixtures/${{ matrix.filename }} | git --no-pager diff --no-index -- tests/fixtures/${{ matrix.filename }}.expect -
