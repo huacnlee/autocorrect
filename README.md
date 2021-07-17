@@ -4,17 +4,22 @@
 
 The CLI tool based on Rust is used to automatically correct, for add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
-It also supports programming source code correcting, based on Parser, can recognize the file name, and can find the strings and the comment part to correct.
+Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, and output as colorized diff with corrected suggest. You can intergrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
 
-基于 Rust 编写的 CLI 工具，用于自动纠正文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，同时尝试以安全的方式自动纠正标点符号等等。
+基于 Rust 编写的 CLI 工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，同时尝试以安全的方式自动纠正标点符号等等。
 
-除了纯文本的自动纠正以外，AutoCorrect 基于 Parser 的方式对各种类型源代码文件支持，能自动识别文件名，并准确找到字符串、注释做自动纠正。
+类似 ESlint、Rubocop、Gofmt 等工具，AutoCorrect 可以用于 CI 环境，它提供 Lint 功能能便捷的检测出项目中有问题的文案，起到统一规范的作用。
+
+支持各种类型源代码文件支持，能自动识别文件名，并准确找到字符串、注释做自动纠正。
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（级少数异常情况），你可以放心用来辅助你完整自动纠正动作。
+
 
 ## VS Code Extension
 
 https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
+
+内置 VS Code 插件，安装后会将 AutoCorrect 和 VS Code 完整集成，可以达到「保存自动格式化」或「纠正提示」，如下图。
 
 <img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/126027685-cee6f91d-1a10-4fcc-b5f4-1a99ac4cd5ae.png">
 
