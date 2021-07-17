@@ -23,6 +23,7 @@ mod python;
 mod ruby;
 mod rust;
 mod sql;
+mod strings;
 mod swift;
 mod yaml;
 
@@ -81,6 +82,8 @@ lazy_static! {
     "objective-c" => "objective_c",
     "m" => "objective_c",
     "h" => "objective_c",
+    // strings for Cocoa
+    "strings" => "strings",
     // csharp
     "csharp" => "csharp",
     "cs" => "csharp",
@@ -235,6 +238,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
         "json" => json::format_json(raw),
         "python" => python::format_python(raw),
         "objective_c" => objective_c::format_objective_c(raw),
+        "strings" => strings::format_strings(raw),
         "csharp" => csharp::format_csharp(raw),
         "swift" => swift::format_swift(raw),
         "java" => java::format_java(raw),
@@ -283,6 +287,7 @@ fn lint_and_output(
         "json" => json::lint_json(raw),
         "python" => python::lint_python(raw),
         "objective_c" => objective_c::lint_objective_c(raw),
+        "strings" => strings::lint_strings(raw),
         "csharp" => csharp::lint_csharp(raw),
         "swift" => swift::lint_swift(raw),
         "java" => java::lint_java(raw),

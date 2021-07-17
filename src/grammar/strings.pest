@@ -1,0 +1,19 @@
+
+newline = ${ "\n" | "\r" }
+space = ${ " "+ }
+
+other = ${ !(pair) ~ ANY }
+comment = ${ single_line_comment | multiline_comment }
+single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+
+string_type = _{ 
+  ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+}
+key = _{ string }
+key_assigment = ${ (" ")* ~ "=" ~ (" ")* }
+string = ${ string_type  }
+pair = ${ key ~ key_assigment  ~ string }
+
+line = _{ pair | comment | space | other | newline }
+item = _{ SOI ~ line* ~ EOI } 
