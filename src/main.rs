@@ -40,7 +40,7 @@ macro_rules! map {
 }
 
 lazy_static! {
-  static ref EXT_MAPS: HashMap<&'static str, &'static str> = map!(
+  static ref FILE_TYPES: HashMap<&'static str, &'static str> = map!(
     "html" => "html",
     "htm" => "html",
     // yaml
@@ -111,7 +111,7 @@ pub fn main() {
     .version(crate_version!())
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .arg(
-      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false).multiple(true)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false)
     )
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
@@ -130,44 +130,68 @@ pub fn main() {
     let fix = matches.is_present("fix");
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
-    let formatter = matches.value_of("formatter").unwrap();
+    let formatter = matches.value_of("formatter").unwrap().to_lowercase();
+    let arg_file = matches.value_of("file").unwrap_or("");
     let arg_filetype = matches.value_of("filetype").unwrap();
 
-    if let Some(file_names) = matches.values_of("file") {
-        for file_name in file_names {
-            let filepath = Path::new(file_name);
-            let mut file_name = String::from(file_name);
+    let mut filepaths: Vec<String> = Vec::new();
 
-            if !filepath.is_file() {
-                file_name.push_str("/**/*");
+    let filepath = Path::new(arg_file);
+    let mut file_name = String::from(arg_file);
+
+    if !filepath.is_file() {
+        file_name.push_str("/**/*");
+    }
+
+    file_name = file_name.replace("//", "/");
+
+    for f in glob(file_name.as_str()).unwrap() {
+        match f {
+            Ok(_path) => {
+                let filepath = _path.to_str().unwrap();
+                filepaths.push(String::from(filepath));
             }
+            Err(_e) => {}
+        }
+    }
 
-            file_name = file_name.replace("//", "/");
+    let mut lint_results: Vec<String> = Vec::new();
 
-            for f in glob(file_name.as_str()).unwrap() {
-                match f {
-                    Ok(_path) => {
-                        let filepath = _path.to_str().unwrap();
-                        let mut filetype = get_file_extension(filepath);
-                        if arg_filetype != "" {
-                            filetype = arg_filetype;
-                        }
+    for filepath in filepaths.iter() {
+        let mut filetype = get_file_extension(filepath);
+        if arg_filetype != "" {
+            filetype = arg_filetype;
+        }
 
-                        if !EXT_MAPS.contains_key(filetype) {
-                            continue;
-                        }
+        if !FILE_TYPES.contains_key(filetype) {
+            continue;
+        }
 
-                        if let Ok(raw) = fs::read_to_string(filepath) {
-                            if lint {
-                                lint_and_output(filepath, filetype, raw.as_str(), formatter)
-                            } else {
-                                format_and_output(filepath, filetype, raw.as_str(), fix);
-                            }
-                        }
-                    }
-                    Err(_e) => {}
-                }
+        if let Ok(raw) = fs::read_to_string(filepath) {
+            if lint {
+                lint_and_output(
+                    filepath,
+                    filetype,
+                    raw.as_str(),
+                    formatter.as_str(),
+                    &mut lint_results,
+                )
+            } else {
+                format_and_output(filepath, filetype, raw.as_str(), fix);
             }
+        }
+    }
+
+    if lint {
+        if formatter == "json" {
+            println!(
+                r#"{{"count": {},"messages": [{}]}}"#,
+                lint_results.len(),
+                lint_results.join(",")
+            );
+        } else {
+            // diff will use stderr output
+            eprint!("{}", lint_results.join("\n"));
         }
     }
 }
@@ -181,7 +205,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
         std::process::exit(0);
     }
 
-    let result = match EXT_MAPS[filetype] {
+    let result = match FILE_TYPES[filetype] {
         "html" => html::format_html(raw),
         "yaml" => yaml::format_yaml(raw),
         "sql" => sql::format_sql(raw),
@@ -215,7 +239,13 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
     }
 }
 
-fn lint_and_output(filepath: &str, filetype: &str, raw: &str, formatter: &str) {
+fn lint_and_output(
+    filepath: &str,
+    filetype: &str,
+    raw: &str,
+    formatter: &str,
+    results: &mut Vec<String>,
+) {
     let ignore = is_ignore_auto_correct(raw);
 
     // skip lint ignored file, just return
@@ -223,7 +253,7 @@ fn lint_and_output(filepath: &str, filetype: &str, raw: &str, formatter: &str) {
         return;
     }
 
-    let mut result = match EXT_MAPS[filetype] {
+    let mut result = match FILE_TYPES[filetype] {
         "html" => html::lint_html(raw),
         "yaml" => yaml::lint_yaml(raw),
         "sql" => sql::lint_sql(raw),
@@ -253,10 +283,10 @@ fn lint_and_output(filepath: &str, filetype: &str, raw: &str, formatter: &str) {
 
     result.filepath = String::from(filepath);
 
-    if formatter.to_lowercase() == "json" {
-        println!("{}", result.to_json());
+    if formatter == "json" {
+        results.push(format!("{}", result.to_json()));
     } else {
         // diff will use stderr output
-        eprintln!("{}", result.to_diff());
+        results.push(format!("{}", result.to_diff()));
     }
 }
