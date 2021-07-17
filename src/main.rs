@@ -134,6 +134,9 @@ pub fn main() {
     let arg_files: Vec<&str> = matches.values_of("file").unwrap().collect();
     let arg_filetype = matches.value_of("filetype").unwrap();
 
+    // calc run time
+    let start_t = std::time::SystemTime::now();
+
     let mut filepaths: Vec<String> = Vec::new();
 
     for arg_file in arg_files {
@@ -195,6 +198,15 @@ pub fn main() {
             if lint_results.len() > 0 {
                 // diff will use stderr output
                 eprint!("{}", lint_results.join("\n"));
+            }
+
+            // print time spend from start_t to now
+            println!(
+                "AutoCorrect spend time: {}ms\n",
+                start_t.elapsed().unwrap().as_millis()
+            );
+
+            if lint_results.len() > 0 {
                 // exit process with error 1
                 std::process::exit(1);
             }

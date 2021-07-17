@@ -193,6 +193,7 @@ pub fn format_html(html_str: &str) -> String {
 
 // removeFullDateSpacing
 // 发布2013年3月10号公布 -> 发布2013年3月10号公布
+#[allow(dead_code)]
 fn remove_full_date_spacing(text: &str) -> String {
     let mut out = String::from(text);
     for ma in FULL_DATE_RE.find_iter(&text) {
