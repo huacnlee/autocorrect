@@ -1,0 +1,10 @@
+/**
+ * Hello你好
+ * 这是第2行
+ */
+function application() {
+  let example = '这是single line单行注释';
+  console.log(`这是string第1行
+  这是 string 第 2 行
+  `);
+}
