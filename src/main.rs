@@ -111,7 +111,7 @@ pub fn main() {
     .version(crate_version!())
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .arg(
-      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false).multiple(true)
     )
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
@@ -131,27 +131,29 @@ pub fn main() {
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
     let formatter = matches.value_of("formatter").unwrap().to_lowercase();
-    let arg_file = matches.value_of("file").unwrap_or("");
+    let arg_files: Vec<&str> = matches.values_of("file").unwrap().collect();
     let arg_filetype = matches.value_of("filetype").unwrap();
 
     let mut filepaths: Vec<String> = Vec::new();
 
-    let filepath = Path::new(arg_file);
-    let mut file_name = String::from(arg_file);
+    for arg_file in arg_files {
+        let filepath = Path::new(arg_file);
+        let mut file_name = String::from(arg_file);
 
-    if !filepath.is_file() {
-        file_name.push_str("/**/*");
-    }
+        if !filepath.is_file() {
+            file_name.push_str("/**/*");
+        }
 
-    file_name = file_name.replace("//", "/");
+        file_name = file_name.replace("//", "/");
 
-    for f in glob(file_name.as_str()).unwrap() {
-        match f {
-            Ok(_path) => {
-                let filepath = _path.to_str().unwrap();
-                filepaths.push(String::from(filepath));
+        for f in glob(file_name.as_str()).unwrap() {
+            match f {
+                Ok(_path) => {
+                    let filepath = _path.to_str().unwrap();
+                    filepaths.push(String::from(filepath));
+                }
+                Err(_e) => {}
             }
-            Err(_e) => {}
         }
     }
 
