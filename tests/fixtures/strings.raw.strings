@@ -1,0 +1,11 @@
+/* 
+    InfoPlist.strings测试
+    Created by某某
+*/
+
+"CFBundleDisplayName" = "App名称";//app中文名称
+"CFBundleIdentifier" = "huacnlee.autocorrect";
+
+"NSCameraUsageDescription" = "开启Wi-Fi后继续使用";
+// 单行comment
+"中文key测试" = "开启定位权限";

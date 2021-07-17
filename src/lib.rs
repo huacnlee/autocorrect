@@ -94,6 +94,7 @@ mod python;
 mod ruby;
 mod rust;
 mod sql;
+mod strings;
 mod swift;
 mod yaml;
 
