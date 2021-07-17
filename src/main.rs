@@ -192,8 +192,12 @@ pub fn main() {
                 lint_results.join(",")
             );
         } else {
-            // diff will use stderr output
-            eprint!("{}", lint_results.join("\n"));
+            if lint_results.len() > 0 {
+                // diff will use stderr output
+                eprint!("{}", lint_results.join("\n"));
+                // exit process with error 1
+                std::process::exit(1);
+            }
         }
     }
 }

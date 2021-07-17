@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   build:
-    name: Build
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -15,26 +15,19 @@ jobs:
       - name: Test
         run: cargo test
 
-  test_bin:
-    name: Test binary
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        filename: ["go.go", "javascript.js"]
-
     steps:
       - uses: actions/checkout@master
       - name: Install Rust
         run: rustup update stable && rustup default stable
 
-      - name: Build
-        run: cargo build --features="bin"
+      - name: Checkout
+        uses: actions/checkout@v1
 
-      - name: Lint diff
+      - name: Lint output
         run: make test:lint
 
       - name: Lint output JSON
-        run: |
-          cargo run -q --features="bin" -- --lint --format json tests/fixtures/${{ matrix.filename }} | git --no-pager diff --no-index -- tests/fixtures/${{ matrix.filename }}.expect -
+        run: make test:lint-json

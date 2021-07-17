@@ -9,3 +9,5 @@ build:
 	sudo ln -f target/aarch64-apple-darwin/release/autocorrect /usr/local/bin/autocorrect
 test\:lint:
 	@cargo run -q --features="bin" -- --lint tests/fixtures/*.fixed.*
+test\:lint-json:
+	tests/test_lint_json.sh
