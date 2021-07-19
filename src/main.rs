@@ -6,6 +6,8 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
+use colored::*;
+
 mod code;
 mod csharp;
 mod css;
@@ -164,10 +166,6 @@ pub fn main() {
                     continue;
                 }
 
-                if lint {
-                    print!(".")
-                }
-
                 let filepath = path.to_str().unwrap();
                 let mut filetype = get_file_extension(path);
                 if arg_filetype != "" {
@@ -197,8 +195,6 @@ pub fn main() {
         }
     }
 
-    println!("\n\n-----------------------------------------");
-
     if lint {
         if formatter == "json" {
             println!(
@@ -207,6 +203,13 @@ pub fn main() {
                 lint_results.join(",")
             );
         } else {
+            println!("\n\n-----------------------------------------");
+
+            if lint_results.len() > 0 {
+                // diff will use stderr output
+                eprint!("{}", lint_results.join("\n"));
+            }
+
             // print time spend from start_t to now
             println!(
                 "AutoCorrect spend time: {}ms\n",
@@ -214,8 +217,6 @@ pub fn main() {
             );
 
             if lint_results.len() > 0 {
-                // diff will use stderr output
-                eprint!("{}", lint_results.join("\n"));
                 std::process::exit(1);
             }
         }
@@ -306,8 +307,11 @@ fn lint_and_output(
 
     // do not print anything, when not lint results
     if result.lines.len() == 0 {
+        print!("{}", ".".green());
         return;
     }
+
+    print!("{}", ".".red());
 
     result.filepath = String::from(filepath);
 
