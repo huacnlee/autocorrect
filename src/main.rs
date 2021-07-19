@@ -176,7 +176,9 @@ pub fn main() {
     let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("./");
     if let Some(path) = autocorrect_path.to_str() {
         if let Some(err) = ignore_builder.add(Path::new(path)) {
-            println!("Fail to add ignore file: {}, {}", path, err);
+            if debug {
+                println!("Fail to add ignore file: {}, {}", path, err);
+            }
         }
     }
     let ignorer = ignore_builder.build().unwrap();

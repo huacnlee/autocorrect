@@ -1,3 +1,2 @@
 this-file-will-ignore.rs
-tests/fixtures/*.raw.*
 tests/fixtures/*.expect.*
