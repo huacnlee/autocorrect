@@ -8,3 +8,6 @@ diff_lint_json() {
 
 diff_lint_json "go" "go"
 diff_lint_json "javascript" "js"
+
+# this ignore work with direct file
+cargo run -q --features="bin" -- --lint tests/fixtures/this-file-will-ignore.rs

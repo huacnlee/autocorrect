@@ -1,10 +1,15 @@
 // autocorrect: false
-use autocorrect::{format, get_file_extension, is_ignore_auto_correct};
+use autocorrect::{format, is_ignore_auto_correct};
 use clap::{crate_version, App, Arg};
-use glob::glob;
 use std::collections::HashMap;
+use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
+
+mod logger;
+mod progress;
+
+use logger::Logger;
 
 mod code;
 mod csharp;
@@ -39,6 +44,8 @@ macro_rules! map {
       m
   }};
 }
+
+static AUTOCORRECTIGNORE: &str = ".autocorrectignore";
 
 lazy_static! {
   static ref FILE_TYPES: HashMap<&'static str, &'static str> = map!(
@@ -114,7 +121,7 @@ pub fn main() {
     .version(crate_version!())
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .arg(
-      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false).multiple(true)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(true).multiple(true)
     )
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
@@ -128,91 +135,126 @@ pub fn main() {
     .arg(
         Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("diff").possible_values(&["json", "diff"]).required(false)
     )
+    .arg(
+        Arg::with_name("debug").long("debug").help("Print debug message.")
+    )
     .get_matches();
+
+    Logger::init().expect("Init logger error");
+
+    let work_dir: std::path::PathBuf = std::env::current_dir().expect("");
+    let autocorrect_path = work_dir.join(Path::new(AUTOCORRECTIGNORE));
 
     let fix = matches.is_present("fix");
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
-    let formatter = matches.value_of("formatter").unwrap().to_lowercase();
-    let arg_files: Vec<&str> = matches.values_of("file").unwrap().collect();
+    #[allow(unused_variables)]
+    let debug = matches.is_present("debug");
+    let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
+    let mut arg_files = matches.values_of("file").unwrap();
     let arg_filetype = matches.value_of("filetype").unwrap();
 
     // calc run time
     let start_t = std::time::SystemTime::now();
-
-    let mut filepaths: Vec<String> = Vec::new();
-
-    for arg_file in arg_files {
-        let filepath = Path::new(arg_file);
-        let mut file_name = String::from(arg_file);
-
-        if !filepath.is_file() {
-            file_name.push_str("/**/*");
-        }
-
-        file_name = file_name.replace("//", "/");
-
-        for f in glob(file_name.as_str()).unwrap() {
-            match f {
-                Ok(_path) => {
-                    let filepath = _path.to_str().unwrap();
-                    filepaths.push(String::from(filepath));
-                }
-                Err(_e) => {}
-            }
-        }
-    }
-
     let mut lint_results: Vec<String> = Vec::new();
 
-    for filepath in filepaths.iter() {
-        let mut filetype = get_file_extension(filepath);
-        if arg_filetype != "" {
-            filetype = arg_filetype;
-        }
+    // create a walker
+    // take first file arg, because ignore::WalkBuilder::new need a file path.
+    let first_file = arg_files.next().expect("Not file args");
+    let mut walker = ignore::WalkBuilder::new(Path::new(first_file));
+    // Add other files
+    for arg_file in arg_files {
+        walker.add(arg_file);
+    }
+    walker
+        .skip_stdout(true)
+        .parents(true)
+        .git_ignore(true)
+        .follow_links(false);
 
-        if !FILE_TYPES.contains_key(filetype) {
-            continue;
+    // create ignorer for ignore directly file
+    let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("./");
+    if let Some(path) = autocorrect_path.to_str() {
+        if let Some(err) = ignore_builder.add(Path::new(path)) {
+            println!("Fail to add ignore file: {}, {}", path, err);
         }
+    }
+    let ignorer = ignore_builder.build().unwrap();
 
-        if let Ok(raw) = fs::read_to_string(filepath) {
-            if lint {
-                lint_and_output(
-                    filepath,
-                    filetype,
-                    raw.as_str(),
-                    formatter.as_str(),
-                    &mut lint_results,
-                )
-            } else {
-                format_and_output(filepath, filetype, raw.as_str(), fix);
+    for result in walker.build() {
+        match result {
+            Ok(entry) => {
+                let path = entry.path();
+
+                if ignorer.matched(path, false).is_ignore() {
+                    // skip ignore file
+                    continue;
+                }
+
+                // ignore unless file
+                if !path.is_file() {
+                    continue;
+                }
+
+                // println!("{}", path.display());
+
+                let filepath = path.to_str().unwrap();
+                let mut filetype = get_file_extension(path);
+                if arg_filetype != "" {
+                    filetype = arg_filetype;
+                }
+                if !FILE_TYPES.contains_key(filetype) {
+                    continue;
+                }
+
+                if let Ok(raw) = fs::read_to_string(filepath) {
+                    if lint {
+                        lint_and_output(
+                            filepath,
+                            filetype,
+                            raw.as_str(),
+                            formatter.as_str(),
+                            &mut lint_results,
+                        )
+                    } else {
+                        format_and_output(filepath, filetype, raw.as_str(), fix);
+                    }
+                }
+            }
+            Err(_err) => {
+                log::error!("ERROR: {}", _err);
             }
         }
     }
 
     if lint {
         if formatter == "json" {
-            println!(
+            log::info!(
                 r#"{{"count": {},"messages": [{}]}}"#,
                 lint_results.len(),
                 lint_results.join(",")
             );
         } else {
+            log::info!("\n");
+
             if lint_results.len() > 0 {
                 // diff will use stderr output
-                eprint!("{}", lint_results.join("\n"));
+                log::error!("{}", lint_results.join("\n"));
             }
 
             // print time spend from start_t to now
-            println!(
+            log::info!(
                 "AutoCorrect spend time: {}ms\n",
                 start_t.elapsed().unwrap().as_millis()
             );
 
             if lint_results.len() > 0 {
-                // exit process with error 1
                 std::process::exit(1);
             }
+        }
+    } else {
+        if fix {
+            log::info!("Done.\n");
         }
     }
 }
@@ -254,6 +296,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
         // do not rewrite ignored file
         if filepath.len() > 0 {
             fs::write(Path::new(filepath), result.out).unwrap();
+            progress::ok(true);
         }
     } else {
         // print a single file output
@@ -268,6 +311,8 @@ fn lint_and_output(
     formatter: &str,
     results: &mut Vec<String>,
 ) {
+    let diff_mode = formatter != "json";
+
     let ignore = is_ignore_auto_correct(raw);
 
     // skip lint ignored file, just return
@@ -301,15 +346,38 @@ fn lint_and_output(
 
     // do not print anything, when not lint results
     if result.lines.len() == 0 {
+        progress::ok(diff_mode);
         return;
+    } else {
+        progress::err(diff_mode);
     }
 
     result.filepath = String::from(filepath);
 
-    if formatter == "json" {
-        results.push(format!("{}", result.to_json()));
-    } else {
-        // diff will use stderr output
+    if diff_mode {
         results.push(format!("{}", result.to_diff()));
+    } else {
+        results.push(format!("{}", result.to_json()));
+    }
+}
+
+// get file extension from filepath
+fn get_file_extension(path: &Path) -> &str {
+    if let Some(ext) = path.extension().and_then(OsStr::to_str) {
+        return ext;
+    }
+
+    return "";
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn is_get_file_extension() {
+        assert_eq!("rb", get_file_extension("/foo/bar/dar.rb"));
+        assert_eq!("js", get_file_extension("/dar.js"));
+        assert_eq!("", get_file_extension("/foo/bar/dar"));
     }
 }

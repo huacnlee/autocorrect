@@ -14,7 +14,6 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, an
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（级少数异常情况），你可以放心用来辅助你完整自动纠正动作。
 
-
 ## VS Code Extension
 
 https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
@@ -30,6 +29,7 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
 - Lint checking and output diff or JSON result, so you can integrating to everwhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
+- Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you wants ignore.
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
 
@@ -76,6 +76,14 @@ $ autocorrect --fix text.txt
 $ autocorrect --fix zh-CN.yml
 $ autocorrect --fix ./
 ```
+
+### Ignore files
+
+Some times, you may wants ignore some special files that not wants to check.
+
+By default, the file matched `.gitignore` rule will be ignored.
+
+You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
 
 ### Lint
 
