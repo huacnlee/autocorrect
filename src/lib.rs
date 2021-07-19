@@ -101,8 +101,6 @@ mod yaml;
 use crate::strategery::Strategery;
 use code::Results;
 use regex::Regex;
-use std::ffi::OsStr;
-use std::path::Path;
 
 lazy_static! {
     static ref FULL_DATE_RE: Regex = regexp!(
@@ -218,15 +216,6 @@ fn space_dash_with_hans(text: &str) -> String {
 pub fn is_ignore_auto_correct(raw: &str) -> bool {
     let re = Regex::new(r"autocorrect:([ ]*)(0|false)").unwrap();
     return re.is_match(raw);
-}
-
-// get file extension from filepath
-pub fn get_file_extension(filepath: &str) -> &str {
-    if let Some(ext) = Path::new(filepath).extension().and_then(OsStr::to_str) {
-        return ext;
-    }
-
-    return "";
 }
 
 #[cfg(test)]
@@ -394,12 +383,5 @@ mod tests {
             is_ignore_auto_correct("# autocorrect: true\nHello world")
         );
         assert_eq!(false, is_ignore_auto_correct("Hello world"));
-    }
-
-    #[test]
-    fn is_get_file_extension() {
-        assert_eq!("rb", get_file_extension("/foo/bar/dar.rb"));
-        assert_eq!("js", get_file_extension("/dar.js"));
-        assert_eq!("", get_file_extension("/foo/bar/dar"));
     }
 }

@@ -1,8 +1,8 @@
 // autocorrect: false
-use autocorrect::{format, get_file_extension, is_ignore_auto_correct};
+use autocorrect::{format, is_ignore_auto_correct};
 use clap::{crate_version, App, Arg};
-use glob::glob;
 use std::collections::HashMap;
+use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
@@ -114,7 +114,7 @@ pub fn main() {
     .version(crate_version!())
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .arg(
-      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(false).multiple(true)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(true)
     )
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
@@ -128,67 +128,76 @@ pub fn main() {
     .arg(
         Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("diff").possible_values(&["json", "diff"]).required(false)
     )
+    .arg(
+        Arg::with_name("debug").long("debug").help("Print debug message.")
+    )
     .get_matches();
 
     let fix = matches.is_present("fix");
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
-    let formatter = matches.value_of("formatter").unwrap().to_lowercase();
-    let arg_files: Vec<&str> = matches.values_of("file").unwrap().collect();
+    #[allow(unused_variables)]
+    let debug = matches.is_present("debug");
+    let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
+    let arg_file = matches.value_of("file").unwrap_or("");
     let arg_filetype = matches.value_of("filetype").unwrap();
 
     // calc run time
     let start_t = std::time::SystemTime::now();
 
-    let mut filepaths: Vec<String> = Vec::new();
+    let mut walker = ignore::WalkBuilder::new(arg_file);
+    walker.follow_links(false);
 
-    for arg_file in arg_files {
-        let filepath = Path::new(arg_file);
-        let mut file_name = String::from(arg_file);
-
-        if !filepath.is_file() {
-            file_name.push_str("/**/*");
-        }
-
-        file_name = file_name.replace("//", "/");
-
-        for f in glob(file_name.as_str()).unwrap() {
-            match f {
-                Ok(_path) => {
-                    let filepath = _path.to_str().unwrap();
-                    filepaths.push(String::from(filepath));
-                }
-                Err(_e) => {}
-            }
-        }
+    if let Some(_err) = walker.add_ignore(Path::new(".autocorrectignore")) {
+        // ignore not exist
     }
 
     let mut lint_results: Vec<String> = Vec::new();
 
-    for filepath in filepaths.iter() {
-        let mut filetype = get_file_extension(filepath);
-        if arg_filetype != "" {
-            filetype = arg_filetype;
-        }
+    for result in walker.build() {
+        match result {
+            Ok(entry) => {
+                let path = entry.path();
 
-        if !FILE_TYPES.contains_key(filetype) {
-            continue;
-        }
+                // ignore unless file
+                if !path.is_file() {
+                    continue;
+                }
 
-        if let Ok(raw) = fs::read_to_string(filepath) {
-            if lint {
-                lint_and_output(
-                    filepath,
-                    filetype,
-                    raw.as_str(),
-                    formatter.as_str(),
-                    &mut lint_results,
-                )
-            } else {
-                format_and_output(filepath, filetype, raw.as_str(), fix);
+                if lint {
+                    print!(".")
+                }
+
+                let filepath = path.to_str().unwrap();
+                let mut filetype = get_file_extension(path);
+                if arg_filetype != "" {
+                    filetype = arg_filetype;
+                }
+                if !FILE_TYPES.contains_key(filetype) {
+                    continue;
+                }
+
+                if let Ok(raw) = fs::read_to_string(filepath) {
+                    if lint {
+                        lint_and_output(
+                            filepath,
+                            filetype,
+                            raw.as_str(),
+                            formatter.as_str(),
+                            &mut lint_results,
+                        )
+                    } else {
+                        format_and_output(filepath, filetype, raw.as_str(), fix);
+                    }
+                }
+            }
+            Err(_err) => {
+                println!("ERROR: {}", _err);
             }
         }
     }
+
+    println!("\n\n-----------------------------------------");
 
     if lint {
         if formatter == "json" {
@@ -198,11 +207,6 @@ pub fn main() {
                 lint_results.join(",")
             );
         } else {
-            if lint_results.len() > 0 {
-                // diff will use stderr output
-                eprint!("{}", lint_results.join("\n"));
-            }
-
             // print time spend from start_t to now
             println!(
                 "AutoCorrect spend time: {}ms\n",
@@ -210,7 +214,8 @@ pub fn main() {
             );
 
             if lint_results.len() > 0 {
-                // exit process with error 1
+                // diff will use stderr output
+                eprint!("{}", lint_results.join("\n"));
                 std::process::exit(1);
             }
         }
@@ -311,5 +316,26 @@ fn lint_and_output(
     } else {
         // diff will use stderr output
         results.push(format!("{}", result.to_diff()));
+    }
+}
+
+// get file extension from filepath
+fn get_file_extension(path: &Path) -> &str {
+    if let Some(ext) = path.extension().and_then(OsStr::to_str) {
+        return ext;
+    }
+
+    return "";
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn is_get_file_extension() {
+        assert_eq!("rb", get_file_extension("/foo/bar/dar.rb"));
+        assert_eq!("js", get_file_extension("/dar.js"));
+        assert_eq!("", get_file_extension("/foo/bar/dar"));
     }
 }
