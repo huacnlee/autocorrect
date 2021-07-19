@@ -69,6 +69,7 @@ ARGS:
 - [Using CLI](#using-cli)
 - [Ignore files](#ignore-files)
 - [GitHub Action](#github-action)
+- [GitLab CI](#gitlab-ci)
 - [Use in Rust](#use-in-rust)
 
 ### Using CLI
@@ -125,7 +126,7 @@ function hello() {
 
 https://github.com/marketplace/actions/huacnlee-autocorrect
 
-Add your `.github/workflows/ci.yml`
+Add to your `.github/workflows/ci.yml`
 
 ```yml
 steps:
@@ -134,6 +135,20 @@ steps:
 
   - name: AutoCorrect
     uses: huacnlee/autocorrect-action@main
+```
+
+### GitLab CI
+
+Add to your `.gitlab-ci.yml`
+
+```yml
+autocorrect:
+  stage: build
+  image: huacnlee/autocorrect:1.1.1
+  script:
+    - autocorrect --lint ./
+  # Enable allow_failure if you wants.
+  # allow_failure: true
 ```
 
 ### Use in Rust
