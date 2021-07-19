@@ -6,7 +6,10 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
-use colored::*;
+mod logger;
+mod progress;
+
+use logger::Logger;
 
 mod code;
 mod csharp;
@@ -41,6 +44,8 @@ macro_rules! map {
       m
   }};
 }
+
+static AUTOCORRECTIGNORE: &str = ".autocorrectignore";
 
 lazy_static! {
   static ref FILE_TYPES: HashMap<&'static str, &'static str> = map!(
@@ -116,7 +121,7 @@ pub fn main() {
     .version(crate_version!())
     .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
     .arg(
-      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(true)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(true).multiple(true)
     )
     .arg(
       Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
@@ -135,36 +140,63 @@ pub fn main() {
     )
     .get_matches();
 
+    Logger::init().expect("Init logger error");
+
+    let work_dir: std::path::PathBuf = std::env::current_dir().expect("");
+    let autocorrect_path = work_dir.join(Path::new(AUTOCORRECTIGNORE));
+
     let fix = matches.is_present("fix");
     // disable lint when fix mode
     let lint = matches.is_present("lint") && !fix;
     #[allow(unused_variables)]
     let debug = matches.is_present("debug");
     let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
-    let arg_file = matches.value_of("file").unwrap_or("");
+    let mut arg_files = matches.values_of("file").unwrap();
     let arg_filetype = matches.value_of("filetype").unwrap();
 
     // calc run time
     let start_t = std::time::SystemTime::now();
-
-    let mut walker = ignore::WalkBuilder::new(arg_file);
-    walker.follow_links(false);
-
-    if let Some(_err) = walker.add_ignore(Path::new(".autocorrectignore")) {
-        // ignore not exist
-    }
-
     let mut lint_results: Vec<String> = Vec::new();
+
+    // create a walker
+    // take first file arg, because ignore::WalkBuilder::new need a file path.
+    let first_file = arg_files.next().expect("Not file args");
+    let mut walker = ignore::WalkBuilder::new(Path::new(first_file));
+    // Add other files
+    for arg_file in arg_files {
+        walker.add(arg_file);
+    }
+    walker
+        .skip_stdout(true)
+        .parents(true)
+        .git_ignore(true)
+        .follow_links(false);
+
+    // create ignorer for ignore directly file
+    let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("ROOT");
+    if let Some(path) = autocorrect_path.to_str() {
+        if let Some(err) = ignore_builder.add(Path::new(path)) {
+            println!("Fail to add ignore file: {}, {}", path, err);
+        }
+    }
+    let ignorer = ignore_builder.build().unwrap();
 
     for result in walker.build() {
         match result {
             Ok(entry) => {
                 let path = entry.path();
 
+                if ignorer.matched(path, false).is_ignore() {
+                    // skip ignore file
+                    continue;
+                }
+
                 // ignore unless file
                 if !path.is_file() {
                     continue;
                 }
+
+                // println!("{}", path.display());
 
                 let filepath = path.to_str().unwrap();
                 let mut filetype = get_file_extension(path);
@@ -190,28 +222,28 @@ pub fn main() {
                 }
             }
             Err(_err) => {
-                println!("ERROR: {}", _err);
+                log::error!("ERROR: {}", _err);
             }
         }
     }
 
     if lint {
         if formatter == "json" {
-            println!(
+            log::info!(
                 r#"{{"count": {},"messages": [{}]}}"#,
                 lint_results.len(),
                 lint_results.join(",")
             );
         } else {
-            println!("\n\n-----------------------------------------");
+            log::info!("\n");
 
             if lint_results.len() > 0 {
                 // diff will use stderr output
-                eprint!("{}", lint_results.join("\n"));
+                log::error!("{}", lint_results.join("\n"));
             }
 
             // print time spend from start_t to now
-            println!(
+            log::info!(
                 "AutoCorrect spend time: {}ms\n",
                 start_t.elapsed().unwrap().as_millis()
             );
@@ -219,6 +251,10 @@ pub fn main() {
             if lint_results.len() > 0 {
                 std::process::exit(1);
             }
+        }
+    } else {
+        if fix {
+            log::info!("Done.\n");
         }
     }
 }
@@ -260,6 +296,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
         // do not rewrite ignored file
         if filepath.len() > 0 {
             fs::write(Path::new(filepath), result.out).unwrap();
+            progress::ok(true);
         }
     } else {
         // print a single file output
@@ -274,6 +311,8 @@ fn lint_and_output(
     formatter: &str,
     results: &mut Vec<String>,
 ) {
+    let diff_mode = formatter != "json";
+
     let ignore = is_ignore_auto_correct(raw);
 
     // skip lint ignored file, just return
@@ -307,19 +346,18 @@ fn lint_and_output(
 
     // do not print anything, when not lint results
     if result.lines.len() == 0 {
-        print!("{}", ".".green());
+        progress::ok(diff_mode);
         return;
+    } else {
+        progress::err(diff_mode);
     }
-
-    print!("{}", ".".red());
 
     result.filepath = String::from(filepath);
 
-    if formatter == "json" {
-        results.push(format!("{}", result.to_json()));
-    } else {
-        // diff will use stderr output
+    if diff_mode {
         results.push(format!("{}", result.to_diff()));
+    } else {
+        results.push(format!("{}", result.to_json()));
     }
 }
 
