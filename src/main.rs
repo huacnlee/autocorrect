@@ -173,7 +173,7 @@ pub fn main() {
         .follow_links(false);
 
     // create ignorer for ignore directly file
-    let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("ROOT");
+    let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("./");
     if let Some(path) = autocorrect_path.to_str() {
         if let Some(err) = ignore_builder.add(Path::new(path)) {
             println!("Fail to add ignore file: {}, {}", path, err);
