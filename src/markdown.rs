@@ -31,6 +31,9 @@ mod tests {
         let example = r###"
     # 这是Heading 1大标题
 
+    **加粗** 
+    *倾斜*
+    ~~删除线~~
     这是**Bold加粗**在1个段落中，这端会correct掉，如果是inline code，例如`Rust语言`，也可以应该处理。
     
     > 引用文本：Quote也是可以的。
@@ -47,6 +50,9 @@ mod tests {
         let expected = r###"
     # 这是 Heading 1 大标题
 
+    **加粗** 
+    *倾斜*
+    ~~删除线~~
     这是**Bold 加粗**在 1 个段落中，这端会 correct 掉，如果是 inline code，例如`Rust 语言`，也可以应该处理。
     
     > 引用文本：Quote 也是可以的。

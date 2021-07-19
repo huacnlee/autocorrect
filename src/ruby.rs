@@ -9,42 +9,44 @@ struct RubyParser;
 
 #[allow(dead_code)]
 pub fn format_ruby(text: &str) -> code::FormatResult {
-    let pairs = RubyParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = RubyParser::parse(Rule::item, text);
+  let text = code::FormatResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_ruby(text: &str) -> code::LintResult {
-    let pairs = RubyParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = RubyParser::parse(Rule::item, text);
+  let text = code::LintResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use super::*;
 
-    #[test]
-    fn it_format_ruby() {
-        let example = r###"
+  #[test]
+  fn it_format_ruby() {
+    let example = r###"
 # 第1行注释
 # 第2行注释
 def hello(a, b: "第1个参数")
+  regexp = /#hello你好/
   a = "hello世界#{a}"
   b = '你好hello世界'
 end
 "###;
 
-        let expect = r###"
+    let expect = r###"
 # 第 1 行注释
 # 第 2 行注释
 def hello(a, b: "第 1 个参数")
+  regexp = /#hello你好/
   a = "hello 世界#{a}"
   b = '你好 hello 世界'
 end
 "###;
 
-        assert_eq!(expect, format_ruby(example).to_string());
-    }
+    assert_eq!(expect, format_ruby(example).to_string());
+  }
 }
