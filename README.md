@@ -66,7 +66,12 @@ ARGS:
 
 ## Usage
 
-### Get correct result
+- [Using CLI](#using-cli)
+- [Ignore files](#ignore-files)
+- [GitHub Action](#github-action)
+- [Use in Rust](#use-in-rust)
+
+### Using CLI
 
 ```bash
 $ autocorrect text.txt
@@ -77,15 +82,7 @@ $ autocorrect --fix zh-CN.yml
 $ autocorrect --fix ./
 ```
 
-### Ignore files
-
-Some times, you may wants ignore some special files that not wants to check.
-
-By default, the file matched `.gitignore` rule will be ignored.
-
-You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
-
-### Lint
+#### Lint
 
 ```bash
 $ autocorrect --lint --format json text.txt
@@ -105,7 +102,15 @@ You also can lint multiple files:
 $ autocorrect --lint ./
 ```
 
-## Ignore for file
+### Ignore files
+
+Some times, you may wants ignore some special files that not wants to check.
+
+By default, the file matched `.gitignore` rule will be ignored.
+
+You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
+
+**Ignore for file**
 
 If you want ignore AutoCorrect for a file, you can put `autocorrect: false`.
 
@@ -116,9 +121,24 @@ function hello() {
 }
 ```
 
-## Usage in Rust
+### GitHub Action
 
-## Other implements for programming
+https://github.com/marketplace/actions/huacnlee-autocorrect
+
+Add your `.github/workflows/ci.yml`
+
+```yml
+steps:
+  - name: Check source code
+    uses: actions/checkout@master
+
+  - name: AutoCorrect
+    uses: huacnlee/autocorrect-action@main
+```
+
+### Use in Rust
+
+Other implements for programming:
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
 - Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
