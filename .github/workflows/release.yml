@@ -111,3 +111,6 @@ jobs:
           files: autocorrect-*/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger Docker Build
+        run: curl -XPOST ${{ secrets.DOCKER_HUB_BUILD_HOOK }}
