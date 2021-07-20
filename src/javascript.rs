@@ -33,8 +33,8 @@ mod tests {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
-
   const re = /包含#regexp测试/;
+  const str_literal = `这个${foo}不会处理`;
 
   /**
    * Hello你好
@@ -51,8 +51,8 @@ function helloWorld(a) {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
-
   const re = /包含#regexp测试/;
+  const str_literal = `这个${foo}不会处理`;
 
   /**
    * Hello 你好
