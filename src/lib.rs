@@ -122,7 +122,7 @@ lazy_static! {
         Strategery::new(r"\p{CJK}", r"[\|+*]", true, true),
         Strategery::new(r"\p{CJK}", r"[@]", true, false),
         Strategery::new(r"\p{CJK}", r"[\[\(‘“]", true, false),
-        Strategery::new(r"[’”\]\)!%]", r"\p{CJK}", true, false),
+        Strategery::new(r"[’”\]\)!]", r"\p{CJK}", true, false),
         // FullwidthPunctuation
         Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]", false, true),
         Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]", false, true),
@@ -267,7 +267,8 @@ mod tests {
             "Dollar 的演示 $阿里巴巴.US$ 股票标签" =>    "Dollar 的演示 $阿里巴巴.US$ 股票标签",
             "测试英文,逗号Comma转换." =>    "测试英文，逗号 Comma 转换。",
             "测试英文,Comma 逗号转换." =>    "测试英文，Comma 逗号转换。",
-            "英文, 逗号后面. 阿里巴巴.US有空格? 的情况! 测试" =>    "英文，逗号后面。阿里巴巴.US 有空格？的情况！测试"
+            "英文, 逗号后面. 阿里巴巴.US有空格? 的情况! 测试" =>    "英文，逗号后面。阿里巴巴.US 有空格？的情况！测试",
+            "search by %关键词%" => "search by %关键词%"
         ];
 
         assert_cases(cases);
@@ -313,6 +314,7 @@ mod tests {
     fn it_format_for_special_symbols() {
         let cases = map![
             "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报！" =>          "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报！",
+            "比如: 这个，以及：这个" => "比如：这个，以及：这个",
             "消息 http://github.com 解禁了" =>                     "消息 http://github.com 解禁了",
             "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油" =>     "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
             "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。",
