@@ -131,7 +131,7 @@ Add to your `.github/workflows/ci.yml`
 ```yml
 steps:
   - name: Check source code
-    uses: actions/checkout@master
+    uses: actions/checkout@main
 
   - name: AutoCorrect
     uses: huacnlee/autocorrect-action@main
@@ -139,12 +139,12 @@ steps:
 
 ### GitLab CI
 
-Add to your `.gitlab-ci.yml`
+Add to your `.gitlab-ci.yml`, to use [huacnlee/autocorrect](https://hub.docker.com/r/huacnlee/autocorrect) Docker image to check.
 
 ```yml
 autocorrect:
   stage: build
-  image: huacnlee/autocorrect:1.1.1
+  image: huacnlee/autocorrect:latest
   script:
     - autocorrect --lint ./
   # Enable allow_failure if you wants.
