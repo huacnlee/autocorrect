@@ -7,8 +7,9 @@ single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
 string = ${ 
-  ("`" ~ (!("`") ~ ANY)* ~ "`") 
-  | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+  ("`" ~ (!("`" | string_verb) ~ ANY)* ~ "`") 
+  | ("\"" ~ (!(newline | "\"" | string_verb) ~ ANY)* ~ "\"") 
 }
+string_verb = { "%" ~ ("s" | "q" | "v") }
 line = _{ string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 
