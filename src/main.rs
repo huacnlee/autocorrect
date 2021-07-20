@@ -265,11 +265,13 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
     let ignore = is_ignore_auto_correct(raw);
 
     // print raw content and exist when ignore enable and not fix
-    if ignore && !fix {
-        println!("{}", raw);
-        std::process::exit(0);
-    } else {
-        return;
+    if ignore {
+        if fix {
+            return;
+        } else {
+            println!("{}", raw);
+            std::process::exit(0);
+        }
     }
 
     let result = match FILE_TYPES[filetype] {
