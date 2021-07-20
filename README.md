@@ -2,7 +2,7 @@
 
 [![Go](https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg)](https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI) [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect) [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
 
-The CLI tool based on Rust is used to automatically correct, for add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
+A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).
 
 Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, and output as colorized diff with corrected suggest. You can intergrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
 

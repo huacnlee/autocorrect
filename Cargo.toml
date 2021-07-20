@@ -1,6 +1,6 @@
 [package]
 authors = ["Jason Lee <huacnlee@gmail.com>"]
-description = "Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols)."
+description = "A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean)."
 edition = "2018"
 homepage = "https://github.com/huacnlee/autocorrect"
 keywords = ["auto-correct", "fmt", "format", "spacing"]

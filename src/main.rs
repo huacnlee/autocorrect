@@ -119,7 +119,7 @@ pub fn main() {
     let matches = App::new("AutoCorrect")
     .author("Jason Lee <huacnlee@gmail.com")
     .version(crate_version!())
-    .about("Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).")
+    .about("A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).")
     .arg(
       Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(true).multiple(true)
     )
