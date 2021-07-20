@@ -11,5 +11,10 @@ string = ${
   | ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\""+) 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
-line = _{ comment | string | space | other | newline }
+
+regexp = ${
+  ( "r'" ~ (!(newline | "'") ~ ANY)* ~ "'" )
+}
+
+line = _{ regexp | comment | string | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

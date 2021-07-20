@@ -9,25 +9,25 @@ struct PythonParser;
 
 #[allow(dead_code)]
 pub fn format_python(text: &str) -> code::FormatResult {
-    let pairs = PythonParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = PythonParser::parse(Rule::item, text);
+  let text = code::FormatResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_python(text: &str) -> code::LintResult {
-    let pairs = PythonParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = PythonParser::parse(Rule::item, text);
+  let text = code::LintResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use super::*;
 
-    #[test]
-    fn it_format_python() {
-        let example = r###"
+  #[test]
+  fn it_format_python() {
+    let example = r###"
 '''
 这是多行1注释
 这是多行2注释
@@ -39,12 +39,14 @@ def hello(a):
   第2行多行字符串
   """
 
+  re = r'包含#regexp测试'
+
   # 第4个注释
   print("你好hello世界")
   print('你好hello世界')
 "###;
 
-        let expect = r###"
+    let expect = r###"
 '''
 这是多行 1 注释
 这是多行 2 注释
@@ -56,11 +58,13 @@ def hello(a):
   第 2 行多行字符串
   """
 
+  re = r'包含#regexp测试'
+
   # 第 4 个注释
   print("你好 hello 世界")
   print('你好 hello 世界')
 "###;
 
-        assert_eq!(expect, format_python(example).to_string());
-    }
+    assert_eq!(expect, format_python(example).to_string());
+  }
 }

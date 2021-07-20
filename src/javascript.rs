@@ -33,6 +33,9 @@ mod tests {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
+
+  const re = /包含#regexp测试/;
+
   /**
    * Hello你好
    * 这是第2行
@@ -48,6 +51,9 @@ function helloWorld(a) {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
+
+  const re = /包含#regexp测试/;
+
   /**
    * Hello 你好
    * 这是第 2 行
