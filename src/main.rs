@@ -268,6 +268,8 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
     if ignore && !fix {
         println!("{}", raw);
         std::process::exit(0);
+    } else {
+        return;
     }
 
     let result = match FILE_TYPES[filetype] {
