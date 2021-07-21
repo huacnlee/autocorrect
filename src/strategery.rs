@@ -9,6 +9,11 @@ pub struct Strategery {
 }
 
 impl Strategery {
+    /// Create a new strategery object.
+    /// ## Arguments
+    ///
+    /// - `space` - `true` - add space / `false` - remove space
+    /// - `reverse` - false just format `(one + other)`, true will format `(other + one)` and `(other + one)`.
     pub fn new(one: &'static str, other: &'static str, space: bool, reverse: bool) -> Self {
         return Strategery {
             space: space,
