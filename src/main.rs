@@ -303,12 +303,21 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
     };
 
     if fix {
+        if result.has_error() {
+            return;
+        }
+
         // do not rewrite ignored file
         if filepath.len() > 0 {
             fs::write(Path::new(filepath), result.out).unwrap();
             progress::ok(true);
         }
     } else {
+        if result.has_error() {
+            println!("{}", raw);
+            return;
+        }
+
         // print a single file output
         println!("{}", result.out);
     }

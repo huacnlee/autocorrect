@@ -196,6 +196,11 @@ impl<'a> FormatResult {
             error: String::from(""),
         }
     }
+
+    #[allow(dead_code)]
+    pub fn has_error(&self) -> bool {
+        return self.error.len() > 0;
+    }
 }
 
 impl<'a> Results for FormatResult {
@@ -258,6 +263,11 @@ impl LintResult {
         }
 
         return out;
+    }
+
+    #[allow(dead_code)]
+    pub fn has_error(&self) -> bool {
+        return self.error.len() > 0;
     }
 }
 
