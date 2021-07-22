@@ -51,6 +51,7 @@ mod tests {
         let html = r###"
         <!DOCTYPE html>
         <html xmlns=http://www.w3.org/1999/xhtml>
+        <title><%= title %>或者{{ title }}</title>
         <article>
         <h1>编译Rust为WebAssembly</h1>
         <style type="text/css" nofollow>
@@ -86,6 +87,7 @@ mod tests {
         let expected = r###"
         <!DOCTYPE html>
         <html xmlns=http://www.w3.org/1999/xhtml>
+        <title><%= title %>或者{{ title }}</title>
         <article>
         <h1>编译 Rust 为 WebAssembly</h1>
         <style type="text/css" nofollow>

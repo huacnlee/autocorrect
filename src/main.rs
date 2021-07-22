@@ -51,6 +51,9 @@ lazy_static! {
   static ref FILE_TYPES: HashMap<&'static str, &'static str> = map!(
     "html" => "html",
     "htm" => "html",
+    "vue" => "html",
+    "ejs" => "html",
+    "html.erb" => "html",
     // yaml
     "yaml" => "yaml",
     "yml" => "yaml",
@@ -383,6 +386,7 @@ mod tests {
     #[test]
     fn is_get_file_extension() {
         assert_eq!("rb", get_file_extension("/foo/bar/dar.rb"));
+        assert_eq!("html.erb", get_file_extension("/foo/bar/dar.html.erb"));
         assert_eq!("js", get_file_extension("/dar.js"));
         assert_eq!("", get_file_extension("/foo/bar/dar"));
     }
