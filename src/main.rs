@@ -322,7 +322,9 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option)
 
     if option.fix {
         if result.has_error() {
-            log::error!("{}\n{}", filepath, result.error);
+            if option.debug {
+                log::error!("{}\n{}", filepath, result.error);
+            }
             return;
         }
 
