@@ -9,7 +9,7 @@ comment = ${
 
 text = ${ (!(html_start) ~ ANY)+ }
 html_node = _{ html_start ~ (!(html_end) ~ node)*  ~ html_end }
-html_tag_inner = _{ (!(">") ~ ANY)* }
+html_tag_inner = _{ (!("/"? ~ ">") ~ ANY)* }
 html_start = { "<" ~ PUSH(html_tag_inner) ~ ">"}
 html_end = { "</" ~ PUSH(html_tag_inner) ~ ">"}
 
@@ -24,6 +24,6 @@ regexp = ${
 }
 
 node = { html_node | text }
-js = _{ comment | string | regexp | space | other | newline }
-line = _{  js | node }
+js = _{ comment | string | regexp | space | other}
+line = _{  js | node | newline }
 item = _{ SOI ~ line* ~ EOI } 

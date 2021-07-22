@@ -92,6 +92,29 @@ function helloWorld(a) {
     }
 
     #[test]
+    fn it_format_javascript_without_any_string() {
+        let example = r###"
+        function helloWorld(a) {
+            const a = "";
+            return <div className="tags">
+               {tags.map(tag => <Tag color="orange"><Icon name="label" /> {tag.name}</Tag>)}
+            </div>;
+        }
+        "###;
+
+        let expect = r###"
+        function helloWorld(a) {
+            const a = "";
+            return <div className="tags">
+               {tags.map(tag => <Tag color="orange"><Icon name="label" /> {tag.name}</Tag>)}
+            </div>;
+        }
+        "###;
+
+        assert_eq!(expect, format_javascript(example).to_string());
+    }
+
+    #[test]
     fn it_lint_javascript() {
         let example = r###"
     /**
