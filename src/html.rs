@@ -6,19 +6,20 @@ use pest_derive::Parser;
 
 #[derive(Parser)]
 #[grammar = "grammar/html.pest"]
-struct JavaParser;
+struct HTMLParser;
 
 #[allow(dead_code)]
 pub fn format_html(text: &str) -> code::FormatResult {
-    let pairs = JavaParser::parse(Rule::item, text);
+    let pairs = HTMLParser::parse(Rule::item, text);
 
+    // preformat script, style first
     let text = code::FormatResult::new(text);
     return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_html(text: &str) -> code::LintResult {
-    let pairs = JavaParser::parse(Rule::item, text);
+    let pairs = HTMLParser::parse(Rule::item, text);
 
     let text = code::LintResult::new(text);
     return code::format_pairs(text, pairs);
@@ -53,11 +54,17 @@ mod tests {
         <article>
         <h1>编译Rust为WebAssembly</h1>
         <style type="text/css" nofollow>
-        .body { font-size: 14px; }
+        /* 在css里面的注释会转换 */
+        .body { font-size: 14px; } /* 后面个comment注释 */
         </style>
         <script type="text/javascript">
-        // 这个不能script里面不能转换
-        window['__abbaidu_2036_subidgetf'] = function () {var subid = 'feed_landing_super';return subid;};window['__abbaidu_2036_cb'] = function (responseData) {};
+        // 这个script也会转换
+        // 按照javascript的方式来处理
+        const a = "hello你好";
+        /**
+         * 多行comment测试
+         * 多行第2行
+         */
         </script>
         <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
         <div class="content">
@@ -82,11 +89,17 @@ mod tests {
         <article>
         <h1>编译 Rust 为 WebAssembly</h1>
         <style type="text/css" nofollow>
-        .body { font-size: 14px; }
+        /* 在 css 里面的注释会转换 */
+        .body { font-size: 14px; } /* 后面个 comment 注释 */
         </style>
         <script type="text/javascript">
-        // 这个不能script里面不能转换
-        window['__abbaidu_2036_subidgetf'] = function () {var subid = 'feed_landing_super';return subid;};window['__abbaidu_2036_cb'] = function (responseData) {};
+        // 这个 script 也会转换
+        // 按照 javascript 的方式来处理
+        const a = "hello 你好";
+        /**
+         * 多行 comment 测试
+         * 多行第 2 行
+         */
         </script>
         <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
         <div class="content">
@@ -151,11 +164,18 @@ mod tests {
             <p>这是第二行p标签</p>
         </div>
         </article>
+        <style type="text/css">
+        /* 在css里面的注释会转换 */
+        </style>
+        <script type="text/javascript">
+        // 这个script也会转换
+        const a = "hello你好";
+        </script>
         </body>
         </html>"#;
 
         let lint_result = lint_html(html);
         assert_eq!("", lint_result.error);
-        assert_eq!(4, lint_result.lines.len());
+        assert_eq!(7, lint_result.lines.len());
     }
 }

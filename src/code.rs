@@ -12,7 +12,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     match pairs {
         Ok(items) => {
             for item in items {
-                format_pair(&mut out, item);
+                format_pair(&mut out, item, "");
             }
         }
         Err(_err) => {
@@ -23,7 +23,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     return out;
 }
 
-fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
+fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
     let rule = item.as_rule();
     let rule_name = format!("{:?}", rule);
 
@@ -31,11 +31,14 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
 
     match rule_name.as_str() {
         "string" | "link_string" | "text" | "comment" => format_or_lint(results, item),
+        "html_style" | "html_javascript" => {
+            format_or_lint_for_inline_scripts(results, item, rule_name.as_str())
+        }
         _ => {
             let mut child_count = 0;
             let item_str = item.as_str();
             for child in item.into_inner() {
-                format_pair(results, child);
+                format_pair(results, child, scope_rule);
                 child_count += 1;
             }
 
@@ -46,7 +49,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
     };
 }
 
-fn format_or_lint<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
+pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
     let (part_line, part_col) = item.as_span().start_pos().line_col();
     let part = item.as_str();
 
@@ -96,6 +99,59 @@ fn format_or_lint<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
             old: String::from(part),
             new: format(part),
         });
+    }
+}
+
+// format_or_lint for inline scripts, for example, script/css in html
+pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
+    results: &mut O,
+    item: Pair<R>,
+    rule_name: &str,
+) {
+    let part = item.as_str();
+
+    if results.is_lint() {
+        if rule_name == "html_style" {
+            let sub_reuslts = css::lint_css(part);
+            for line in sub_reuslts.lines {
+                results.push(line);
+            }
+            results.error(sub_reuslts.error.as_str());
+
+            return;
+        } else if rule_name == "html_javascript" {
+            let sub_reuslts = javascript::lint_javascript(part);
+            for line in sub_reuslts.lines {
+                results.push(line);
+            }
+            results.error(sub_reuslts.error.as_str());
+
+            return;
+        }
+    } else {
+        if rule_name == "html_style" {
+            let sub_reuslts = css::format_css(part);
+            results.push(LineResult {
+                line: 0,
+                col: 0,
+                old: String::from(part),
+                new: sub_reuslts.out,
+            });
+            results.error(sub_reuslts.error.as_str());
+
+            return;
+        } else if rule_name == "html_javascript" {
+            let sub_reuslts = javascript::format_javascript(part);
+            results.push(LineResult {
+                line: 0,
+                col: 0,
+                old: String::from(part),
+                new: sub_reuslts.out,
+            });
+            results.error(sub_reuslts.error.as_str());
+
+            return;
+        }
     }
 }
 

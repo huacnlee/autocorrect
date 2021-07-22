@@ -24,7 +24,7 @@ doctype_name = @{ ^"doctype" }
 node = _{ comment | node_element | text }
 comment = _{ comment_if | comment_normal }
 text = { (!(chevron_left_normal | comment_tag_start ) ~ ANY)+ } // NOTE: Should we be able to write < in text? ^^
-node_element = { el_void | el_void_xml | el_process_instruct | el_raw_text | el_normal | el_dangling }
+node_element = { el_void | el_void_xml | el_process_instruct | javascript_text | style_text | el_raw_text | el_normal | el_dangling }
 
 //
 // COMMENTS
@@ -44,7 +44,7 @@ comment_if_end = _{ chevron_left_bang ~ "[" ~ ^"endif" ~ "]" ~ comment_tag_end }
 attr = { attr_key ~ (equal ~ (attr_non_quoted | attr_quoted ))? }
 attr_quoted =  _{PUSH(quote) ~ attr_value ~ PUSH(quote) }
 attr_non_quoted = @{ !quote ~ (!(WHITESPACE | chevron_right) ~ ANY)* }
-attr_key = ${ !WHITESPACE ~ ASCII_ALPHA ~ text_chars* }
+attr_key = ${ !WHITESPACE ~ (":" | "@")? ~ ASCII_ALPHA ~ text_chars* }
 attr_value = ${ (!PEEK ~ ANY)* }
 
 //
@@ -94,15 +94,25 @@ el_normal_end = _{ chevron_left_closed ~ PUSH(el_name) ~ chevron_right_normal}
 // Raw text elements are elements with text/script content that
 // might interfere with the normal html syntax
 el_raw_text_name = {
-    ^"style"
-    | ^"script"
-    | ^"title"
+    ^"title"
     | ^"textarea"
 }
 el_raw_text_content = ${ (!el_raw_text_end ~ ANY)* }
 el_raw_text = _{ el_raw_text_start ~ el_raw_text_content ~ el_raw_text_end }
 el_raw_text_start = _{ chevron_left_normal ~ PUSH(el_raw_text_name) ~ attr* ~ chevron_right_normal}
 el_raw_text_end = { chevron_left_closed ~ PUSH(el_raw_text_name) ~ chevron_right_normal}
+
+html_javascript = ${ (!javascript_end ~ ANY)* }
+javascript_text = _{ javascript_start ~ html_javascript ~ javascript_end }
+el_javascript_name = @{ ^"script" }
+javascript_start = _{ chevron_left_normal ~ PUSH(el_javascript_name) ~ attr* ~ chevron_right_normal}
+javascript_end = { chevron_left_closed ~ PUSH(el_javascript_name) ~ chevron_right_normal}
+
+html_style = ${ (!style_end ~ ANY)* }
+el_style_name = @{ ^"style" }
+style_text = _{ style_start ~ html_style ~ style_end }
+style_start = _{ chevron_left_normal ~ PUSH(el_style_name) ~ attr* ~ chevron_right_normal}
+style_end = { chevron_left_closed ~ PUSH(el_style_name) ~ chevron_right_normal}
 
 // XML processing instruction
 // Ex: <?xml version="1.0" ?>
