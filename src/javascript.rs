@@ -28,11 +28,11 @@ mod tests {
     #[test]
     fn it_format_javascript() {
         let example = r###"
-// 第 1 行注释
-// 第 2 行注释
+// 第1行注释
+// 第2行注释
 function helloWorld(a) {
-  const a = '第 1 个';
-  const b = "第 2 个" + "第 3 个";
+  const a = '第1个';
+  const b = "第2个" + "第3个";
   const re = /包含#regexp测试/;
   const str_literal = `这个${foo}不会处理`;
 

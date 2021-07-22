@@ -2,9 +2,10 @@ newline = ${ "\n" | "\r" }
 space = ${ " "+ }
 
 other = ${ !(string) ~ ANY }
-comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+comment = ${ 
+  "//" ~ (!(newline) ~ ANY)*
+  | "/*" ~ (!("*/") ~ ANY)* ~ "*/"
+}
 
 string = ${ 
   ("'" ~ (!("'") ~ ANY)* ~ "'") 
@@ -16,5 +17,5 @@ regexp = ${
   ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
 }
 
-line = _{ regexp | string | comment | space | other | newline }
+line = _{  string | comment | regexp | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 
