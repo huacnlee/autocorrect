@@ -119,7 +119,21 @@ lazy_static! {
   );
 }
 
+struct Option {
+    lint: bool,
+    fix: bool,
+    debug: bool,
+    formatter: String,
+}
+
 pub fn main() {
+    let mut option = Option {
+        debug: false,
+        fix: false,
+        lint: false,
+        formatter: String::from(""),
+    };
+
     let matches = App::new("AutoCorrect")
     .author("Jason Lee <huacnlee@gmail.com")
     .version(crate_version!())
@@ -149,12 +163,12 @@ pub fn main() {
     let work_dir: std::path::PathBuf = std::env::current_dir().expect("");
     let autocorrect_path = work_dir.join(Path::new(AUTOCORRECTIGNORE));
 
-    let fix = matches.is_present("fix");
+    option.fix = matches.is_present("fix");
     // disable lint when fix mode
-    let lint = matches.is_present("lint") && !fix;
-    #[allow(unused_variables)]
-    let debug = matches.is_present("debug");
-    let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
+    option.lint = matches.is_present("lint") && !option.fix;
+    option.debug = matches.is_present("debug");
+    option.formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
+
     let mut arg_files = matches.values_of("file").unwrap();
     let arg_filetype = matches.value_of("filetype").unwrap();
 
@@ -180,7 +194,7 @@ pub fn main() {
     let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("./");
     if let Some(path) = autocorrect_path.to_str() {
         if let Some(err) = ignore_builder.add(Path::new(path)) {
-            if debug {
+            if option.debug {
                 println!("Fail to add ignore file: {}, {}", path, err);
             }
         }
@@ -214,16 +228,16 @@ pub fn main() {
                 }
 
                 if let Ok(raw) = fs::read_to_string(filepath) {
-                    if lint {
+                    if option.lint {
                         lint_and_output(
                             filepath,
                             filetype,
                             raw.as_str(),
-                            formatter.as_str(),
+                            &option,
                             &mut lint_results,
                         )
                     } else {
-                        format_and_output(filepath, filetype, raw.as_str(), fix);
+                        format_and_output(filepath, filetype, raw.as_str(), &option);
                     }
                 }
             }
@@ -233,8 +247,8 @@ pub fn main() {
         }
     }
 
-    if lint {
-        if formatter == "json" {
+    if option.lint {
+        if option.formatter.as_str() == "json" {
             log::info!(
                 r#"{{"count": {},"messages": [{}]}}"#,
                 lint_results.len(),
@@ -259,23 +273,27 @@ pub fn main() {
             }
         }
     } else {
-        if fix {
+        if option.fix {
             log::info!("Done.\n");
         }
     }
 }
 
-fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
+fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option) {
     let ignore = is_ignore_auto_correct(raw);
 
     // print raw content and exist when ignore enable and not fix
     if ignore {
-        if fix {
+        if option.fix {
             return;
         } else {
             println!("{}", raw);
             std::process::exit(0);
         }
+    }
+
+    if option.debug {
+        log::info!("-> {}", filepath);
     }
 
     let result = match FILE_TYPES[filetype] {
@@ -302,7 +320,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
         _ => code::FormatResult::new(raw),
     };
 
-    if fix {
+    if option.fix {
         if result.has_error() {
             log::error!("{}\n{}", filepath, result.error);
             return;
@@ -328,10 +346,10 @@ fn lint_and_output(
     filepath: &str,
     filetype: &str,
     raw: &str,
-    formatter: &str,
+    option: &Option,
     results: &mut Vec<String>,
 ) {
-    let diff_mode = formatter != "json";
+    let diff_mode = option.formatter != "json";
 
     let ignore = is_ignore_auto_correct(raw);
 

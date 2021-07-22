@@ -9,8 +9,8 @@ comment = ${
 
 text = ${ (!("<") ~ ANY)+ }
 html_void = _{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
-html_node = _{ html_start ~ (!(html_end) ~ node)*  ~ html_end }
-html_tag_inner = _{ (!(">") ~ ANY)+ }
+html_node = _{ html_start ~ (!(html_end) ~ (html_node | text))+  ~ html_end }
+html_tag_inner = _{ (!(">") ~ ANY)* }
 html_start = { "<" ~ PUSH(html_tag_inner) ~ chevron_right }
 html_end = { "</" ~ PUSH(html_tag_inner) ~ ">"}
 
