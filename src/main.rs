@@ -304,6 +304,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, fix: bool) {
 
     if fix {
         if result.has_error() {
+            log::error!("{}\n{}", filepath, result.error);
             return;
         }
 

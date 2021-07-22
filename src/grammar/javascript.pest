@@ -7,11 +7,18 @@ comment = ${
   | "/*" ~ (!("*/") ~ ANY)* ~ "*/"
 }
 
-text = ${ (!(html_start) ~ ANY)+ }
+text = ${ (!("<") ~ ANY)+ }
+html_void = _{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
 html_node = _{ html_start ~ (!(html_end) ~ node)*  ~ html_end }
-html_tag_inner = _{ (!("/"? ~ ">") ~ ANY)* }
-html_start = { "<" ~ PUSH(html_tag_inner) ~ ">"}
+html_tag_inner = _{ (!(">") ~ ANY)+ }
+html_start = { "<" ~ PUSH(html_tag_inner) ~ chevron_right }
 html_end = { "</" ~ PUSH(html_tag_inner) ~ ">"}
+
+chevron_right = _{
+    ">"
+    | "/>"
+    | "?>"
+}
 
 string = ${ 
   ("'" ~ (!("'") ~ ANY)* ~ "'") 
@@ -23,7 +30,7 @@ regexp = ${
   ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
 }
 
-node = { html_node | text }
+node = {  html_node | html_void | text }
 js = _{ comment | string | regexp | space | other}
 line = _{  js | node | newline }
 item = _{ SOI ~ line* ~ EOI } 
