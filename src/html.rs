@@ -50,6 +50,7 @@ mod tests {
     fn test_format_html() {
         let html = r###"
         <!DOCTYPE html>
+        <!-- html的注释 -->
         <html xmlns=http://www.w3.org/1999/xhtml>
         <title><%= title %>或者{{ title }}</title>
         <article>
@@ -86,6 +87,7 @@ mod tests {
 
         let expected = r###"
         <!DOCTYPE html>
+        <!-- html 的注释 -->
         <html xmlns=http://www.w3.org/1999/xhtml>
         <title><%= title %>或者{{ title }}</title>
         <article>
