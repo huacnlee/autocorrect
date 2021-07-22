@@ -292,9 +292,9 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option)
         }
     }
 
-    if option.debug {
-        log::info!("-> {}", filepath);
-    }
+    // if option.debug {
+    //     log::info!("-> {}", filepath);
+    // }
 
     let result = match FILE_TYPES[filetype] {
         "html" => html::format_html(raw),
@@ -395,6 +395,13 @@ fn lint_and_output(
     result.filepath = String::from(filepath);
 
     if diff_mode {
+        if result.has_error() {
+            if option.debug {
+                log::error!("{}\n{}", filepath, result.error);
+                return;
+            }
+        }
+
         results.push(format!("{}", result.to_diff()));
     } else {
         results.push(format!("{}", result.to_json()));
