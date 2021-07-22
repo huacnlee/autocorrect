@@ -75,6 +75,7 @@ lazy_static! {
     "ts" => "javascript",
     "tsx" => "javascript",
     "typescript" => "javascript",
+    "js.erb" => "javascript",
     // css
     "css" => "css",
     "scss" => "css",

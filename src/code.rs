@@ -31,7 +31,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
 
     match rule_name.as_str() {
         "string" | "link_string" | "text" | "comment" => format_or_lint(results, item),
-        "html_style" | "html_javascript" => {
+        "inline_style" | "inline_javascript" => {
             format_or_lint_for_inline_scripts(results, item, rule_name.as_str())
         }
         _ => {
@@ -111,7 +111,7 @@ pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     let part = item.as_str();
 
     if results.is_lint() {
-        if rule_name == "html_style" {
+        if rule_name == "inline_style" {
             let sub_reuslts = css::lint_css(part);
             for line in sub_reuslts.lines {
                 results.push(line);
@@ -119,7 +119,7 @@ pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             results.error(sub_reuslts.error.as_str());
 
             return;
-        } else if rule_name == "html_javascript" {
+        } else if rule_name == "inline_javascript" {
             let sub_reuslts = javascript::lint_javascript(part);
             for line in sub_reuslts.lines {
                 results.push(line);
@@ -129,7 +129,7 @@ pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             return;
         }
     } else {
-        if rule_name == "html_style" {
+        if rule_name == "inline_style" {
             let sub_reuslts = css::format_css(part);
             results.push(LineResult {
                 line: 0,
@@ -140,7 +140,7 @@ pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             results.error(sub_reuslts.error.as_str());
 
             return;
-        } else if rule_name == "html_javascript" {
+        } else if rule_name == "inline_javascript" {
             let sub_reuslts = javascript::format_javascript(part);
             results.push(LineResult {
                 line: 0,

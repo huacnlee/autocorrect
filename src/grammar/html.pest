@@ -102,15 +102,15 @@ el_raw_text = _{ el_raw_text_start ~ el_raw_text_content ~ el_raw_text_end }
 el_raw_text_start = _{ chevron_left_normal ~ PUSH(el_raw_text_name) ~ attr* ~ chevron_right_normal}
 el_raw_text_end = { chevron_left_closed ~ PUSH(el_raw_text_name) ~ chevron_right_normal}
 
-html_javascript = ${ (!javascript_end ~ ANY)* }
-javascript_text = _{ javascript_start ~ html_javascript ~ javascript_end }
+inline_javascript = ${ (!javascript_end ~ ANY)* }
+javascript_text = _{ javascript_start ~ inline_javascript ~ javascript_end }
 el_javascript_name = @{ ^"script" }
 javascript_start = _{ chevron_left_normal ~ PUSH(el_javascript_name) ~ attr* ~ chevron_right_normal}
 javascript_end = { chevron_left_closed ~ PUSH(el_javascript_name) ~ chevron_right_normal}
 
-html_style = ${ (!style_end ~ ANY)* }
+inline_style = ${ (!style_end ~ ANY)* }
 el_style_name = @{ ^"style" }
-style_text = _{ style_start ~ html_style ~ style_end }
+style_text = _{ style_start ~ inline_style ~ style_end }
 style_start = _{ chevron_left_normal ~ PUSH(el_style_name) ~ attr* ~ chevron_right_normal}
 style_end = { chevron_left_closed ~ PUSH(el_style_name) ~ chevron_right_normal}
 

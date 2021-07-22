@@ -1,11 +1,17 @@
 newline = ${ "\n" | "\r" }
 space = ${ " "+ }
 
-other = ${ !(string) ~ ANY }
+other = ${ !(string | html_start) ~ ANY }
 comment = ${ 
   "//" ~ (!(newline) ~ ANY)*
   | "/*" ~ (!("*/") ~ ANY)* ~ "*/"
 }
+
+text = ${ (!(html_start) ~ ANY)+ }
+html_node = _{ html_start ~ (!(html_end) ~ node)*  ~ html_end }
+html_tag_inner = _{ (!(">") ~ ANY)* }
+html_start = { "<" ~ PUSH(html_tag_inner) ~ ">"}
+html_end = { "</" ~ PUSH(html_tag_inner) ~ ">"}
 
 string = ${ 
   ("'" ~ (!("'") ~ ANY)* ~ "'") 
@@ -17,5 +23,7 @@ regexp = ${
   ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
 }
 
-line = _{  string | comment | regexp | space | other | newline }
+node = { html_node | text }
+js = _{ comment | string | regexp | space | other | newline }
+line = _{  js | node }
 item = _{ SOI ~ line* ~ EOI } 

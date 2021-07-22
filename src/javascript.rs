@@ -42,6 +42,12 @@ function helloWorld(a) {
    */
   const c = `这是string第1行
   这是string第2行`;
+
+  return <div className="react-name">
+    <h1>Hello你好<strong>你好foo世界</strong></h1>
+    外部HTML结果
+    <div>{ a && t("这里string也要处理")}</div>
+  </div>
 }
 "###;
 
@@ -60,6 +66,12 @@ function helloWorld(a) {
    */
   const c = `这是 string 第 1 行
   这是 string 第 2 行`;
+
+  return <div className="react-name">
+    <h1>Hello 你好<strong>你好 foo 世界</strong></h1>
+    外部 HTML 结果
+    <div>{ a && t("这里 string 也要处理")}</div>
+  </div>
 }
 "###;
 
