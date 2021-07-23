@@ -34,6 +34,8 @@ function helloWorld(a) {
   const a = '第1个';
   const b = "第2个" + "第3个";
   const re = /包含#regexp测试/;
+  const re1 = new RegExp("RegExp不处理");
+  const re2 = new RegExp('不处理RegExp');
   const str_literal = `这个${foo}不会处理`;
 
   /**
@@ -71,6 +73,8 @@ function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
   const re = /包含#regexp测试/;
+  const re1 = new RegExp("RegExp不处理");
+  const re2 = new RegExp('不处理RegExp');
   const str_literal = `这个${foo}不会处理`;
 
   /**

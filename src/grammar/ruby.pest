@@ -6,7 +6,8 @@ comment = ${ single_line_comment | multiline_comment }
 single_line_comment = _{ "#" ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
-string = ${ 
+string = ${ string_val }
+string_val = _{
   ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
@@ -14,6 +15,7 @@ string = ${
 regexp = ${
   (PUSH("/") ~ (!(newline | "/") ~ ANY)* ~ POP ) 
   | ( "%r{" ~ (!(newline | "}") ~ ANY)* ~ "}" )
+  | ("Regexp.new(" ~ string_val ~  (!")" ~ ANY)* ~ ")")
 }
 
 line = _{ string | regexp | comment | space | other | newline }

@@ -20,14 +20,16 @@ chevron_right = _{
     | "?>"
 }
 
-string = ${ 
-  ("'" ~ (!("'") ~ ANY)* ~ "'") 
+string = ${ string_val }
+string_val = _{
+    ("'" ~ (!("'") ~ ANY)* ~ "'") 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
   | ("`" ~ (!("`") ~ ANY)* ~ "`"+) 
 }
 
 regexp = ${
   ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
+  | ("RegExp" ~ "(" ~ string_val ~ (!")" ~ ANY)* ~ ")")
 }
 
 node = {  html_node | html_void | text }
