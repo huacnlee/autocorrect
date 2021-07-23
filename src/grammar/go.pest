@@ -18,7 +18,10 @@ string_val = _{
 regexp = ${
   ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ string_val ~ (!")" ~ ANY)* ~ ")")
 }
+timeparse = ${
+  ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ string_val ~ (!")" ~ ANY)* ~ ")")
+}
 
 string_verb = { "%" ~ ("s" | "q" | "v") }
-line = _{ regexp | string | comment | space | other | newline }
+line = _{ regexp | timeparse | string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 
