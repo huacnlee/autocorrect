@@ -36,6 +36,9 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
 多行string
 第2行
 `
+  re := regexp.MustCompile(`regexp不处理`)
+  re1 := regexp.Compile("regexp不处理")
+
   fmt.Println(a + b + "go语言")
   fmt.Println("%s链接的内容不会空格%d也不处理，保守", "格式", 100)
   db = d.DB.WithContext(ctx)
@@ -52,6 +55,9 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
 多行 string
 第 2 行
 `
+  re := regexp.MustCompile(`regexp不处理`)
+  re1 := regexp.Compile("regexp不处理")
+
   fmt.Println(a + b + "go 语言")
   fmt.Println("%s链接的内容不会空格%d也不处理，保守", "格式", 100)
   db = d.DB.WithContext(ctx)
