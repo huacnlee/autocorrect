@@ -43,6 +43,11 @@ fn main() {
       }
   }
 
+  // autocorrect: false
+  let disable_1 = "这行将会disable掉";
+  let disable_2 = "这行将也会disable掉";
+  // autocorrect: true
+
   let a = r#"
 这是第1行
 这是第2行
@@ -76,6 +81,11 @@ fn main() {
           largest = number;
       }
   }
+
+  // autocorrect: false
+  let disable_1 = "这行将会disable掉";
+  let disable_2 = "这行将也会disable掉";
+  // autocorrect: true
 
   let a = r#"
 这是第 1 行

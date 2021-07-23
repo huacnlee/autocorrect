@@ -1,5 +1,5 @@
 // autocorrect: false
-use autocorrect::{format, is_ignore_auto_correct};
+use autocorrect::format;
 use clap::{crate_version, App, Arg};
 use std::collections::HashMap;
 use std::ffi::OsStr;
@@ -280,18 +280,6 @@ pub fn main() {
 }
 
 fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option) {
-    let ignore = is_ignore_auto_correct(raw);
-
-    // print raw content and exist when ignore enable and not fix
-    if ignore {
-        if option.fix {
-            return;
-        } else {
-            println!("{}", raw);
-            std::process::exit(0);
-        }
-    }
-
     // if option.debug {
     //     log::info!("-> {}", filepath);
     // }
@@ -352,13 +340,6 @@ fn lint_and_output(
     results: &mut Vec<String>,
 ) {
     let diff_mode = option.formatter != "json";
-
-    let ignore = is_ignore_auto_correct(raw);
-
-    // skip lint ignored file, just return
-    if ignore {
-        return;
-    }
 
     let mut result = match FILE_TYPES[filetype] {
         "html" => html::lint_html(raw),

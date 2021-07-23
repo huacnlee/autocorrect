@@ -3,6 +3,7 @@ use super::*;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::result::Result;
 
@@ -30,7 +31,9 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
     // println!("rule: {}", rule_name);
 
     match rule_name.as_str() {
-        "string" | "link_string" | "text" | "comment" => format_or_lint(results, item),
+        "string" | "link_string" | "text" | "comment" => {
+            format_or_lint(results, rule_name.as_str(), item)
+        }
         "inline_style" | "inline_javascript" => {
             format_or_lint_for_inline_scripts(results, item, rule_name.as_str())
         }
@@ -49,11 +52,25 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
     };
 }
 
-pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
+pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str, item: Pair<R>) {
     let (part_line, part_col) = item.as_span().start_pos().line_col();
     let part = item.as_str();
 
+    // check autocorrect toggle
+    if rule_name == "comment" {
+        match match_autocorrect_toggle(part) {
+            Toggle::Disable => results.toggle(false),
+            Toggle::Enable => results.toggle(true),
+            _ => {}
+        }
+    }
+
     if results.is_lint() {
+        // skip if not enable
+        if !results.is_enabled() {
+            return;
+        }
+
         let lines = part.split("\n");
 
         // sub line in a part
@@ -93,11 +110,17 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
             sub_line += 1;
         }
     } else {
+        let mut new_part = String::from(part);
+        // only for on enable
+        if results.is_enabled() {
+            new_part = format(part);
+        }
+
         results.push(LineResult {
             line: part_line,
             col: part_col,
             old: String::from(part),
-            new: format(part),
+            new: new_part,
         });
     }
 }
@@ -155,6 +178,30 @@ pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     }
 }
 
+#[derive(PartialEq, Debug)]
+enum Toggle {
+    None,
+    Disable,
+    Enable,
+}
+
+lazy_static! {
+    static ref DISABLE_RE: Regex = Regex::new(r"autocorrect(:[ ]*|\-)(false|disable)").unwrap();
+    static ref ENABLE_RE: Regex = Regex::new(r"autocorrect(:[ ]*|\-)(true|enable)").unwrap();
+}
+
+fn match_autocorrect_toggle(part: &str) -> Toggle {
+    if DISABLE_RE.is_match(part) {
+        return Toggle::Disable;
+    }
+
+    if ENABLE_RE.is_match(part) {
+        return Toggle::Enable;
+    }
+
+    return Toggle::None;
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct LineResult {
     #[serde(rename(serialize = "l"))]
@@ -171,12 +218,16 @@ pub trait Results {
     fn error(&mut self, err: &str);
     fn to_string(&self) -> String;
     fn is_lint(&self) -> bool;
+    // toggle autocorrect template enable or disable
+    fn toggle(&mut self, enable: bool);
+    fn is_enabled(&self) -> bool;
 }
 
 pub struct FormatResult {
     pub out: String,
     pub error: String,
     pub raw: String,
+    pub enable: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -186,6 +237,7 @@ pub struct LintResult {
     pub filepath: String,
     pub lines: Vec<LineResult>,
     pub error: String,
+    pub enable: bool,
 }
 
 impl<'a> FormatResult {
@@ -194,6 +246,7 @@ impl<'a> FormatResult {
             raw: String::from(raw),
             out: String::from(""),
             error: String::from(""),
+            enable: true,
         }
     }
 
@@ -223,6 +276,14 @@ impl<'a> Results for FormatResult {
     fn is_lint(&self) -> bool {
         false
     }
+
+    fn toggle(&mut self, enable: bool) {
+        self.enable = enable;
+    }
+
+    fn is_enabled(&self) -> bool {
+        return self.enable;
+    }
 }
 
 impl LintResult {
@@ -232,6 +293,7 @@ impl LintResult {
             raw: String::from(raw),
             lines: Vec::new(),
             error: String::from(""),
+            enable: true,
         }
     }
 
@@ -290,5 +352,59 @@ impl Results for LintResult {
 
     fn is_lint(&self) -> bool {
         true
+    }
+
+    fn toggle(&mut self, enable: bool) {
+        self.enable = enable;
+    }
+
+    fn is_enabled(&self) -> bool {
+        return self.enable;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_match_autocorrect_toggle() {
+        assert_eq!(
+            Toggle::Enable,
+            match_autocorrect_toggle("autocorrect-enable")
+        );
+        assert_eq!(
+            Toggle::Enable,
+            match_autocorrect_toggle("// autocorrect-enable")
+        );
+        assert_eq!(
+            Toggle::Enable,
+            match_autocorrect_toggle("# autocorrect-enable")
+        );
+        assert_eq!(
+            Toggle::Enable,
+            match_autocorrect_toggle("# autocorrect: true")
+        );
+        assert_eq!(
+            Toggle::Enable,
+            match_autocorrect_toggle("# autocorrect:true")
+        );
+        assert_eq!(
+            Toggle::Disable,
+            match_autocorrect_toggle("# autocorrect: false")
+        );
+        assert_eq!(
+            Toggle::Disable,
+            match_autocorrect_toggle("# autocorrect:false")
+        );
+        assert_eq!(
+            Toggle::Disable,
+            match_autocorrect_toggle("# autocorrect-disable")
+        );
+        assert_eq!(
+            Toggle::Disable,
+            match_autocorrect_toggle("// autocorrect-disable")
+        );
+        assert_eq!(Toggle::None, match_autocorrect_toggle("// hello world"));
     }
 }

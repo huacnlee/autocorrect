@@ -9,25 +9,25 @@ struct JavaScriptParser;
 
 #[allow(dead_code)]
 pub fn format_javascript(text: &str) -> code::FormatResult {
-    let pairs = JavaScriptParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = JavaScriptParser::parse(Rule::item, text);
+  let text = code::FormatResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_javascript(text: &str) -> code::LintResult {
-    let pairs = JavaScriptParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = JavaScriptParser::parse(Rule::item, text);
+  let text = code::LintResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use super::*;
 
-    #[test]
-    fn it_format_javascript() {
-        let example = r###"
+  #[test]
+  fn it_format_javascript() {
+    let example = r###"
 // 第1行注释
 // 第2行注释
 function helloWorld(a) {
@@ -42,6 +42,11 @@ function helloWorld(a) {
    */
   const c = `这是string第1行
   这是string第2行`;
+
+  // autocorrect-disable
+  const disable_1 = "这行将会disable掉";
+  const disable_2 = "这行将也会disable掉";
+  // autocorrect-enable
 
   return <>
     <div className="react-name">
@@ -59,7 +64,7 @@ function helloWorld(a) {
 }
 "###;
 
-        let expect = r###"
+    let expect = r###"
 // 第 1 行注释
 // 第 2 行注释
 function helloWorld(a) {
@@ -74,6 +79,11 @@ function helloWorld(a) {
    */
   const c = `这是 string 第 1 行
   这是 string 第 2 行`;
+
+  // autocorrect-disable
+  const disable_1 = "这行将会disable掉";
+  const disable_2 = "这行将也会disable掉";
+  // autocorrect-enable
 
   return <>
     <div className="react-name">
@@ -91,25 +101,23 @@ function helloWorld(a) {
 }
 "###;
 
-        assert_eq!(expect, format_javascript(example).to_string());
-    }
+    assert_eq!(expect, format_javascript(example).to_string());
+  }
 
-    macro_rules! assert_json_eq {
-        ($expected:expr, $actual:expr) => {{
-            let expected = $expected;
-            let actual = $actual;
+  macro_rules! assert_json_eq {
+    ($expected:expr, $actual:expr) => {{
+      let expected = $expected;
+      let actual = $actual;
 
-            let expect_json =
-                serde_json::from_str(expected).unwrap_or(serde_json::Value::default());
-            let result =
-                serde_json::from_str(actual.as_str()).unwrap_or(serde_json::Value::default());
-            pretty_assertions::assert_eq!(expect_json, result);
-        }};
-    }
+      let expect_json = serde_json::from_str(expected).unwrap_or(serde_json::Value::default());
+      let result = serde_json::from_str(actual.as_str()).unwrap_or(serde_json::Value::default());
+      pretty_assertions::assert_eq!(expect_json, result);
+    }};
+  }
 
-    #[test]
-    fn it_format_javascript_without_any_string() {
-        let example = r###"
+  #[test]
+  fn it_format_javascript_without_any_string() {
+    let example = r###"
         function helloWorld(a) {
             const a = "";
             return <div className="tags">
@@ -118,7 +126,7 @@ function helloWorld(a) {
         }
         "###;
 
-        let expect = r###"
+    let expect = r###"
         function helloWorld(a) {
             const a = "";
             return <div className="tags">
@@ -127,12 +135,12 @@ function helloWorld(a) {
         }
         "###;
 
-        assert_eq!(expect, format_javascript(example).to_string());
-    }
+    assert_eq!(expect, format_javascript(example).to_string());
+  }
 
-    #[test]
-    fn it_lint_javascript() {
-        let example = r###"
+  #[test]
+  fn it_lint_javascript() {
+    let example = r###"
     /**
     * Hello你好
     * 这是第2行
@@ -145,7 +153,7 @@ function helloWorld(a) {
     }
     "###;
 
-        let expect = r###"
+    let expect = r###"
         {
             "filepath":"",
             "lines":[
@@ -159,7 +167,7 @@ function helloWorld(a) {
         }
     "###;
 
-        assert_json_eq!(expect, lint_javascript(example).to_json());
-        assert_json_eq!(expect, lint_javascript(example).to_json_pretty());
-    }
+    assert_json_eq!(expect, lint_javascript(example).to_json());
+    assert_json_eq!(expect, lint_javascript(example).to_json_pretty());
+  }
 }

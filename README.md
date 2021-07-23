@@ -107,7 +107,9 @@ You also can lint multiple files:
 $ autocorrect --lint ./
 ```
 
-### Ignore files
+### Ignore option
+
+**Use `.autocorrectignore` to ignore files**
 
 Some times, you may wants ignore some special files that not wants to check.
 
@@ -115,14 +117,34 @@ By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
 
-**Ignore for file**
+**Disable with inline comment**
 
-If you want ignore AutoCorrect for a file, you can put `autocorrect: false`.
+If you just want disable some lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
+when AutoCorrect find a comment include that, it will disable temporary.
+
+And then, you can use `autocorrect: true` or `autocorrect-enable` to enable it agian.
+
+For example in JavaScript:
 
 ```js
-// autocorrect: false
 function hello() {
-  console.log('这整个文件不会被autocorrect修改');
+  // autocorrect: false
+  console.log('现在这行开始autocorrect会暂时禁用');
+  console.log('这行也是disable的状态');
+  // autocorrect: true
+	let a = "现在起autocorrect回到了启用的状态";
+}
+```
+
+The out put will:
+
+```js
+function hello() {
+  // autocorrect: false
+  console.log('现在这行开始autocorrect会暂时禁用');
+  console.log('这行也是disable的状态');
+  // autocorrect: true
+	let a = "现在起 autocorrect 回到了启用的状态";
 }
 ```
 
@@ -257,7 +279,7 @@ TODO
 - [x] Lint for Plain text by each line
 - [ ] Vim plugin
 - [ ] Git Commit message format hook
-- [ ] Ignore next line
+- [x] Disable next line
 
 ## License
 

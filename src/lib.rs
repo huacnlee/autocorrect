@@ -218,11 +218,6 @@ fn space_dash_with_hans(text: &str) -> String {
     return out;
 }
 
-pub fn is_ignore_auto_correct(raw: &str) -> bool {
-    let re = Regex::new(r"autocorrect:([ ]*)(0|false)").unwrap();
-    return re.is_match(raw);
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -375,30 +370,5 @@ mod tests {
         ];
 
         assert_cases(cases);
-    }
-
-    #[test]
-    fn is_is_ignore_auto_correct() {
-        assert_eq!(
-            true,
-            is_ignore_auto_correct("# autocorrect: false\nHello world")
-        );
-        assert_eq!(
-            true,
-            is_ignore_auto_correct("# autocorrect:false\nHello world")
-        );
-        assert_eq!(
-            true,
-            is_ignore_auto_correct("# autocorrect: 0\nHello world")
-        );
-        assert_eq!(
-            false,
-            is_ignore_auto_correct("# autocorrect: 1\nHello world")
-        );
-        assert_eq!(
-            false,
-            is_ignore_auto_correct("# autocorrect: true\nHello world")
-        );
-        assert_eq!(false, is_ignore_auto_correct("Hello world"));
     }
 }
