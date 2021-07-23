@@ -237,6 +237,7 @@ pub struct LintResult {
     pub filepath: String,
     pub lines: Vec<LineResult>,
     pub error: String,
+    #[serde(skip)]
     pub enable: bool,
 }
 
