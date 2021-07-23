@@ -119,10 +119,10 @@ You can also use `.autocorrectignore` to ignore other files, format like `.gitig
 
 **Disable with inline comment**
 
-If you just want disable some lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
-when AutoCorrect find a comment include that, it will disable temporary.
+If you just want to disable some special lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
+when AutoCorrect matched comment include that, it will disable temporary.
 
-And then, you can use `autocorrect: true` or `autocorrect-enable` to enable it agian.
+And then, you can use `autocorrect: true` or `autocorrect-enable` to reopen it agian.
 
 For example in JavaScript:
 
