@@ -9,30 +9,33 @@ struct JavaParser;
 
 #[allow(dead_code)]
 pub fn format_java(text: &str) -> code::FormatResult {
-    let pairs = JavaParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = JavaParser::parse(Rule::item, text);
+  let text = code::FormatResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_java(text: &str) -> code::LintResult {
-    let pairs = JavaParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = JavaParser::parse(Rule::item, text);
+  let text = code::LintResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use super::*;
 
-    #[test]
-    fn it_format_java() {
-        let example = r###"
+  #[test]
+  fn it_format_java() {
+    let example = r###"
 // 第1行注释
 // 第2行注释
 public String helloWorld() {
   // 第3行注释
   String singleLineString = "第1个字符串string"
+
+  Pattern re0 = Pattern.compile("re正则" );
+  Pattern.matches( "re1正则" , "foobar你好");
 
   /**
    * 第4行注释
@@ -45,12 +48,15 @@ public String helloWorld() {
 }
 "###;
 
-        let expect = r###"
+    let expect = r###"
 // 第 1 行注释
 // 第 2 行注释
 public String helloWorld() {
   // 第 3 行注释
   String singleLineString = "第 1 个字符串 string"
+
+  Pattern re0 = Pattern.compile("re正则" );
+  Pattern.matches( "re1正则" , "foobar你好");
 
   /**
    * 第 4 行注释
@@ -63,6 +69,6 @@ public String helloWorld() {
 }
 "###;
 
-        assert_eq!(expect, format_java(example).to_string());
-    }
+    assert_eq!(expect, format_java(example).to_string());
+  }
 }

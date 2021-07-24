@@ -40,6 +40,9 @@ mod tests {
       var singleLineString: String = "单行string测试"
       var multilineString: String = "多行string测试
       第2行字符串"
+
+      var re0 = preg_match( "re1正则", singleLineString )
+      var re1 = preg_match_all( "re2正则",  multilineString)
   }
   ?>
 </div>
@@ -58,6 +61,9 @@ mod tests {
       var singleLineString: String = "单行 string 测试"
       var multilineString: String = "多行 string 测试
       第 2 行字符串"
+
+      var re0 = preg_match( "re1正则", singleLineString )
+      var re1 = preg_match_all( "re2正则",  multilineString)
   }
   ?>
 </div>

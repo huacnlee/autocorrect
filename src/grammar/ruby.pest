@@ -15,7 +15,7 @@ string_val = _{
 regexp = ${
   (PUSH("/") ~ (!(newline | "/") ~ ANY)* ~ POP ) 
   | ( "%r{" ~ (!(newline | "}") ~ ANY)* ~ "}" )
-  | ("Regexp.new(" ~ string_val ~  (!")" ~ ANY)* ~ ")")
+  | ("Regexp.new(" ~ " "* ~ string_val ~  (!")" ~ ANY)* ~ ")")
 }
 
 line = _{ string | regexp | comment | space | other | newline }

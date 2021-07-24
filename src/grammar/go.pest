@@ -16,10 +16,10 @@ string_val = _{
 }
 
 regexp = ${
-  ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
 }
 timeparse = ${
-  ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
 }
 
 string_verb = { "%" ~ ("s" | "q" | "v") }

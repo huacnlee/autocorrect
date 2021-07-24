@@ -5,8 +5,14 @@ other = ${ !(string) ~ ANY }
 comment = ${ single_line_comment }
 single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
 
-string = ${ 
+string = ${ string_val }
+string_val = _{ 
   ("@\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
-line = _{ string | comment | space | other | newline }
+
+regexp = ${
+  ("WithPattern" ~ ":" ~ " "* ~ string_val)
+  | ("Match" ~ "(" ~ " "* ~ string_val)
+}
+line = _{ regexp | string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

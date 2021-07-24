@@ -40,6 +40,11 @@ def hello(a):
   """
 
   re = r'包含#regexp测试'
+  re1 = r"""
+    包含re0测试
+    包含re1测试
+  """
+  re2 = re.compile( "hello你" + "world好")
 
   # 第4个注释
   print("你好hello世界")
@@ -59,6 +64,11 @@ def hello(a):
   """
 
   re = r'包含#regexp测试'
+  re1 = r"""
+    包含re0测试
+    包含re1测试
+  """
+  re2 = re.compile( "hello你" + "world好")
 
   # 第 4 个注释
   print("你好 hello 世界")

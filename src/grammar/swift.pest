@@ -6,9 +6,15 @@ comment = ${ single_line_comment | multiline_comment }
 single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
-string = ${ 
+string = ${ string_val }
+string_val = _{ 
   ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
-line = _{ string | comment | space | other | newline }
+
+regexp = ${
+  ("pattern:" ~ " "* ~ string_val)
+}
+
+line = _{ regexp | string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

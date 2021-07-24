@@ -6,12 +6,18 @@ comment = ${
   ("//" | "#") ~ (!(newline) ~ ANY)* 
   | "/*" ~ (!("*/") ~ ANY)* ~ "*/" 
 }
-string = ${ 
+string = ${ string_val }
+string_val = ${
   ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
   | ("\"" ~ (!("\"") ~ ANY)* ~ "\"") 
 }
+
+regexp = ${
+  (("match" | "match_all") ~ "(" ~ string_val ~ (!")" ~ ANY*) ~ ")")
+}
+
 php_script_start = ${ "<?php" }
 php_script_end = ${ "?>" }
-php = _{ php_script_start ~ (!(php_script_end) ~ (string | comment | space | other | newline))* ~ php_script_end }
+php = _{ php_script_start ~ (!(php_script_end) ~ (regexp | string | comment | space | other | newline))* ~ php_script_end }
 line = _{ php | other }
 item = _{ SOI ~ line* ~ EOI } 

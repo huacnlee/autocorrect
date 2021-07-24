@@ -29,7 +29,7 @@ string_val = _{
 
 regexp = ${
   ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
-  | ("RegExp" ~ "(" ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  | ("RegExp" ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
 }
 
 node = {  html_node | html_void | text }

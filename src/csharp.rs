@@ -9,25 +9,25 @@ struct CSharpParser;
 
 #[allow(dead_code)]
 pub fn format_csharp(text: &str) -> code::FormatResult {
-    let pairs = CSharpParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = CSharpParser::parse(Rule::item, text);
+  let text = code::FormatResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[allow(dead_code)]
 pub fn lint_csharp(text: &str) -> code::LintResult {
-    let pairs = CSharpParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+  let pairs = CSharpParser::parse(Rule::item, text);
+  let text = code::LintResult::new(text);
+  return code::format_pairs(text, pairs);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use super::*;
 
-    #[test]
-    fn it_format_csharp() {
-        let example = r###"
+  #[test]
+  fn it_format_csharp() {
+    let example = r###"
 /**
  * 第1行注释
  * 第2行注释
@@ -41,10 +41,12 @@ public String helloWorld(stirng name) {
   这是多行string第1行
   这是多行string第2行
   ";
+
+  Regex rx = new Regex( @"re正则", RegexOptions.Compiled  | RegexOptions.IgnoreCase);
 }
 "###;
 
-        let expect = r###"
+    let expect = r###"
 /**
  * 第 1 行注释
  * 第 2 行注释
@@ -58,9 +60,11 @@ public String helloWorld(stirng name) {
   这是多行 string 第 1 行
   这是多行 string 第 2 行
   ";
+
+  Regex rx = new Regex( @"re正则", RegexOptions.Compiled  | RegexOptions.IgnoreCase);
 }
 "###;
 
-        assert_eq!(expect, format_csharp(example).to_string());
-    }
+    assert_eq!(expect, format_csharp(example).to_string());
+  }
 }
