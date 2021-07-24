@@ -42,7 +42,7 @@ mod tests {
       第2行字符串"
 
       var re0 = preg_match( "re1正则", singleLineString )
-      var re1 = preg_match_all( "re2正则",  multilineString)
+      var re1 = preg_match_all("re2正则" ,  multilineString )
   }
   ?>
 </div>
@@ -63,7 +63,7 @@ mod tests {
       第 2 行字符串"
 
       var re0 = preg_match( "re1正则", singleLineString )
-      var re1 = preg_match_all( "re2正则",  multilineString)
+      var re1 = preg_match_all("re2正则" ,  multilineString )
   }
   ?>
 </div>

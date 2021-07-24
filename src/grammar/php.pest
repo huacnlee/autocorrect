@@ -7,13 +7,13 @@ comment = ${
   | "/*" ~ (!("*/") ~ ANY)* ~ "*/" 
 }
 string = ${ string_val }
-string_val = ${
+string_val = _{
   ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
   | ("\"" ~ (!("\"") ~ ANY)* ~ "\"") 
 }
 
 regexp = ${
-  (("match" | "match_all") ~ "(" ~ string_val ~ (!")" ~ ANY*) ~ ")")
+  (("preg_match_all" | "preg_match") ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
 }
 
 php_script_start = ${ "<?php" }
