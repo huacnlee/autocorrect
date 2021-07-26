@@ -1,3 +1,4 @@
 this-file-will-ignore.rs
 tests/fixtures/*.expect.*
 src/**/*
+README.md
