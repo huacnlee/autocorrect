@@ -119,11 +119,11 @@ lazy_static! {
   );
 }
 
-struct Option {
+struct Option<'a> {
     lint: bool,
     fix: bool,
     debug: bool,
-    formatter: String,
+    formatter: &'a str,
 }
 
 pub fn main() {
@@ -131,7 +131,7 @@ pub fn main() {
         debug: false,
         fix: false,
         lint: false,
-        formatter: String::from(""),
+        formatter: "",
     };
 
     let matches = App::new("AutoCorrect")
@@ -167,7 +167,8 @@ pub fn main() {
     // disable lint when fix mode
     option.lint = matches.is_present("lint") && !option.fix;
     option.debug = matches.is_present("debug");
-    option.formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
+    let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
+    option.formatter = formatter.as_str();
 
     let mut arg_files = matches.values_of("file").unwrap();
     let arg_filetype = matches.value_of("filetype").unwrap();
@@ -248,7 +249,7 @@ pub fn main() {
     }
 
     if option.lint {
-        if option.formatter.as_str() == "json" {
+        if option.formatter == "json" {
             log::info!(
                 r#"{{"count": {},"messages": [{}]}}"#,
                 lint_results.len(),
