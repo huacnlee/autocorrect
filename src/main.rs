@@ -119,11 +119,12 @@ lazy_static! {
   );
 }
 
-struct Option<'a> {
+#[derive(Clone)]
+struct Option {
     lint: bool,
     fix: bool,
     debug: bool,
-    formatter: &'a str,
+    formatter: String,
 }
 
 pub fn main() {
@@ -131,7 +132,7 @@ pub fn main() {
         debug: false,
         fix: false,
         lint: false,
-        formatter: "",
+        formatter: String::from(""),
     };
 
     let matches = App::new("AutoCorrect")
@@ -168,7 +169,7 @@ pub fn main() {
     option.lint = matches.is_present("lint") && !option.fix;
     option.debug = matches.is_present("debug");
     let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
-    option.formatter = formatter.as_str();
+    option.formatter = formatter;
 
     let mut arg_files = matches.values_of("file").unwrap();
     let arg_filetype = matches.value_of("filetype").unwrap();
@@ -176,6 +177,8 @@ pub fn main() {
     // calc run time
     let start_t = std::time::SystemTime::now();
     let mut lint_results: Vec<String> = Vec::new();
+    let (tx, rx) = std::sync::mpsc::channel();
+    let mut threads = Vec::new();
 
     // create a walker
     // take first file arg, because ignore::WalkBuilder::new need a file path.
@@ -221,33 +224,64 @@ pub fn main() {
 
                 // println!("{}", path.display());
 
-                let filepath = path.to_str().unwrap();
+                let filepath = String::from(path.to_str().unwrap());
                 let mut filetype = get_file_extension(path);
                 if arg_filetype != "" {
-                    filetype = arg_filetype;
+                    filetype = String::from(arg_filetype);
                 }
-                if !FILE_TYPES.contains_key(filetype) {
+                if !FILE_TYPES.contains_key(filetype.as_str()) {
                     continue;
                 }
 
-                if let Ok(raw) = fs::read_to_string(filepath) {
-                    if option.lint {
-                        lint_and_output(
-                            filepath,
-                            filetype,
-                            raw.as_str(),
-                            &option,
-                            &mut lint_results,
-                        )
-                    } else {
-                        format_and_output(filepath, filetype, raw.as_str(), &option);
+                let tx = tx.clone();
+                let option = option.clone();
+                let filepath = filepath.clone();
+                let filetype = filetype.clone();
+
+                let thread = std::thread::spawn(move || {
+                    if let Ok(raw) = fs::read_to_string(&filepath) {
+                        if option.lint {
+                            let mut lint_results: Vec<String> = Vec::new();
+                            lint_and_output(
+                                filepath.as_str(),
+                                filetype.as_str(),
+                                raw.as_str(),
+                                &option,
+                                &mut lint_results,
+                            );
+
+                            for lint_result in lint_results {
+                                tx.send(lint_result).unwrap();
+                            }
+                        } else {
+                            format_and_output(
+                                filepath.as_str(),
+                                filetype.as_str(),
+                                raw.as_str(),
+                                &option,
+                            );
+                        }
                     }
-                }
+                });
+                threads.push(thread);
             }
             Err(_err) => {
                 log::error!("ERROR: {}", _err);
             }
         }
+    }
+
+    // wait all threads send result
+    loop {
+        match rx.try_recv() {
+            Ok(lint_result) => lint_results.push(lint_result),
+            Err(_) => break,
+        }
+    }
+
+    // wait all threads complete
+    for th in threads {
+        th.join().unwrap();
     }
 
     if option.lint {
@@ -393,12 +427,12 @@ fn lint_and_output(
 }
 
 // get file extension from filepath
-fn get_file_extension(path: &Path) -> &str {
+fn get_file_extension(path: &Path) -> String {
     if let Some(ext) = path.extension().and_then(OsStr::to_str) {
-        return ext;
+        return String::from(ext);
     }
 
-    return "";
+    return String::from("");
 }
 
 #[cfg(test)]
