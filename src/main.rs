@@ -207,7 +207,9 @@ pub fn main() {
             Ok(entry) => {
                 let path = entry.path();
 
-                if ignorer.matched(path, false).is_ignore() {
+                if ignorer.matched_path_or_any_parents(path, false).is_ignore()
+                    || ignorer.matched_path_or_any_parents(path, true).is_ignore()
+                {
                     // skip ignore file
                     continue;
                 }
