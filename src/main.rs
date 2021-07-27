@@ -312,6 +312,12 @@ pub fn main() {
     } else {
         if option.fix {
             log::info!("Done.\n");
+
+            // print time spend from start_t to now
+            log::info!(
+                "AutoCorrect spend time: {}ms\n",
+                start_t.elapsed().unwrap().as_millis()
+            );
         }
     }
 }
