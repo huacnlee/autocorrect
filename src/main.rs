@@ -361,8 +361,13 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option)
 
         // do not rewrite ignored file
         if filepath.len() > 0 {
+            if result.out.eq(&String::from(raw)) {
+                progress::ok(true);
+            } else {
+                progress::err(true);
+            }
+
             fs::write(Path::new(filepath), result.out).unwrap();
-            progress::ok(true);
         }
     } else {
         if result.has_error() {
