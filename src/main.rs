@@ -197,9 +197,9 @@ pub fn main() {
     // create ignorer for ignore directly file
     let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("./");
     if let Some(path) = autocorrect_path.to_str() {
-        if let Some(err) = ignore_builder.add(Path::new(path)) {
+        if let Some(_) = ignore_builder.add(Path::new(path)) {
             if option.debug {
-                println!("Fail to add ignore file: {}, {}", path, err);
+                println!("Warning: {} not found.", path);
             }
         }
     }
@@ -270,18 +270,23 @@ pub fn main() {
             }
         }
     }
+    // wait all threads complete
+    // println!("\n---- threads {}", threads.len());
+    for th in threads {
+        th.join().unwrap();
+    }
 
     // wait all threads send result
     loop {
         match rx.try_recv() {
             Ok(lint_result) => lint_results.push(lint_result),
+            // receiving on an empty channel
             Err(_) => break,
         }
     }
 
-    // wait all threads complete
-    for th in threads {
-        th.join().unwrap();
+    if option.debug {
+        println!("\n\nLint result found: {} issues.", lint_results.len());
     }
 
     if option.lint {
