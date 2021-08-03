@@ -1,0 +1,25 @@
+newline = ${ "\n" | "\r" }
+space = ${ " "+ }
+
+other = ${ !(string) ~ ANY }
+comment = ${ single_line_comment | multiline_comment }
+single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+
+string = ${ string_val }
+string_val = _{ 
+  ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
+  | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+}
+
+string_literal = ${
+  ( "s" ~ string_val )
+}
+
+regexp = ${
+  ("Regex(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")" )
+  | (string_val ~ ".r" )
+}
+
+line = _{ regexp | string_literal | string | comment | space | other | newline }
+item = _{ SOI ~ line* ~ EOI } 

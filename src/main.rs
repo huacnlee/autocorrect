@@ -1,12 +1,12 @@
 // autocorrect: false
 use autocorrect::{
-  csharp, css, dart, go, html, java, javascript, json, kotlin, map, markdown, objective_c, php,
-  python, ruby, rust, sql, strings, swift, yaml, FormatResult, LintResult,
+  csharp, css, dart, elixir, go, html, java, javascript, json, kotlin, map, markdown, objective_c,
+  php, python, ruby, rust, scala, sql, strings, swift, yaml, FormatResult, LintResult,
 };
 use clap::{crate_version, App, Arg};
 use std::collections::HashMap;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 mod logger;
 mod progress;
@@ -38,8 +38,12 @@ lazy_static! {
     "ruby" => "ruby",
     "rb" => "ruby",
     // crystal
-    "cr" => "ruby",
     "crystal" => "ruby",
+    "cr" => "ruby",
+    // elixir
+    "elixir" => "elixir",
+    "ex" => "elixir",
+    "exs" => "elixir",
     // javascript
     "js" => "javascript",
     "jsx" => "javascript",
@@ -72,6 +76,8 @@ lazy_static! {
     "cs" => "csharp",
     // java
     "java" => "java",
+    // scala
+    "scala" => "scala",
     // swift
     "swift" => "swift",
     // kotlin
@@ -80,14 +86,13 @@ lazy_static! {
     "php" => "php",
     // dart
     "dart" => "dart",
-    // text
-    "plain" => "text",
-    "txt" => "text",
     // markdown
     "markdown" => "markdown",
     "md" => "markdown",
     // plain
-    "text" => "text"
+    "text" => "text",
+    "plain" => "text",
+    "txt" => "text"
   );
 }
 
@@ -99,15 +104,8 @@ struct Option {
   formatter: String,
 }
 
-pub fn main() {
-  let mut option = Option {
-    debug: false,
-    fix: false,
-    lint: false,
-    formatter: String::from(""),
-  };
-
-  let matches = App::new("AutoCorrect")
+fn get_matches<'a>() -> clap::ArgMatches<'a> {
+  return App::new("AutoCorrect")
     .author("Jason Lee <huacnlee@gmail.com")
     .version(crate_version!())
     .about("A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).")
@@ -130,11 +128,23 @@ pub fn main() {
         Arg::with_name("debug").long("debug").help("Print debug message.")
     )
     .get_matches();
+}
 
-  Logger::init().expect("Init logger error");
-
+fn get_autocorrect_path() -> PathBuf {
   let work_dir: std::path::PathBuf = std::env::current_dir().expect("");
-  let autocorrect_path = work_dir.join(Path::new(AUTOCORRECTIGNORE));
+  return work_dir.join(Path::new(AUTOCORRECTIGNORE));
+}
+
+pub fn main() {
+  let mut option = Option {
+    debug: false,
+    fix: false,
+    lint: false,
+    formatter: String::from(""),
+  };
+
+  let matches = get_matches();
+  Logger::init().expect("Init logger error");
 
   option.fix = matches.is_present("fix");
   // disable lint when fix mode
@@ -168,11 +178,10 @@ pub fn main() {
 
   // create ignorer for ignore directly file
   let mut ignore_builder = ignore::gitignore::GitignoreBuilder::new("./");
-  if let Some(path) = autocorrect_path.to_str() {
-    if let Some(_) = ignore_builder.add(Path::new(path)) {
-      if option.debug {
-        println!("Warning: {} not found.", path);
-      }
+  let autocorrect_path = get_autocorrect_path();
+  if let Some(_) = ignore_builder.add(&autocorrect_path) {
+    if option.debug {
+      println!("Warning: {} not found.", autocorrect_path.display());
     }
   }
   let ignorer = ignore_builder.build().unwrap();
@@ -305,6 +314,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option)
     "sql" => sql::format_sql(raw),
     "rust" => rust::format_rust(raw),
     "ruby" => ruby::format_ruby(raw),
+    "elixir" => elixir::format_elixir(raw),
     "go" => go::format_go(raw),
     "javascript" => javascript::format_javascript(raw),
     "css" => css::format_css(raw),
@@ -315,6 +325,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option)
     "csharp" => csharp::format_csharp(raw),
     "swift" => swift::format_swift(raw),
     "java" => java::format_java(raw),
+    "scala" => scala::format_scala(raw),
     "kotlin" => kotlin::format_kotlin(raw),
     "php" => php::format_php(raw),
     "dart" => dart::format_dart(raw),
@@ -367,6 +378,7 @@ fn lint_and_output(
     "sql" => sql::lint_sql(raw),
     "rust" => rust::lint_rust(raw),
     "ruby" => ruby::lint_ruby(raw),
+    "elixir" => elixir::lint_elixir(raw),
     "go" => go::lint_go(raw),
     "javascript" => javascript::lint_javascript(raw),
     "css" => css::lint_css(raw),
@@ -377,6 +389,7 @@ fn lint_and_output(
     "csharp" => csharp::lint_csharp(raw),
     "swift" => swift::lint_swift(raw),
     "java" => java::lint_java(raw),
+    "scala" => scala::lint_scala(raw),
     "kotlin" => kotlin::lint_kotlin(raw),
     "php" => php::lint_php(raw),
     "dart" => dart::lint_dart(raw),

@@ -83,6 +83,8 @@ pub mod css;
 #[doc(hidden)]
 pub mod dart;
 #[doc(hidden)]
+pub mod elixir;
+#[doc(hidden)]
 pub mod go;
 #[doc(hidden)]
 pub mod html;
@@ -106,6 +108,8 @@ pub mod python;
 pub mod ruby;
 #[doc(hidden)]
 pub mod rust;
+#[doc(hidden)]
+pub mod scala;
 #[doc(hidden)]
 pub mod sql;
 #[doc(hidden)]
