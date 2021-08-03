@@ -46,7 +46,6 @@ fn main() {
 */
 #[macro_use]
 extern crate lazy_static;
-extern crate pest_derive;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{
@@ -61,6 +60,7 @@ macro_rules! regexp {
     }};
 }
 
+#[macro_export]
 macro_rules! map {
     {$($key:expr => $value:expr),+} => {{
         let mut m = HashMap::new();
@@ -71,35 +71,52 @@ macro_rules! map {
     }};
 }
 
-extern crate pest;
-
 mod code;
 mod fullwidth;
 mod halfwidth;
 mod strategery;
 
-mod csharp;
-mod css;
-mod dart;
-mod go;
-mod html;
-mod java;
-mod javascript;
-mod json;
-mod kotlin;
-mod markdown;
-mod objective_c;
-mod php;
-mod python;
-mod ruby;
-mod rust;
-mod sql;
-mod strings;
-mod swift;
-mod yaml;
+#[doc(hidden)]
+pub mod csharp;
+#[doc(hidden)]
+pub mod css;
+#[doc(hidden)]
+pub mod dart;
+#[doc(hidden)]
+pub mod go;
+#[doc(hidden)]
+pub mod html;
+#[doc(hidden)]
+pub mod java;
+#[doc(hidden)]
+pub mod javascript;
+#[doc(hidden)]
+pub mod json;
+#[doc(hidden)]
+pub mod kotlin;
+#[doc(hidden)]
+pub mod markdown;
+#[doc(hidden)]
+pub mod objective_c;
+#[doc(hidden)]
+pub mod php;
+#[doc(hidden)]
+pub mod python;
+#[doc(hidden)]
+pub mod ruby;
+#[doc(hidden)]
+pub mod rust;
+#[doc(hidden)]
+pub mod sql;
+#[doc(hidden)]
+pub mod strings;
+#[doc(hidden)]
+pub mod swift;
+#[doc(hidden)]
+pub mod yaml;
 
 use crate::strategery::Strategery;
-use code::Results;
+pub use code::{FormatResult, LintResult, Results};
 use regex::Regex;
 
 lazy_static! {

@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/java.pest"]
+#[grammar = "../grammar/java.pest"]
 struct JavaParser;
 
 #[allow(dead_code)]

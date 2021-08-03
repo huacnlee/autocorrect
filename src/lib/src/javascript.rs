@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/javascript.pest"]
+#[grammar = "../grammar/javascript.pest"]
 struct JavaScriptParser;
 
 #[allow(dead_code)]

@@ -126,7 +126,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 }
 
 // format_or_lint for inline scripts, for example, script/css in html
-pub fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
+fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     results: &mut O,
     item: Pair<R>,
     rule_name: &str,

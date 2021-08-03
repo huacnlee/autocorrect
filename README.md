@@ -128,11 +128,10 @@ For example in JavaScript:
 
 ```js
 function hello() {
-  // autocorrect: false
   console.log('现在这行开始autocorrect会暂时禁用');
   console.log('这行也是disable的状态');
   // autocorrect: true
-  let a = "现在起autocorrect回到了启用的状态";
+  let a = '现在起autocorrect回到了启用的状态';
 }
 ```
 
@@ -140,11 +139,10 @@ The out put will:
 
 ```js
 function hello() {
-  // autocorrect: false
   console.log('现在这行开始autocorrect会暂时禁用');
   console.log('这行也是disable的状态');
   // autocorrect: true
-  let a = "现在起 autocorrect 回到了启用的状态";
+  let a = '现在起 autocorrect 回到了启用的状态';
 }
 ```
 
