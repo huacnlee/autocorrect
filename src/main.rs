@@ -5,7 +5,6 @@ use autocorrect::{
 };
 use clap::{crate_version, App, Arg};
 use std::collections::HashMap;
-use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
@@ -412,11 +411,21 @@ fn lint_and_output(
 
 // get file extension from filepath
 fn get_file_extension(path: &Path) -> String {
-  if let Some(ext) = path.extension().and_then(OsStr::to_str) {
-    return String::from(ext);
+  let path = path.to_str().expect("Invalid path");
+  let path_parts: Vec<&str> = path.split(".").collect();
+  let mut ext: String = path_parts.last().expect("").to_string();
+
+  let part_len = path_parts.len();
+  if part_len > 2 {
+    let double_ext = path_parts[(part_len - 2)..part_len].join(".");
+    if FILE_TYPES.contains_key(double_ext.as_str()) {
+      ext = double_ext
+    }
+  } else if part_len < 2 {
+    ext = String::from("");
   }
 
-  return String::from("");
+  return ext;
 }
 
 #[cfg(test)]
@@ -425,9 +434,13 @@ mod tests {
 
   #[test]
   fn is_get_file_extension() {
-    assert_eq!("rb", get_file_extension("/foo/bar/dar.rb"));
-    assert_eq!("html.erb", get_file_extension("/foo/bar/dar.html.erb"));
-    assert_eq!("js", get_file_extension("/dar.js"));
-    assert_eq!("", get_file_extension("/foo/bar/dar"));
+    assert_eq!("rb", get_file_extension(Path::new("/foo/bar/dar.rb")));
+    assert_eq!("rb", get_file_extension(Path::new("/foo/bar/aaa.dar.rb")));
+    assert_eq!(
+      "html.erb",
+      get_file_extension(Path::new("/foo/bar/dar.html.erb"))
+    );
+    assert_eq!("js", get_file_extension(Path::new("/dar.js")));
+    assert_eq!("", get_file_extension(Path::new("/foo/bar/dar")));
   }
 }
