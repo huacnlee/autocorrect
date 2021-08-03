@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/python.pest"]
+#[grammar = "../grammar/python.pest"]
 struct PythonParser;
 
 #[allow(dead_code)]

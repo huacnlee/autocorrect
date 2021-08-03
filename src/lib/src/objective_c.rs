@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/objective_c.pest"]
+#[grammar = "../grammar/objective_c.pest"]
 struct ObjectiveCParser;
 
 #[allow(dead_code)]

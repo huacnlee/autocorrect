@@ -4,7 +4,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/json.pest"]
+#[grammar = "../grammar/json.pest"]
 struct JSONParser;
 
 #[allow(dead_code)]

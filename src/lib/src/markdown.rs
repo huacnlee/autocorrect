@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/markdown.pest"]
+#[grammar = "../grammar/markdown.pest"]
 struct MarkdownParser;
 
 #[allow(dead_code)]

@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(Parser)]
-#[grammar = "grammar/html.pest"]
+#[grammar = "../grammar/html.pest"]
 struct HTMLParser;
 
 #[allow(dead_code)]
