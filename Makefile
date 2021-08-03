@@ -1,9 +1,7 @@
 bench:
 	rustup run nightly cargo bench
 release:
-	cargo release
-release\:lib:
-	cargo release --manifest-path src/lib/Cargo.toml 
+	cargo release --manifest-path src/lib/Cargo.toml --config src/lib/release.toml
 run:
 	cargo run -- --debug --lint ./
 run\:json:

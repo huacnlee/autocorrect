@@ -1,0 +1,4 @@
+consolidate-commits = false
+disable-push = true
+disable-tag = true
+no-dev-version = true
