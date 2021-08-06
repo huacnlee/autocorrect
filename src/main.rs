@@ -221,6 +221,8 @@ pub fn main() {
 
         let thread = std::thread::spawn(move || {
           if let Ok(raw) = fs::read_to_string(&filepath) {
+            let file_start_t = std::time::SystemTime::now();
+
             if option.lint {
               let mut lint_results: Vec<String> = Vec::new();
               lint_and_output(
@@ -236,6 +238,14 @@ pub fn main() {
               }
             } else {
               format_and_output(filepath.as_str(), filetype.as_str(), raw.as_str(), &option);
+            }
+
+            if option.debug {
+              log::info!(
+                "{} {}ms\n",
+                filepath,
+                file_start_t.elapsed().unwrap().as_millis()
+              );
             }
           }
         });
@@ -282,7 +292,7 @@ pub fn main() {
 
       // print time spend from start_t to now
       log::info!(
-        "AutoCorrect spend time: {}ms\n",
+        "AutoCorrect spend time {}ms\n",
         start_t.elapsed().unwrap().as_millis()
       );
 
@@ -304,10 +314,6 @@ pub fn main() {
 }
 
 fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option) {
-  // if option.debug {
-  //     log::info!("-> {}", filepath);
-  // }
-
   let result = match FILE_TYPES[filetype] {
     "html" => html::format_html(raw),
     "yaml" => yaml::format_yaml(raw),
