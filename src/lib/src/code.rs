@@ -223,10 +223,13 @@ pub trait Results {
     fn is_enabled(&self) -> bool;
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct FormatResult {
     pub out: String,
     pub error: String,
+    #[serde(skip)]
     pub raw: String,
+    #[serde(skip)]
     pub enable: bool,
 }
 
@@ -241,7 +244,7 @@ pub struct LintResult {
     pub enable: bool,
 }
 
-impl<'a> FormatResult {
+impl FormatResult {
     pub fn new(raw: &str) -> Self {
         FormatResult {
             raw: String::from(raw),

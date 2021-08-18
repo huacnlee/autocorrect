@@ -75,56 +75,36 @@ mod code;
 mod fullwidth;
 mod halfwidth;
 mod strategery;
+pub mod types;
 
-#[doc(hidden)]
-pub mod csharp;
-#[doc(hidden)]
-pub mod css;
-#[doc(hidden)]
-pub mod dart;
-#[doc(hidden)]
-pub mod elixir;
-#[doc(hidden)]
-pub mod go;
-#[doc(hidden)]
-pub mod html;
-#[doc(hidden)]
-pub mod java;
-#[doc(hidden)]
-pub mod javascript;
-#[doc(hidden)]
-pub mod json;
-#[doc(hidden)]
-pub mod kotlin;
-#[doc(hidden)]
-pub mod markdown;
-#[doc(hidden)]
-pub mod objective_c;
-#[doc(hidden)]
-pub mod php;
-#[doc(hidden)]
-pub mod python;
-#[doc(hidden)]
-pub mod ruby;
-#[doc(hidden)]
-pub mod rust;
-#[doc(hidden)]
-pub mod scala;
-#[doc(hidden)]
-pub mod sql;
-#[doc(hidden)]
-pub mod strings;
-#[doc(hidden)]
-pub mod swift;
-#[doc(hidden)]
-pub mod yaml;
+mod csharp;
+mod css;
+mod dart;
+mod elixir;
+mod go;
+mod html;
+mod java;
+mod javascript;
+mod json;
+mod kotlin;
+mod markdown;
+mod objective_c;
+mod php;
+mod python;
+mod ruby;
+mod rust;
+mod scala;
+mod sql;
+mod strings;
+mod swift;
+mod yaml;
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-extern crate wee_alloc;
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+// extern crate wee_alloc;
+// #[global_allocator]
+// static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 use crate::strategery::Strategery;
 pub use code::{FormatResult, LintResult, Results};
@@ -220,9 +200,123 @@ pub fn format(text: &str) -> String {
 /// "#;
 /// autocorrect::format_html(html);
 /// ```
-#[wasm_bindgen]
+#[wasm_bindgen(js_name = "formatHTML")]
 pub fn format_html(html_str: &str) -> String {
     html::format_html(html_str).to_string()
+}
+
+/// Lint a file content with filetype.
+///
+/// Example:
+///
+/// ```
+//  extern crate autocorrect;
+//
+/// let raw = r#"
+/// <article>
+///   <h1>这是 Heading 标题</h1>
+///   <div class="content">
+///     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+///     <p>这是第二行 p 标签</p>
+///   </div>
+/// </article>
+/// "#;
+/// autocorrect::lint_for(raw, "html");
+/// autocorrect::lint_for(raw, "index.html");
+/// ```
+pub fn lint_for(raw: &str, filename_or_ext: &str) -> code::LintResult {
+    let mut result = match types::match_filename(filename_or_ext) {
+        "html" => html::lint_html(raw),
+        "yaml" => yaml::lint_yaml(raw),
+        "sql" => sql::lint_sql(raw),
+        "rust" => rust::lint_rust(raw),
+        "ruby" => ruby::lint_ruby(raw),
+        "elixir" => elixir::lint_elixir(raw),
+        "go" => go::lint_go(raw),
+        "javascript" => javascript::lint_javascript(raw),
+        "css" => css::lint_css(raw),
+        "json" => json::lint_json(raw),
+        "python" => python::lint_python(raw),
+        "objective_c" => objective_c::lint_objective_c(raw),
+        "strings" => strings::lint_strings(raw),
+        "csharp" => csharp::lint_csharp(raw),
+        "swift" => swift::lint_swift(raw),
+        "java" => java::lint_java(raw),
+        "scala" => scala::lint_scala(raw),
+        "kotlin" => kotlin::lint_kotlin(raw),
+        "php" => php::lint_php(raw),
+        "dart" => dart::lint_dart(raw),
+        "markdown" => markdown::lint_markdown(raw),
+        "text" => markdown::lint_markdown(raw),
+        _ => LintResult::new(raw),
+    };
+
+    result.filepath = String::from(filename_or_ext);
+
+    return result;
+}
+
+/// Format a file content with filetype.
+///
+/// Example:
+///
+/// ```
+//  extern crate autocorrect;
+//
+/// let raw = r#"
+/// <article>
+///   <h1>这是 Heading 标题</h1>
+///   <div class="content">
+///     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
+///     <p>这是第二行 p 标签</p>
+///   </div>
+/// </article>
+/// "#;
+/// autocorrect::format_for(raw, "html");
+/// autocorrect::format_for(raw, "index.html");
+/// ```
+pub fn format_for(raw: &str, filename_or_ext: &str) -> code::FormatResult {
+    let result = match types::match_filename(filename_or_ext) {
+        "html" => html::format_html(raw),
+        "yaml" => yaml::format_yaml(raw),
+        "sql" => sql::format_sql(raw),
+        "rust" => rust::format_rust(raw),
+        "ruby" => ruby::format_ruby(raw),
+        "elixir" => elixir::format_elixir(raw),
+        "go" => go::format_go(raw),
+        "javascript" => javascript::format_javascript(raw),
+        "css" => css::format_css(raw),
+        "json" => json::format_json(raw),
+        "python" => python::format_python(raw),
+        "objective_c" => objective_c::format_objective_c(raw),
+        "strings" => strings::format_strings(raw),
+        "csharp" => csharp::format_csharp(raw),
+        "swift" => swift::format_swift(raw),
+        "java" => java::format_java(raw),
+        "scala" => scala::format_scala(raw),
+        "kotlin" => kotlin::format_kotlin(raw),
+        "php" => php::format_php(raw),
+        "dart" => dart::format_dart(raw),
+        "markdown" => markdown::format_markdown(raw),
+        "text" => markdown::format_markdown(raw),
+        _ => FormatResult::new(raw),
+    };
+
+    return result;
+}
+
+/// Format content with filetype, and return a json result.
+#[wasm_bindgen(js_name = "formatFor")]
+pub fn format_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
+    let result = format_for(raw, filename_or_ext);
+    return wasm_bindgen::JsValue::from_serde(&result).unwrap();
+}
+
+/// Lint content with filetype, and return a json result.
+#[wasm_bindgen(js_name = "lintFor")]
+pub fn lint_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
+    let result = lint_for(raw, filename_or_ext);
+    return wasm_bindgen::JsValue::from_serde(&result).unwrap();
 }
 
 // removeFullDateSpacing
@@ -400,5 +494,31 @@ mod tests {
         ];
 
         assert_cases(cases);
+    }
+
+    #[test]
+    fn it_lint_for() {
+        let raw = "<p>Hello你好</p>";
+        let result = lint_for(raw, "foo.bar.html");
+        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好","old":"Hello你好"}],"error":""}"#;
+        assert_eq!(false, result.has_error());
+        assert_eq!(1, result.lines.len());
+        assert_eq!(expect_json, result.to_json());
+
+        let result1 = lint_for("const a = 'hello世界'", "js");
+        assert_eq!(false, result1.has_error());
+        assert_eq!(1, result1.lines.len());
+    }
+
+    #[test]
+    fn it_format_for() {
+        let raw = "<p>Hello你好</p>";
+        let result = format_for(raw, "foo.bar.html");
+        assert_eq!(false, result.has_error());
+        assert_eq!("<p>Hello 你好</p>", result.out);
+
+        let result1 = format_for("const a = 'hello世界'", "js");
+        assert_eq!(false, result1.has_error());
+        assert_eq!("const a = 'hello 世界'", result1.out);
     }
 }

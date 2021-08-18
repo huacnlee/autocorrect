@@ -1,10 +1,5 @@
 // autocorrect: false
-use autocorrect::{
-  csharp, css, dart, elixir, go, html, java, javascript, json, kotlin, map, markdown, objective_c,
-  php, python, ruby, rust, scala, sql, strings, swift, yaml, FormatResult, LintResult,
-};
 use clap::{crate_version, App, Arg};
-use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -13,88 +8,9 @@ mod progress;
 
 use logger::Logger;
 
-#[macro_use]
-extern crate lazy_static;
 extern crate autocorrect;
 
 static AUTOCORRECTIGNORE: &str = ".autocorrectignore";
-
-lazy_static! {
-  static ref FILE_TYPES: HashMap<&'static str, &'static str> = map!(
-    "html" => "html",
-    "htm" => "html",
-    "vue" => "html",
-    "ejs" => "html",
-    "html.erb" => "html",
-    // yaml
-    "yaml" => "yaml",
-    "yml" => "yaml",
-    // rust
-    "rust" => "rust",
-    "rs" => "rust",
-    // sql
-    "sql" => "sql",
-    // ruby
-    "ruby" => "ruby",
-    "rb" => "ruby",
-    // crystal
-    "crystal" => "ruby",
-    "cr" => "ruby",
-    // elixir
-    "elixir" => "elixir",
-    "ex" => "elixir",
-    "exs" => "elixir",
-    // javascript
-    "js" => "javascript",
-    "jsx" => "javascript",
-    "javascript" => "javascript",
-    "ts" => "javascript",
-    "tsx" => "javascript",
-    "typescript" => "javascript",
-    "js.erb" => "javascript",
-    // css
-    "css" => "css",
-    "scss" => "css",
-    "sass" => "css",
-    "less" => "css",
-    // json
-    "json" => "json",
-    // go
-    "go" => "go",
-    // python
-    "python" => "python",
-    "py" => "python",
-    // objective-c
-    "objective_c" => "objective_c",
-    "objective-c" => "objective_c",
-    "m" => "objective_c",
-    "h" => "objective_c",
-    // strings for Cocoa
-    "strings" => "strings",
-    // csharp
-    "csharp" => "csharp",
-    "cs" => "csharp",
-    // java
-    "java" => "java",
-    // scala
-    "scala" => "scala",
-    // swift
-    "swift" => "swift",
-    // kotlin
-    "kotlin" => "kotlin",
-    // php
-    "php" => "php",
-    // dart
-    "dart" => "dart",
-    // markdown
-    "markdown" => "markdown",
-    "md" => "markdown",
-    // plain
-    "text" => "text",
-    "plain" => "text",
-    "txt" => "text"
-  );
-}
 
 #[derive(Clone)]
 struct Option {
@@ -206,11 +122,11 @@ pub fn main() {
         // println!("{}", path.display());
 
         let filepath = String::from(path.to_str().unwrap());
-        let mut filetype = get_file_extension(path);
+        let mut filetype = autocorrect::types::get_file_extension(filepath.as_str());
         if arg_filetype != "" {
           filetype = String::from(arg_filetype);
         }
-        if !FILE_TYPES.contains_key(filetype.as_str()) {
+        if !autocorrect::types::is_support_type(filetype.as_str()) {
           continue;
         }
 
@@ -314,31 +230,7 @@ pub fn main() {
 }
 
 fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option) {
-  let result = match FILE_TYPES[filetype] {
-    "html" => html::format_html(raw),
-    "yaml" => yaml::format_yaml(raw),
-    "sql" => sql::format_sql(raw),
-    "rust" => rust::format_rust(raw),
-    "ruby" => ruby::format_ruby(raw),
-    "elixir" => elixir::format_elixir(raw),
-    "go" => go::format_go(raw),
-    "javascript" => javascript::format_javascript(raw),
-    "css" => css::format_css(raw),
-    "json" => json::format_json(raw),
-    "python" => python::format_python(raw),
-    "objective_c" => objective_c::format_objective_c(raw),
-    "strings" => strings::format_strings(raw),
-    "csharp" => csharp::format_csharp(raw),
-    "swift" => swift::format_swift(raw),
-    "java" => java::format_java(raw),
-    "scala" => scala::format_scala(raw),
-    "kotlin" => kotlin::format_kotlin(raw),
-    "php" => php::format_php(raw),
-    "dart" => dart::format_dart(raw),
-    "markdown" => markdown::format_markdown(raw),
-    "text" => markdown::format_markdown(raw),
-    _ => FormatResult::new(raw),
-  };
+  let result = autocorrect::format_for(raw, filetype);
 
   if option.fix {
     if result.has_error() {
@@ -378,31 +270,8 @@ fn lint_and_output(
 ) {
   let diff_mode = option.formatter != "json";
 
-  let mut result = match FILE_TYPES[filetype] {
-    "html" => html::lint_html(raw),
-    "yaml" => yaml::lint_yaml(raw),
-    "sql" => sql::lint_sql(raw),
-    "rust" => rust::lint_rust(raw),
-    "ruby" => ruby::lint_ruby(raw),
-    "elixir" => elixir::lint_elixir(raw),
-    "go" => go::lint_go(raw),
-    "javascript" => javascript::lint_javascript(raw),
-    "css" => css::lint_css(raw),
-    "json" => json::lint_json(raw),
-    "python" => python::lint_python(raw),
-    "objective_c" => objective_c::lint_objective_c(raw),
-    "strings" => strings::lint_strings(raw),
-    "csharp" => csharp::lint_csharp(raw),
-    "swift" => swift::lint_swift(raw),
-    "java" => java::lint_java(raw),
-    "scala" => scala::lint_scala(raw),
-    "kotlin" => kotlin::lint_kotlin(raw),
-    "php" => php::lint_php(raw),
-    "dart" => dart::lint_dart(raw),
-    "markdown" => markdown::lint_markdown(raw),
-    "text" => markdown::lint_markdown(raw),
-    _ => LintResult::new(raw),
-  };
+  let mut result = autocorrect::lint_for(raw, filetype);
+  result.filepath = String::from(filepath);
 
   // do not print anything, when not lint results
   if result.lines.len() == 0 {
@@ -411,8 +280,6 @@ fn lint_and_output(
   } else {
     progress::err(diff_mode);
   }
-
-  result.filepath = String::from(filepath);
 
   if diff_mode {
     if result.has_error() {
@@ -425,41 +292,5 @@ fn lint_and_output(
     results.push(format!("{}", result.to_diff()));
   } else {
     results.push(format!("{}", result.to_json()));
-  }
-}
-
-// get file extension from filepath
-fn get_file_extension(path: &Path) -> String {
-  let path = path.to_str().expect("Invalid path");
-  let path_parts: Vec<&str> = path.split(".").collect();
-  let mut ext: String = path_parts.last().expect("").to_string();
-
-  let part_len = path_parts.len();
-  if part_len > 2 {
-    let double_ext = path_parts[(part_len - 2)..part_len].join(".");
-    if FILE_TYPES.contains_key(double_ext.as_str()) {
-      ext = double_ext
-    }
-  } else if part_len < 2 {
-    ext = String::from("");
-  }
-
-  return ext;
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn is_get_file_extension() {
-    assert_eq!("rb", get_file_extension(Path::new("/foo/bar/dar.rb")));
-    assert_eq!("rb", get_file_extension(Path::new("/foo/bar/aaa.dar.rb")));
-    assert_eq!(
-      "html.erb",
-      get_file_extension(Path::new("/foo/bar/dar.html.erb"))
-    );
-    assert_eq!("js", get_file_extension(Path::new("/dar.js")));
-    assert_eq!("", get_file_extension(Path::new("/foo/bar/dar")));
   }
 }
