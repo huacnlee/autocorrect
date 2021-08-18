@@ -192,7 +192,7 @@ const autocorrect = import('@huacnlee/autocorrect');
 
 const raw = `<p>你好Hello世界</p>`;
 autocorrect.then((autocorrect) => {
-  const out = autocorrect.format_html(raw);
+  const out = autocorrect.formatHTML(raw);
   // "<p>你好 Hello 世界</p>"
 });
 ```
