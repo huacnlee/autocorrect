@@ -1,16 +1,25 @@
-const autocorrect = import("../pkg/autocorrect");
+const autocorrect = import('../pkg/autocorrect');
 
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("input");
-  const btn = document.getElementById("format");
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('input');
+  const btn = document.querySelector('#btn');
+  const preview = document.querySelector('.preview');
+  const message = document.querySelector('.message');
 
-  btn.addEventListener("click", (e) => {
+  const formatText = (e) => {
     e.preventDefault();
 
     autocorrect.then((autocorrect) => {
-      input.value = autocorrect.format_html(input.value);
+      const start = new Date();
+      const newHTML = autocorrect.format_html(input.value);
+      const duration = new Date() - start;
+      message.innerHTML = `Speed time: ${duration}ms`;
+      preview.value = newHTML;
     });
 
     return false;
-  });
+  };
+
+  // input.addEventListener('keyup', formatText);
+  btn.addEventListener('click', formatText);
 });

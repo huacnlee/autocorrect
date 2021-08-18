@@ -1,3 +1,5 @@
+WORKDIR=$(shell pwd)
+
 bench:
 	rustup run nightly cargo bench
 release:
@@ -16,3 +18,5 @@ test\:lint:
 	@cargo run -q -- --debug --lint tests/fixtures/*.fixed.*
 test\:lint-json:
 	tests/test_lint_json.sh
+wasm:
+	wasm-pack build --release --scope huacnlee -d $(WORKDIR)/pkg src/lib 
