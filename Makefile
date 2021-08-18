@@ -20,3 +20,6 @@ test\:lint-json:
 	tests/test_lint_json.sh
 wasm:
 	wasm-pack build --release --scope huacnlee -d $(WORKDIR)/pkg src/lib 
+wasm\:publish:
+	make wasm
+	cd pkg && npm publish
