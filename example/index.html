@@ -31,8 +31,12 @@
       display: flex;
     }
 
+    .jcsb {
+      justify-content: space-between;
+    }
+
     .preview,
-    #input {
+    textarea {
       width: 100%;
       border: 1px solid #e0e0e0;
       border-radius: 7px;
@@ -44,8 +48,15 @@
       outline: none;
     }
 
-    .preview {
+    textarea[readonly] {
       background: #f7f7f7;
+    }
+
+    select {
+      font-size: 1em;
+      padding: 0.5em 1.5em;
+      border-radius: 7px;
+      border-color: #e0e0e0;
     }
 
     button {
@@ -76,10 +87,15 @@
   <div><a href="https://github.com/huacnlee/autocorrect" target="_blank">https://github.com/huacnlee/autocorrect</a>
   </div>
   <div class="container">
+    <div class="flex jcsb" style="margin-bottom: 15px;">
+      <select id="filetype">
+      </select>
+      <span id="filename"></span>
+    </div>
     <div class="flex">
       <textarea id="input" width="600" rows="30">
 <h1>编译Rust为WebAssembly</h1>
-<div><div></div>
+<div></div>
 <p class="summary">如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p></div>
 <h2 id="rust_和_webassembly_用例"><a href="#rust_和_webassembly_用例" title="Permalink to Rust和WebAssembly用例">Rust和WebAssembly用例</a></h2>
 <div><p>Rust和WebAssembly有两大主要用例：</p>
@@ -96,7 +112,8 @@
         class="preview"></textarea>
     </div>
     <div>
-      <button id="btn">Format</button>
+      <button id="btn">Format</button> or
+      <button id="btn-lint">Lint</button>
       <span class="message"></span>
     </div>
   </div>
