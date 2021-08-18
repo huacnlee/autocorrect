@@ -4,6 +4,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/huacnlee/autocorrect?label=Version)](https://github.com/huacnlee/autocorrect/releases)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker%20Image)](https://hub.docker.com/r/huacnlee/autocorrect)
 [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
+[![NPM](https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg)](https://badge.fury.io/js/%40huacnlee%2Fautocorrect)
 [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect)
 
 A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).
@@ -71,10 +72,11 @@ ARGS:
 ## Usage
 
 - [Using CLI](#using-cli)
+- [Use for JavaScript](#use-for-javascript)
+- [Use for Rust](#use-for-rust)
 - [Ignore files](#ignore-files)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
-- [Use in Rust](#use-in-rust)
 
 ### Using CLI
 
@@ -175,7 +177,27 @@ autocorrect:
   # allow_failure: true
 ```
 
-### Use in Rust
+### Use for JavaScript
+
+AutoCorrect also provide a JavaScript module via WebAssembly, you can use it in your JavaScript project.
+
+```bash
+yarn add @huacnlee/autocorrect
+```
+
+And then:
+
+```js
+const autocorrect = import('@huacnlee/autocorrect');
+
+const raw = `<p>你好Hello世界</p>`;
+autocorrect.then((autocorrect) => {
+  const out = autocorrect.format_html(raw);
+  // "<p>你好 Hello 世界</p>"
+});
+```
+
+### Use for Rust
 
 Other implements for programming:
 

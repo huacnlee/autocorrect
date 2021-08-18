@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>AutoCorrect WebAssembly</title>
+  <style>
+    body {
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      font-family: sans-serif;
+    }
+
+    a {
+      color: #222;
+    }
+
+    a:hover {
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 30px auto;
+      text-align: left;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .preview,
+    #input {
+      width: 100%;
+      border: 1px solid #e0e0e0;
+      border-radius: 7px;
+      padding: 1em;
+      margin-bottom: 1em;
+      line-height: 1.5;
+      font-family: monospace;
+      font-size: 1em;
+      outline: none;
+    }
+
+    .preview {
+      background: #f7f7f7;
+    }
+
+    button {
+      font-size: 1em;
+      border: 0;
+      padding: 1em 4em;
+      border-radius: 7px;
+      background: #000;
+      color: #fff;
+    }
+
+    button:active {
+      background: #202020;
+    }
+
+    .message {
+      margin-left: 10px;
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="./index.js"></script>
+  <h1>AutoCorrect</h1>
+  <p>A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese,
+    Japanese, Korean).</p>
+  <div><a href="https://github.com/huacnlee/autocorrect" target="_blank">https://github.com/huacnlee/autocorrect</a>
+  </div>
+  <div class="container">
+    <div class="flex">
+      <textarea id="input" width="600" rows="30">
+<h1>编译Rust为WebAssembly</h1>
+<div><div></div>
+<p class="summary">如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p></div>
+<h2 id="rust_和_webassembly_用例"><a href="#rust_和_webassembly_用例" title="Permalink to Rust和WebAssembly用例">Rust和WebAssembly用例</a></h2>
+<div><p>Rust和WebAssembly有两大主要用例：</p>
+<ul>
+<li>构建完整应用 —— 整个Web应用都基于Rust开发！</li>
+<li>构建应用的组成部分 —— 在现存的JavaScript前端中使用Rust。</li>
+</ul>
+
+<p>目前，Rust团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅<code><a href="https://github.com/DenisKolodin/yew" class="external" rel=" noopener">yew</a></code>这类项目。</p>
+
+<p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个NPM包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
+</textarea>
+      <textarea style="margin-left: 10px;" readonly placeholder="AutoCorrect HTML result preview"
+        class="preview"></textarea>
+    </div>
+    <div>
+      <button id="btn">Format</button>
+      <span class="message"></span>
+    </div>
+  </div>
+
+</body>
+
+</html

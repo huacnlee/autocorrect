@@ -119,6 +119,13 @@ pub mod swift;
 #[doc(hidden)]
 pub mod yaml;
 
+extern crate wasm_bindgen;
+use wasm_bindgen::prelude::*;
+
+extern crate wee_alloc;
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 use crate::strategery::Strategery;
 pub use code::{FormatResult, LintResult, Results};
 use regex::Regex;
@@ -173,6 +180,7 @@ lazy_static! {
 /// println!("{}", autocorrect::format("既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"));
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
+#[wasm_bindgen]
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
@@ -212,6 +220,7 @@ pub fn format(text: &str) -> String {
 /// "#;
 /// autocorrect::format_html(html);
 /// ```
+#[wasm_bindgen]
 pub fn format_html(html_str: &str) -> String {
     html::format_html(html_str).to_string()
 }
