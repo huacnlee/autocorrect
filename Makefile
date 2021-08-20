@@ -2,8 +2,6 @@ WORKDIR=$(shell pwd)
 
 bench:
 	rustup run nightly cargo bench
-release:
-	cargo release --manifest-path src/lib/Cargo.toml --config src/lib/release.toml
 run:
 	cargo run -- --debug --lint ./
 run\:json:
@@ -23,3 +21,5 @@ wasm:
 wasm\:publish:
 	make wasm
 	cd pkg && npm publish
+crate\:publish:
+	cargo release --manifest-path src/lib/Cargo.toml --config src/lib/release.toml
