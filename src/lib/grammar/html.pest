@@ -12,6 +12,9 @@ item = _{
     ~ EOI
 }
 
+// Other
+other = { !(comment | node_element | text) ~ ANY }
+
 //
 // DOCTYPE
 //
@@ -21,9 +24,9 @@ doctype_name = @{ ^"doctype" }
 //
 // NODES
 //
-node = _{ comment | node_element | text }
+node = _{ comment | node_element | text | other }
 comment = { comment_if | comment_normal }
-text = { (!(chevron_left_normal | comment_tag_start ) ~ ANY)+ } // NOTE: Should we be able to write < in text? ^^
+text = ${ (!(chevron_left_normal | comment_tag_start ) ~ ANY)+ } // NOTE: Should we be able to write < in text? ^^
 node_element = { el_void | el_void_xml | el_process_instruct | javascript_text | style_text | el_raw_text | el_normal | el_dangling }
 
 //

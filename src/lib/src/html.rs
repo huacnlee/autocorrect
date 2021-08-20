@@ -49,6 +49,9 @@ mod tests {
     #[test]
     fn test_format_html() {
         let html = r###"
+        bad html
+        <% a = 1 %>
+        {% hello = a %}
         <!DOCTYPE html>
         <!-- html的注释 -->
         <html xmlns=http://www.w3.org/1999/xhtml>
@@ -86,6 +89,9 @@ mod tests {
         "###;
 
         let expected = r###"
+        bad html
+        <% a = 1 %>
+        {% hello = a %}
         <!DOCTYPE html>
         <!-- html 的注释 -->
         <html xmlns=http://www.w3.org/1999/xhtml>
