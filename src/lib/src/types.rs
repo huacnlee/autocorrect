@@ -18,6 +18,7 @@ lazy_static! {
     // ruby
     "ruby" => "ruby",
     "rb" => "ruby",
+    "Gemfile" => "ruby",
     // crystal
     "crystal" => "ruby",
     "cr" => "ruby",
@@ -94,6 +95,11 @@ pub fn is_support_type(filename_or_ext: &str) -> bool {
 
 // get file extension from filepath, return filename if not has exit
 pub fn get_file_extension(filename: &str) -> String {
+  let filename = filename.trim();
+  if is_support_type(filename) {
+    return String::from(filename);
+  }
+
   let filename = filename.split("/").last().unwrap().to_string();
   let path_parts: Vec<&str> = filename.split(".").collect();
   let mut ext: String = path_parts.last().unwrap().to_string();
@@ -133,6 +139,8 @@ mod tests {
     assert_eq!("rb", get_file_extension("/foo/bar/dar.rb"));
     assert_eq!("rb", get_file_extension("/foo/bar/aaa.dar.rb"));
     assert_eq!("html.erb", get_file_extension("/foo/bar/dar.html.erb"));
+    assert_eq!("html.erb", get_file_extension("html.erb"));
+    assert_eq!("Gemfile", get_file_extension("Gemfile"));
     assert_eq!("js", get_file_extension("/dar.js"));
     assert_eq!("dar", get_file_extension("/foo/bar/dar"));
   }
