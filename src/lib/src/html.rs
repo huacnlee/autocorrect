@@ -80,6 +80,7 @@ mod tests {
             <ul>
             <li>构建完整应用——整个Web应用都基于Rust开发！</li>
             <li>构建应用的组成部分——在现存的JavaScript前端中使用Rust。</li>
+            <%= link_to "FTP管理", "/", class: "subnav-item #{(params[:title_tab].blank? || params[:title_tab] == 'sftp_index') ? 'active' : ''}" %>
             </ul>
             <p>目前，Rust团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;<code><a href="https://github.com/DenisKolodin/yew" class="external" rel=" noopener">yew</a></code>&nbsp;这类项目。</p>
             <p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
@@ -120,6 +121,7 @@ mod tests {
             <ul>
             <li>构建完整应用——整个 Web 应用都基于 Rust 开发！</li>
             <li>构建应用的组成部分——在现存的 JavaScript 前端中使用 Rust。</li>
+            <%= link_to "FTP管理", "/", class: "subnav-item #{(params[:title_tab].blank? || params[:title_tab] == 'sftp_index') ? 'active' : ''}" %>
             </ul>
             <p>目前，Rust 团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;<code><a href="https://github.com/DenisKolodin/yew" class="external" rel=" noopener">yew</a></code>&nbsp;这类项目。</p>
             <p>在本教程中，我们将使用 Rust 的 npm 包构建工具<code>wasm-pack</code>来构建一个 npm 包。这个包只包含 WebAssembly 和 JavaScript 代码，以便包的用户无需安装 Rust 就能使用。他们甚至不需要知道这里包含 WebAssembly！</p></div>

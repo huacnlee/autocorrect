@@ -13,18 +13,26 @@ item = _{
 }
 
 // Other
-other = { !(comment | node_element | text) ~ ANY }
+other = { !(comment | node_element | server | text) ~ ANY }
 
 //
 // DOCTYPE
 //
-doctype = { chevron_left_bang ~ doctype_name ~ attr* ~ chevron_right_normal}
+doctype = { chevron_left_bang ~ doctype_name ~ attr* ~ chevron_right_normal }
 doctype_name = @{ ^"doctype" }
+
+//
+// SERVER CODE
+//
+server = ${ chevron_left_server ~ server_code ~ chevron_right_server }
+server_code = { (!chevron_right_server ~ ANY)* }
+chevron_left_server = { "<%" }
+chevron_right_server = { "%>" }
 
 //
 // NODES
 //
-node = _{ comment | node_element | text | other }
+node = _{ server | comment | node_element | text | other }
 comment = { comment_if | comment_normal }
 text = ${ (!(chevron_left_normal | comment_tag_start ) ~ ANY)+ } // NOTE: Should we be able to write < in text? ^^
 node_element = { el_void | el_void_xml | el_process_instruct | javascript_text | style_text | el_raw_text | el_normal | el_dangling }
@@ -130,7 +138,7 @@ el_dangling = { chevron_left_closed ~ el_name ~ chevron_right_normal}
 //
 text_chars = _{'a'..'z' | 'A'..'Z' | "_" | "-" | ":" |'0'..'9'}
 
-chevron_left_normal = { "<" }
+chevron_left_normal = { "<"}
 chevron_left_closed = { "</" }
 chevron_left_bang = { "<!" }
 chevron_left_question = { "<?" }
