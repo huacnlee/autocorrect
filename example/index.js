@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   autocorrectLib.then((ac) => {
     autocorrect = ac;
     window.autocorrect = ac;
+
+    console.log('------------', autocorrect.test_random());
   });
 
   const input = document.getElementById('input');

@@ -97,6 +97,7 @@ mod scala;
 mod sql;
 mod strings;
 mod swift;
+mod test_random;
 mod yaml;
 
 extern crate wasm_bindgen;

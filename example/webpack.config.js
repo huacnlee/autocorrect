@@ -1,9 +1,24 @@
-const path = require("path");
+const path = require('path');
 module.exports = {
-  entry: "./index.js",
+  entry: './index.js',
   output: {
-    path: path.resolve(__dirname, "."),
-    filename: "index.js",
+    path: path.resolve(__dirname, '.'),
+    filename: 'index.js',
   },
-  mode: "development",
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+  experiments: {
+    asyncWebAssembly: true,
+  },
+  mode: 'development',
 };
