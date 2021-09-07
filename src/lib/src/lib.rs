@@ -74,6 +74,7 @@ macro_rules! map {
 mod code;
 mod fullwidth;
 mod halfwidth;
+pub mod ignorer;
 mod strategery;
 pub mod types;
 
@@ -102,9 +103,9 @@ mod yaml;
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-// extern crate wee_alloc;
-// #[global_allocator]
-// static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+extern crate wee_alloc;
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 use crate::strategery::Strategery;
 pub use code::{FormatResult, LintResult, Results};
