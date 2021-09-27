@@ -107,7 +107,7 @@ pub fn main() {
 
                 let filepath = String::from(path.to_str().unwrap());
                 let mut filetype = autocorrect::types::get_file_extension(filepath.as_str());
-                if arg_filetype != "" {
+                if !arg_filetype.is_empty() {
                     filetype = String::from(arg_filetype);
                 }
                 if !autocorrect::types::is_support_type(filetype.as_str()) {
@@ -168,12 +168,8 @@ pub fn main() {
     }
 
     // wait all threads send result
-    loop {
-        match rx.try_recv() {
-            Ok(lint_result) => lint_results.push(lint_result),
-            // receiving on an empty channel
-            Err(_) => break,
-        }
+    while let Ok(lint_result) = rx.try_recv() {
+        lint_results.push(lint_result)
     }
 
     if option.debug {
@@ -190,7 +186,7 @@ pub fn main() {
         } else {
             log::info!("\n");
 
-            if lint_results.len() > 0 {
+            if !lint_results.is_empty() {
                 // diff will use stderr output
                 log::error!("{}", lint_results.join("\n"));
             }
@@ -201,20 +197,18 @@ pub fn main() {
                 start_t.elapsed().unwrap().as_millis()
             );
 
-            if lint_results.len() > 0 {
+            if !lint_results.is_empty() {
                 std::process::exit(1);
             }
         }
-    } else {
-        if option.fix {
-            log::info!("Done.\n");
+    } else if option.fix {
+        log::info!("Done.\n");
 
-            // print time spend from start_t to now
-            log::info!(
-                "AutoCorrect spend time: {}ms\n",
-                start_t.elapsed().unwrap().as_millis()
-            );
-        }
+        // print time spend from start_t to now
+        log::info!(
+            "AutoCorrect spend time: {}ms\n",
+            start_t.elapsed().unwrap().as_millis()
+        );
     }
 }
 
@@ -230,7 +224,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option)
         }
 
         // do not rewrite ignored file
-        if filepath.len() > 0 {
+        if !filepath.is_empty() {
             if result.out.eq(&String::from(raw)) {
                 progress::ok(true);
             } else {
@@ -263,7 +257,7 @@ fn lint_and_output(
     result.filepath = String::from(filepath);
 
     // do not print anything, when not lint results
-    if result.lines.len() == 0 {
+    if result.lines.is_empty() {
         progress::ok(diff_mode);
         return;
     } else {
@@ -271,15 +265,13 @@ fn lint_and_output(
     }
 
     if diff_mode {
-        if result.has_error() {
-            if option.debug {
-                log::error!("{}\n{}", filepath, result.error);
-                return;
-            }
+        if result.has_error() && option.debug {
+            log::error!("{}\n{}", filepath, result.error);
+            return;
         }
 
-        results.push(format!("{}", result.to_diff()));
+        results.push(result.to_diff());
     } else {
-        results.push(format!("{}", result.to_json()));
+        results.push(result.to_json());
     }
 }
