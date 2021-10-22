@@ -9,25 +9,25 @@ struct YAMLParser;
 
 #[allow(dead_code)]
 pub fn format_yaml(text: &str) -> code::FormatResult {
-  let pairs = YAMLParser::parse(Rule::item, text);
-  let text = code::FormatResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = YAMLParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_yaml(text: &str) -> code::LintResult {
-  let pairs = YAMLParser::parse(Rule::item, text);
-  let text = code::LintResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = YAMLParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_yaml() {
-    let example = r#"# this is comment line
+    #[test]
+    fn it_format_yaml() {
+        let example = r#"# this is comment line
 foo: 'hello世界'
 region:
   cn-north-1
@@ -40,7 +40,7 @@ region:
   "abc字段": abc字段
 "#;
 
-    let expect = r#"# this is comment line
+        let expect = r#"# this is comment line
 foo: 'hello 世界'
 region:
   cn-north-1
@@ -53,6 +53,6 @@ region:
   "abc字段": abc 字段
 "#;
 
-    assert_eq!(expect, format_yaml(example).to_string())
-  }
+        assert_eq!(expect, format_yaml(example).to_string())
+    }
 }

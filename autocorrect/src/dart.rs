@@ -9,25 +9,25 @@ struct DartParser;
 
 #[allow(dead_code)]
 pub fn format_dart(text: &str) -> code::FormatResult {
-  let pairs = DartParser::parse(Rule::item, text);
-  let out = code::FormatResult::new(text);
-  return code::format_pairs(out, pairs);
+    let pairs = DartParser::parse(Rule::item, text);
+    let out = code::FormatResult::new(text);
+    code::format_pairs(out, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_dart(text: &str) -> code::LintResult {
-  let pairs = DartParser::parse(Rule::item, text);
-  let out = code::LintResult::new(text);
-  return code::format_pairs(out, pairs);
+    let pairs = DartParser::parse(Rule::item, text);
+    let out = code::LintResult::new(text);
+    code::format_pairs(out, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_dart() {
-    let example = r###"
+    #[test]
+    fn it_format_dart() {
+        let example = r###"
 /** 
  * 第1行注释
  * 第2行注释
@@ -52,7 +52,7 @@ String helloWorld(String name) {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 /** 
  * 第 1 行注释
  * 第 2 行注释
@@ -77,6 +77,6 @@ String helloWorld(String name) {
 }
 "###;
 
-    assert_eq!(expect, format_dart(example).to_string());
-  }
+        assert_eq!(expect, format_dart(example).to_string());
+    }
 }

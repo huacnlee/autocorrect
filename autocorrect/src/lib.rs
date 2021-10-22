@@ -258,7 +258,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> code::LintResult {
 
     result.filepath = String::from(filename_or_ext);
 
-    return result;
+    result
 }
 
 /// Format a file content with filetype.
@@ -307,21 +307,21 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> code::FormatResult {
         _ => FormatResult::new(raw),
     };
 
-    return result;
+    result
 }
 
 /// Format content with filetype, and return a json result.
 #[wasm_bindgen(js_name = "formatFor")]
 pub fn format_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
     let result = format_for(raw, filename_or_ext);
-    return wasm_bindgen::JsValue::from_serde(&result).unwrap();
+    wasm_bindgen::JsValue::from_serde(&result).unwrap()
 }
 
 /// Lint content with filetype, and return a json result.
 #[wasm_bindgen(js_name = "lintFor")]
 pub fn lint_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
     let result = lint_for(raw, filename_or_ext);
-    return wasm_bindgen::JsValue::from_serde(&result).unwrap();
+    wasm_bindgen::JsValue::from_serde(&result).unwrap()
 }
 
 fn space_dash_with_hans(text: &str) -> String {
@@ -331,7 +331,7 @@ fn space_dash_with_hans(text: &str) -> String {
     out = (&DASH_HANS_RE.replace_all(&out, "$1 $2 $3")).to_string();
     out = (&LEFT_QUOTE_RE.replace_all(&out, "$1")).to_string();
     out = (&RIGHT_QUOTE_RE.replace_all(&out, "$1")).to_string();
-    return out;
+    out
 }
 
 #[cfg(test)]
@@ -496,12 +496,12 @@ mod tests {
         let raw = "<p>Hello你好</p>";
         let result = lint_for(raw, "foo.bar.html");
         let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好","old":"Hello你好"}],"error":""}"#;
-        assert_eq!(false, result.has_error());
+        assert!(!result.has_error());
         assert_eq!(1, result.lines.len());
         assert_eq!(expect_json, result.to_json());
 
         let result1 = lint_for("const a = 'hello世界'", "js");
-        assert_eq!(false, result1.has_error());
+        assert!(!result1.has_error());
         assert_eq!(1, result1.lines.len());
     }
 
@@ -509,11 +509,11 @@ mod tests {
     fn it_format_for() {
         let raw = "<p>Hello你好</p>";
         let result = format_for(raw, "foo.bar.html");
-        assert_eq!(false, result.has_error());
+        assert!(!result.has_error());
         assert_eq!("<p>Hello 你好</p>", result.out);
 
         let result1 = format_for("const a = 'hello世界'", "js");
-        assert_eq!(false, result1.has_error());
+        assert!(!result1.has_error());
         assert_eq!("const a = 'hello 世界'", result1.out);
     }
 }

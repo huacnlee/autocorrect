@@ -9,25 +9,25 @@ struct KotlinParser;
 
 #[allow(dead_code)]
 pub fn format_kotlin(text: &str) -> code::FormatResult {
-  let pairs = KotlinParser::parse(Rule::item, text);
-  let text = code::FormatResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = KotlinParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_kotlin(text: &str) -> code::LintResult {
-  let pairs = KotlinParser::parse(Rule::item, text);
-  let text = code::LintResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = KotlinParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_kotlin() {
-    let example = r###"
+    #[test]
+    fn it_format_kotlin() {
+        let example = r###"
 /** 
  * 第1行注释
  * 第2行注释
@@ -46,7 +46,7 @@ fun helloWorld(name: String) {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 /** 
  * 第 1 行注释
  * 第 2 行注释
@@ -65,6 +65,6 @@ fun helloWorld(name: String) {
 }
 "###;
 
-    assert_eq!(expect, format_kotlin(example).to_string());
-  }
+        assert_eq!(expect, format_kotlin(example).to_string());
+    }
 }

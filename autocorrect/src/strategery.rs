@@ -16,8 +16,8 @@ impl Strategery {
     /// - `reverse` - false just format `(one + other)`, true will format `(other + one)` and `(other + one)`.
     pub fn new(one: &'static str, other: &'static str, space: bool, reverse: bool) -> Self {
         return Strategery {
-            space: space,
-            reverse: reverse,
+            space,
+            reverse,
             add_space_re: regexp!("({})({})", one, other),
             add_space_reverse_re: regexp!("({})({})", other, one),
             remove_space_re: regexp!("({})[ ]({})", one, other),
@@ -27,9 +27,9 @@ impl Strategery {
 
     pub fn format(&self, text: &str) -> String {
         if self.space {
-            return self.add_space(text);
+            self.add_space(text)
         } else {
-            return self.remove_space(text);
+            self.remove_space(text)
         }
     }
 
@@ -42,7 +42,7 @@ impl Strategery {
             out = (&self.add_space_reverse_re.replace_all(&out, "$1 $2")).to_string();
         }
 
-        return out;
+        out
     }
 
     fn remove_space(&self, text: &str) -> String {
@@ -54,6 +54,6 @@ impl Strategery {
             out = (&self.remove_space_reverse_re.replace_all(&out, "$1 $2")).to_string();
         }
 
-        return out;
+        out
     }
 }

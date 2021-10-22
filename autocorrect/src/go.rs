@@ -9,25 +9,25 @@ struct GoParser;
 
 #[allow(dead_code)]
 pub fn format_go(text: &str) -> code::FormatResult {
-  let pairs = GoParser::parse(Rule::item, text);
-  let text = code::FormatResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = GoParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_go(text: &str) -> code::LintResult {
-  let pairs = GoParser::parse(Rule::item, text);
-  let text = code::LintResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = GoParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_go() {
-    let example = r###"
+    #[test]
+    fn it_format_go() {
+        let example = r###"
 // WithContext创建基于ctx的db
 // 第2行注释
 func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
@@ -47,7 +47,7 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 // WithContext 创建基于 ctx 的 db
 // 第 2 行注释
 func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
@@ -67,6 +67,6 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
 }
 "###;
 
-    assert_eq!(expect, format_go(example).to_string());
-  }
+        assert_eq!(expect, format_go(example).to_string());
+    }
 }

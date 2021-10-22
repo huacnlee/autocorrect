@@ -9,25 +9,25 @@ struct ScalaParser;
 
 #[allow(dead_code)]
 pub fn format_scala(text: &str) -> code::FormatResult {
-  let pairs = ScalaParser::parse(Rule::item, text);
-  let text = code::FormatResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = ScalaParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_scala(text: &str) -> code::LintResult {
-  let pairs = ScalaParser::parse(Rule::item, text);
-  let text = code::LintResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = ScalaParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_scala() {
-    let example = r###"
+    #[test]
+    fn it_format_scala() {
+        let example = r###"
 /*
   多行注释第1行
   多行comment第2行
@@ -49,7 +49,7 @@ object Test {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 /*
   多行注释第 1 行
   多行 comment 第 2 行
@@ -71,6 +71,6 @@ object Test {
 }
 "###;
 
-    assert_eq!(expect, format_scala(example).to_string());
-  }
+        assert_eq!(expect, format_scala(example).to_string());
+    }
 }

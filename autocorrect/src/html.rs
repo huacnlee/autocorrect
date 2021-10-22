@@ -14,7 +14,7 @@ pub fn format_html(text: &str) -> code::FormatResult {
 
     // preformat script, style first
     let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
@@ -22,7 +22,7 @@ pub fn lint_html(text: &str) -> code::LintResult {
     let pairs = HTMLParser::parse(Rule::item, text);
 
     let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]

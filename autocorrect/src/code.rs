@@ -21,7 +21,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
         }
     }
 
-    return out;
+    out
 }
 
 fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
@@ -71,7 +71,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             return;
         }
 
-        let lines = part.split("\n");
+        let lines = part.split('\n');
 
         // sub line in a part
         let mut sub_line = 0;
@@ -151,30 +151,30 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 
             return;
         }
-    } else {
-        if rule_name == "inline_style" {
-            let sub_reuslts = css::format_css(part);
-            results.push(LineResult {
-                line: 0,
-                col: 0,
-                old: String::from(part),
-                new: sub_reuslts.out,
-            });
-            results.error(sub_reuslts.error.as_str());
+    }
 
-            return;
-        } else if rule_name == "inline_javascript" {
-            let sub_reuslts = javascript::format_javascript(part);
-            results.push(LineResult {
-                line: 0,
-                col: 0,
-                old: String::from(part),
-                new: sub_reuslts.out,
-            });
-            results.error(sub_reuslts.error.as_str());
+    if rule_name == "inline_style" {
+        let sub_reuslts = css::format_css(part);
+        results.push(LineResult {
+            line: 0,
+            col: 0,
+            old: String::from(part),
+            new: sub_reuslts.out,
+        });
+        results.error(sub_reuslts.error.as_str());
 
-            return;
-        }
+        return;
+    } else if rule_name == "inline_javascript" {
+        let sub_reuslts = javascript::format_javascript(part);
+        results.push(LineResult {
+            line: 0,
+            col: 0,
+            old: String::from(part),
+            new: sub_reuslts.out,
+        });
+        results.error(sub_reuslts.error.as_str());
+
+        return;
     }
 }
 
@@ -199,7 +199,7 @@ fn match_autocorrect_toggle(part: &str) -> Toggle {
         return Toggle::Enable;
     }
 
-    return Toggle::None;
+    Toggle::None
 }
 
 #[derive(Serialize, Deserialize)]
@@ -256,7 +256,7 @@ impl FormatResult {
 
     #[allow(dead_code)]
     pub fn has_error(&self) -> bool {
-        return self.error.len() > 0;
+        !self.error.is_empty()
     }
 }
 
@@ -286,7 +286,7 @@ impl<'a> Results for FormatResult {
     }
 
     fn is_enabled(&self) -> bool {
-        return self.enable;
+        self.enable
     }
 }
 
@@ -328,12 +328,12 @@ impl LintResult {
             out.push_str(format!("{}\n", changeset).as_str());
         }
 
-        return out;
+        out
     }
 
     #[allow(dead_code)]
     pub fn has_error(&self) -> bool {
-        return self.error.len() > 0;
+        !self.error.is_empty()
     }
 }
 
@@ -351,7 +351,7 @@ impl Results for LintResult {
     }
 
     fn to_string(&self) -> String {
-        return String::from("");
+        String::from("")
     }
 
     fn is_lint(&self) -> bool {
@@ -363,7 +363,7 @@ impl Results for LintResult {
     }
 
     fn is_enabled(&self) -> bool {
-        return self.enable;
+        self.enable
     }
 }
 

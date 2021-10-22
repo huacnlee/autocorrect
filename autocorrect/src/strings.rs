@@ -11,14 +11,14 @@ struct StringsParser;
 pub fn format_strings(text: &str) -> code::FormatResult {
     let pairs = StringsParser::parse(Rule::item, text);
     let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_strings(text: &str) -> code::LintResult {
     let pairs = StringsParser::parse(Rule::item, text);
     let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]

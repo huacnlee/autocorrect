@@ -9,25 +9,25 @@ struct ElixirParser;
 
 #[allow(dead_code)]
 pub fn format_elixir(text: &str) -> code::FormatResult {
-  let pairs = ElixirParser::parse(Rule::item, text);
-  let text = code::FormatResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = ElixirParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_elixir(text: &str) -> code::LintResult {
-  let pairs = ElixirParser::parse(Rule::item, text);
-  let text = code::LintResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = ElixirParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_elixir() {
-    let example = r###"
+    #[test]
+    fn it_format_elixir() {
+        let example = r###"
 defmodule Test do
   @moduledoc """
   多行注释第1行
@@ -52,7 +52,7 @@ defmodule Test do
 end
 "###;
 
-    let expect = r###"
+        let expect = r###"
 defmodule Test do
   @moduledoc """
   多行注释第 1 行
@@ -77,6 +77,6 @@ defmodule Test do
 end
 "###;
 
-    assert_eq!(expect, format_elixir(example).to_string());
-  }
+        assert_eq!(expect, format_elixir(example).to_string());
+    }
 }

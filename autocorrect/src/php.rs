@@ -11,14 +11,14 @@ struct PHPParser;
 pub fn format_php(text: &str) -> code::FormatResult {
     let pairs = PHPParser::parse(Rule::item, text);
     let text = code::FormatResult::new(text);
-    return code::format_pairs(text, pairs);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_php(text: &str) -> code::LintResult {
     let pairs = PHPParser::parse(Rule::item, text);
     let text = code::LintResult::new(text);
-    return code::format_pairs(text, pairs);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]

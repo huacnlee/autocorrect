@@ -9,25 +9,25 @@ struct CSSParser;
 
 #[allow(dead_code)]
 pub fn format_css(text: &str) -> code::FormatResult {
-  let pairs = CSSParser::parse(Rule::item, text);
-  let text = code::FormatResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = CSSParser::parse(Rule::item, text);
+    let text = code::FormatResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[allow(dead_code)]
 pub fn lint_css(text: &str) -> code::LintResult {
-  let pairs = CSSParser::parse(Rule::item, text);
-  let text = code::LintResult::new(text);
-  return code::format_pairs(text, pairs);
+    let pairs = CSSParser::parse(Rule::item, text);
+    let text = code::LintResult::new(text);
+    code::format_pairs(text, pairs)
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn it_format_css_pair() {
-    let example = r###"
+    #[test]
+    fn it_format_css_pair() {
+        let example = r###"
 // 这是comment在CSS里面
 
 /* 
@@ -44,7 +44,7 @@ mod tests {
 }
 "###;
 
-    let expect = r###"
+        let expect = r###"
 // 这是 comment 在 CSS 里面
 
 /* 
@@ -61,6 +61,6 @@ mod tests {
 }
 "###;
 
-    assert_eq!(expect, format_css(example).to_string());
-  }
+        assert_eq!(expect, format_css(example).to_string());
+    }
 }
