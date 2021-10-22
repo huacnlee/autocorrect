@@ -272,14 +272,17 @@ fn main() {
 
 ## Benchmark
 
-### Format
+Use `make bench` to run benchmark tests.
 
-Use `cargo bench` to run benchmark tests.
+See [autocorrect/src/bench.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/bench.rs) for details.
 
 ```bash
-test tests::bench_format_100 ... bench:      19,410 ns/iter (+/- 1,571)
-test tests::bench_format_400 ... bench:      45,957 ns/iter (+/- 3,444)
-test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
+test bench::tests::bench_format_50         ... bench:       9,195 ns/iter (+/- 121)
+test bench::tests::bench_format_100        ... bench:      16,714 ns/iter (+/- 250)
+test bench::tests::bench_format_400        ... bench:      59,033 ns/iter (+/- 161)
+test bench::tests::bench_format_html       ... bench:     182,670 ns/iter (+/- 1,816)
+test bench::tests::bench_format_javascript ... bench:     105,960 ns/iter (+/- 3,381)
+test bench::tests::bench_format_json       ... bench:      30,669 ns/iter (+/- 183)
 ```
 
 | Total chars | Duration |
@@ -288,17 +291,11 @@ test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
 | 100         | 0.019 ms |
 | 400         | 0.045 ms |
 
-### FormatHTML
-
-TODO
-
 ## TODO
 
 - [x] Lint
 - [x] Lint for HTML, Markdown
 - [x] Lint for Plain text by each line
-- [ ] Vim plugin
-- [ ] Git Commit message format hook
 - [x] Disable next line
 
 ## License

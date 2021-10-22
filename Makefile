@@ -1,7 +1,7 @@
 WORKDIR=$(shell pwd)
 
 bench:
-	rustup run nightly cargo bench
+	rustup run nightly cargo bench --features bench
 run:
 	cargo run -- --debug --lint ./
 run\:json:

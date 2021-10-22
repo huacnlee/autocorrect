@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Install Rust
-        run: rustup update stable && rustup default stable
+        run: rustup update nightly && rustup default nightly
 
       - name: Checkout
         uses: actions/checkout@v1

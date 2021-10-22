@@ -37,3 +37,6 @@ opt-level = "s"
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = false
+
+[features]
+bench = []

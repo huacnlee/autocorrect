@@ -44,6 +44,13 @@ fn main() {
 }
 ```
 */
+#![feature(test)]
+
+#[cfg(feature = "bench")]
+extern crate test;
+#[cfg(feature = "bench")]
+mod bench;
+
 #[macro_use]
 extern crate lazy_static;
 

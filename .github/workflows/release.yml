@@ -50,7 +50,7 @@ jobs:
       - name: Setup | Rust
         uses: actions-rs/toolchain@v1.0.7
         with:
-          toolchain: stable
+          toolchain: nightly
           override: true
           profile: minimal
           target: ${{ matrix.target }}
