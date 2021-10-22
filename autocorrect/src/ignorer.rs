@@ -43,26 +43,14 @@ mod tests {
     #[test]
     fn test_is_ignored() {
         let current_dir = std::env::current_dir().unwrap();
-        let work_dir = current_dir
-            .parent()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .to_str()
-            .unwrap();
-        println!("-- work_dir: {:?}", work_dir);
+        let work_dir = current_dir.parent().unwrap().to_str().unwrap();
+        // println!("-- work_dir: {:?}", work_dir);
         let ignorer = Ignorer::new(work_dir);
-        assert_eq!(true, ignorer.is_ignored("src/main.rs"));
-        assert_eq!(true, ignorer.is_ignored("pkg/foo/bar"));
-        assert_eq!(
-            true,
-            ignorer.is_ignored("node_modules/@huacnlee/autocorrect/index.js")
-        );
-        assert_eq!(false, ignorer.is_ignored("example/index.js"));
-        assert_eq!(false, ignorer.is_ignored("example/package.json"));
-        assert_eq!(
-            true,
-            ignorer.is_ignored("test/fixtures/this-file-will-ignore.rs")
-        );
+        assert!(ignorer.is_ignored("src/main.rs"));
+        assert!(ignorer.is_ignored("pkg/foo/bar"));
+        assert!(ignorer.is_ignored("node_modules/@huacnlee/autocorrect/index.js"));
+        assert!(!ignorer.is_ignored("example/index.js"));
+        assert!(!ignorer.is_ignored("example/package.json"));
+        assert!(ignorer.is_ignored("test/fixtures/this-file-will-ignore.rs"));
     }
 }
