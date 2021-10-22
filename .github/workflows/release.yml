@@ -56,10 +56,7 @@ jobs:
           target: ${{ matrix.target }}
 
       - name: Build | Build
-        uses: actions-rs/cargo@v1.0.3
-        # TODO: Remove this once it's the default
-        env:
-          SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk
+        uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --target ${{ matrix.target }}
