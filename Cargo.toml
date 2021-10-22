@@ -7,7 +7,7 @@ license = "MIT"
 name = "autocorrect-bin"
 readme = "README.md"
 repository = "https://github.com/huacnlee/autocorrect"
-version = "1.4.3"
+version = "1.4.4"
 
 [[bin]]
 name = "autocorrect"
