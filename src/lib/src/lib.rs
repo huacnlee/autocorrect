@@ -131,7 +131,7 @@ lazy_static! {
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}", true, false),
         // SpecialSymbol
-        Strategery::new(r"\p{CJK}", r"[\|+*]", true, true),
+        Strategery::new(r"\p{CJK}", r"[\|+]", true, true),
         // @ after CJK, not not before, 你好 @某某
         Strategery::new(r"\p{CJK}", r"[@]", true, false),
         Strategery::new(r"\p{CJK}", r"[\[\(‘“]", true, false),
@@ -177,7 +177,6 @@ pub fn format(text: &str) -> String {
         out = rule.format(&out)
     }
 
-    // out = remove_full_date_spacing(&out);
     out = space_dash_with_hans(&out);
 
     out
@@ -320,19 +319,6 @@ pub fn lint_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsVa
     return wasm_bindgen::JsValue::from_serde(&result).unwrap();
 }
 
-// removeFullDateSpacing
-// 发布2013年3月10号公布 -> 发布2013年3月10号公布
-#[allow(dead_code)]
-fn remove_full_date_spacing(text: &str) -> String {
-    let mut out = String::from(text);
-    for ma in FULL_DATE_RE.find_iter(&text) {
-        let new_val = ma.as_str().replace(" ", "");
-        out = out.replace(ma.as_str(), &new_val);
-    }
-
-    return out;
-}
-
 fn space_dash_with_hans(text: &str) -> String {
     let mut out = String::from(text);
 
@@ -374,8 +360,10 @@ mod tests {
             "隔夜SHIBOR报1.5530%，上涨33.80%个基点。7天SHIBOR报2.3200%，上涨6.10个基点。3个月SHIBOR报2.8810%，下降1.80个" => "隔夜 SHIBOR 报 1.5530%，上涨 33.80% 个基点。7 天 SHIBOR 报 2.3200%，上涨 6.10 个基点。3 个月 SHIBOR 报 2.8810%，下降 1.80 个",
             "野村：重申吉利汽车(00175)“买入”评级 上调目标价至17.9港元" => "野村：重申吉利汽车 (00175)“买入” 评级 上调目标价至 17.9 港元",
             "小米集团-W调整目标价为13.5港币" => "小米集团-W 调整目标价为 13.5 港币",
-            "（路透社）-预计全年净亏损约1.3亿港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿港元 * 预期因出售汽车",
-            "（路透社）-预计全年净亏损约1.3亿\n\n港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿\n\n港元 * 预期因出售汽车"
+            "（路透社）-预计全年净亏损约1.3亿港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿港元*预期因出售汽车",
+            "（路透社）-预计全年净亏损约1.3亿\n\n港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿\n\n港元*预期因出售汽车",
+            "Cell或RefCell类型使用某种形式的*内部" => "Cell 或 RefCell 类型使用某种形式的*内部",
+            "Cell或RefCell类型使用某种形式的*内部可变性*" => "Cell 或 RefCell 类型使用某种形式的*内部可变性*"
         ];
 
         assert_cases(cases);
