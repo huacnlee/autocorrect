@@ -6,7 +6,7 @@ homepage = "https://github.com/huacnlee/autocorrect"
 keywords = ["autocorrect", "lint", "format"]
 license = "MIT"
 name = "autocorrect"
-readme = "../../README.md"
+readme = "../README.md"
 repository = "https://github.com/huacnlee/autocorrect"
 version = "1.4.4"
 
