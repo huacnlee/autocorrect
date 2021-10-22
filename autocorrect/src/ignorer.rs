@@ -21,7 +21,7 @@ impl Ignorer {
 
         // println!("---- {:?}", ignorer.len());
 
-        Ignorer { ignorer: ignorer }
+        Ignorer { ignorer }
     }
 
     #[wasm_bindgen(js_name = "isIgnored")]

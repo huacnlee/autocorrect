@@ -14,6 +14,8 @@ test:
 	@cargo test
 test\:lint:
 	@cargo run -q -- --debug --lint tests/fixtures/*.fixed.*
+test\:bench:
+	tests/bench.sh
 test\:lint-json:
 	tests/test_lint_json.sh
 wasm:

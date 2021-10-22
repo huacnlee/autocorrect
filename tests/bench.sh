@@ -1,0 +1,1 @@
+cargo run -q -- --lint tests/fixtures/long-lines.json

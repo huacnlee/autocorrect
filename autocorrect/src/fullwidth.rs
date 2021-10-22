@@ -16,13 +16,13 @@ lazy_static! {
       "~" => "～"
     );
     static ref PUNCTUATION_WITH_LEFT_CJK_RE: Regex =
-        regexp!("{}{}", NORMAL_PUNCTUATIONS, r"[\p{CJK}]+");
+        regexp!("{}{}", NORMAL_PUNCTUATIONS, r"[\p{CJ}]+");
     static ref PUNCTUATION_WITH_RIGHT_CJK_RE: Regex =
-        regexp!("{}{}", r"[\p{CJK}]+", NORMAL_PUNCTUATIONS);
+        regexp!("{}{}", r"[\p{CJ}]+", NORMAL_PUNCTUATIONS);
     static ref PUNCTUATION_WITH_SPEICAL_CJK_RE: Regex =
-        regexp!("{}{}{}", r"[\p{CJK}]+", SPCIAL_PUNCTUATIONS, r"[\p{CJK}]+");
+        regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r"[\p{CJ}]+");
     static ref PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE: Regex =
-        regexp!("{}{}{}", r"[\p{CJK}]+", SPCIAL_PUNCTUATIONS, r"$");
+        regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r"$");
     static ref PUNCTUATIONS_RE: Regex =
         regexp!("({}|{})", SPCIAL_PUNCTUATIONS, NORMAL_PUNCTUATIONS);
 }
@@ -95,6 +95,18 @@ mod tests {
           "蚂蚁集团是阿里巴巴 (BABA.N) 旗下金融科技子公司" =>                                                "蚂蚁集团是阿里巴巴 (BABA.N) 旗下金融科技子公司",
           "Dollar 的演示 $阿里巴巴.US$ 股票标签" =>                                                   "Dollar 的演示 $阿里巴巴.US$ 股票标签",
           "确保&quot;&gt;HTML Entity&lt;&quot;的字符&#34;不会被处理&#34; Ruby&amp;Go" => "确保&quot;&gt;HTML Entity&lt;&quot;的字符&#34;不会被处理&#34; Ruby&amp;Go"
+        );
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn test_fullwidth_with_cjk() {
+        let cases = map!(
+            "你好,这是一个句子." => "你好，这是一个句子。",
+            "你好,這是一個句子." => "你好，這是一個句子。",
+            "でもっと多くのことができるようになります.そんな新機能の数々をさっそく体験してみましょう." => "でもっと多くのことができるようになります。そんな新機能の数々をさっそく体験してみましょう。",
+            "근면, 검소, 협동은 우리 겨레의 미덕이다." => "근면, 검소, 협동은 우리 겨레의 미덕이다."
         );
 
         assert_cases(cases);
