@@ -2,7 +2,7 @@
 // HTML
 //
 // Fork from:
-// https://github.com/mathiversen/html-parser/blob/0.4.2/src/grammar/rules.pest
+// https://github.com/mathiversen/html-parser/blob/0.4.2/s../grammar//rules.pest
 //
 item = _{
     SOI

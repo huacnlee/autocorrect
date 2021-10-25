@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar/swift.pest"]
+#[grammar = "../grammar//swift.pest"]
 struct SwiftParser;
 
 #[cfg(test)]

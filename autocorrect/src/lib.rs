@@ -88,29 +88,8 @@ mod fullwidth;
 mod halfwidth;
 pub mod ignorer;
 mod strategery;
-pub mod types;
-
-mod csharp;
-mod css;
-mod dart;
-mod elixir;
-mod go;
-mod html;
-mod java;
-mod javascript;
-mod json;
-mod kotlin;
-mod markdown;
-mod objective_c;
-mod php;
-mod python;
-mod ruby;
-mod rust;
-mod scala;
-mod sql;
-mod strings;
-mod swift;
-mod yaml;
+use code::Results;
+pub use code::{format_for, get_file_extension, is_support_type, lint_for};
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
@@ -120,7 +99,6 @@ extern crate wee_alloc;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 use crate::strategery::Strategery;
-pub use code::{FormatResult, LintResult, Results};
 use regex::Regex;
 
 lazy_static! {
@@ -214,107 +192,7 @@ pub fn format(text: &str) -> String {
 /// ```
 #[wasm_bindgen(js_name = "formatHTML")]
 pub fn format_html(html_str: &str) -> String {
-    html::format_html(html_str).to_string()
-}
-
-/// Lint a file content with filetype.
-///
-/// Example:
-///
-/// ```
-//  extern crate autocorrect;
-//
-/// let raw = r#"
-/// <article>
-///   <h1>这是 Heading 标题</h1>
-///   <div class="content">
-///     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-///     <p>这是第二行 p 标签</p>
-///   </div>
-/// </article>
-/// "#;
-/// autocorrect::lint_for(raw, "html");
-/// autocorrect::lint_for(raw, "index.html");
-/// ```
-pub fn lint_for(raw: &str, filename_or_ext: &str) -> code::LintResult {
-    let mut result = match types::match_filename(filename_or_ext) {
-        "html" => html::lint_html(raw),
-        "yaml" => yaml::lint_yaml(raw),
-        "sql" => sql::lint_sql(raw),
-        "rust" => rust::lint_rust(raw),
-        "ruby" => ruby::lint_ruby(raw),
-        "elixir" => elixir::lint_elixir(raw),
-        "go" => go::lint_go(raw),
-        "javascript" => javascript::lint_javascript(raw),
-        "css" => css::lint_css(raw),
-        "json" => json::lint_json(raw),
-        "python" => python::lint_python(raw),
-        "objective_c" => objective_c::lint_objectivec(raw),
-        "strings" => strings::lint_strings(raw),
-        "csharp" => csharp::lint_csharp(raw),
-        "swift" => swift::lint_swift(raw),
-        "java" => java::lint_java(raw),
-        "scala" => scala::lint_scala(raw),
-        "kotlin" => kotlin::lint_kotlin(raw),
-        "php" => php::lint_php(raw),
-        "dart" => dart::lint_dart(raw),
-        "markdown" => markdown::lint_markdown(raw),
-        "text" => markdown::lint_markdown(raw),
-        _ => LintResult::new(raw),
-    };
-
-    result.filepath = String::from(filename_or_ext);
-
-    result
-}
-
-/// Format a file content with filetype.
-///
-/// Example:
-///
-/// ```
-//  extern crate autocorrect;
-//
-/// let raw = r#"
-/// <article>
-///   <h1>这是 Heading 标题</h1>
-///   <div class="content">
-///     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-///     <p>这是第二行 p 标签</p>
-///   </div>
-/// </article>
-/// "#;
-/// autocorrect::format_for(raw, "html");
-/// autocorrect::format_for(raw, "index.html");
-/// ```
-pub fn format_for(raw: &str, filename_or_ext: &str) -> code::FormatResult {
-    let result = match types::match_filename(filename_or_ext) {
-        "html" => html::format_html(raw),
-        "yaml" => yaml::format_yaml(raw),
-        "sql" => sql::format_sql(raw),
-        "rust" => rust::format_rust(raw),
-        "ruby" => ruby::format_ruby(raw),
-        "elixir" => elixir::format_elixir(raw),
-        "go" => go::format_go(raw),
-        "javascript" => javascript::format_javascript(raw),
-        "css" => css::format_css(raw),
-        "json" => json::format_json(raw),
-        "python" => python::format_python(raw),
-        "objective_c" => objective_c::format_objectivec(raw),
-        "strings" => strings::format_strings(raw),
-        "csharp" => csharp::format_csharp(raw),
-        "swift" => swift::format_swift(raw),
-        "java" => java::format_java(raw),
-        "scala" => scala::format_scala(raw),
-        "kotlin" => kotlin::format_kotlin(raw),
-        "php" => php::format_php(raw),
-        "dart" => dart::format_dart(raw),
-        "markdown" => markdown::format_markdown(raw),
-        "text" => markdown::format_markdown(raw),
-        _ => FormatResult::new(raw),
-    };
-
-    result
+    code::format_html(html_str).to_string()
 }
 
 /// Format content with filetype, and return a json result.

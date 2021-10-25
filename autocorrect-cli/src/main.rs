@@ -106,11 +106,11 @@ pub fn main() {
                 // println!("{}", path.display());
 
                 let filepath = String::from(path.to_str().unwrap());
-                let mut filetype = autocorrect::types::get_file_extension(filepath.as_str());
+                let mut filetype = autocorrect::get_file_extension(filepath.as_str());
                 if !arg_filetype.is_empty() {
                     filetype = String::from(arg_filetype);
                 }
-                if !autocorrect::types::is_support_type(filetype.as_str()) {
+                if !autocorrect::is_support_type(filetype.as_str()) {
                     continue;
                 }
 

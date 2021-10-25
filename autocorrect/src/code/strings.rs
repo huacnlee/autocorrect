@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar/strings.pest"]
+#[grammar = "../grammar//strings.pest"]
 struct StringsParser;
 
 #[cfg(test)]

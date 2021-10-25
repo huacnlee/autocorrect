@@ -6,12 +6,13 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar/html.pest"]
+#[grammar = "../grammar//html.pest"]
 struct HTMLParser;
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use regex::Regex;
 
     macro_rules! assert_html_eq {
         ($expected:expr, $actual:expr) => {{

@@ -4,7 +4,7 @@ use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar/go.pest"]
+#[grammar = "../grammar//go.pest"]
 struct GoParser;
 
 #[cfg(test)]

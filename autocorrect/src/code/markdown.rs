@@ -6,7 +6,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar/markdown.pest"]
+#[grammar = "../grammar//markdown.pest"]
 struct MarkdownParser;
 
 #[cfg(test)]
