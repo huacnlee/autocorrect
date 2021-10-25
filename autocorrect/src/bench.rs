@@ -149,4 +149,11 @@ function helloWorld(a) {
 
         b.iter(|| format_for(raw, "javascript"));
     }
+
+    /// 2000 lines JSON, 4ms/iter
+    #[bench]
+    fn bench_format_json_with_2k_lines(b: &mut Bencher) {
+        let raw = fixture("long-lines.json");
+        b.iter(|| format_for(raw.as_str(), "json"));
+    }
 }

@@ -277,12 +277,13 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/bench.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/bench.rs) for details.
 
 ```bash
-test bench::tests::bench_format_50         ... bench:       9,195 ns/iter (+/- 121)
-test bench::tests::bench_format_100        ... bench:      16,714 ns/iter (+/- 250)
-test bench::tests::bench_format_400        ... bench:      59,033 ns/iter (+/- 161)
-test bench::tests::bench_format_html       ... bench:     182,670 ns/iter (+/- 1,816)
-test bench::tests::bench_format_javascript ... bench:     105,960 ns/iter (+/- 3,381)
-test bench::tests::bench_format_json       ... bench:      30,669 ns/iter (+/- 183)
+test bench::tests::bench_format_100                ... bench:      16,717 ns/iter (+/- 7,790)
+test bench::tests::bench_format_400                ... bench:      59,149 ns/iter (+/- 9,923)
+test bench::tests::bench_format_50                 ... bench:       9,508 ns/iter (+/- 6,278)
+test bench::tests::bench_format_html               ... bench:     163,533 ns/iter (+/- 129,441)
+test bench::tests::bench_format_javascript         ... bench:      85,127 ns/iter (+/- 2,663)
+test bench::tests::bench_format_json               ... bench:      29,588 ns/iter (+/- 106)
+test bench::tests::bench_format_json_with_2k_lines ... bench:   3,975,075 ns/iter (+/- 753,329)
 ```
 
 | Total chars | Duration |
