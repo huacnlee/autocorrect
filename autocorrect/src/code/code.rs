@@ -37,7 +37,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
             format_or_lint(results, rule_name, item);
         }
         "inline_style" | "inline_javascript" => {
-            format_or_lint_for_inline_scripts(results, item, rule_name)
+            format_or_lint_for_inline_scripts(results, item, rule_name);
         }
         _ => {
             let mut has_child = false;
