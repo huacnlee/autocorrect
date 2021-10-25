@@ -1,25 +1,12 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/kotlin.pest"]
 struct KotlinParser;
-
-#[allow(dead_code)]
-pub fn format_kotlin(text: &str) -> code::FormatResult {
-    let pairs = KotlinParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_kotlin(text: &str) -> code::LintResult {
-    let pairs = KotlinParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {

@@ -1,25 +1,12 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/sql.pest"]
 struct SQLParser;
-
-#[allow(dead_code)]
-pub fn format_sql(text: &str) -> code::FormatResult {
-    let pairs = SQLParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_sql(text: &str) -> code::LintResult {
-    let pairs = SQLParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {

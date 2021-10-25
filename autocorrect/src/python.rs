@@ -1,25 +1,11 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
-
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/python.pest"]
 struct PythonParser;
-
-#[allow(dead_code)]
-pub fn format_python(text: &str) -> code::FormatResult {
-    let pairs = PythonParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_python(text: &str) -> code::LintResult {
-    let pairs = PythonParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {

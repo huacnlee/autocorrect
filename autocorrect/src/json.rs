@@ -1,25 +1,12 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/json.pest"]
 struct JSONParser;
-
-#[allow(dead_code)]
-pub fn format_json(text: &str) -> code::FormatResult {
-    let pairs = JSONParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_json(text: &str) -> code::LintResult {
-    let pairs = JSONParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {

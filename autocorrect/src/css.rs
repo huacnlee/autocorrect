@@ -1,25 +1,12 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/css.pest"]
 struct CSSParser;
-
-#[allow(dead_code)]
-pub fn format_css(text: &str) -> code::FormatResult {
-    let pairs = CSSParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_css(text: &str) -> code::LintResult {
-    let pairs = CSSParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {

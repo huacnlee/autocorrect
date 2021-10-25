@@ -1,25 +1,12 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/dart.pest"]
 struct DartParser;
-
-#[allow(dead_code)]
-pub fn format_dart(text: &str) -> code::FormatResult {
-    let pairs = DartParser::parse(Rule::item, text);
-    let out = code::FormatResult::new(text);
-    code::format_pairs(out, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_dart(text: &str) -> code::LintResult {
-    let pairs = DartParser::parse(Rule::item, text);
-    let out = code::LintResult::new(text);
-    code::format_pairs(out, pairs)
-}
 
 #[cfg(test)]
 mod tests {

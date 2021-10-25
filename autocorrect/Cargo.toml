@@ -14,8 +14,10 @@ version = "1.4.4"
 crate-type = ["cdylib", "rlib"]
 name = "autocorrect"
 path = "src/lib.rs"
+proc-macro = true
 
 [dependencies]
+autocorrect-derive = {path = "../autocorrect-derive"}
 difference = "2.0"
 ignore = "0.4"
 lazy_static = "1.4.0"

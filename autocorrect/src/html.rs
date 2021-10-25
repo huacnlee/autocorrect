@@ -1,29 +1,13 @@
 // autocorrect: false
 use super::*;
 
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/html.pest"]
 struct HTMLParser;
-
-#[allow(dead_code)]
-pub fn format_html(text: &str) -> code::FormatResult {
-    let pairs = HTMLParser::parse(Rule::item, text);
-
-    // preformat script, style first
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_html(text: &str) -> code::LintResult {
-    let pairs = HTMLParser::parse(Rule::item, text);
-
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {

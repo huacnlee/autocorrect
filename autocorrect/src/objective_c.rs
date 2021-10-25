@@ -1,25 +1,12 @@
 // autocorrect: false
 use super::*;
+use autocorrect_derive::GrammarParser;
 use pest::Parser as P;
 use pest_derive::Parser;
 
-#[derive(Parser)]
+#[derive(GrammarParser, Parser)]
 #[grammar = "../grammar/objective_c.pest"]
 struct ObjectiveCParser;
-
-#[allow(dead_code)]
-pub fn format_objective_c(text: &str) -> code::FormatResult {
-    let pairs = ObjectiveCParser::parse(Rule::item, text);
-    let text = code::FormatResult::new(text);
-    code::format_pairs(text, pairs)
-}
-
-#[allow(dead_code)]
-pub fn lint_objective_c(text: &str) -> code::LintResult {
-    let pairs = ObjectiveCParser::parse(Rule::item, text);
-    let text = code::LintResult::new(text);
-    code::format_pairs(text, pairs)
-}
 
 #[cfg(test)]
 mod tests {
@@ -49,6 +36,6 @@ mod tests {
 }
 "###;
 
-        assert_eq!(expect, format_objective_c(example).to_string());
+        assert_eq!(expect, format_objectivec(example).to_string());
     }
 }
