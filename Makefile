@@ -7,7 +7,7 @@ run:
 run\:json:
 	cargo run -- --lint --format json ./
 build:
-	cargo +stable build --release --target aarch64-apple-darwin
+	cargo build --release --target aarch64-apple-darwin
 	sudo ln -f target/aarch64-apple-darwin/release/autocorrect /usr/local/bin/autocorrect
 test:
 	@cargo test --manifest-path src/lib/Cargo.toml 

@@ -7,6 +7,7 @@ mod logger;
 mod progress;
 
 use logger::Logger;
+use threadpool::ThreadPool;
 
 extern crate autocorrect;
 
@@ -16,6 +17,7 @@ struct Option {
     fix: bool,
     debug: bool,
     formatter: String,
+    threads: usize,
 }
 
 fn get_matches<'a>() -> clap::ArgMatches<'a> {
@@ -41,6 +43,9 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
     .arg(
         Arg::with_name("debug").long("debug").help("Print debug message.")
     )
+    .arg(
+        Arg::with_name("threads").long("threads").help("Number of threads").default_value("4").required(false)
+    )
     .get_matches();
 }
 
@@ -50,6 +55,7 @@ pub fn main() {
         fix: false,
         lint: false,
         formatter: String::from(""),
+        threads: 4,
     };
 
     let matches = get_matches();
@@ -61,6 +67,11 @@ pub fn main() {
     option.debug = matches.is_present("debug");
     let formatter = matches.value_of("formatter").unwrap_or("").to_lowercase();
     option.formatter = formatter;
+    option.threads = matches
+        .value_of("threads")
+        .unwrap_or("4")
+        .parse::<usize>()
+        .unwrap_or(4);
 
     let mut arg_files = matches.values_of("file").unwrap();
     let arg_filetype = matches.value_of("filetype").unwrap();
@@ -69,7 +80,9 @@ pub fn main() {
     let start_t = std::time::SystemTime::now();
     let mut lint_results: Vec<String> = Vec::new();
     let (tx, rx) = std::sync::mpsc::channel();
-    let mut threads = Vec::new();
+
+    let pool = ThreadPool::new(option.threads);
+    // let mut threads = Vec::new();
 
     // create a walker
     // take first file arg, because ignore::WalkBuilder::new need a file path.
@@ -119,7 +132,7 @@ pub fn main() {
                 let filepath = filepath.clone();
                 let filetype = filetype.clone();
 
-                let thread = std::thread::spawn(move || {
+                pool.execute(move || {
                     if let Ok(raw) = fs::read_to_string(&filepath) {
                         let file_start_t = std::time::SystemTime::now();
 
@@ -154,7 +167,6 @@ pub fn main() {
                         }
                     }
                 });
-                threads.push(thread);
             }
             Err(_err) => {
                 log::error!("ERROR: {}", _err);
@@ -163,9 +175,7 @@ pub fn main() {
     }
     // wait all threads complete
     // println!("\n---- threads {}", threads.len());
-    for th in threads {
-        th.join().unwrap();
-    }
+    pool.join();
 
     // wait all threads send result
     while let Ok(lint_result) = rx.try_recv() {
