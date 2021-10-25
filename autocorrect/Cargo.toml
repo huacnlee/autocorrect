@@ -28,7 +28,7 @@ wasm-bindgen = {version = "0.2.75", features = ["serde-serialize"]}
 wee_alloc = "0.4.5"
 
 [dev-dependencies]
-pretty_assertions = "0.7.2"
+pretty_assertions = "1.0.0"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
