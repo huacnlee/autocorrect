@@ -99,17 +99,17 @@ jobs:
       - name: Setup | Artifacts
         uses: actions/download-artifact@v2
         with:
-          path: ~/release-dist
+          path: release-dist
 
       - name: Setup | Checksums
         run: |
-          ls -lha ~/release-dist
-          for file in ~/release-dist/*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
+          ls -lha release-dist
+          for file in release-dist/**/*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
 
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          files: ~/release-dist/*
+          files: release-dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
