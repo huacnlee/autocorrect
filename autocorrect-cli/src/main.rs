@@ -35,7 +35,7 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
       Arg::with_name("lint").long("lint").help("Lint and output problems.")
     )
     .arg(
-        Arg::with_name("filetype").long("type").help("Directly use set file type").default_value("").required(false)
+        Arg::with_name("filetype").long("type").help("Directly use set file type").required(false)
       )
     .arg(
         Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("diff").possible_values(&["json", "diff"]).required(false)
@@ -44,7 +44,7 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
         Arg::with_name("debug").long("debug").help("Print debug message.")
     )
     .arg(
-        Arg::with_name("threads").long("threads").help("Number of threads").default_value("4").required(false)
+        Arg::with_name("threads").long("threads").help("Number of threads, 0 - use number of CPU").default_value("0").required(false)
     )
     .get_matches();
 }
@@ -55,7 +55,7 @@ pub fn main() {
         fix: false,
         lint: false,
         formatter: String::from(""),
-        threads: 4,
+        threads: 0,
     };
 
     let matches = get_matches();
@@ -69,12 +69,16 @@ pub fn main() {
     option.formatter = formatter;
     option.threads = matches
         .value_of("threads")
-        .unwrap_or("4")
+        .unwrap_or("0")
         .parse::<usize>()
-        .unwrap_or(4);
+        .unwrap_or(0);
+
+    if option.threads == 0 {
+        option.threads = num_cpus::get();
+    }
 
     let mut arg_files = matches.values_of("file").unwrap();
-    let arg_filetype = matches.value_of("filetype").unwrap();
+    let arg_filetype = matches.value_of("filetype").unwrap_or("");
 
     // calc run time
     let start_t = std::time::SystemTime::now();
@@ -262,7 +266,6 @@ fn lint_and_output(
     results: &mut Vec<String>,
 ) {
     let diff_mode = option.formatter != "json";
-
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
 
