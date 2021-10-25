@@ -14,7 +14,6 @@ version = "1.4.4"
 crate-type = ["cdylib", "rlib"]
 name = "autocorrect"
 path = "src/lib.rs"
-proc-macro = true
 
 [dependencies]
 autocorrect-derive = {path = "../autocorrect-derive"}
