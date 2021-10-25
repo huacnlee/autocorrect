@@ -67,7 +67,7 @@ jobs:
         run: |
           cd target/${{ matrix.target }}/release
           strip autocorrect.exe
-          7z a ../../../${{ matrix.name }} autocorrect.exe
+          7z a ../../../release-dist/${{ matrix.name }} autocorrect.exe
           cd -
 
       - name: Post Build | Prepare artifacts [-nix]
@@ -76,7 +76,7 @@ jobs:
           cd target/${{ matrix.target }}/release
           # TODO: investigate better cross platform stripping
           strip autocorrect || true
-          tar czvf ../../../${{ matrix.name }} autocorrect
+          tar czvf ../../../release-dist/${{ matrix.name }} autocorrect
           cd -
 
       - name: Deploy | Upload artifacts
@@ -100,12 +100,12 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: Setup | Checksums
-        run: for file in autocorrect-*/autocorrect-*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
+        run: for file in release-dist/autocorrect-*/autocorrect-*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
 
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          files: autocorrect-*/**/*
+          files: release-dist/autocorrect-*/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

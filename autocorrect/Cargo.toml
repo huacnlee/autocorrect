@@ -1,7 +1,7 @@
 [package]
 authors = ["Jason Lee <huacnlee@gmail.com>"]
 description = "A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean)."
-edition = "2018"
+edition = "2021"
 homepage = "https://github.com/huacnlee/autocorrect"
 keywords = ["autocorrect", "lint", "format"]
 license = "MIT"
@@ -16,7 +16,7 @@ name = "autocorrect"
 path = "src/lib.rs"
 
 [dependencies]
-autocorrect-derive = {path = "../autocorrect-derive"}
+autocorrect-derive = {path = "../autocorrect-derive", version = "0.1.0"}
 difference = "2.0"
 ignore = "0.4"
 lazy_static = "1.4.0"
