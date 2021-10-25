@@ -28,25 +28,26 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
 fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
     let rule = item.as_rule();
     let rule_name = format!("{:?}", rule);
+    let rule_name = rule_name.as_str();
 
     // println!("rule: {}", rule_name);
 
-    match rule_name.as_str() {
+    match rule_name {
         "string" | "link_string" | "text" | "comment" => {
-            format_or_lint(results, rule_name.as_str(), item)
+            format_or_lint(results, rule_name, item);
         }
         "inline_style" | "inline_javascript" => {
-            format_or_lint_for_inline_scripts(results, item, rule_name.as_str())
+            format_or_lint_for_inline_scripts(results, item, rule_name)
         }
         _ => {
-            let mut child_count = 0;
+            let mut has_child = false;
             let item_str = item.as_str();
             for child in item.into_inner() {
                 format_pair(results, child, scope_rule);
-                child_count += 1;
+                has_child = true;
             }
 
-            if child_count == 0 {
+            if !has_child {
                 results.ignore(item_str);
             }
         }
@@ -54,8 +55,8 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
 }
 
 pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str, item: Pair<R>) {
-    let (part_line, part_col) = item.as_span().start_pos().line_col();
     let part = item.as_str();
+    let (line, col) = results.move_cursor(part);
 
     // check autocorrect toggle
     if rule_name == "comment" {
@@ -76,11 +77,11 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
         // sub line in a part
         let mut sub_line = 0;
-        for line in lines {
+        for line_str in lines {
             // trim start whitespace
-            let mut trimmed = line.trim_start();
+            let mut trimmed = line_str.trim_start();
             // number of start whitespace in this line
-            let leading_spaces = line.len() - trimmed.len();
+            let leading_spaces = line_str.len() - trimmed.len();
             // trim end whitespace
             trimmed = trimmed.trim_end();
 
@@ -89,17 +90,18 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
             // println!("{}||{},{}", new_line, trimmed, new_line.eq(trimmed));
 
+            // nothing changed, skip
             if new_line.eq(trimmed) {
                 sub_line += 1;
                 continue;
             }
 
-            let current_line = part_line + sub_line;
+            let current_line = line + sub_line;
             let current_col = if sub_line > 0 {
                 // col will equal numner of removed leading whitespace
                 leading_spaces + 1
             } else {
-                part_col
+                col
             };
 
             results.push(LineResult {
@@ -118,8 +120,8 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         }
 
         results.push(LineResult {
-            line: part_line,
-            col: part_col,
+            line,
+            col,
             old: String::from(part),
             new: new_part,
         });
@@ -133,6 +135,8 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     rule_name: &str,
 ) {
     let part = item.as_str();
+
+    results.move_cursor(part);
 
     if results.is_lint() {
         if rule_name == "inline_style" {
@@ -222,6 +226,8 @@ pub trait Results {
     // toggle autocorrect template enable or disable
     fn toggle(&mut self, enable: bool);
     fn is_enabled(&self) -> bool;
+    // Move and save current line,col return the previus line number
+    fn move_cursor(&mut self, part: &str) -> (usize, usize);
 }
 
 #[derive(Serialize, Deserialize)]
@@ -243,6 +249,12 @@ pub struct LintResult {
     pub error: String,
     #[serde(skip)]
     pub enable: bool,
+    // For store line number in loop
+    #[serde(skip)]
+    line: usize,
+    // For store col number in loop
+    #[serde(skip)]
+    col: usize,
 }
 
 impl FormatResult {
@@ -266,8 +278,9 @@ impl<'a> Results for FormatResult {
         self.out.push_str(line_result.new.as_str());
     }
 
-    fn ignore(&mut self, str: &str) {
-        self.out.push_str(str)
+    fn ignore(&mut self, part: &str) {
+        self.out.push_str(part);
+        self.move_cursor(part);
     }
 
     fn error(&mut self, err: &str) {
@@ -289,11 +302,17 @@ impl<'a> Results for FormatResult {
     fn is_enabled(&self) -> bool {
         self.enable
     }
+
+    fn move_cursor(&mut self, _part: &str) -> (usize, usize) {
+        (0, 0)
+    }
 }
 
 impl LintResult {
     pub fn new(raw: &str) -> Self {
         LintResult {
+            line: 1,
+            col: 1,
             filepath: String::from(""),
             raw: String::from(raw),
             lines: Vec::new(),
@@ -343,8 +362,9 @@ impl Results for LintResult {
         self.lines.push(line_result);
     }
 
-    fn ignore(&mut self, _: &str) {
+    fn ignore(&mut self, part: &str) {
         // do nothing
+        self.move_cursor(part);
     }
 
     fn error(&mut self, err: &str) {
@@ -366,6 +386,60 @@ impl Results for LintResult {
     fn is_enabled(&self) -> bool {
         self.enable
     }
+
+    /// Move the (line, col) with string part
+    fn move_cursor(&mut self, part: &str) -> (usize, usize) {
+        let (l, c, has_new_line) = line_col(part);
+
+        let prev_line = self.line;
+        let prev_col = self.col;
+
+        self.line += l;
+        if has_new_line {
+            self.col = c;
+        } else {
+            self.col += c;
+        }
+        (prev_line, prev_col)
+    }
+}
+
+/// Calculate line and col number of a string part
+/// Fork from Pest for just count the part.
+///
+/// https://github.com/pest-parser/pest/blob/85b18aae23cc7b266c0b5252f9f74b7ab0000795/pest/src/position.rs#L135
+fn line_col(part: &str) -> (usize, usize, bool) {
+    let mut chars = part.chars().peekable();
+
+    let mut line_col = (0, 0);
+    let mut has_new_line = false;
+
+    loop {
+        match chars.next() {
+            Some('\r') => {
+                if let Some(&'\n') = chars.peek() {
+                    chars.next();
+
+                    line_col = (line_col.0 + 1, 1);
+                    has_new_line = true;
+                } else {
+                    line_col = (line_col.0, line_col.1 + 1);
+                }
+            }
+            Some('\n') => {
+                line_col = (line_col.0 + 1, 1);
+                has_new_line = true;
+            }
+            Some(_c) => {
+                line_col = (line_col.0, line_col.1 + 1);
+            }
+            None => {
+                break;
+            }
+        }
+    }
+
+    (line_col.0, line_col.1, has_new_line)
 }
 
 #[cfg(test)]
@@ -411,5 +485,32 @@ mod tests {
             match_autocorrect_toggle("// autocorrect-disable")
         );
         assert_eq!(Toggle::None, match_autocorrect_toggle("// hello world"));
+    }
+
+    #[test]
+    fn test_move_cursor() {
+        let mut out = LintResult::new("");
+        assert_eq!((out.line, out.col), (1, 1));
+
+        assert_eq!(out.move_cursor(""), (1, 1));
+        assert_eq!((out.line, out.col), (1, 1));
+
+        let raw = r#"Foo
+Hello world
+This is "#;
+        assert_eq!(out.move_cursor(raw), (1, 1));
+        assert_eq!((out.line, out.col), (3, 9));
+
+        let raw = "Hello\nworld\r\nHello world\nHello world";
+        assert_eq!(out.move_cursor(raw), (3, 9));
+        assert_eq!((out.line, out.col), (6, 12));
+
+        let raw = "Hello";
+        assert_eq!(out.move_cursor(raw), (6, 12));
+        assert_eq!((out.line, out.col), (6, 17));
+
+        let raw = "\nHello\n\naaa\n";
+        assert_eq!(out.move_cursor(raw), (6, 17));
+        assert_eq!((out.line, out.col), (10, 1));
     }
 }
