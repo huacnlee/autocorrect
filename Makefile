@@ -19,10 +19,10 @@ test\:bench:
 test\:lint-json:
 	tests/test_lint_json.sh
 wasm:
-	wasm-pack build --release --scope huacnlee -d $(WORKDIR)/pkg src/lib 
+	wasm-pack build --release --scope huacnlee -d $(WORKDIR)/pkg autocorrect
 	wasm-opt -Os -o pkg/autocorrect_bg.wasm pkg/autocorrect_bg.wasm
 wasm\:publish:
 	make wasm
 	cd pkg && npm publish
 crate\:publish:
-	cargo release --manifest-path src/lib/Cargo.toml --config src/lib/release.toml
+	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml
