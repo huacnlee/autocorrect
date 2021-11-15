@@ -21,6 +21,8 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, an
 
 ## VS Code Extension
 
+[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](vscode:extension/huacnlee.auto-correct)
+
 https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 内置 VS Code 插件，安装后会将 AutoCorrect 和 VS Code 完整集成，可以达到「保存自动格式化」或「纠正提示」，如下图。
@@ -106,7 +108,7 @@ $ autocorrect --lint text.txt
 You also can lint multiple files:
 
 ```bash
-$ autocorrect --lint ./
+$ autocorrect --lint .
 ```
 
 ### Ignore option
@@ -172,7 +174,7 @@ autocorrect:
   stage: build
   image: huacnlee/autocorrect:latest
   script:
-    - autocorrect --lint ./
+    - autocorrect --lint .
   # Enable allow_failure if you wants.
   # allow_failure: true
 ```
