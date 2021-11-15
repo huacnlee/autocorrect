@@ -21,9 +21,7 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, an
 
 ## VS Code Extension
 
-[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](vscode:extension/huacnlee.auto-correct)
-
-https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
+[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct)
 
 内置 VS Code 插件，安装后会将 AutoCorrect 和 VS Code 完整集成，可以达到「保存自动格式化」或「纠正提示」，如下图。
 
