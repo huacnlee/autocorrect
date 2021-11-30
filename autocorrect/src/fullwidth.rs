@@ -37,12 +37,6 @@ pub fn fullwidth(text: &str) -> String {
         })
         .to_string();
 
-    out = PUNCTUATION_WITH_LEFT_CJK_RE
-        .replace_all(&out, |cap: &regex::Captures| {
-            fullwidth_replace_part(&cap[0])
-        })
-        .to_string();
-
     out = PUNCTUATION_WITH_RIGHT_CJK_RE
         .replace_all(&out, |cap: &regex::Captures| {
             fullwidth_replace_part(&cap[0])

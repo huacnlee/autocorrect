@@ -11,6 +11,7 @@ struct RustParser;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn it_format_rust() {
@@ -24,6 +25,9 @@ fn main() {
 
   // 1第一行Single line注释
   // 2第二行注释
+  /// 3第3行注释
+  //! 4第4行注释
+  //!! 4第4行注释
   for number in number_list {
       if number > largest {
           largest = number;
@@ -48,7 +52,7 @@ fn main() {
   /**
    * 多行Rust注释
    * 第二行Rust注释
-  */
+   */
   println!("最大的数字number是{}", largest);
 }
 "###;
@@ -63,6 +67,9 @@ fn main() {
 
   // 1 第一行 Single line 注释
   // 2 第二行注释
+  /// 3 第 3 行注释
+  //! 4 第 4 行注释
+  //!! 4 第 4 行注释
   for number in number_list {
       if number > largest {
           largest = number;
@@ -87,7 +94,7 @@ fn main() {
   /**
    * 多行 Rust 注释
    * 第二行 Rust 注释
-  */
+   */
   println!("最大的数字 number 是{}", largest);
 }
 "###;
