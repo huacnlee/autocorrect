@@ -26,8 +26,8 @@ fn main() {
   // 1第一行Single line注释
   // 2第二行注释
   /// 3第3行注释
-  //! 4第4行注释
-  //!! 4第4行注释
+  //! 第4行注释
+  //!! 第5行注释
   for number in number_list {
       if number > largest {
           largest = number;
@@ -68,8 +68,8 @@ fn main() {
   // 1 第一行 Single line 注释
   // 2 第二行注释
   /// 3 第 3 行注释
-  //! 4 第 4 行注释
-  //!! 4 第 4 行注释
+  //! 第 4 行注释
+  //!! 第 5 行注释
   for number in number_list {
       if number > largest {
           largest = number;

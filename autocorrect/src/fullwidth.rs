@@ -15,8 +15,12 @@ lazy_static! {
       "?" => "？",
       "~" => "～"
     );
-    static ref PUNCTUATION_WITH_LEFT_CJK_RE: Regex =
-        regexp!("{}{}", NORMAL_PUNCTUATIONS, r"[\p{CJ}]+");
+    static ref PUNCTUATION_WITH_LEFT_CJK_RE: Regex = regexp!(
+        "{}{}{}",
+        r"[\p{CJ}\w\d]+",
+        NORMAL_PUNCTUATIONS,
+        r"[\p{CJ}]+"
+    );
     static ref PUNCTUATION_WITH_RIGHT_CJK_RE: Regex =
         regexp!("{}{}", r"[\p{CJ}]+", NORMAL_PUNCTUATIONS);
     static ref PUNCTUATION_WITH_SPEICAL_CJK_RE: Regex =
@@ -82,6 +86,7 @@ mod tests {
     fn test_fullwidth() {
         let cases = map!(
           "你好,这是一个句子." => "你好，这是一个句子。",
+          "!开头不处理." => "!开头不处理。",
           "刚刚买了一部 iPhone,好开心!" => "刚刚买了一部 iPhone，好开心！",
           "蚂蚁集团上市后有多大的上涨空间?" =>  "蚂蚁集团上市后有多大的上涨空间？",
           "我们需要一位熟悉 JavaScript、HTML5,至少理解一种框架 (如 Backbone.js、AngularJS、React 等) 的前端开发者." => "我们需要一位熟悉 JavaScript、HTML5，至少理解一种框架 (如 Backbone.js、AngularJS、React 等) 的前端开发者。",
