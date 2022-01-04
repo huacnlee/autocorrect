@@ -1,1 +1,47 @@
-{"count": 1,"messages": [{"filepath":"tests/fixtures/go.raw.go","lines":[{"l":7,"c":1,"new":"// WithContext 创建基于 ctx 的 db","old":"// WithContext创建基于ctx的db"},{"l":8,"c":1,"new":"// 第 2 行注释","old":"// 第2行注释"},{"l":10,"c":7,"new":"\"第 1 个\"","old":"\"第1个\""},{"l":12,"c":1,"new":"多行 string","old":"多行string"},{"l":13,"c":1,"new":"第 2 行","old":"第2行"},{"l":15,"c":14,"new":"\"Hello 你好：\"","old":"\"Hello你好：\""}],"error":""}]}
+{
+  "count": 1,
+  "messages": [
+    {
+      "filepath": "tests/fixtures/go.raw.go",
+      "lines": [
+        {
+          "l": 7,
+          "c": 1,
+          "new": "// WithContext 创建基于 ctx 的 db",
+          "old": "// WithContext创建基于ctx的db"
+        },
+        {
+          "l": 8,
+          "c": 1,
+          "new": "// 第 2 行注释",
+          "old": "// 第2行注释"
+        },
+        {
+          "l": 10,
+          "c": 7,
+          "new": "\"第 1 个\"",
+          "old": "\"第1个\""
+        },
+        {
+          "l": 12,
+          "c": 1,
+          "new": "多行 string",
+          "old": "多行string"
+        },
+        {
+          "l": 13,
+          "c": 1,
+          "new": "第 2 行",
+          "old": "第2行"
+        },
+        {
+          "l": 15,
+          "c": 14,
+          "new": "\"Hello 你好：\"",
+          "old": "\"Hello你好：\""
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

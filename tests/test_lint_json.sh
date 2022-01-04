@@ -1,9 +1,10 @@
 #!/bin/bash
+# brew install jq
 diff_lint_json() {
   cargo run -q -- \
     --lint \
     --format json tests/fixtures/$1.raw.$2 \
-    | git --no-pager diff --no-index -- tests/fixtures/$1.expect.json -
+    | jq | git --no-pager diff --ignore-all-space --no-index -- tests/fixtures/$1.expect.json -
 }
 
 diff_lint_json "go" "go"
