@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar//sql.pest"]
+#[grammar = "../grammar/sql.pest"]
 struct SQLParser;
 
 #[cfg(test)]

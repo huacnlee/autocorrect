@@ -6,7 +6,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar//html.pest"]
+#[grammar = "../grammar/html.pest"]
 struct HTMLParser;
 
 #[cfg(test)]
@@ -63,6 +63,7 @@ mod tests {
             <h2>Rust和WebAssembly用例</h2>
             <div @click.prevent="hello" :name="foo" #bar="dar"><p>Rust 和 WebAssembly 有两大主要用例：</p>
             <ul>
+            引荐来源网址:
             <li>构建完整应用——整个Web应用都基于Rust开发！</li>
             <li>构建应用的组成部分——在现存的JavaScript前端中使用Rust。</li>
             <%= link_to "FTP管理", "/", class: "subnav-item #{(params[:title_tab].blank? || params[:title_tab] == 'sftp_index') ? 'active' : ''}" %>
@@ -104,6 +105,7 @@ mod tests {
             <h2>Rust 和 WebAssembly 用例</h2>
             <div @click.prevent="hello" :name="foo" #bar="dar"><p>Rust 和 WebAssembly 有两大主要用例：</p>
             <ul>
+            引荐来源网址：
             <li>构建完整应用——整个 Web 应用都基于 Rust 开发！</li>
             <li>构建应用的组成部分——在现存的 JavaScript 前端中使用 Rust。</li>
             <%= link_to "FTP管理", "/", class: "subnav-item #{(params[:title_tab].blank? || params[:title_tab] == 'sftp_index') ? 'active' : ''}" %>

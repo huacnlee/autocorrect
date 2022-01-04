@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar//yaml.pest"]
+#[grammar = "../grammar/yaml.pest"]
 struct YAMLParser;
 
 #[cfg(test)]

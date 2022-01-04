@@ -5,7 +5,7 @@ use pest::Parser as P;
 use pest_derive::Parser;
 
 #[derive(GrammarParser, Parser)]
-#[grammar = "../grammar//elixir.pest"]
+#[grammar = "../grammar/elixir.pest"]
 struct ElixirParser;
 
 #[cfg(test)]
