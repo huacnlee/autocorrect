@@ -78,23 +78,22 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         // sub line in a part
         let mut sub_line = 0;
         for line_str in lines {
+            // format trimmed string
+            let new_line = format(line_str);
+
+            // nothing changed, skip
+            if new_line.eq(line_str) {
+                sub_line += 1;
+                continue;
+            }
+
             // trim start whitespace
             let mut trimmed = line_str.trim_start();
             // number of start whitespace in this line
             let leading_spaces = line_str.len() - trimmed.len();
             // trim end whitespace
             trimmed = trimmed.trim_end();
-
-            // format trimmed string
-            let new_line = format(trimmed);
-
             // println!("{}||{},{}", new_line, trimmed, new_line.eq(trimmed));
-
-            // nothing changed, skip
-            if new_line.eq(trimmed) {
-                sub_line += 1;
-                continue;
-            }
 
             let current_line = line + sub_line;
             let current_col = if sub_line > 0 {
@@ -108,7 +107,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
                 line: current_line,
                 col: current_col,
                 old: String::from(trimmed),
-                new: new_line,
+                new: new_line.trim().to_string(),
             });
             sub_line += 1;
         }
