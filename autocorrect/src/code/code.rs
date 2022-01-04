@@ -348,7 +348,15 @@ impl LintResult {
         let mut out = String::from("");
 
         for line in self.lines.iter() {
-            out.push_str(format!("-> {}:{}:{}\n", self.filepath, line.line, line.col).as_str());
+            out.push_str(
+                format!(
+                    "{}:{}:{}\n",
+                    self.filepath.replace("./", ""),
+                    line.line,
+                    line.col
+                )
+                .as_str(),
+            );
 
             let changeset = difference::Changeset::new(line.old.as_str(), line.new.as_str(), "\n");
             out.push_str(format!("{}\n", changeset).as_str());
