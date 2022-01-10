@@ -124,8 +124,8 @@ lazy_static! {
         Strategery::new(r"\p{CJK}", r"[\|+]", true, true),
         // @ after CJK, not not before, 你好 @某某
         Strategery::new(r"\p{CJK}", r"[@]", true, false),
-        Strategery::new(r"\p{CJK}", r"[\[\(‘“]", true, false),
-        Strategery::new(r"[’”\]\)!]", r"\p{CJK}", true, false),
+        Strategery::new(r"\p{CJK}", r"[\[\(]", true, false),
+        Strategery::new(r"[\]\)!]", r"\p{CJK}", true, false),
 
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
         Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]", false, true),
@@ -248,7 +248,9 @@ mod tests {
             "发现macOS安装软件新方法：Homebrew" => "发现 macOS 安装软件新方法：Homebrew",
             "without looking like it’s been marked up with tags or formatting instructions." => "without looking like it’s been marked up with tags or formatting instructions.",
             "隔夜SHIBOR报1.5530%，上涨33.80%个基点。7天SHIBOR报2.3200%，上涨6.10个基点。3个月SHIBOR报2.8810%，下降1.80个" => "隔夜 SHIBOR 报 1.5530%，上涨 33.80% 个基点。7 天 SHIBOR 报 2.3200%，上涨 6.10 个基点。3 个月 SHIBOR 报 2.8810%，下降 1.80 个",
-            "野村：重申吉利汽车(00175)“买入”评级 上调目标价至17.9港元" => "野村：重申吉利汽车 (00175)“买入” 评级 上调目标价至 17.9 港元",
+            // https://support.apple.com/zh-cn/iphone-12-and-iphone-12-pro-service-program-for-no-sound-issues
+            "适用于“无声音”问题的iPhone 12和iPhone 12 Pro服务计划" => "适用于“无声音”问题的 iPhone 12 和 iPhone 12 Pro 服务计划",
+            "野村：重申吉利汽车(00175)“买入”评级 上调目标价至17.9港元" => "野村：重申吉利汽车 (00175)“买入”评级 上调目标价至 17.9 港元",
             "小米集团-W调整目标价为13.5港币" => "小米集团-W 调整目标价为 13.5 港币",
             "（路透社）-预计全年净亏损约1.3亿港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿港元*预期因出售汽车",
             "（路透社）-预计全年净亏损约1.3亿\n\n港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿\n\n港元*预期因出售汽车",
@@ -357,8 +359,8 @@ mod tests {
             "【腾讯】-发布-【新版】本微信" => "【腾讯】- 发布 -【新版】本微信",
             "「腾讯」-发布-「新版」本微信" => "「腾讯」- 发布 -「新版」本微信",
             "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
-            "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版” 本微信",
-            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’ 本微信"
+            "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版”本微信",
+            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信"
         ];
 
         assert_cases(cases);
