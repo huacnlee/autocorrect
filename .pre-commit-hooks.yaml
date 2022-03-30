@@ -1,0 +1,12 @@
+-   id: autocorrect-lint
+    name: autocorrect lint
+    description: "Checks the style of CJK files."
+    entry: autocorrect --lint
+    language: rust
+    types: [file]
+-   id: autocorrect-fix
+    name: autocorrect fix
+    description: "Fixes the style of CJK files."
+    entry: autocorrect --fix
+    language: rust
+    types: [file]
