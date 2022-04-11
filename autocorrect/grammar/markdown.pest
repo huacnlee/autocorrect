@@ -1,6 +1,7 @@
 para = { ANY* ~ NEWLINE{2} }
-expr = { img | link | mark }
+expr = { img | link | mark | heading }
 text = { (!(expr | NEWLINE) ~ ANY)+ }
+space = @{ (" ")* }
 code = ${ 
   PUSH("```") ~ code_block_lang ~ code_block_value ~ PUSH("```")
 }
@@ -15,12 +16,15 @@ mark_tag = @{
   | "_"
   | "`"
 }
+heading_tag = @{"######" | "#####" | "####" | "###" | "##" | "#"}
+
 img_start = @{ "!" }
 img = ${ img_start ~ link }
 link = ${ link_string ~ link_url }
 link_string = { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" } 
 link_url = { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
 mark = ${ PUSH(mark_tag) ~ string ~ PUSH(mark_tag) }
+heading = ${ PUSH(heading_tag) ~ space ~ string }
 string = ${ (!(PEEK | NEWLINE) ~ ANY)* }
 
 line = { expr | text | NEWLINE }
