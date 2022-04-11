@@ -26,6 +26,8 @@ string_val = _{
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
   | ("`" ~ (!("`") ~ ANY)* ~ "`"+) 
 }
+key = ${ string_val ~ (" ")* ~ ":" ~ (" ")* }
+pair = _{ key ~ string }
 
 regexp = ${
   ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
@@ -33,6 +35,6 @@ regexp = ${
 }
 
 node = {  html_node | html_void | text }
-js = _{ comment | string | regexp | space | other}
+js = _{ comment | pair | string | regexp | space | other}
 line = _{  js | node | newline }
 item = _{ SOI ~ line* ~ EOI } 

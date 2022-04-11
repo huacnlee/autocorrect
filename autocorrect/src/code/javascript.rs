@@ -11,6 +11,7 @@ struct JavaScriptParser;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn it_format_javascript() {
@@ -51,6 +52,13 @@ function helloWorld(a) {
     </div>
   </>
 }
+
+const map = {
+  "在Map中key不转换": "在Map中value要转换",
+  children: {
+    "Children中的key也不转换": "Children中的value要转换",
+  }
+}
 "###;
 
         let expect = r###"
@@ -90,6 +98,13 @@ function helloWorld(a) {
     </div>
   </>
 }
+
+const map = {
+  "在Map中key不转换": "在 Map 中 value 要转换",
+  children: {
+    "Children中的key也不转换": "Children 中的 value 要转换",
+  }
+}
 "###;
 
         assert_eq!(expect, format_javascript(example).to_string());
@@ -104,7 +119,7 @@ function helloWorld(a) {
                 serde_json::from_str(expected).unwrap_or(serde_json::Value::default());
             let result =
                 serde_json::from_str(actual.as_str()).unwrap_or(serde_json::Value::default());
-            pretty_assertions::assert_eq!(expect_json, result);
+            assert_eq!(expect_json, result);
         }};
     }
 
