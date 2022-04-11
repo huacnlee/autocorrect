@@ -277,13 +277,13 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/bench.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/bench.rs) for details.
 
 ```bash
-test bench::tests::bench_format_100                ... bench:      16,717 ns/iter (+/- 7,790)
-test bench::tests::bench_format_400                ... bench:      59,149 ns/iter (+/- 9,923)
-test bench::tests::bench_format_50                 ... bench:       9,508 ns/iter (+/- 6,278)
-test bench::tests::bench_format_html               ... bench:     163,533 ns/iter (+/- 129,441)
-test bench::tests::bench_format_javascript         ... bench:      85,127 ns/iter (+/- 2,663)
-test bench::tests::bench_format_json               ... bench:      29,588 ns/iter (+/- 106)
-test bench::tests::bench_format_json_with_2k_lines ... bench:   3,975,075 ns/iter (+/- 753,329)
+test bench::tests::bench_format_100                ... bench:      13,586 ns/iter (+/- 304)
+test bench::tests::bench_format_400                ... bench:      48,858 ns/iter (+/- 1,078)
+test bench::tests::bench_format_50                 ... bench:       7,525 ns/iter (+/- 171)
+test bench::tests::bench_format_html               ... bench:     156,654 ns/iter (+/- 4,773)
+test bench::tests::bench_format_javascript         ... bench:      89,387 ns/iter (+/- 8,365)
+test bench::tests::bench_format_json               ... bench:      29,356 ns/iter (+/- 718)
+test bench::tests::bench_format_json_with_2k_lines ... bench:   3,829,479 ns/iter (+/- 76,499)
 ```
 
 | Total chars | Duration |
