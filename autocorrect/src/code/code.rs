@@ -459,6 +459,7 @@ fn line_col(part: &str) -> (usize, usize, bool) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn it_match_autocorrect_toggle() {

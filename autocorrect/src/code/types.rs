@@ -121,6 +121,7 @@ pub fn get_file_extension(filename: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn is_is_support_type() {

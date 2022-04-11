@@ -12,6 +12,7 @@ struct HTMLParser;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
     use regex::Regex;
 
     macro_rules! assert_html_eq {

@@ -11,6 +11,7 @@ struct SQLParser;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn it_format_sql() {
