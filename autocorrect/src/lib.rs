@@ -116,9 +116,11 @@ lazy_static! {
     // Strategies all rules
     static ref STRATEGIES: Vec<Strategery> = vec![
         // EnglishLetter, Number
-        // But not start with %, $, \ for avoid change %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
+        // Avoid add space when Letter, Number has %, $, \ prefix, eg. %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
         Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
-        Strategery::new(r"[a-zA-Z0-9]", r"\p{CJK}"),
+        Strategery::new(r"[^%\$\\][a-zA-Z0-9]", r"\p{CJK}"),
+        // Spcial format Letter, Number leading case, because the before Strategery can't cover eg. A开头的case测试
+        Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
         // SpecialSymbol
