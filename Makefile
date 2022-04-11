@@ -1,4 +1,5 @@
 WORKDIR=$(shell pwd)
+LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed -e "s/v//")
 
 bench:
 	rustup run nightly cargo bench --features bench
@@ -23,6 +24,7 @@ wasm:
 	wasm-opt -Os -o pkg/autocorrect_bg.wasm pkg/autocorrect_bg.wasm
 wasm\:publish:
 	make wasm
-	cd pkg && npm publish
+	@echo "\n\nWill release version: $(LAST_TAG_VERSION)\n\n"
+	cd pkg && npm version $(LAST_TAG_VERSION) && npm publish
 crate\:publish:
 	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml
