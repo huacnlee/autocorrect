@@ -112,24 +112,25 @@ lazy_static! {
     // （）【】「」《》
     static ref LEFT_QUOTE_RE: Regex = regexp!("{}", r" ([（【「《])");
     static ref RIGHT_QUOTE_RE: Regex = regexp!("{}", r"([）】」》]) ");
+
     // Strategies all rules
     static ref STRATEGIES: Vec<Strategery> = vec![
         // EnglishLetter, Number
-        // But not start with %, $, \ for avoid change %s, %d, $1, $2, \d, \r, \p ... in source code
-        Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]", true, false),
-        Strategery::new(r"[^%\$\\][a-zA-Z0-9]", r"\p{CJK}", true, false),
+        // But not start with %, $, \ for avoid change %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
+        Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
+        Strategery::new(r"[a-zA-Z0-9]", r"\p{CJK}"),
         // 10%中文
-        Strategery::new(r"[0-9][%]", r"\p{CJK}", true, false),
+        Strategery::new(r"[0-9][%]", r"\p{CJK}"),
         // SpecialSymbol
-        Strategery::new(r"\p{CJK}", r"[\|+]", true, true),
+        Strategery::new(r"\p{CJK}", r"[\|+]").with_reverse(),
         // @ after CJK, not not before, 你好 @某某
-        Strategery::new(r"\p{CJK}", r"[@]", true, false),
-        Strategery::new(r"\p{CJK}", r"[\[\(]", true, false),
-        Strategery::new(r"[\]\)!]", r"\p{CJK}", true, false),
+        Strategery::new(r"\p{CJK}", r"[@]"),
+        Strategery::new(r"\p{CJK}", r"[\[\(]"),
+        Strategery::new(r"[\]\)!]", r"\p{CJK}"),
 
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]", false, true),
-        Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]", false, true),
+        Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]").with_remove_space().with_reverse(),
+        Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]").with_remove_space().with_reverse(),
     ];
 }
 
@@ -283,6 +284,7 @@ mod tests {
     #[test]
     fn it_format_for_programming() {
         let cases = map![
+            "A开头的case测试" => "A 开头的 case 测试",
             "内容带有\n不会处理" => "内容带有\n不会处理",
             "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊format字符" => "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊 format 字符",
             "内容带有$1或$2或$3特殊字符" => "内容带有$1或$2或$3特殊字符"

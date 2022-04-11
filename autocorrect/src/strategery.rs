@@ -1,6 +1,11 @@
 // autocorrect: false
+enum SpaceMode {
+    Add,
+    Remove,
+}
+
 pub struct Strategery {
-    space: bool,
+    space_mode: SpaceMode,
     reverse: bool,
     add_space_re: regex::Regex,
     add_space_reverse_re: regex::Regex,
@@ -10,14 +15,10 @@ pub struct Strategery {
 
 impl Strategery {
     /// Create a new strategery object.
-    /// ## Arguments
-    ///
-    /// - `space` - `true` - add space / `false` - remove space
-    /// - `reverse` - false just format `(one + other)`, true will format `(other + one)` and `(other + one)`.
-    pub fn new(one: &'static str, other: &'static str, space: bool, reverse: bool) -> Self {
+    pub fn new(one: &'static str, other: &'static str) -> Self {
         return Strategery {
-            space,
-            reverse,
+            space_mode: SpaceMode::Add,
+            reverse: false,
             add_space_re: regexp!("({})({})", one, other),
             add_space_reverse_re: regexp!("({})({})", other, one),
             remove_space_re: regexp!("({})[ ]({})", one, other),
@@ -25,21 +26,35 @@ impl Strategery {
         };
     }
 
+    // Set Strategery for remove space.
+    pub fn with_remove_space(mut self) -> Self {
+        self.space_mode = SpaceMode::Remove;
+        return self;
+    }
+
+    // Set Strategery for format by reverse again.
+    pub fn with_reverse(mut self) -> Self {
+        self.reverse = true;
+        return self;
+    }
+
     pub fn format(&self, text: &str) -> String {
-        if self.space {
-            self.add_space(text)
-        } else {
-            self.remove_space(text)
+        match self.space_mode {
+            SpaceMode::Add => self.add_space(text),
+            SpaceMode::Remove => self.remove_space(text),
         }
     }
 
     fn add_space(&self, text: &str) -> String {
         let mut out = String::from(text);
 
-        out = (&self.add_space_re.replace_all(&out, "$1 $2")).to_string();
+        out = self.add_space_re.replace_all(&out, "$1 $2").to_string();
 
         if self.reverse {
-            out = (&self.add_space_reverse_re.replace_all(&out, "$1 $2")).to_string();
+            out = self
+                .add_space_reverse_re
+                .replace_all(&out, "$1 $2")
+                .to_string();
         }
 
         out
