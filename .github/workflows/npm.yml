@@ -1,0 +1,49 @@
+name: NPM Release
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  npm:
+    name: NPM Build & Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # Cache files between builds
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v2.1.6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: npm-build-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Setup | Rust
+        uses: actions-rs/toolchain@v1.0.7
+        with:
+          toolchain: nightly
+          override: true
+          profile: minimal
+          target: x86_64-unknown-linux-gnu
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install wasm-pack & wasm-opt
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+          sudo apt-get install binaryen
+
+      - name: Publish NPM
+        run: |
+          echo $(git describe --abbrev=0 --tags | sed "s/^v//")
+          make wasm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
