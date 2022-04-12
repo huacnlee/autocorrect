@@ -30,4 +30,4 @@ wasm\:publish:
 	@echo "\n\nWill release version: $(LAST_TAG_VERSION)\n\n"
 	cd pkg && yarn publish --new-version $(LAST_TAG_VERSION)
 crate\:publish:
-	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml
+	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml $(LAST_TAG_VERSION)
