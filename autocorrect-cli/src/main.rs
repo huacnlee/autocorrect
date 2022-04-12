@@ -26,25 +26,25 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
     .version(crate_version!())
     .about("A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).")
     .arg(
-      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).required(true).multiple(true)
+      Arg::with_name("file").help("Target filepath or dir for format").takes_value(true).default_value(".").multiple(true)
     )
     .arg(
-      Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.").required(false)
+      Arg::with_name("fix").long("fix").help("Automatically fix problems and rewrite file.")
     )
     .arg(
       Arg::with_name("lint").long("lint").help("Lint and output problems.")
     )
     .arg(
-        Arg::with_name("filetype").long("type").help("Directly use set file type").required(false)
+        Arg::with_name("filetype").long("type").help("Directly use set file type")
       )
     .arg(
-        Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("diff").possible_values(&["json", "diff"]).required(false)
+        Arg::with_name("formatter").long("format").help("Choose an output formatter.").default_value("diff").possible_values(&["json", "diff"])
     )
     .arg(
         Arg::with_name("debug").long("debug").help("Print debug message.")
     )
     .arg(
-        Arg::with_name("threads").long("threads").help("Number of threads, 0 - use number of CPU").default_value("0").required(false)
+        Arg::with_name("threads").long("threads").help("Number of threads, 0 - use number of CPU").default_value("0")
     )
     .get_matches();
 }

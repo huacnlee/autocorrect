@@ -47,26 +47,28 @@ $ curl -sSL https://git.io/JcGER | bash
 after that, you will get `/usr/local/bin/autocorrect` command.
 
 ```bash
-AutoCorrect 1.0.0
+AutoCorrect
 Jason Lee <huacnlee@gmail.com
-Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters,
-numerical digits and symbols).
+A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese,
+Korean).
 
 USAGE:
     autocorrect [FLAGS] [OPTIONS] [file]...
 
 FLAGS:
+        --debug      Print debug message.
+        --type       Directly use set file type
         --fix        Automatically fix problems and rewrite file.
     -h, --help       Prints help information
         --lint       Lint and output problems.
     -V, --version    Prints version information
 
 OPTIONS:
-        --type <filetype>       Directly use set file type [default: ]
         --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
+        --threads <threads>     Number of threads, 0 - use number of CPU [default: 0]
 
 ARGS:
-    <file>...    Target filepath or dir for format
+    <file>...    Target filepath or dir for format [default: .]
 ```
 
 ## Usage
@@ -86,7 +88,7 @@ $ autocorrect text.txt
 
 $ autocorrect --fix text.txt
 $ autocorrect --fix zh-CN.yml
-$ autocorrect --fix ./
+$ autocorrect --fix
 ```
 
 #### Lint
@@ -106,7 +108,7 @@ $ autocorrect --lint text.txt
 You also can lint multiple files:
 
 ```bash
-$ autocorrect --lint .
+$ autocorrect --lint
 ```
 
 ### Ignore option
@@ -172,7 +174,7 @@ autocorrect:
   stage: build
   image: huacnlee/autocorrect:latest
   script:
-    - autocorrect --lint .
+    - autocorrect --lint
   # Enable allow_failure if you wants.
   # allow_failure: true
 ```

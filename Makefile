@@ -4,9 +4,9 @@ LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 bench:
 	rustup run nightly cargo bench --features bench
 run:
-	cargo run -- --debug --lint ./
+	cargo run -- --lint
 run\:json:
-	cargo run -- --lint --format json ./
+	cargo run -- --lint --format json
 build:
 	cargo build --release --target aarch64-apple-darwin
 	sudo ln -f target/aarch64-apple-darwin/release/autocorrect /usr/local/bin/autocorrect
@@ -14,7 +14,7 @@ test:
 	@cargo test --manifest-path autocorrect/Cargo.toml 
 	@cargo test
 test\:lint:
-	@cargo run -q -- --debug --lint tests/fixtures/*.fixed.*
+	@cargo run -q -- --lint tests/fixtures/*.fixed.*
 test\:bench:
 	tests/bench.sh
 test\:lint-json:
