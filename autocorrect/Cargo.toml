@@ -8,7 +8,7 @@ license = "MIT"
 name = "autocorrect"
 readme = "../README.md"
 repository = "https://github.com/huacnlee/autocorrect"
-version = "1.5.10"
+version = "1.5.11"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
