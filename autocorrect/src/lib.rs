@@ -44,7 +44,6 @@ fn main() {
 }
 ```
 */
-#![feature(test)]
 
 #[cfg(feature = "bench")]
 extern crate test;
