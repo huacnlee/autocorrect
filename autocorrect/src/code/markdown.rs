@@ -34,6 +34,11 @@ mod tests {
     // Codeblock里面也会处理
     let a = "你好hello";
     ```
+
+    | 字段       | 长度(bit) | 长度（字节）| 说明                                                                       |
+    | ---------- | ---------- | ------------ | -------------------------------------------------------------------------- |
+    | request_id | 32(uint32) | 4            | 请求id，同一个连接的id需要唯一，从1开始，到达4294967295后从新开始。 |
+    | timeout    | 16(uint16) | 2            | `timeout` 单位毫秒，最大60000（60s）                                       |
     
     - ![img图片](https://google.com/a/b/url不处理)
     - [link链接](https://google.com/a/b/url不处理)
@@ -57,11 +62,22 @@ mod tests {
     // Codeblock 里面也会处理
     let a = "你好 hello";
     ```
+
+    | 字段       | 长度 (bit) | 长度（字节）| 说明                                                                       |
+    | ---------- | ---------- | ------------ | -------------------------------------------------------------------------- |
+    | request_id | 32(uint32) | 4            | 请求 id，同一个连接的 id 需要唯一，从 1 开始，到达 4294967295 后从新开始。 |
+    | timeout    | 16(uint16) | 2            | `timeout` 单位毫秒，最大 60000（60s）                                       |
     
     - ![img 图片](https://google.com/a/b/url不处理)
     - [link 链接](https://google.com/a/b/url不处理)
     "###;
 
-        assert_eq!(expected, format_markdown(example).to_string())
+        assert_eq!(expected, format_markdown(example).to_string());
+
+        let lint_result = lint_markdown(expected);
+        assert_eq!(false, lint_result.has_error());
+        if !lint_result.lines.is_empty() {
+            panic!("{}", lint_result.to_string());
+        }
     }
 }

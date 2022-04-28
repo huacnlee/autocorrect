@@ -81,7 +81,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             // format trimmed string
             let new_line = format(line_str);
 
-            // nothing changed, skip
+            // skip, when no difference
             if new_line.eq(line_str) {
                 sub_line += 1;
                 continue;
@@ -118,11 +118,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         if results.is_enabled() {
             let lines = part.split('\n');
 
-            new_part = lines
-                .into_iter()
-                .map(|line_str| format(line_str))
-                .collect::<Vec<_>>()
-                .join("\n");
+            new_part = lines.into_iter().map(format).collect::<Vec<_>>().join("\n");
         }
 
         results.push(LineResult {

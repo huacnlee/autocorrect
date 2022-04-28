@@ -1,5 +1,5 @@
 para = { ANY* ~ NEWLINE{2} }
-expr = { img | link | mark | heading }
+expr = { img | link | td_tag | mark | heading }
 text = { (!(expr | NEWLINE) ~ ANY)+ }
 space = @{ (" ")* }
 code = ${ 
@@ -8,6 +8,7 @@ code = ${
 code_block_lang = { ASCII_ALPHA* }
 code_block_value = { (!(PEEK) ~ ANY)* }
 code_inline_value = { (!(PEEK | NEWLINE) ~ ANY)*  }
+td_tag = @{ space ~ "|" ~ space }
 mark_tag = @{
   "**"
   | "*"
