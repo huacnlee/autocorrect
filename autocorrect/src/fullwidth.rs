@@ -25,7 +25,7 @@ lazy_static! {
     static ref PUNCTUATION_WITH_SPEICAL_CJK_RE: Regex =
         regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r"[\p{CJ}]+");
     static ref PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE: Regex =
-        regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r"$");
+        regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r#"["']?$"#);
     static ref PUNCTUATIONS_RE: Regex =
         regexp!("({}|{})", SPCIAL_PUNCTUATIONS, NORMAL_PUNCTUATIONS);
 }
@@ -85,6 +85,9 @@ mod tests {
     fn test_fullwidth() {
         let cases = map!(
           "你好,这是一个句子." => "你好，这是一个句子。",
+          // For Programming String with quote: "Hello你好." => "Hello 你好。"
+          "\"请求参数错误.\"" => "\"请求参数错误。\"",
+          "'请求参数错误.'" => "'请求参数错误。'",
           "!开头不处理." => "!开头不处理。",
           "刚刚买了一部 iPhone,好开心!" => "刚刚买了一部 iPhone，好开心！",
           "蚂蚁集团上市后有多大的上涨空间?" =>  "蚂蚁集团上市后有多大的上涨空间？",
