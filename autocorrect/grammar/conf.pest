@@ -1,0 +1,10 @@
+newline = @{ "\n" | "\r" }
+space = @{ " "+ }
+
+other = ${ !(comment) ~ ANY }
+comment = ${ single_line_comment | multiline_comment }
+single_line_comment = _{ "#" ~ (!(newline) ~ ANY)* }
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+
+line = _{ comment | space | newline | other }
+item = _{ SOI ~ line* ~ EOI } 

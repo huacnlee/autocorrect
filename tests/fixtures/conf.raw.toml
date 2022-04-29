@@ -1,0 +1,9 @@
+# 這是一份TOML文件
+title = "TOML範例"
+
+[servers]
+
+# 可以使用縮排TAB或是空格,但不是必要的
+[servers.alpha]
+dc = "eqdc10"
+ip = "10.0.0.1"

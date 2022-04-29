@@ -1,0 +1,23 @@
+{
+  "count": 1,
+  "messages": [
+    {
+      "filepath": "tests/fixtures/conf.raw.toml",
+      "lines": [
+        {
+          "l": 1,
+          "c": 1,
+          "new": "# 這是一份 TOML 文件",
+          "old": "# 這是一份TOML文件"
+        },
+        {
+          "l": 6,
+          "c": 1,
+          "new": "# 可以使用縮排 TAB 或是空格，但不是必要的",
+          "old": "# 可以使用縮排TAB或是空格,但不是必要的"
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

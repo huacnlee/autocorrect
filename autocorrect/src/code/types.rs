@@ -74,6 +74,12 @@ lazy_static! {
     // gettext
     "po" => "gettext",
     "pot" => "gettext",
+    // conf
+    "properties" => "conf",
+    "conf" => "conf",
+    "ini" => "conf",
+    "cfg" => "conf",
+    "toml" => "conf",
     // plain
     "text" => "text",
     "plain" => "text",
