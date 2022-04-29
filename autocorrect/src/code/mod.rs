@@ -5,6 +5,7 @@ mod csharp;
 mod css;
 mod dart;
 mod elixir;
+mod gettext;
 mod go;
 mod html;
 mod java;
@@ -30,6 +31,7 @@ pub use csharp::*;
 pub use css::*;
 pub use dart::*;
 pub use elixir::*;
+pub use gettext::*;
 pub use go::*;
 pub use html::*;
 pub use java::*;
@@ -90,6 +92,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "php" => lint_php(raw),
         "dart" => lint_dart(raw),
         "markdown" => lint_markdown(raw),
+        "gettext" => lint_gettext(raw),
         "text" => lint_markdown(raw),
         _ => LintResult::new(raw),
     };
@@ -141,6 +144,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "php" => format_php(raw),
         "dart" => format_dart(raw),
         "markdown" => format_markdown(raw),
+        "gettext" => format_gettext(raw),
         "text" => format_markdown(raw),
         _ => FormatResult::new(raw),
     };

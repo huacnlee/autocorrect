@@ -1,0 +1,24 @@
+newline = @{ "\n" | "\r" }
+space = @{ " "+ }
+
+other = ${ !(string) ~ ANY }
+comment = ${ single_line_comment | multiline_comment }
+refrence = ${ "#:" ~ (!(newline) ~ ANY)*  }
+single_line_comment = _{ "#" ~ (!(newline) ~ ANY)* }
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+
+key_func = @{ ("msgid" | "msgid_plural" | "msgctxt") }
+value_func = @{ "msgstr" }
+
+key = ${ key_func ~ other* ~ space* ~ str_val } 
+value = ${ value_func ~ other* ~ space* ~ string }
+pair = ${ key ~ newline+ ~ value } 
+
+string = @{ str_val }
+str_val = @{
+  ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") 
+  | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+}
+
+line = _{ pair | key | value | string | refrence | comment | space | newline | other }
+item = _{ SOI ~ line* ~ EOI } 

@@ -71,6 +71,9 @@ lazy_static! {
     // markdown
     "markdown" => "markdown",
     "md" => "markdown",
+    // gettext
+    "po" => "gettext",
+    "pot" => "gettext",
     // plain
     "text" => "text",
     "plain" => "text",
@@ -133,6 +136,9 @@ mod tests {
 
         assert!(!is_support_type("foo"));
         assert!(!is_support_type("index.html"));
+        assert!(!is_support_type("gettext"));
+        assert!(!is_support_type("gettext.po"));
+        assert!(!is_support_type("gettext.pot"));
     }
 
     #[test]

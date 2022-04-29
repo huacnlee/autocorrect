@@ -1,0 +1,47 @@
+{
+  "count": 1,
+  "messages": [
+    {
+      "filepath": "tests/fixtures/gettext.raw.po",
+      "lines": [
+        {
+          "l": 2,
+          "c": 8,
+          "new": "\"这是 msgid\"",
+          "old": "\"这是msgid\""
+        },
+        {
+          "l": 9,
+          "c": 8,
+          "new": "\"请输入 Email 地址：\"",
+          "old": "\"请输入Email地址:\""
+        },
+        {
+          "l": 10,
+          "c": 11,
+          "new": "\"这是 msgstr0\"",
+          "old": "\"这是msgstr0\""
+        },
+        {
+          "l": 11,
+          "c": 11,
+          "new": "\"这是 msgstr1\"",
+          "old": "\"这是msgstr1\""
+        },
+        {
+          "l": 13,
+          "c": 1,
+          "new": "# 这是 Commit 评论。",
+          "old": "# 这是Commit评论."
+        },
+        {
+          "l": 16,
+          "c": 8,
+          "new": "\"密码长度要求最少 6 个字符。\"",
+          "old": "\"密码长度要求最少6个字符.\""
+        }
+      ],
+      "error": ""
+    }
+  ]
+}
