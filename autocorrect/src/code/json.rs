@@ -28,7 +28,7 @@ mod tests {
      * 第3行注释
      */
     "description": "第2个meta", 
-    "测试key不格式化": false
+    "测试key不格式化": "Value要格式化"
   }
 }
 "###;
@@ -46,7 +46,7 @@ mod tests {
      * 第 3 行注释
      */
     "description": "第 2 个 meta", 
-    "测试key不格式化": false
+    "测试key不格式化": "Value 要格式化"
   }
 }
 "###;
