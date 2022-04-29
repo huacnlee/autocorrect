@@ -62,7 +62,7 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --type <filetype>       Directly use set file type [default: ]
+        --type <filetype>       Directly use set file type. [default: ]
         --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
 
 ARGS:

@@ -59,11 +59,11 @@ USAGE:
 
 FLAGS:
         --debug      Print debug message.
-        --type       Directly use set file type
+        --type       Directly use set file type.
         --fix        Automatically fix problems and rewrite file.
-    -h, --help       Prints help information
+    -h, --help       Prints help information.
         --lint       Lint and output problems.
-    -V, --version    Prints version information
+    -V, --version    Prints version information.
 
 OPTIONS:
         --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
