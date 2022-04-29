@@ -26,7 +26,8 @@ mod tests {
 
 "NSCameraUsageDescription" = "开启Wi-Fi后继续使用";
 // 单行comment
-"中文key测试" = "开启定位权限";
+"中文key测试" = "开启GPS定位权限";
+"60分" = "60分";
 "###;
 
         let expect = r###"
@@ -40,7 +41,8 @@ mod tests {
 
 "NSCameraUsageDescription" = "开启 Wi-Fi 后继续使用";
 // 单行 comment
-"中文 key 测试" = "开启定位权限";
+"中文key测试" = "开启 GPS 定位权限";
+"60分" = "60 分";
 "###;
 
         assert_eq!(expect, format_strings(example).to_string());
