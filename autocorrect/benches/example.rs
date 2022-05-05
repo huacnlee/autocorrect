@@ -186,4 +186,5 @@ benchmark_group!(
     bench_spellcheck_100,
     bench_spellcheck_400
 );
+
 benchmark_main!(format_benches, spellcheck_benches);

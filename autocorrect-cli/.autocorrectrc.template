@@ -1,70 +1,93 @@
 spellcheck:
   mode: 1
   words:
+    # Please do not add a general English word (eg. apple, python) here.
+    # Users can add their special words to their .autocorrectrc file by their need.
     - ActiveMQ
+    - AirPods
+    - Aliyun
     - API
     - App
     - App Store
     - AppKit
-    - Apple
     - AppStore = App Store
+    - AWS
+    - CacheStorage
+    - CDN
+    - CentOS
+    - CloudFront
+    - CORS
+    - CPU
     - DNS
     - Elasticsearch
     - ESLint
     - Facebook
-    - Feed
-    - Git
+    - GeForce
     - GitHub
     - Google
+    - GPU
+    - H5
     - Hadoop
     - HBase
     - HDFS
+    - HKEX
     - HTML
     - HTTP
     - HTTPS
-    - IDE
+    - I10n
+    - I18n
     - iMovie
+    - IndexedDB
+    - Intel
     - iOS
     - iPad
     - iPadOS
     - iPhone
     - iTunes
-    - Java
     - JavaScript
     - jQuery
     - JSON
     - JWT
-    - Less
-    - Mac
+    - Linux
+    - LocalStorage
     - macOS
     - Markdown
+    - Microsoft
     - MongoDB
+    - Mozilla
     - MVC
     - MySQL
+    - NASDAQ
+    - Netflix
     - NodeJS = Node.js
     - NoSQL
+    - NVDIA
+    - NYSE
     - OAuth
     - Objective-C
     - OLAP
-    - Oracle
+    - OSS
     - P2P
     - PaaS
     - RabbitMQ
-    - React
     - Redis
     - RESTful
     - RSS
+    - RubyGem
+    - RubyGems
     - SaaS
     - Sass
     - SDK
-    - SEO
+    - Shopify
     - SQL
     - SQLite
     - SQLServer
     - SSL
-    - TV
+    - Tesla
+    - TikTok
     - tvOS
     - TypeScript
+    - Ubuntu
     - UML
     - URI
     - URL
@@ -73,6 +96,8 @@ spellcheck:
     - WebAssembly
     - WebKit
     - Webpack
+    - Wi-Fi
+    - Windows
     - WWDC
     - Xcode
     - XML

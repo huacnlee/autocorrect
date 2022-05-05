@@ -4,7 +4,7 @@ LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 bench:
 	cargo bench
 run:
-	cargo run -- --lint
+	cargo run -- --lint --config $(WORKDIR)/autocorrect-cli/.autocorrectrc.template
 run\:json:
 	cargo run -- --lint --format json
 build:
@@ -15,8 +15,8 @@ test:
 	@cargo test
 test\:lint:
 	@cargo run -q -- --lint tests/fixtures/*.fixed.*
-test\:bench:
-	tests/bench.sh
+test\:init:
+	tests/test_init_config.sh
 test\:lint-json:
 	tests/test_lint_json.sh
 install:

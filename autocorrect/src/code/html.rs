@@ -24,10 +24,7 @@ mod tests {
             let actual_clean = &re.replace_all(actual.trim(), "><");
 
             if expected_clean != actual_clean {
-                panic!(
-                    "\nexpected:\n{}\n----------------------------------------\nactual:\n{}",
-                    expected, actual
-                )
+                panic!("{}", difference::Changeset::new(expected, &actual, "\n"))
             }
         }};
     }
@@ -177,5 +174,7 @@ mod tests {
         let lint_result = lint_html(html);
         assert_eq!("", lint_result.error);
         assert_eq!(7, lint_result.lines.len());
+        assert_eq!("这是Heading标题", lint_result.lines[0].old);
+        assert_eq!("这是 Heading 标题", lint_result.lines[0].new);
     }
 }

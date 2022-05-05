@@ -1,10 +1,22 @@
+use regex::Regex;
+
 use crate::config::CONFIG;
+
+pub(crate) fn word_regexp(word: &str) -> Regex {
+    regexp!(
+        r"(?im)([\s，。、？！]|^)+({})([\s，。、？！]|$)+",
+        word.replace('-', r"\-").replace('.', r"\.")
+    )
+}
 
 // Spell check by diect
 pub fn spellcheck(text: &str) -> String {
     let mut out = String::from(text);
 
     let config = CONFIG.lock().unwrap();
+    if config.spellcheck.is_disabled() {
+        return out;
+    }
 
     let spellcheck_dict_re = &config.spellcheck.dict_re;
     let spellcheck_dict = &config.spellcheck.dict;
@@ -37,14 +49,19 @@ mod tests {
     #[test]
     fn test_spellcheck_basic() {
         let cases = map! [
-            "sdk" => "SDK",
-            "this is Api sDk website, and the sDk download url" => "this is API SDK website, and the SDK download URL",
-            "sdk download" => "SDK download",
-            "Download Sdk" => "Download SDK",
-            "openSdk" => "openSdk",
-            "https://sdk.com" => "https://sdk.com",
-            "support@apple.com" => "support@apple.com",
-            "开放 SDK 接口" => "开放 SDK 接口"
+            "ios" => "iOS",
+            "this is ipad ios website, and the IOS download url" => "this is iPad iOS website, and the iOS download url",
+            "Ios download" => "iOS download",
+            "Download iOs" => "Download iOS",
+            "openios" => "openios",
+            "https://ios.com" => "https://ios.com",
+            "support@ios.com" => "support@ios.com",
+            "开放 IOS 接口" => "开放 iOS 接口",
+            "开放接口 IOS。" => "开放接口 iOS。",
+            "开放接口 IOS？" => "开放接口 iOS？",
+            "开放接口 IOS！" => "开放接口 iOS！",
+            "开放接口 IOS，" => "开放接口 iOS，",
+            "开放，ios 接口" => "开放，iOS 接口"
         ];
 
         assert_spellcheck_cases(cases);
@@ -53,10 +70,7 @@ mod tests {
     #[test]
     fn test_speelcheck_cases() {
         let cases = map! [
-            "打开 appstore 并查找" => "打开 App Store 并查找",
-            "打开 app store 并查找" => "打开 App Store 并查找",
-            "mac 电脑"=> "Mac 电脑",
-            "开放 Api 接口" => "开放 API 接口"
+            "打开 wifi 并找到就近的 WIFI，点击输入 wi-fi 密码" => "打开 Wi-Fi 并找到就近的 Wi-Fi，点击输入 Wi-Fi 密码"
         ];
         assert_spellcheck_cases(cases);
     }

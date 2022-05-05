@@ -29,5 +29,8 @@ jobs:
       - name: Lint output
         run: make test:lint
 
+      - name: Init test
+        run: make test:init
+
       - name: Lint output JSON
         run: make test:lint-json
