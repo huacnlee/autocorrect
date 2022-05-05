@@ -1,0 +1,17 @@
+[package]
+edition = "2021"
+name = "autocorrect-wasm"
+version = "1.6.0"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+autocorrect = {path = "../autocorrect", version = "1.6.0"}
+serde = {version = "1.0.127", features = ["derive"]}
+serde_json = "1.0.66"
+wasm-bindgen = {version = "0.2.80", features = ["serde-serialize"]}
+wee_alloc = "0.4.5"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

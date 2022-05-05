@@ -1,8 +1,5 @@
 use std::path::Path;
-extern crate wasm_bindgen;
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(constructor)]
 pub struct Ignorer {
     ignorer: ignore::gitignore::Gitignore,
 }
@@ -10,9 +7,7 @@ pub struct Ignorer {
 static AUTOCORRECTIGNORE: &str = ".autocorrectignore";
 static GITIGNORE: &str = ".gitignore";
 
-#[wasm_bindgen]
 impl Ignorer {
-    #[wasm_bindgen(constructor)]
     pub fn new(work_dir: &str) -> Ignorer {
         let mut builder = ignore::gitignore::GitignoreBuilder::new(work_dir);
         builder.add(Path::join(Path::new(work_dir), AUTOCORRECTIGNORE));
@@ -24,7 +19,6 @@ impl Ignorer {
         Ignorer { ignorer }
     }
 
-    #[wasm_bindgen(js_name = "isIgnored")]
     pub fn is_ignored(&self, path: &str) -> bool {
         self.ignorer
             .matched_path_or_any_parents(path, false)

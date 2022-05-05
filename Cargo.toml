@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "autocorrect",
+  "autocorrect-wasm",
   "autocorrect-derive",
   "autocorrect-cli",
 ]

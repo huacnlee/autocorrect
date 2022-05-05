@@ -90,13 +90,6 @@ mod strategery;
 use code::Results;
 pub use code::{format_for, get_file_extension, is_support_type, lint_for};
 
-extern crate wasm_bindgen;
-use wasm_bindgen::prelude::*;
-
-extern crate wee_alloc;
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 use crate::strategery::Strategery;
 use regex::Regex;
 
@@ -153,7 +146,6 @@ lazy_static! {
 /// println!("{}", autocorrect::format("既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"));
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
-#[wasm_bindgen]
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
@@ -192,23 +184,8 @@ pub fn format(text: &str) -> String {
 /// "#;
 /// autocorrect::format_html(html);
 /// ```
-#[wasm_bindgen(js_name = "formatHTML")]
 pub fn format_html(html_str: &str) -> String {
     code::format_html(html_str).to_string()
-}
-
-/// Format content with filetype, and return a json result.
-#[wasm_bindgen(js_name = "formatFor")]
-pub fn format_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
-    let result = format_for(raw, filename_or_ext);
-    wasm_bindgen::JsValue::from_serde(&result).unwrap()
-}
-
-/// Lint content with filetype, and return a json result.
-#[wasm_bindgen(js_name = "lintFor")]
-pub fn lint_for_json_out(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
-    let result = lint_for(raw, filename_or_ext);
-    wasm_bindgen::JsValue::from_serde(&result).unwrap()
 }
 
 fn space_dash_with_hans(text: &str) -> String {

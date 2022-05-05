@@ -11,7 +11,6 @@ repository = "https://github.com/huacnlee/autocorrect"
 version = "1.6.0"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
 name = "autocorrect"
 path = "src/lib.rs"
 
@@ -25,8 +24,6 @@ pest_derive = "2.1.0"
 regex = "1"
 serde = {version = "1.0.127", features = ["derive"]}
 serde_json = "1.0.66"
-wasm-bindgen = {version = "0.2.75", features = ["serde-serialize"]}
-wee_alloc = "0.4.5"
 
 [dev-dependencies]
 pretty_assertions = "1.0.0"
