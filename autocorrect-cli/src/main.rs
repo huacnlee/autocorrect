@@ -62,7 +62,7 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
 }
 
 pub fn load_config(config_file: &str) -> Result<(), autocorrect::config::Error> {
-    autocorrect::config::merge(config_file)?;
+    autocorrect::config::load_file(config_file)?;
 
     Ok(())
 }

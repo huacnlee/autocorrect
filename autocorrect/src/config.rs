@@ -3,7 +3,7 @@ use std::{collections::HashMap, fs, path::Path, sync::Mutex};
 use regex::Regex;
 use serde::{Deserialize, Serialize, Serializer};
 
-pub fn merge(config_file: &str) -> Result<Config, Error> {
+pub fn load_file(config_file: &str) -> Result<Config, Error> {
     let config_path = Path::new(config_file);
     if !Path::exists(config_path) {
         return Ok(Config::default());
@@ -11,6 +11,10 @@ pub fn merge(config_file: &str) -> Result<Config, Error> {
 
     let config_str = fs::read_to_string(Path::new(config_file))?;
 
+    load(&config_str)
+}
+
+pub fn load(config_str: &str) -> Result<Config, Error> {
     let config: Config = Config::from_str(&config_str)?;
 
     let new_config: Config = CONFIG.lock().unwrap().merge(&config)?;

@@ -5,6 +5,7 @@ extern crate wee_alloc;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+pub mod config;
 pub mod ignorer;
 
 /// Automatically add spaces between Chinese and English words.
