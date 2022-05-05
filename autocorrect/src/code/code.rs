@@ -169,8 +169,6 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             new: sub_reuslts.out,
         });
         results.error(sub_reuslts.error.as_str());
-
-        return;
     } else if rule_name == "inline_javascript" {
         let sub_reuslts = javascript::format_javascript(part);
         results.push(LineResult {
@@ -180,8 +178,6 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             new: sub_reuslts.out,
         });
         results.error(sub_reuslts.error.as_str());
-
-        return;
     }
 }
 

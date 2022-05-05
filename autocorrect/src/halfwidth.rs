@@ -12,7 +12,7 @@ lazy_static! {
 pub fn halfwidth(text: &str) -> String {
     let mut out = String::new();
 
-    for str in text.split("").into_iter() {
+    for str in text.split("") {
         let new_str = CHAR_WIDTH_MAP.get(str);
         if new_str != None {
             out.push_str(new_str.unwrap())
@@ -23,7 +23,7 @@ pub fn halfwidth(text: &str) -> String {
 
     // Fix 12：00 -> 12:00
     out = HALF_TIME_RE
-        .replace_all(&out, |cap: &regex::Captures| cap[0].replace("：", ":"))
+        .replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"))
         .to_string();
 
     out
@@ -49,7 +49,7 @@ mod tests {
         // Fullwidth space
         assert_eq!(
             "ジョイフル－後場売り気配 200 店舗を閉鎖へ 7 月以降、不採算店中心に",
-            halfwidth("ジョイフル－後場売り気配　200　店舗を閉鎖へ　7 月以降、不採算店中心に")
+            halfwidth("ジョイフル－後場売り気配　200 店舗を閉鎖へ　7 月以降、不採算店中心に")
         );
     }
 }

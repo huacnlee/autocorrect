@@ -9,7 +9,7 @@
 
 A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).
 
-Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, and output as colorized diff with corrected suggest. You can intergrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
+Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to checking soure code, and output as colorized diff with corrected suggest. You can intergrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
 
 基于 Rust 编写的 CLI 工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，同时尝试以安全的方式自动纠正标点符号等等。
 
@@ -18,14 +18,6 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, an
 支持各种类型源代码文件支持，能自动识别文件名，并准确找到字符串、注释做自动纠正。
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（级少数异常情况），你可以放心用来辅助你完整自动纠正动作。
-
-## VS Code Extension
-
-https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
-
-内置 VS Code 插件，安装后会将 AutoCorrect 和 VS Code 完整集成，可以达到「保存自动格式化」或「纠正提示」，如下图。
-
-<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/126027685-cee6f91d-1a10-4fcc-b5f4-1a99ac4cd5ae.png">
 
 ## Features
 
@@ -36,174 +28,7 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 - Lint checking and output diff or JSON result, so you can integrating to everwhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you wants ignore.
 
-<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
-
-## Install
-
-```bash
-$ curl -sSL https://git.io/JcGER | bash
-```
-
-after that, you will get `/usr/local/bin/autocorrect` command.
-
-```bash
-AutoCorrect 1.0.0
-Jason Lee <huacnlee@gmail.com
-Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters,
-numerical digits and symbols).
-
-USAGE:
-    autocorrect [FLAGS] [OPTIONS] [file]...
-
-FLAGS:
-        --fix        Automatically fix problems and rewrite file.
-    -h, --help       Prints help information
-        --lint       Lint and output problems.
-    -V, --version    Prints version information
-
-OPTIONS:
-        --type <filetype>       Directly use set file type. [default: ]
-        --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
-
-ARGS:
-    <file>...    Target filepath or dir for format
-```
-
 ## Usage
-
-- [Using CLI](#using-cli)
-- [Use for JavaScript](#use-for-javascript)
-- [Use for Rust](#use-for-rust)
-- [Ignore files](#ignore-files)
-- [GitHub Action](#github-action)
-- [GitLab CI](#gitlab-ci)
-
-### Using CLI
-
-```bash
-$ autocorrect text.txt
-你好 Hello 世界
-
-$ autocorrect --fix text.txt
-$ autocorrect --fix zh-CN.yml
-$ autocorrect --fix ./
-```
-
-#### Lint
-
-```bash
-$ autocorrect --lint --format json text.txt
-
-$ autocorrect --lint text.txt
-```
-
-```diff
-  --> text.txt:1:3
-- 你好Hello世界
-+ 你好 Hello 世界
-```
-
-You also can lint multiple files:
-
-```bash
-$ autocorrect --lint ./
-```
-
-### Ignore option
-
-**Use `.autocorrectignore` to ignore files**
-
-Some times, you may wants ignore some special files that not wants to check.
-
-By default, the file matched `.gitignore` rule will be ignored.
-
-You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
-
-**Disable with inline comment**
-
-If you just want to disable some special lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
-when AutoCorrect matched comment include that, it will disable temporary.
-
-And then, you can use `autocorrect: true` or `autocorrect-enable` to reopen it agian.
-
-For example in JavaScript:
-
-```js
-function hello() {
-  console.log('现在这行开始autocorrect会暂时禁用');
-  console.log('这行也是disable的状态');
-  // autocorrect: true
-  let a = '现在起autocorrect回到了启用的状态';
-}
-```
-
-The out put will:
-
-```js
-function hello() {
-  console.log('现在这行开始autocorrect会暂时禁用');
-  console.log('这行也是disable的状态');
-  // autocorrect: true
-  let a = '现在起 autocorrect 回到了启用的状态';
-}
-```
-
-### GitHub Action
-
-https://github.com/marketplace/actions/huacnlee-autocorrect
-
-Add to your `.github/workflows/ci.yml`
-
-```yml
-steps:
-  - name: Check source code
-    uses: actions/checkout@main
-
-  - name: AutoCorrect
-    uses: huacnlee/autocorrect-action@main
-```
-
-### GitLab CI
-
-Add to your `.gitlab-ci.yml`, to use [huacnlee/autocorrect](https://hub.docker.com/r/huacnlee/autocorrect) Docker image to check.
-
-```yml
-autocorrect:
-  stage: build
-  image: huacnlee/autocorrect:latest
-  script:
-    - autocorrect --lint ./
-  # Enable allow_failure if you wants.
-  # allow_failure: true
-```
-
-### Use for JavaScript
-
-AutoCorrect also provide a JavaScript module via WebAssembly, you can use it in your JavaScript project.
-
-```bash
-yarn add @huacnlee/autocorrect
-```
-
-And then:
-
-```js
-const autocorrect = import('@huacnlee/autocorrect');
-
-const raw = `<p>你好Hello世界</p>`;
-autocorrect.then((autocorrect) => {
-  const out = autocorrect.format_html(raw);
-  // "<p>你好 Hello 世界</p>"
-});
-```
-
-### Use for Rust
-
-Other implements for programming:
-
-- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
 
 In your Cargo.toml
 
@@ -269,37 +94,6 @@ fn main() {
 	// </article>
 }
 ````
-
-## Benchmark
-
-### Format
-
-Use `cargo bench` to run benchmark tests.
-
-```bash
-test tests::bench_format_100 ... bench:      19,410 ns/iter (+/- 1,571)
-test tests::bench_format_400 ... bench:      45,957 ns/iter (+/- 3,444)
-test tests::bench_format_50  ... bench:      14,538 ns/iter (+/- 1,555)
-```
-
-| Total chars | Duration |
-| ----------- | -------- |
-| 50          | 0.014 ms |
-| 100         | 0.019 ms |
-| 400         | 0.045 ms |
-
-### FormatHTML
-
-TODO
-
-## TODO
-
-- [x] Lint
-- [x] Lint for HTML, Markdown
-- [x] Lint for Plain text by each line
-- [ ] Vim plugin
-- [ ] Git Commit message format hook
-- [x] Disable next line
 
 ## License
 

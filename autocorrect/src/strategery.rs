@@ -29,13 +29,13 @@ impl Strategery {
     // Set Strategery for remove space.
     pub fn with_remove_space(mut self) -> Self {
         self.space_mode = SpaceMode::Remove;
-        return self;
+        self
     }
 
     // Set Strategery for format by reverse again.
     pub fn with_reverse(mut self) -> Self {
         self.reverse = true;
-        return self;
+        self
     }
 
     pub fn format(&self, text: &str) -> String {
