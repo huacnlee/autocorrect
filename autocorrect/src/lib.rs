@@ -78,6 +78,7 @@ macro_rules! map {
 }
 
 mod code;
+mod config;
 mod fullwidth;
 mod halfwidth;
 pub mod ignorer;

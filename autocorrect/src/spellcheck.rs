@@ -1,14 +1,16 @@
-use regex::Regex;
-use std::collections::HashMap;
-
-include!(concat!(env!("OUT_DIR"), "/spellchecks.rs"));
+use crate::config::CONFIG;
 
 // Spell check by diect
 pub fn spellcheck(text: &str) -> String {
     let mut out = String::from(text);
 
-    for (word, re) in &*SPELLCHECK_RE_DICT {
-        let new_word = SPELLCHECK_DICT.get(word).unwrap_or(word);
+    let config = CONFIG.lock().unwrap();
+
+    let spellcheck_dict_re = &config.spellcheck.dict_re;
+    let spellcheck_dict = &config.spellcheck.dict;
+
+    for (word, re) in spellcheck_dict_re.iter() {
+        let new_word = spellcheck_dict.get(word).unwrap_or(word);
         out = re
             .replace_all(&out, |cap: &regex::Captures| {
                 cap[0].replace(&cap[2], new_word)
@@ -21,7 +23,9 @@ pub fn spellcheck(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    use super::CONFIG;
     use super::*;
+    use std::collections::HashMap;
 
     fn assert_spellcheck_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {
@@ -59,19 +63,12 @@ mod tests {
 
     #[test]
     fn test_spellcheck_all() {
-        let pair_re: regex::Regex = regex::Regex::new(r"\s*=\s*").unwrap();
+        let words = CONFIG.lock().unwrap().spellcheck.words.clone();
+        for l in words.iter() {
+            let mut left = l.as_str();
+            let mut right = l.as_str();
 
-        let data = std::fs::read_to_string(std::path::Path::new("./spellcheck/noun.txt")).unwrap();
-        let lines = data
-            .lines()
-            .filter(|l| !l.trim().is_empty())
-            .collect::<Vec<_>>();
-
-        for l in lines.iter() {
-            let mut left = *l;
-            let mut right = *l;
-
-            let pair = pair_re.split(l).collect::<Vec<_>>();
+            let pair = crate::config::PAIR_RE.split(l).collect::<Vec<_>>();
             if pair.len() == 2 {
                 left = pair[0];
                 right = pair[1];
