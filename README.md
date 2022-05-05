@@ -19,15 +19,11 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking soure code, an
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（极少数异常情况），你可以放心用来辅助你完成自动纠正动作。
 
-## VS Code Extension
+Other implements for programming:
 
-[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct)
-
-内置 VS Code 插件，安装后会将 AutoCorrect 和 VS Code 完整集成，可以达到「保存自动格式化」或「纠正提示」。
-
-如下图：
-
-<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/126027685-cee6f91d-1a10-4fcc-b5f4-1a99ac4cd5ae.png">
+- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
+- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
+- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
 
 ## Features
 
@@ -76,9 +72,9 @@ ARGS:
 ## Usage
 
 - [Using CLI](#using-cli)
+- [VS Code Extension](#vs-code-extension)
 - [Use for JavaScript](#use-for-javascript)
 - [Use for Rust](#use-for-rust)
-- [Ignore files](#ignore-files)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
 
@@ -152,6 +148,18 @@ function hello() {
 }
 ```
 
+### VS Code Extension
+
+[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct)
+
+https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
+
+内置 Visual Studio Code 插件，安装后会将 AutoCorrect 和 Visual Studio Code 完整集成，可以达到「保存自动格式化」或「纠正提示」。
+
+如下图：
+
+<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/126027685-cee6f91d-1a10-4fcc-b5f4-1a99ac4cd5ae.png">
+
 ### GitHub Action
 
 https://github.com/marketplace/actions/huacnlee-autocorrect
@@ -202,12 +210,6 @@ autocorrect.then((autocorrect) => {
 ```
 
 ### Use for Rust
-
-Other implements for programming:
-
-- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
 
 In your Cargo.toml
 
