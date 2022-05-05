@@ -26,7 +26,11 @@ serde = {version = "1.0.127", features = ["derive"]}
 serde_json = "1.0.66"
 
 [dev-dependencies]
+bencher = "0.1.5"
 pretty_assertions = "1.0.0"
+
+[build-dependencies]
+regex = "*"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
@@ -38,3 +42,7 @@ wasm-opt = false
 
 [features]
 bench = []
+
+[[bench]]
+harness = false
+name = "example"

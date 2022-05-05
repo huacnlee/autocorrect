@@ -1,6 +1,7 @@
 // autocorrect: false
 use super::*;
 use crate::format;
+use crate::spellcheck::spellcheck;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -81,8 +82,11 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             // format trimmed string
             let new_line = format(line_str);
 
+            // Spellcheck
+            let spell_new_line = spellcheck(&new_line);
+
             // skip, when no difference
-            if new_line.eq(line_str) {
+            if new_line.eq(line_str) && spell_new_line.eq(&new_line) {
                 sub_line += 1;
                 continue;
             }

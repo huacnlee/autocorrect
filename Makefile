@@ -2,7 +2,7 @@ WORKDIR=$(shell pwd)
 LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 
 bench:
-	rustup run nightly cargo bench --features bench
+	cargo bench
 run:
 	cargo run -- --lint
 run\:json:
