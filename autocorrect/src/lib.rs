@@ -45,11 +45,6 @@ fn main() {
 ```
 */
 
-#[cfg(feature = "bench")]
-extern crate test;
-#[cfg(feature = "bench")]
-mod bench;
-
 #[macro_use]
 extern crate lazy_static;
 
@@ -83,12 +78,15 @@ macro_rules! map {
 }
 
 mod code;
+pub mod config;
 mod fullwidth;
 mod halfwidth;
 pub mod ignorer;
+pub mod spellcheck;
 mod strategery;
 use code::Results;
 pub use code::{format_for, get_file_extension, is_support_type, lint_for};
+pub use config::Config;
 
 use crate::strategery::Strategery;
 use regex::Regex;

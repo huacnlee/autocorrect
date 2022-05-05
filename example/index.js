@@ -4,8 +4,28 @@ import examples from './examples';
 let autocorrect;
 let currentFileType = 'text';
 
+let config = `{
+  "spellcheck": {
+    "mode": 1,
+    "words": [
+      "WebAssembly",
+      "Rust",
+      "NPM",
+      "Web"
+    ]
+  }
+}`;
+
+const selectFileType = (fileType) => {
+  const example = examples[fileType];
+  input.value = example.raw;
+  filename.innerHTML = `FileType: ${fileType}`;
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   autocorrectLib.then((ac) => {
+    const loadedConfig = ac.loadConfig(config);
+    console.log('Loaded config: ', loadedConfig);
     autocorrect = ac;
     window.autocorrect = ac;
   });
@@ -27,12 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   select.innerHTML = options.join('');
   select.value = 'html';
+  selectFileType('html');
 
   select.addEventListener('change', (e) => {
     currentFileType = e.target.value;
-    const example = examples[currentFileType];
-    input.value = example.raw;
-    filename.innerHTML = `FileType: ${currentFileType}`;
+    selectFileType(currentFileType);
   });
 
   const formatText = (e) => {

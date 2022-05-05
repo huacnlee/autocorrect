@@ -11,6 +11,8 @@ use threadpool::ThreadPool;
 
 extern crate autocorrect;
 
+include!(concat!(env!("OUT_DIR"), "/config_template.rs"));
+
 #[derive(Clone)]
 struct Option {
     lint: bool,
@@ -18,7 +20,10 @@ struct Option {
     debug: bool,
     formatter: String,
     threads: usize,
+    config_file: String,
 }
+
+static DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
 
 fn get_matches<'a>() -> clap::ArgMatches<'a> {
     return App::new("AutoCorrect")
@@ -44,9 +49,22 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
         Arg::with_name("debug").long("debug").help("Print debug message.")
     )
     .arg(
+        Arg::with_name("config").long("config").short("c").help("Special config file.").default_value(DEFAULT_CONFIG_FILE)
+    )
+    .arg(
         Arg::with_name("threads").long("threads").help("Number of threads, 0 - use number of CPU.").default_value("0")
     )
+    .subcommand(
+        App::new("init")
+        .about("Init AutoCorrect config file.")
+    )
     .get_matches();
+}
+
+pub fn load_config(config_file: &str) -> Result<(), autocorrect::config::Error> {
+    autocorrect::config::load_file(config_file)?;
+
+    Ok(())
 }
 
 pub fn main() {
@@ -56,6 +74,7 @@ pub fn main() {
         lint: false,
         formatter: String::from(""),
         threads: 0,
+        config_file: String::from(""),
     };
 
     let matches = get_matches();
@@ -72,6 +91,24 @@ pub fn main() {
         .unwrap_or("0")
         .parse::<usize>()
         .unwrap_or(0);
+    option.config_file = matches
+        .value_of("config")
+        .unwrap_or(DEFAULT_CONFIG_FILE)
+        .to_string();
+
+    if matches.subcommand_matches("init").is_some() {
+        println!("AutoCorrect init config: {}", option.config_file);
+        fs::write(Path::new(&option.config_file), CONFIG_TEMPLATE)
+            .unwrap_or_else(|_| panic!("Failed to write config file: {}", &option.config_file));
+        return;
+    }
+
+    if option.debug {
+        println!("Load config: {}", option.config_file);
+    }
+    load_config(&option.config_file).unwrap_or_else(|e| {
+        panic!("Load config error: {}", e);
+    });
 
     if option.threads == 0 {
         option.threads = num_cpus::get();

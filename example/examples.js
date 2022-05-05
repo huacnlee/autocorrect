@@ -26,19 +26,19 @@
 export default {
   html: {
     title: 'HTML',
-    raw: `<h1>编译Rust为WebAssembly</h1>
+    raw: `<h1>编译rust为WebAssembly</h1>
 <div></div>
-<p class="summary">如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p></div>
+<p class="summary">如果你写了一些RUST代码，你可以把它编译成webAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p></div>
 <h2 id="rust_和_webassembly_用例"><a href="#rust_和_webassembly_用例" title="Permalink to Rust和WebAssembly用例">Rust和WebAssembly用例</a></h2>
-<div><p>Rust和WebAssembly有两大主要用例：</p>
+<div><p>rust和webassembly有两大主要用例：</p>
 <ul>
-<li>构建完整应用 —— 整个Web应用都基于Rust开发！</li>
-<li>构建应用的组成部分 —— 在现存的JavaScript前端中使用Rust。</li>
+<li>构建完整应用 —— 整个web应用都基于rust开发！</li>
+<li>构建应用的组成部分 —— 在现存的javascript前端中使用RUst。</li>
 </ul>
 
 <p>目前，Rust团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅<code><a href="https://github.com/DenisKolodin/yew" class="external" rel=" noopener">yew</a></code>这类项目。</p>
 
-<p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个NPM包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
+<p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
 `,
   },
   js: {

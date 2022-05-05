@@ -1,6 +1,7 @@
 // autocorrect: false
 use super::*;
-use crate::format;
+use crate::spellcheck::spellcheck;
+use crate::{config, format};
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -79,13 +80,16 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         let mut sub_line = 0;
         for line_str in lines {
             // format trimmed string
-            let new_line = format(line_str);
+            let mut new_line = format(line_str);
+            let spell_new_line = spellcheck(&new_line);
 
             // skip, when no difference
-            if new_line.eq(line_str) {
+            if new_line.eq(line_str) && spell_new_line.eq(&new_line) {
                 sub_line += 1;
                 continue;
             }
+
+            new_line = spell_new_line;
 
             // trim start whitespace
             let mut trimmed = line_str.trim_start();
@@ -118,7 +122,20 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         if results.is_enabled() {
             let lines = part.split('\n');
 
-            new_part = lines.into_iter().map(format).collect::<Vec<_>>().join("\n");
+            new_part = lines
+                .into_iter()
+                .map(format)
+                .map(|l| {
+                    if config::CONFIG.lock().unwrap().spellcheck.mode
+                        == Some(config::SpellcheckMode::Enabled)
+                    {
+                        spellcheck(&l)
+                    } else {
+                        l
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
         }
 
         results.push(LineResult {
