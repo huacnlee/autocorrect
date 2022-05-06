@@ -1,13 +1,13 @@
 para = { ANY* ~ NEWLINE{2} }
-expr = { img | link | td_tag | mark | heading }
-text = { (!(expr | NEWLINE) ~ ANY)+ }
+expr = _{ codeblock | img | link | td_tag | mark | heading }
+text = { (!(expr | newline) ~ ANY)+ }
+newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
-code = ${ 
-  PUSH("```") ~ code_block_lang ~ code_block_value ~ PUSH("```")
+codeblock = ${ 
+  PUSH("```") ~ codeblock_lang ~ codeblock_code ~ PUSH("```")
 }
-code_block_lang = { ASCII_ALPHA* }
-code_block_value = { (!(PEEK) ~ ANY)* }
-code_inline_value = { (!(PEEK | NEWLINE) ~ ANY)*  }
+codeblock_lang = { ASCII_ALPHA* }
+codeblock_code = { (!(PEEK) ~ ANY)* }
 td_tag = @{ space ~ "|" ~ space }
 mark_tag = @{
   "**"
@@ -22,11 +22,11 @@ heading_tag = @{"######" | "#####" | "####" | "###" | "##" | "#"}
 img_start = @{ "!" }
 img = ${ img_start ~ link }
 link = ${ link_string ~ link_url }
-link_string = { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" } 
-link_url = { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
+link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" } 
+link_url = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
 mark = ${ PUSH(mark_tag) ~ string ~ PUSH(mark_tag) }
 heading = ${ PUSH(heading_tag) ~ space ~ string }
-string = ${ (!(PEEK | NEWLINE) ~ ANY)* }
+string = ${ (!(PEEK | newline) ~ ANY)* }
 
-line = { expr | text | NEWLINE }
-item = { SOI ~ line* ~ EOI }
+line = _{ expr | text | newline }
+item = _{ SOI ~ line* ~ EOI }

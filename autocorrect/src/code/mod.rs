@@ -150,7 +150,11 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "gettext" => format_gettext(raw),
         "conf" => format_conf(raw),
         "text" => format_markdown(raw),
-        _ => FormatResult::new(raw),
+        _ => {
+            let mut result = FormatResult::new(raw);
+            result.out = String::from(raw);
+            result
+        }
     };
 
     result

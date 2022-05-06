@@ -69,7 +69,7 @@ OPTIONS:
 
 ARGS:
     <file>...    Target filepath or dir for format [default: .]
-    
+
 SUBCOMMANDS:
     help    Prints this message or the help of the given subcommand(s)
     init    Init AutoCorrect config file.
@@ -352,8 +352,8 @@ test bench_spellcheck_400            ... bench:     151,864 ns/iter (+/- 1,640)
 - [x] Lint for HTML, Markdown
 - [x] Lint for Plain text by each line
 - [x] Disable next line
-- [ ] Speelcheck
-- [ ] Config file `.autocorrectrc`
+- [x] Speelcheck
+- [x] Config file `.autocorrectrc`
 
 ## License
 

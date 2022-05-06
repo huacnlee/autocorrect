@@ -26,24 +26,29 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     out
 }
 
-fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
+fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
     let rule = item.as_rule();
-    let rule_name = format!("{:?}", rule);
-    let rule_name = rule_name.as_str();
+    return format!("{:?}", rule);
+}
+
+fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
+    let rule_name = get_rule_name(&item);
 
     // println!("rule: {}", rule_name);
 
-    match rule_name {
+    match rule_name.as_str() {
         "string" | "link_string" | "text" | "comment" => {
-            format_or_lint(results, rule_name, item);
+            format_or_lint(results, &rule_name, item);
         }
-        "inline_style" | "inline_javascript" => {
-            format_or_lint_for_inline_scripts(results, item, rule_name);
+        "inline_style" | "inline_javascript" | "codeblock" => {
+            format_or_lint_for_inline_scripts(results, item, &rule_name);
         }
         _ => {
             let mut has_child = false;
             let item_str = item.as_str();
-            for child in item.into_inner() {
+            let sub_items = item.into_inner();
+
+            for child in sub_items {
                 format_pair(results, child, scope_rule);
                 has_child = true;
             }
@@ -145,6 +150,29 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     }
 }
 
+struct Codeblock {
+    pub lang: String,
+    pub data: String,
+}
+
+fn get_codeblock<R: RuleType>(item: Pair<R>) -> Codeblock {
+    let mut codeblock = Codeblock {
+        lang: String::new(),
+        data: String::new(),
+    };
+
+    codeblock.data = item.as_str().to_string();
+
+    for child in item.into_inner() {
+        if get_rule_name(&child).as_str() == "codeblock_lang" {
+            codeblock.lang = child.as_str().to_string();
+            break;
+        }
+    }
+
+    codeblock
+}
+
 // format_or_lint for inline scripts, for example, script/css in html
 fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     results: &mut O,
@@ -157,7 +185,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 
     if results.is_lint() {
         if rule_name == "inline_style" {
-            let sub_reuslts = css::lint_css(part);
+            let sub_reuslts = lint_for(part, "css");
             for line in sub_reuslts.lines {
                 results.push(line);
             }
@@ -165,7 +193,17 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 
             return;
         } else if rule_name == "inline_javascript" {
-            let sub_reuslts = javascript::lint_javascript(part);
+            let sub_reuslts = lint_for(part, "js");
+            for line in sub_reuslts.lines {
+                results.push(line);
+            }
+            results.error(sub_reuslts.error.as_str());
+
+            return;
+        } else if rule_name == "codeblock" {
+            let codeblock = get_codeblock(item);
+            let sub_reuslts = lint_for(&codeblock.data, &codeblock.lang);
+
             for line in sub_reuslts.lines {
                 results.push(line);
             }
@@ -176,7 +214,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     }
 
     if rule_name == "inline_style" {
-        let sub_reuslts = css::format_css(part);
+        let sub_reuslts = format_for(part, "css");
         results.push(LineResult {
             line: 0,
             col: 0,
@@ -185,7 +223,18 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
         });
         results.error(sub_reuslts.error.as_str());
     } else if rule_name == "inline_javascript" {
-        let sub_reuslts = javascript::format_javascript(part);
+        let sub_reuslts = format_for(part, "js");
+        results.push(LineResult {
+            line: 0,
+            col: 0,
+            old: String::from(part),
+            new: sub_reuslts.out,
+        });
+        results.error(sub_reuslts.error.as_str());
+    } else if rule_name == "codeblock" {
+        let codeblock = get_codeblock(item);
+        let sub_reuslts = format_for(&codeblock.data, &codeblock.lang);
+
         results.push(LineResult {
             line: 0,
             col: 0,
@@ -534,5 +583,39 @@ This is "#;
         let raw = "\nHello\n\naaa\n";
         assert_eq!(out.move_cursor(raw), (6, 17));
         assert_eq!((out.line, out.col), (10, 1));
+    }
+
+    #[test]
+    fn test_format_for() {
+        let mut raw = "// Hello你好";
+        let mut result = format_for(raw, "rust");
+        assert_eq!(result.out, "// Hello 你好");
+
+        result = format_for(raw, "js");
+        assert_eq!(result.out, "// Hello 你好");
+
+        result = format_for(raw, "ruby");
+        assert_eq!(result.out, "// Hello你好");
+
+        raw = "// Hello你好";
+        result = format_for(raw, "not-exist-type");
+        assert_eq!(result.out, raw);
+    }
+
+    #[test]
+    fn test_lint_for() {
+        let mut raw = "// Hello你好";
+        let mut result = lint_for(raw, "rust");
+        assert_eq!(result.lines.len(), 1);
+
+        result = lint_for(raw, "js");
+        assert_eq!(result.lines.len(), 1);
+
+        result = lint_for(raw, "ruby");
+        assert_eq!(result.lines.len(), 0);
+
+        raw = "// Hello你好";
+        result = lint_for(raw, "not-exist-type");
+        assert_eq!(result.lines.len(), 0);
     }
 }
