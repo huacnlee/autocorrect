@@ -41,6 +41,7 @@ lazy_static! {
     "less" => "css",
     // json
     "json" => "json",
+    "json5" => "json",
     // go
     "go" => "go",
     // python
