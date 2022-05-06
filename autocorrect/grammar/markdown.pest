@@ -1,5 +1,5 @@
 para = { ANY* ~ NEWLINE{2} }
-expr = _{ codeblock | img | link | td_tag | mark | heading }
+expr = _{ codeblock | img | link | td_tag | heading }
 text = { (!(expr | newline) ~ ANY)+ }
 newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
@@ -13,8 +13,6 @@ mark_tag = @{
   "**"
   | "*"
   | "~~"
-  | "__"
-  | "_"
   | "`"
 }
 heading_tag = @{"######" | "#####" | "####" | "###" | "##" | "#"}

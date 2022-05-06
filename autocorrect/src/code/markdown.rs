@@ -17,7 +17,15 @@ mod tests {
     #[test]
     fn test_format_markdown() {
         let example = r###"
+    ---
+    title: IPAD 和 Ios 接入的不同点
+    id: h
+    slug: /appstore/ipad_and_ios
+    ---
+
     # 这是Heading 1大标题
+
+    https://google.com/foo/__ios__/**ios**
 
     **加粗** 
     *倾斜*
@@ -57,7 +65,15 @@ mod tests {
     "###;
 
         let expected = r###"
+    ---
+    title: iPad 和 iOS 接入的不同点
+    id: h
+    slug: /appstore/ipad_and_ios
+    ---
+
     # 这是 Heading 1 大标题
+
+    https://google.com/foo/__ios__/**ios**
 
     **加粗** 
     *倾斜*
