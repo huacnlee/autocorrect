@@ -152,25 +152,42 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
 struct Codeblock {
     pub lang: String,
+    // All string of codeblock
     pub data: String,
+    // Code string of codeblock
+    pub code: String,
 }
 
-fn get_codeblock<R: RuleType>(item: Pair<R>) -> Codeblock {
-    let mut codeblock = Codeblock {
-        lang: String::new(),
-        data: String::new(),
-    };
-
-    codeblock.data = item.as_str().to_string();
-
-    for child in item.into_inner() {
-        if get_rule_name(&child).as_str() == "codeblock_lang" {
-            codeblock.lang = child.as_str().to_string();
-            break;
-        }
+impl Codeblock {
+    // Update codeblock data replace code as new code.
+    pub fn update_data(&mut self, new_code: &str) {
+        self.data = self.data.replace(&self.code, new_code);
+        self.code = new_code.to_string();
     }
 
-    codeblock
+    pub fn from_pair<R: RuleType>(item: Pair<R>) -> Codeblock {
+        let mut codeblock = Codeblock {
+            lang: String::new(),
+            data: String::new(),
+            code: String::new(),
+        };
+
+        codeblock.data = item.as_str().to_string();
+
+        for child in item.into_inner() {
+            match get_rule_name(&child).as_str() {
+                "codeblock_lang" => {
+                    codeblock.lang = child.as_str().to_string();
+                }
+                "codeblock_code" => {
+                    codeblock.code = child.as_str().to_string();
+                }
+                _ => {}
+            }
+        }
+
+        codeblock
+    }
 }
 
 // format_or_lint for inline scripts, for example, script/css in html
@@ -201,8 +218,8 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 
             return;
         } else if rule_name == "codeblock" {
-            let codeblock = get_codeblock(item);
-            let sub_reuslts = lint_for(&codeblock.data, &codeblock.lang);
+            let codeblock = Codeblock::from_pair(item);
+            let sub_reuslts = lint_for(&codeblock.code, &codeblock.lang);
 
             for line in sub_reuslts.lines {
                 results.push(line);
@@ -232,14 +249,18 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
         });
         results.error(sub_reuslts.error.as_str());
     } else if rule_name == "codeblock" {
-        let codeblock = get_codeblock(item);
-        let sub_reuslts = format_for(&codeblock.data, &codeblock.lang);
+        // WARNING: nested codeblock, when call format_for again.
+        // Because codeblock.data has wrap chars, this make overflowed its stack.
+        let mut codeblock = Codeblock::from_pair(item);
+        let sub_reuslts = format_for(&codeblock.code, &codeblock.lang);
+
+        codeblock.update_data(&sub_reuslts.out);
 
         results.push(LineResult {
             line: 0,
             col: 0,
             old: String::from(part),
-            new: sub_reuslts.out,
+            new: codeblock.data,
         });
         results.error(sub_reuslts.error.as_str());
     }
@@ -617,5 +638,18 @@ This is "#;
         raw = "// Hello你好";
         result = lint_for(raw, "not-exist-type");
         assert_eq!(result.lines.len(), 0);
+    }
+
+    #[test]
+    fn test_codeblock() {
+        let mut codeblock = Codeblock {
+            data: "```rb\nhello\n```".to_string(),
+            code: "\nhello\n".to_string(),
+            lang: "rb".to_string(),
+        };
+
+        codeblock.update_data("\nhello world\n");
+        assert_eq!(codeblock.data, "```rb\nhello world\n```".to_string());
+        assert_eq!(codeblock.code, "\nhello world\n".to_string());
     }
 }
