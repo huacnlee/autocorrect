@@ -31,6 +31,7 @@ Other implements for programming:
 - Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, Python, Objective-C, Swift, Java, Kotlin, Dart, JavaScript, CSharp ...).
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
+- Speelcheck and correct by your own word dictionary.
 - Lint checking and output diff or JSON result, so you can integrating to everwhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you wants ignore.
 
@@ -51,7 +52,7 @@ A linter and formatter for help you improve copywriting, to correct spaces, punc
 Korean).
 
 USAGE:
-    autocorrect [FLAGS] [OPTIONS] [file]...
+    autocorrect [FLAGS] [OPTIONS] [file]... [SUBCOMMAND]
 
 FLAGS:
         --debug      Print debug message.
@@ -62,16 +63,22 @@ FLAGS:
     -V, --version    Prints version information.
 
 OPTIONS:
+    -c, --config <config>       Special config file. [default: .autocorrectrc]
         --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
         --threads <threads>     Number of threads, 0 - use number of CPU [default: 0]
 
 ARGS:
     <file>...    Target filepath or dir for format [default: .]
+    
+SUBCOMMANDS:
+    help    Prints this message or the help of the given subcommand(s)
+    init    Init AutoCorrect config file.
 ```
 
 ## Usage
 
 - [Using CLI](#using-cli)
+- [Confirguation](#configuration)
 - [VS Code Extension](#vs-code-extension)
 - [Use for JavaScript](#use-for-javascript)
 - [Use for Rust](#use-for-rust)
@@ -109,7 +116,40 @@ You also can lint multiple files:
 $ autocorrect --lint
 ```
 
-### Ignore option
+### Configuration
+
+```bash
+$ autocorrect init
+AutoCorrect init config: .autocorrectrc
+```
+
+Now the `.autocorrectrc` file has created.
+
+> .autocorrectrc is allows use YAML, JSON format.
+
+Config file example:
+
+```yml
+# Config for Speelcheck
+spellcheck:
+  # 0 - Disabled, 1 - Format and Lint, 2 - LintOnly
+  mode: 1
+  # Correct Words (Case insensitive) for by Spellcheck
+  words:
+    - GitHub
+    - App Store
+    # This means "appstore" into "App Store"
+    - AppStore = App Store
+    - Git
+    - Node.js
+    - nodejs = Node.js
+    - VIM
+    - DNS
+    - HTTP
+    - SSL
+```
+
+#### Ignore option
 
 **Use `.autocorrectignore` to ignore files**
 
