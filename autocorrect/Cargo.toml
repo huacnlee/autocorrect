@@ -32,7 +32,7 @@ bencher = "0.1.5"
 pretty_assertions = "1.0.0"
 
 [build-dependencies]
-regex = "*"
+regex = "1"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
