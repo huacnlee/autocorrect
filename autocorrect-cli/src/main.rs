@@ -97,6 +97,11 @@ pub fn main() {
         .to_string();
 
     if matches.subcommand_matches("init").is_some() {
+        if Path::exists(Path::new(&option.config_file)) {
+            println!("{} already exists.", option.config_file);
+            return;
+        }
+
         println!("AutoCorrect init config: {}", option.config_file);
         fs::write(Path::new(&option.config_file), CONFIG_TEMPLATE)
             .unwrap_or_else(|_| panic!("Failed to write config file: {}", &option.config_file));
