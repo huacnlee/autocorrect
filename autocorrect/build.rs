@@ -5,7 +5,7 @@ fn main() {
         .expect("Failed to read .autocorrectrc.default");
     let code = format!(
         r###"lazy_static! {{
-                pub(crate) static ref CONFIG: Mutex<Config> = Mutex::new(Config::from_str(r#"{}"#).unwrap());
+                static ref CURRENT_CONFIG: RwLock<Config> = RwLock::new(Config::from_str(r#"{}"#).unwrap());
             }}"###,
         config_str
     );

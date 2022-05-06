@@ -1,6 +1,6 @@
 use regex::Regex;
 
-use crate::config::CONFIG;
+use crate::config::Config;
 
 pub(crate) fn word_regexp(word: &str) -> Regex {
     regexp!(
@@ -13,7 +13,7 @@ pub(crate) fn word_regexp(word: &str) -> Regex {
 pub fn spellcheck(text: &str) -> String {
     let mut out = String::from(text);
 
-    let config = CONFIG.lock().unwrap();
+    let config = Config::current();
     if config.spellcheck.is_disabled() {
         return out;
     }
@@ -35,7 +35,8 @@ pub fn spellcheck(text: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::CONFIG;
+    use crate::Config;
+
     use super::*;
     use std::collections::HashMap;
 
@@ -77,7 +78,7 @@ mod tests {
 
     #[test]
     fn test_spellcheck_all() {
-        let words = CONFIG.lock().unwrap().spellcheck.words.clone();
+        let words = Config::current().spellcheck.words.clone();
         for l in words.iter() {
             let mut left = l.as_str();
             let mut right = l.as_str();

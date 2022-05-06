@@ -1,7 +1,18 @@
-use std::{collections::HashMap, fs, path::Path, sync::Mutex};
+use std::{
+    collections::HashMap,
+    fs,
+    path::Path,
+    sync::{Arc, RwLock, RwLockReadGuard},
+};
 
 use regex::Regex;
 use serde::{Deserialize, Serialize, Serializer};
+
+include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
+
+lazy_static! {
+    pub static ref PAIR_RE: regex::Regex = regex::Regex::new(r"\s*=\s*").unwrap();
+}
 
 pub fn load_file(config_file: &str) -> Result<Config, Error> {
     let config_path = Path::new(config_file);
@@ -17,7 +28,7 @@ pub fn load_file(config_file: &str) -> Result<Config, Error> {
 pub fn load(config_str: &str) -> Result<Config, Error> {
     let config: Config = Config::from_str(&config_str)?;
 
-    let new_config: Config = CONFIG.lock().unwrap().merge(&config)?;
+    let new_config: Config = CURRENT_CONFIG.write().unwrap().merge(&config)?;
 
     Ok(new_config)
 }
@@ -27,65 +38,6 @@ pub struct Config {
     pub spellcheck: SpellcheckConfig,
 }
 
-#[derive(PartialEq, Clone, Debug)]
-pub enum SpellcheckMode {
-    Disabled,
-    Enabled,
-    LintOnly,
-}
-
-impl<'a> Serialize for SpellcheckMode {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        match self {
-            SpellcheckMode::Disabled => serializer.serialize_u8(0),
-            SpellcheckMode::Enabled => serializer.serialize_u8(1),
-            SpellcheckMode::LintOnly => serializer.serialize_u8(2),
-        }
-    }
-}
-
-impl<'a> Deserialize<'a> for SpellcheckMode {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::de::Deserializer<'a>,
-    {
-        struct SpellcheckModeVisitor;
-
-        impl<'de> serde::de::Visitor<'de> for SpellcheckModeVisitor {
-            type Value = SpellcheckMode;
-
-            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                write!(formatter, "an integer or string representing a Foo")
-            }
-
-            fn visit_str<E: serde::de::Error>(self, s: &str) -> Result<SpellcheckMode, E> {
-                Ok(match s {
-                    "0" => SpellcheckMode::Disabled,
-                    "1" => SpellcheckMode::Enabled,
-                    "2" => SpellcheckMode::LintOnly,
-                    _ => return Err(E::invalid_value(serde::de::Unexpected::Str(s), &self)),
-                })
-            }
-
-            fn visit_u64<E: serde::de::Error>(self, n: u64) -> Result<SpellcheckMode, E> {
-                Ok(match n {
-                    0 => SpellcheckMode::Disabled,
-                    1 => SpellcheckMode::Enabled,
-                    2 => SpellcheckMode::LintOnly,
-                    _ => return Err(E::invalid_value(serde::de::Unexpected::Unsigned(n), &self)),
-                })
-            }
-        }
-
-        match deserializer.deserialize_any(SpellcheckModeVisitor) {
-            Ok(value) => Ok(value),
-            Err(_) => Ok(SpellcheckMode::Disabled),
-        }
-    }
-}
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct SpellcheckConfig {
     #[serde(default)]
@@ -98,13 +50,13 @@ pub struct SpellcheckConfig {
     pub dict_re: HashMap<String, Regex>,
 }
 
-type SpellcheckWord = String;
-
-include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
-
-lazy_static! {
-    pub static ref PAIR_RE: regex::Regex = regex::Regex::new(r"\s*=\s*").unwrap();
+impl SpellcheckConfig {
+    pub fn is_disabled(&self) -> bool {
+        self.mode == Some(SpellcheckMode::Disabled) || self.mode.is_none()
+    }
 }
+
+type SpellcheckWord = String;
 
 impl Default for Config {
     fn default() -> Self {
@@ -118,13 +70,6 @@ impl Default for Config {
         }
     }
 }
-
-impl SpellcheckConfig {
-    pub fn is_disabled(&self) -> bool {
-        self.mode == Some(SpellcheckMode::Disabled) || self.mode.is_none()
-    }
-}
-
 #[derive(Debug, Clone)]
 pub struct Error {
     message: String,
@@ -161,6 +106,10 @@ impl From<std::io::Error> for Error {
 }
 
 impl Config {
+    pub fn current() -> Arc<RwLockReadGuard<'static, Config>> {
+        Arc::new(CURRENT_CONFIG.read().unwrap())
+    }
+
     #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Result<Self, Error> {
         let mut config: Config = serde_any::from_str_any(s)?;
@@ -236,6 +185,66 @@ impl Config {
     }
 }
 
+#[derive(PartialEq, Clone, Debug)]
+pub enum SpellcheckMode {
+    Disabled,
+    Enabled,
+    LintOnly,
+}
+
+impl<'a> Serialize for SpellcheckMode {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            SpellcheckMode::Disabled => serializer.serialize_u8(0),
+            SpellcheckMode::Enabled => serializer.serialize_u8(1),
+            SpellcheckMode::LintOnly => serializer.serialize_u8(2),
+        }
+    }
+}
+
+impl<'a> Deserialize<'a> for SpellcheckMode {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::de::Deserializer<'a>,
+    {
+        struct SpellcheckModeVisitor;
+
+        impl<'de> serde::de::Visitor<'de> for SpellcheckModeVisitor {
+            type Value = SpellcheckMode;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                write!(formatter, "an integer or string representing a Foo")
+            }
+
+            fn visit_str<E: serde::de::Error>(self, s: &str) -> Result<SpellcheckMode, E> {
+                Ok(match s {
+                    "0" => SpellcheckMode::Disabled,
+                    "1" => SpellcheckMode::Enabled,
+                    "2" => SpellcheckMode::LintOnly,
+                    _ => return Err(E::invalid_value(serde::de::Unexpected::Str(s), &self)),
+                })
+            }
+
+            fn visit_u64<E: serde::de::Error>(self, n: u64) -> Result<SpellcheckMode, E> {
+                Ok(match n {
+                    0 => SpellcheckMode::Disabled,
+                    1 => SpellcheckMode::Enabled,
+                    2 => SpellcheckMode::LintOnly,
+                    _ => return Err(E::invalid_value(serde::de::Unexpected::Unsigned(n), &self)),
+                })
+            }
+        }
+
+        match deserializer.deserialize_any(SpellcheckModeVisitor) {
+            Ok(value) => Ok(value),
+            Err(_) => Ok(SpellcheckMode::Disabled),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -292,7 +301,7 @@ mod tests {
 
     #[test]
     fn test_default_config() {
-        let config = &CONFIG.lock().unwrap();
+        let config = Config::current();
 
         assert_eq!(Some(SpellcheckMode::Enabled), config.spellcheck.mode);
         assert_eq!(false, config.spellcheck.words.is_empty());

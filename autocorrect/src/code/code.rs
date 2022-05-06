@@ -1,7 +1,7 @@
 // autocorrect: false
 use super::*;
 use crate::spellcheck::spellcheck;
-use crate::{config, format};
+use crate::{config, format, Config};
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -126,9 +126,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
                 .into_iter()
                 .map(format)
                 .map(|l| {
-                    if config::CONFIG.lock().unwrap().spellcheck.mode
-                        == Some(config::SpellcheckMode::Enabled)
-                    {
+                    if Config::current().spellcheck.mode == Some(config::SpellcheckMode::Enabled) {
                         spellcheck(&l)
                     } else {
                         l
