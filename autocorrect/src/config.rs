@@ -26,7 +26,7 @@ pub fn load_file(config_file: &str) -> Result<Config, Error> {
 }
 
 pub fn load(config_str: &str) -> Result<Config, Error> {
-    let config: Config = Config::from_str(&config_str)?;
+    let config: Config = Config::from_str(config_str)?;
 
     let new_config: Config = CURRENT_CONFIG.write().unwrap().merge(&config)?;
 
@@ -35,10 +35,11 @@ pub fn load(config_str: &str) -> Result<Config, Error> {
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Config {
+    #[serde(default)]
     pub spellcheck: SpellcheckConfig,
 }
 
-#[derive(Deserialize, Serialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug, Default)]
 pub struct SpellcheckConfig {
     #[serde(default)]
     pub mode: Option<SpellcheckMode>,
@@ -274,6 +275,13 @@ mod tests {
 
         config = Config::from_str(r#"{ "spellcheck": { "mode": "2" } }"#).unwrap();
         assert_eq!(Some(SpellcheckMode::LintOnly), config.spellcheck.mode);
+
+        config = Config::from_str(r#"{ }"#).unwrap();
+        assert_eq!(None, config.spellcheck.mode);
+
+        config = Config::from_str(r#"{ "spellcheck": { "words" : ["Hello"] } }"#).unwrap();
+        assert_eq!(None, config.spellcheck.mode);
+        assert_eq!(vec!["Hello"], config.spellcheck.words);
     }
 
     #[test]
@@ -285,6 +293,10 @@ mod tests {
             Config::from_str("spellcheck:\n  mode: 1\n  words:\n    - Foo\n    - Bar").unwrap();
         assert_eq!(Some(SpellcheckMode::Enabled), config.spellcheck.mode);
         assert_eq!(vec!["Foo", "Bar"], config.spellcheck.words);
+
+        config = Config::from_str("").unwrap();
+        assert_eq!(None, config.spellcheck.mode);
+        assert_eq!(Vec::<String>::new(), config.spellcheck.words);
     }
 
     #[test]
