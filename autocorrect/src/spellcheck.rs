@@ -4,7 +4,7 @@ use crate::config::Config;
 
 pub(crate) fn word_regexp(word: &str) -> Regex {
     regexp!(
-        r"(?im)([\s，。、？！]|^)+({})([\s，。、？！]|$)+",
+        r#"(?im)([\s，。、？！"']|^)+({})([\s，。、？！"']|$)+"#,
         word.replace('-', r"\-").replace('.', r"\.")
     )
 }
@@ -62,7 +62,9 @@ mod tests {
             "开放接口 IOS？" => "开放接口 iOS？",
             "开放接口 IOS！" => "开放接口 iOS！",
             "开放接口 IOS，" => "开放接口 iOS，",
-            "开放，ios 接口" => "开放，iOS 接口"
+            "开放，ios 接口" => "开放，iOS 接口",
+            r#""ios 发布新版本 ios""# => r#""iOS 发布新版本 iOS""#,
+            r#"'ios 发布新版本 ios'"# => r#"'iOS 发布新版本 iOS'"#
         ];
 
         assert_spellcheck_cases(cases);

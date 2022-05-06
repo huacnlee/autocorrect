@@ -7,9 +7,12 @@ single_line_comment = _{ "/" ~ ("!" | "/")* ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
 string = ${ 
-  ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
-  | ("r" ~ "#"+ ~ "\"" ~ (!("\"#") ~ ANY)* ~ "\"" ~ "#"+) 
+  PUSH("\"") ~ string_value ~ POP
+  | "r" ~ PUSH("#"*) ~ "\"" ~ string_value ~ "\"" ~ POP
 }
+
+string_value = @{ (!(PEEK) ~ ANY)* }
+
 
 regexp = ${
   ( "r\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"" )
