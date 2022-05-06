@@ -1,10 +1,5 @@
 spellcheck:
-  mode: 1
+  mode: 0
   words:
     # Please do not add a general English word (eg. apple, python) here.
     # Users can add their special words to their .autocorrectrc file by their need.
-    - iOS
-    - iPad
-    - iPhone
-    - Wi-Fi
-    - wifi = Wi-Fi

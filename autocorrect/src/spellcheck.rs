@@ -49,6 +49,8 @@ mod tests {
 
     #[test]
     fn test_spellcheck_basic() {
+        crate::config::setup_test();
+
         let cases = map! [
             "ios" => "iOS",
             "this is ipad ios website, and the IOS download url" => "this is iPad iOS website, and the iOS download url",
@@ -78,6 +80,8 @@ mod tests {
 
     #[test]
     fn test_speelcheck_cases() {
+        crate::config::setup_test();
+
         let cases = map! [
             "打开 wifi 并找到就近的 WIFI，点击输入 wi-fi 密码" => "打开 Wi-Fi 并找到就近的 Wi-Fi，点击输入 Wi-Fi 密码"
         ];
@@ -86,6 +90,8 @@ mod tests {
 
     #[test]
     fn test_spellcheck_all() {
+        crate::config::setup_test();
+
         let words = Config::current().spellcheck.words.clone();
         for l in words.iter() {
             let mut left = l.as_str();

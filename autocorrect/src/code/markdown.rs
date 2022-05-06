@@ -16,6 +16,8 @@ mod tests {
 
     #[test]
     fn test_format_markdown() {
+        crate::config::setup_test();
+
         let example = r###"
     ---
     title: IPAD 和 Ios 接入的不同点

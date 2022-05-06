@@ -7,8 +7,17 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
+static STEUP_ONCE: std::sync::Once = std::sync::Once::new();
+
 #[macro_use]
 extern crate bencher;
+
+fn setup() {
+    STEUP_ONCE.call_once(|| {
+        let config_str = include_str!("../../autocorrect-cli/.autocorrectrc.template").to_owned();
+        autocorrect::config::load(&config_str).unwrap();
+    })
+}
 
 #[allow(unused)]
 fn fixture(path: &str) -> String {
@@ -154,6 +163,8 @@ fn bench_format_json_with_2k_lines(b: &mut Bencher) {
 }
 
 fn bench_spellcheck_50(b: &mut Bencher) {
+    setup();
+
     b.iter(|| {
         spellcheck::spellcheck(
             "探索 apple 充满创新的世界，选购各式iphone、ipad、apple watch 和 mac",
@@ -162,10 +173,14 @@ fn bench_spellcheck_50(b: &mut Bencher) {
 }
 
 fn bench_spellcheck_100(b: &mut Bencher) {
+    setup();
+
     b.iter(|| spellcheck::spellcheck("探索 apple 充满创新的世界，选购各式iphone、ipad、apple watch 和 mac、娱乐产品了，iphone 13 新款 - iphone SE 新款 ，并获得相关产品的专家支持服务。"));
 }
 
 fn bench_spellcheck_400(b: &mut Bencher) {
+    setup();
+
     b.iter(|| spellcheck::spellcheck("探索 apple 充满创新的世界，选购各式 iphone、ipad、apple watch 和 mac、娱乐产品了，iphone 13 新款 - iphone SE 新款 ，并获得相关产品的专家支持服务。通过 apple Trade In 换购计划，你可以用符合条件的智能手机来换购新 iphone，享受折抵优惠5。这样一来，你受益，地球也受益。现可在线加入 iphone 年年焕新计划，年年用上新 iphone，享受 AppleCare+ 服务计划，还可选择分期付款*。AirTag 是能帮你轻松追踪各种物品的高手。只要给钥匙串上
     挂一个，往背包里塞一个，在打开查找 app 时，除了能追踪自己的 Apple 设备之外，你还能看到钥匙和背包这些物品在哪里。只要放一个 AirTag，钱包在哪里这类问题会迎刃而解。通过查找 app 的全新“物品”标签页，都能让 AirTag 来指示物品位置。"));
 }

@@ -1,0 +1,8 @@
+spellcheck:
+  mode: 1
+  words:
+    - iOS
+    - iPad
+    - iPhone
+    - Wi-Fi
+    - wifi = Wi-Fi

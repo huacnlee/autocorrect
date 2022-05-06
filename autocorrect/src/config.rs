@@ -186,6 +186,17 @@ impl Config {
     }
 }
 
+// Setup config for test for load tests/.autocorrectrc.test
+static STEUP_ONCE: std::sync::Once = std::sync::Once::new();
+
+#[allow(unused)]
+pub(crate) fn setup_test() {
+    STEUP_ONCE.call_once(|| {
+        let config_str = include_str!("../tests/.autocorrectrc.test").to_owned();
+        crate::config::load(&config_str).unwrap();
+    })
+}
+
 #[derive(PartialEq, Clone, Debug)]
 pub enum SpellcheckMode {
     Disabled,
