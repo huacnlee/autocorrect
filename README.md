@@ -40,7 +40,7 @@ Other implements for programming:
 ## Install
 
 ```bash
-$ curl -sSL https://git.io/JcGER | bash
+$ curl -sSL https://raw.githubusercontent.com/huacnlee/autocorrect/main/install | bash
 ```
 
 after that, you will get `/usr/local/bin/autocorrect` command.
