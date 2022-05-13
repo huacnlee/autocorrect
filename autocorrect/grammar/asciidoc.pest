@@ -1,0 +1,33 @@
+para = { ANY* ~ NEWLINE{2} }
+expr = _{ codeblock | img | link | td_tag | heading }
+text = { (!(expr | newline) ~ ANY)+ }
+newline = ${ "\n" | "\r" }
+space = @{ (" ")* }
+codeblock = ${ 
+  codeblock_filename* ~ codeblock_meta* ~ 
+  PUSH("----" | "....") ~ codeblock_lang ~ codeblock_code ~ PUSH("----" | "....")
+}
+codeblock_filename = @{ "." ~ (!newline ~ ANY)+ ~ newline }
+codeblock_meta = @{ "[" ~ (!"]" ~ ANY)+ ~ "]" ~ newline  }
+codeblock_lang = { ASCII_ALPHA* }
+codeblock_code = { (!(PEEK) ~ ANY)* }
+td_tag = @{ space ~ "|" ~ space }
+mark_tag = @{
+  "**"
+  | "*"
+  | "~~"
+  | "`"
+}
+heading_tag = @{ ("======" | "=====" | "====" | "===" | "==" | "=") ~ " "* }
+
+img_start = @{ "!" }
+img = ${ img_start ~ link }
+link = ${ link_string ~ link_url }
+link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" } 
+link_url = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
+mark = ${ PUSH(mark_tag) ~ string ~ PUSH(mark_tag) }
+heading = ${ PUSH(heading_tag) ~ string }
+string = ${ (!(PEEK | newline) ~ ANY)* }
+
+line = _{ expr | text | newline }
+item = _{ SOI ~ line* ~ EOI }

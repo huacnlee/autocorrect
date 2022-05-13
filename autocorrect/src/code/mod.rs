@@ -1,6 +1,7 @@
 mod code;
 mod types;
 
+mod asciidoc;
 mod conf;
 mod csharp;
 mod css;
@@ -29,6 +30,7 @@ mod yaml;
 pub use code::*;
 pub use types::*;
 
+pub use asciidoc::*;
 pub use conf::*;
 pub use csharp::*;
 pub use css::*;
@@ -97,6 +99,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "dart" => lint_dart(raw),
         "markdown" => lint_markdown(raw),
         "latex" => lint_latex(raw),
+        "asciidoc" => lint_asciidoc(raw),
         "gettext" => lint_gettext(raw),
         "conf" => lint_conf(raw),
         "text" => lint_markdown(raw),
@@ -151,6 +154,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "dart" => format_dart(raw),
         "markdown" => format_markdown(raw),
         "latex" => format_latex(raw),
+        "asciidoc" => format_asciidoc(raw),
         "gettext" => format_gettext(raw),
         "conf" => format_conf(raw),
         "text" => format_markdown(raw),

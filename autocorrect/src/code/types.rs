@@ -75,6 +75,9 @@ lazy_static! {
     // LaTeX
     "latex" => "latex",
     "tex" => "latex",
+    // AsciiDoc
+    "asciidoc" => "asciidoc",
+    "adoc" => "asciidoc",
     // gettext
     "po" => "gettext",
     "pot" => "gettext",
