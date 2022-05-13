@@ -13,6 +13,7 @@ mod java;
 mod javascript;
 mod json;
 mod kotlin;
+mod latex;
 mod markdown;
 mod objective_c;
 mod php;
@@ -40,6 +41,7 @@ pub use java::*;
 pub use javascript::*;
 pub use json::*;
 pub use kotlin::*;
+pub use latex::*;
 pub use markdown::*;
 pub use objective_c::*;
 pub use php::*;
@@ -94,6 +96,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "php" => lint_php(raw),
         "dart" => lint_dart(raw),
         "markdown" => lint_markdown(raw),
+        "latex" => lint_latex(raw),
         "gettext" => lint_gettext(raw),
         "conf" => lint_conf(raw),
         "text" => lint_markdown(raw),
@@ -147,6 +150,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "php" => format_php(raw),
         "dart" => format_dart(raw),
         "markdown" => format_markdown(raw),
+        "latex" => format_latex(raw),
         "gettext" => format_gettext(raw),
         "conf" => format_conf(raw),
         "text" => format_markdown(raw),

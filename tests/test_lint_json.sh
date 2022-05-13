@@ -13,6 +13,7 @@ diff_lint_json "vue" "vue"
 diff_lint_json "html" "html"
 diff_lint_json "gettext" "po"
 diff_lint_json "conf" "toml"
+diff_lint_json "latex" "tex"
 
 # this ignore work with direct file
 cargo run -q -- --lint tests/fixtures/this-file-will-ignore.rs

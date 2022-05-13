@@ -1,0 +1,19 @@
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ newline | para | text | string | space | other }
+
+text = @{ (!para ~ ANY)+ }
+string = ${ "{" ~ fn_name* ~ (string_bracket | string_val) ~ "}" }
+string_bracket = ${ "(" ~ string ~ ")" }
+string_val = @{ (!("}" | ")") ~ ANY)*  }
+
+para = ${ function | section }
+
+fn_name = @{ "\\" ~ ASCII_ALPHA+ ~ ("["~ " "* ~"]")* ~ " "* }
+function = ${ fn_name ~ (function | string) }
+
+section = @{ "%" ~ (!newline ~ ANY)+ } 
+
+other = ${ ANY }
+
+newline = ${ "\n" | "\r" }
+space = ${ " "+ }

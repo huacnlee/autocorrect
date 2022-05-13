@@ -72,6 +72,9 @@ lazy_static! {
     // markdown
     "markdown" => "markdown",
     "md" => "markdown",
+    // LaTeX
+    "latex" => "latex",
+    "tex" => "latex",
     // gettext
     "po" => "gettext",
     "pot" => "gettext",
