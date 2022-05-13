@@ -1,13 +1,13 @@
 [package]
 edition = "2021"
 name = "autocorrect-wasm"
-version = "1.7.4"
+version = "1.8.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-autocorrect = {path = "../autocorrect", version = ">=1.7.4"}
+autocorrect = {path = "../autocorrect", version = ">=1.8.0"}
 serde = {version = "1.0.127", features = ["derive"]}
 serde_json = "1.0.66"
 wasm-bindgen = {version = "0.2.80", features = ["serde-serialize"]}
