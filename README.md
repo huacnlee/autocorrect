@@ -46,7 +46,7 @@ $ curl -sSL https://git.io/JcGER | bash
 after that, you will get `/usr/local/bin/autocorrect` command.
 
 ```bash
-AutoCorrect
+AutoCorrect 1.9.0
 Jason Lee <huacnlee@gmail.com
 A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese,
 Korean).
@@ -58,22 +58,35 @@ FLAGS:
         --debug      Print debug message.
         --type       Directly use set file type.
         --fix        Automatically fix problems and rewrite file.
-    -h, --help       Prints help information.
+    -h, --help       Prints help information
         --lint       Lint and output problems.
-    -V, --version    Prints version information.
+    -V, --version    Prints version information
 
 OPTIONS:
     -c, --config <config>       Special config file. [default: .autocorrectrc]
         --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
-        --threads <threads>     Number of threads, 0 - use number of CPU [default: 0]
+        --threads <threads>     Number of threads, 0 - use number of CPU. [default: 0]
 
 ARGS:
-    <file>...    Target filepath or dir for format [default: .]
+    <file>...    Target filepath or dir for format. [default: .]
 
 SUBCOMMANDS:
-    help    Prints this message or the help of the given subcommand(s)
-    init    Init AutoCorrect config file.
+    help       Prints this message or the help of the given subcommand(s)
+    init       Init AutoCorrect config file.
+    upgrade    Upgrade AutoCorrect to latest version.
 ```
+
+## Upgrade
+
+> After: 1.9.0
+
+AutoCorrect allows you to upgrade it self by `autocorrect upgrade` command.
+
+```bash
+$ autocorrect upgrade
+```
+
+> NOTE: This command need you input your password, because it will install bin into `/usr/local/bin` directory.
 
 ## Usage
 

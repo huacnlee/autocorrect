@@ -7,6 +7,7 @@ use std::path::Path;
 mod initializer;
 mod logger;
 mod progress;
+mod update;
 
 use logger::Logger;
 use threadpool::ThreadPool;
@@ -62,6 +63,10 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
         .arg(Arg::with_name("force").long("force").short("f").help("Override config if it exist."))
         .about("Init AutoCorrect config file.")
     )
+    .subcommand(
+        App::new("upgrade").alias("update")
+        .about("Upgrade AutoCorrect to latest version.")
+    )
     .get_matches();
 }
 
@@ -107,6 +112,17 @@ pub fn main() {
         };
 
         initializer::run(&option, &init_option);
+        return;
+    }
+
+    if let Some(_sub_matches) = matches.subcommand_matches("upgrade") {
+        match update::run() {
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("{}", e);
+                std::process::exit(1);
+            }
+        }
         return;
     }
 
