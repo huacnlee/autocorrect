@@ -59,7 +59,7 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
     )
     .subcommand(
         App::new("init")
-        .arg(Arg::with_name("remote").long("remote").help("Use GitHub remote config template."))
+        .arg(Arg::with_name("local").long("local").help("Use GitHub remote config template."))
         .arg(Arg::with_name("force").long("force").short("f").help("Override config if it exist."))
         .about("Init AutoCorrect config file.")
     )
@@ -107,7 +107,7 @@ pub fn main() {
 
     if let Some(sub_matches) = matches.subcommand_matches("init") {
         let init_option = InitOption {
-            remote: sub_matches.is_present("remote"),
+            local: sub_matches.is_present("local"),
             force: sub_matches.is_present("force"),
         };
 

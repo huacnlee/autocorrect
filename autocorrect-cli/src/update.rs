@@ -15,26 +15,7 @@ fn get_target(target: &str) -> String {
     .to_string()
 }
 
-#[allow(dead_code)]
-fn make_sudo() {
-    if cfg!(target_os = "windows") {
-        println!("You need to run this command as administrator.");
-        return;
-    }
-
-    match ::std::process::Command::new("sudo")
-        .arg("/usr/bin/id")
-        .output()
-    {
-        Ok(output) => if output.status.success() {},
-        Err(_) => {
-            println!("You need to run this command as sudo mode.");
-        }
-    }
-}
-
 pub fn run() -> Result<()> {
-    // make_sudo();
     sudo::escalate_if_needed()?;
 
     let target = get_target(self_update::get_target());

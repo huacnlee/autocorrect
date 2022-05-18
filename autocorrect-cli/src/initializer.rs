@@ -9,7 +9,7 @@ static CONFIG_TEMPLATE_URL: &str =
 #[derive(Default)]
 pub struct InitOption {
     pub force: bool,
-    pub remote: bool,
+    pub local: bool,
 }
 
 pub fn run(option: &CliOption, init_option: &InitOption) {
@@ -20,13 +20,14 @@ pub fn run(option: &CliOption, init_option: &InitOption) {
 
     let mut template = CONFIG_TEMPLATE.to_string();
 
-    if init_option.remote {
+    if !init_option.local {
         match fetch_config_template() {
             Ok(out) => {
                 template = out;
             }
             Err(e) => {
                 println!("Fetch config template error: \n\n{}", e);
+                println!("\nTry use --local init config without remote download.\n\n  autocorrect init --local\n");
                 return;
             }
         }
