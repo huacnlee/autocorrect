@@ -48,8 +48,7 @@ after that, you will get `/usr/local/bin/autocorrect` command.
 ```bash
 AutoCorrect 1.9.0
 Jason Lee <huacnlee@gmail.com
-A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese,
-Korean).
+A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 
 USAGE:
     autocorrect [FLAGS] [OPTIONS] [file]... [SUBCOMMAND]
@@ -133,8 +132,11 @@ $ autocorrect --lint
 
 ```bash
 $ autocorrect init
+Fetching https://github.com/huacnlee/autocorrect/raw/main/.autocorrectrc.template
 AutoCorrect init config: .autocorrectrc
 ```
+
+> NOTE: You you download fail, try to use `autocorrect init --local` command again.
 
 Now the `.autocorrectrc` file has created.
 

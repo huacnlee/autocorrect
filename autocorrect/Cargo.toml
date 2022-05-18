@@ -1,6 +1,6 @@
 [package]
 authors = ["Jason Lee <huacnlee@gmail.com>"]
-description = "A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean)."
+description = "A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean)."
 edition = "2021"
 homepage = "https://github.com/huacnlee/autocorrect"
 keywords = ["autocorrect", "lint", "format"]
@@ -8,7 +8,7 @@ license = "MIT"
 name = "autocorrect"
 readme = "../README.md"
 repository = "https://github.com/huacnlee/autocorrect"
-version = "1.8.1"
+version = "1.9.0"
 
 [lib]
 name = "autocorrect"
