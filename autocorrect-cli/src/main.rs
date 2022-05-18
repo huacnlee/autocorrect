@@ -1,8 +1,10 @@
 // autocorrect: false
 use clap::{crate_version, App, Arg};
+use initializer::InitOption;
 use std::fs;
 use std::path::Path;
 
+mod initializer;
 mod logger;
 mod progress;
 
@@ -14,7 +16,7 @@ extern crate autocorrect;
 include!(concat!(env!("OUT_DIR"), "/config_template.rs"));
 
 #[derive(Clone)]
-struct Option {
+pub struct CliOption {
     lint: bool,
     fix: bool,
     debug: bool,
@@ -56,6 +58,8 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
     )
     .subcommand(
         App::new("init")
+        .arg(Arg::with_name("remote").long("remote").help("Use GitHub remote config template."))
+        .arg(Arg::with_name("force").long("force").short("f").help("Override config if it exist."))
         .about("Init AutoCorrect config file.")
     )
     .get_matches();
@@ -68,7 +72,7 @@ pub fn load_config(config_file: &str) -> Result<(), autocorrect::config::Error> 
 }
 
 pub fn main() {
-    let mut option = Option {
+    let mut option = CliOption {
         debug: false,
         fix: false,
         lint: false,
@@ -96,15 +100,13 @@ pub fn main() {
         .unwrap_or(DEFAULT_CONFIG_FILE)
         .to_string();
 
-    if matches.subcommand_matches("init").is_some() {
-        if Path::exists(Path::new(&option.config_file)) {
-            println!("{} already exists.", option.config_file);
-            return;
-        }
+    if let Some(sub_matches) = matches.subcommand_matches("init") {
+        let init_option = InitOption {
+            remote: sub_matches.is_present("remote"),
+            force: sub_matches.is_present("force"),
+        };
 
-        println!("AutoCorrect init config: {}", option.config_file);
-        fs::write(Path::new(&option.config_file), CONFIG_TEMPLATE)
-            .unwrap_or_else(|_| panic!("Failed to write config file: {}", &option.config_file));
+        initializer::run(&option, &init_option);
         return;
     }
 
@@ -268,7 +270,7 @@ pub fn main() {
     }
 }
 
-fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &Option) {
+fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &CliOption) {
     let result = autocorrect::format_for(raw, filetype);
 
     if option.fix {
@@ -304,7 +306,7 @@ fn lint_and_output(
     filepath: &str,
     filetype: &str,
     raw: &str,
-    option: &Option,
+    option: &CliOption,
     results: &mut Vec<String>,
 ) {
     let diff_mode = option.formatter != "json";
