@@ -1,7 +1,7 @@
 use std::{env, fs, path::Path};
 
 fn main() {
-    let config_str = fs::read_to_string(Path::new(".autocorrectrc.template"))
+    let config_str = fs::read_to_string(Path::new("../.autocorrectrc.template"))
         .expect("Failed to read .autocorrectrc.template");
     let code = format!(
         r###"static CONFIG_TEMPLATE: &'static str = r#"{}"#;"###,
