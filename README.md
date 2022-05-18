@@ -332,9 +332,9 @@ test bench_format_html               ... bench:     156,654 ns/iter (+/- 4,773)
 test bench_format_javascript         ... bench:      89,387 ns/iter (+/- 8,365)
 test bench_format_json               ... bench:      29,356 ns/iter (+/- 718)
 test bench_format_json_with_2k_lines ... bench:   3,829,479 ns/iter (+/- 76,499)
-test bench_spellcheck_50             ... bench:      25,350 ns/iter (+/- 287)
-test bench_spellcheck_100            ... bench:      39,242 ns/iter (+/- 607)
-test bench_spellcheck_400            ... bench:     151,864 ns/iter (+/- 1,640)
+test bench_spellcheck_50             ... bench:      37,371 ns/iter (+/- 844)
+test bench_spellcheck_100            ... bench:      57,835 ns/iter (+/- 745)
+test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
 ```
 
 | Type       | Total chars | Duration |
@@ -342,9 +342,9 @@ test bench_spellcheck_400            ... bench:     151,864 ns/iter (+/- 1,640)
 | format     | 50          | 0.014 ms |
 | format     | 100         | 0.019 ms |
 | format     | 400         | 0.045 ms |
-| spellcheck | 50          | 0.025 ms |
-| spellcheck | 100         | 0.039 ms |
-| spellcheck | 400         | 0.151 ms |
+| spellcheck | 50          | 0.037 ms |
+| spellcheck | 100         | 0.057 ms |
+| spellcheck | 400         | 0.195 ms |
 
 ## TODO
 

@@ -20,7 +20,7 @@ mod tests {
 
         let example = r###"
     ---
-    title: IPAD 和 Ios 接入的不同点
+    title: iPad 和 Ios 接入的不同点
     id: h
     slug: /appstore/ipad_and_ios
     ---

@@ -48,7 +48,7 @@ fn bench_format_400(b: &mut Bencher) {
 
 fn bench_format_html(b: &mut Bencher) {
     let raw = r###"
-bad html
+bad HTML
 <% a = 1 %>
 {% hello = a %}
 <!DOCTYPE html>

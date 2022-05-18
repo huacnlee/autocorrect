@@ -32,7 +32,7 @@ mod tests {
     #[test]
     fn test_format_html() {
         let html = r###"
-        bad html
+        bad HTML
         <% a = 1 %>
         {% hello = a %}
         <!DOCTYPE html>
@@ -74,7 +74,7 @@ mod tests {
         "###;
 
         let expected = r###"
-        bad html
+        bad HTML
         <% a = 1 %>
         {% hello = a %}
         <!DOCTYPE html>
