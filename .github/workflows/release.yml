@@ -77,7 +77,7 @@ jobs:
         with:
           command: build
           args: --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
-          use-cross: ${{ matrix.os == 'ubuntu-latest' }}
+          use-cross: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'windows-latest' }}
 
       - name: Prepare artifacts [Windows]
         if: matrix.os == 'windows-latest'
