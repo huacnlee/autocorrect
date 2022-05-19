@@ -101,8 +101,6 @@ jobs:
         run: |
           cd target/${{ matrix.target }}/release
           ./autocorrect --version
-          ./autocorrect init
-          ./autocorrect upgrade
           cd -
 
       - name: Test Bin [Windows]
@@ -110,8 +108,6 @@ jobs:
         run: |
           cd target/${{ matrix.target }}/release
           ./autocorrect.exe --version
-          ./autocorrect.exe init
-          ./autocorrect.exe upgrade
           cd -
 
       - name: Deploy | Upload artifacts
