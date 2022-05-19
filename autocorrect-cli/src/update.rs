@@ -15,8 +15,20 @@ fn get_target(target: &str) -> String {
     .to_string()
 }
 
-pub fn run() -> Result<()> {
+#[cfg(unix)]
+fn escalate_if_needed() -> Result<()> {
     sudo::escalate_if_needed()?;
+
+    Ok(())
+}
+
+#[cfg(not(unix))]
+fn escalate_if_needed() -> Result<()> {
+    Ok(())
+}
+
+pub fn run() -> Result<()> {
+    escalate_if_needed()?;
 
     let target = get_target(self_update::get_target());
 
