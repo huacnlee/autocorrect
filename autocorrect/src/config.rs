@@ -106,6 +106,12 @@ impl From<std::io::Error> for Error {
     }
 }
 
+impl From<std::string::String> for Error {
+    fn from(err: std::string::String) -> Error {
+        Error { message: err }
+    }
+}
+
 impl Config {
     pub fn current() -> Arc<RwLockReadGuard<'static, Config>> {
         Arc::new(CURRENT_CONFIG.read().unwrap())
@@ -113,7 +119,10 @@ impl Config {
 
     #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Result<Self, Error> {
-        let mut config: Config = serde_any::from_str_any(s)?;
+        let mut config: Config = match serde_any::from_str_any(s) {
+            Ok(config) => config,
+            Err(err) => return Err(format!("Config::from_str parse error: {}", err).into()),
+        };
 
         config.prepare();
 
