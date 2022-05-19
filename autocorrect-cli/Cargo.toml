@@ -19,16 +19,21 @@ clap = "2.33.0"
 colored = "2"
 ignore = "0.4"
 lazy_static = "1.4.0"
-log = "0.4.5"
+log = "0.4"
 num_cpus = "1.13.0"
 threadpool = "1.8.1"
 walkdir = "2.3.2"
 
 # Config template from remote
-reqwest = {version = "0.11.10", features = ["blocking"]}
+# Request features:
+# - blocking - for blocking request
+# - rustls-tls - for use native rustls without system openssl dependency
+reqwest = {version = "0.11.10", features = ["blocking", "rustls-tls"], default-features = false}
 
 # Self Update
-self_update = {version = "0.30.0", features = ["archive-tar", "compression-flate2"]}
+# - archive-tar + compression-flate2 - for tar.gz
+# - rustls - for use native rustls without system openssl dependency
+self_update = {version = "0.30.0", features = ["archive-tar", "compression-flate2", "rustls"], default-features = false}
 sudo = "0.5"
 
 [profile.release]
