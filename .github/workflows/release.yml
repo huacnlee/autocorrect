@@ -17,26 +17,32 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             name: autocorrect-linux-amd64.tar.gz
+            arch: x86_64
 
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
             name: autocorrect-linux-arm64.tar.gz
+            arch: aarch64
 
           - target: x86_64-apple-darwin
             os: macOS-latest
             name: autocorrect-darwin-amd64.tar.gz
+            arch: x86_64
 
           - target: aarch64-apple-darwin
             os: macOS-latest
             name: autocorrect-darwin-arm64.tar.gz
+            arch: aarch64
 
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             name: autocorrect-windows-amd64.tar.gz
+            arch: x86_64
 
           - target: aarch64-pc-windows-msvc
             os: windows-latest
             name: autocorrect-windows-arm64.tar.gz
+            arch: aarch64
 
     runs-on: ${{ matrix.os }}
     continue-on-error: true
@@ -58,12 +64,6 @@ jobs:
             ~/.cargo/git
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install OpenSSL
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install -y libssl-dev
-
       - name: Setup | Rust
         uses: actions-rs/toolchain@v1.0.7
         with:
@@ -77,29 +77,41 @@ jobs:
         with:
           command: build
           args: --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
-          # use-cross: ${{ matrix.os == 'ubuntu-latest' }}
+          use-cross: ${{ matrix.os == 'ubuntu-latest' }}
 
-      - name: Post Build | Prepare artifacts [Windows]
+      - name: Prepare artifacts [Windows]
         if: matrix.os == 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
           strip autocorrect.exe
           7z a ../../../${{ matrix.name }} autocorrect.exe
-          ./autocorrect.exe --version
-          ./autocorrect.exe init
-          ./autocorrect.exe upgrade
           cd -
 
-      - name: Post Build | Prepare artifacts [-nix]
+      - name: Prepare artifacts [Linux & macOS]
         if: matrix.os != 'windows-latest'
         run: |
           cd target/${{ matrix.target }}/release
           # TODO: investigate better cross platform stripping
           strip autocorrect || true
           tar czvf ../../../${{ matrix.name }} autocorrect
+          cd -
+
+      - name: Test Bin [Linux & macOS]
+        if: matrix.arch == 'x86_64' && matrix.os != 'windows-latest'
+        run: |
+          cd target/${{ matrix.target }}/release
           ./autocorrect --version
           ./autocorrect init
           ./autocorrect upgrade
+          cd -
+
+      - name: Test Bin [Windows]
+        if: matrix.arch == 'x86_64' && matrix.os == 'windows-latest'
+        run: |
+          cd target/${{ matrix.target }}/release
+          ./autocorrect.exe --version
+          ./autocorrect.exe init
+          ./autocorrect.exe upgrade
           cd -
 
       - name: Deploy | Upload artifacts
