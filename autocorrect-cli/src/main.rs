@@ -87,7 +87,6 @@ pub fn main() {
     };
 
     let matches = get_matches();
-    Logger::init().expect("Init logger error");
 
     option.fix = matches.is_present("fix");
     // disable lint when fix mode
@@ -105,6 +104,14 @@ pub fn main() {
         .unwrap_or(DEFAULT_CONFIG_FILE)
         .to_string();
 
+    // Set log level
+    let log_level = if option.debug {
+        log::LevelFilter::Debug
+    } else {
+        log::LevelFilter::Info
+    };
+    Logger::init(log_level).expect("Init logger error");
+
     if let Some(sub_matches) = matches.subcommand_matches("init") {
         let init_option = InitOption {
             local: sub_matches.is_present("local"),
@@ -119,16 +126,14 @@ pub fn main() {
         match update::run() {
             Ok(_) => {}
             Err(e) => {
-                eprintln!("{}", e);
+                log::error!("{}", e);
                 std::process::exit(1);
             }
         }
         return;
     }
 
-    if option.debug {
-        println!("Load config: {}", option.config_file);
-    }
+    log::debug!("Load config: {}", option.config_file);
     load_config(&option.config_file).unwrap_or_else(|e| {
         panic!("Load config error: {}", e);
     });
@@ -246,9 +251,7 @@ pub fn main() {
         lint_results.push(lint_result)
     }
 
-    if option.debug {
-        println!("\n\nLint result found: {} issues.", lint_results.len());
-    }
+    log::debug!("\n\nLint result found: {} issues.", lint_results.len());
 
     if option.lint {
         if option.formatter == "json" {
@@ -291,9 +294,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, option: &CliOpti
 
     if option.fix {
         if result.has_error() {
-            if option.debug {
-                log::error!("{}\n{}", filepath, result.error);
-            }
+            log::debug!("{}\n{}", filepath, result.error);
             return;
         }
 
@@ -338,8 +339,8 @@ fn lint_and_output(
     }
 
     if diff_mode {
-        if result.has_error() && option.debug {
-            log::error!("{}\n{}", filepath, result.error);
+        if result.has_error() {
+            log::debug!("{}\n{}", filepath, result.error);
             return;
         }
 

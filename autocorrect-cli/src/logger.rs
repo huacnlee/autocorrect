@@ -11,8 +11,8 @@ impl Logger {
     /// Create a new logger that logs to stderr and initialize it as the
     /// global logger. If there was a problem setting the logger, then an
     /// error is returned.
-    pub fn init() -> Result<(), log::SetLoggerError> {
-        log::set_logger(&LOGGER).map(|()| log::set_max_level(log::LevelFilter::Info))
+    pub fn init(level: log::LevelFilter) -> Result<(), log::SetLoggerError> {
+        log::set_logger(&LOGGER).map(|()| log::set_max_level(level))
     }
 }
 

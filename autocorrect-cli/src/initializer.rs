@@ -14,7 +14,7 @@ pub struct InitOption {
 
 pub fn run(option: &CliOption, init_option: &InitOption) {
     if Path::exists(Path::new(&option.config_file)) && !init_option.force {
-        println!("{} already exists.", option.config_file);
+        log::warn!("{} already exists.", option.config_file);
         return;
     }
 
@@ -26,20 +26,20 @@ pub fn run(option: &CliOption, init_option: &InitOption) {
                 template = out;
             }
             Err(e) => {
-                println!("Fetch config template error: \n\n{}", e);
-                println!("\nTry use --local init config without remote download.\n\n  autocorrect init --local\n");
+                log::error!("Fetch config template error: \n\n{}", e);
+                log::error!("\nTry use --local init config without remote download.\n\n  autocorrect init --local\n");
                 return;
             }
         }
     }
 
-    println!("AutoCorrect init config: {}", option.config_file);
+    log::info!("AutoCorrect init config: {}", option.config_file);
     fs::write(Path::new(&option.config_file), template)
         .unwrap_or_else(|_| panic!("Failed to write config file: {}", &option.config_file));
 }
 
 pub fn fetch_config_template() -> Result<String> {
-    println!("Fetching {}", CONFIG_TEMPLATE_URL);
+    log::info!("Fetching {}", CONFIG_TEMPLATE_URL);
 
     let client = reqwest::blocking::Client::builder()
         .connect_timeout(Duration::from_secs(5))
