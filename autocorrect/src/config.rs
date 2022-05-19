@@ -8,6 +8,8 @@ use std::{
 use regex::Regex;
 use serde::{Deserialize, Serialize, Serializer};
 
+use crate::serde_any;
+
 include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
 
 lazy_static! {
@@ -93,7 +95,7 @@ impl From<std::fmt::Error> for Error {
 impl From<serde_any::Error> for Error {
     fn from(err: serde_any::Error) -> Error {
         Error {
-            message: err.to_string(),
+            message: format!("{:?}", err),
         }
     }
 }
@@ -121,7 +123,7 @@ impl Config {
     pub fn from_str(s: &str) -> Result<Self, Error> {
         let mut config: Config = match serde_any::from_str_any(s) {
             Ok(config) => config,
-            Err(err) => return Err(format!("Config::from_str parse error: {}", err).into()),
+            Err(err) => return Err(format!("Config::from_str parse error: {:?}", err).into()),
         };
 
         config.prepare();

@@ -82,6 +82,7 @@ pub mod config;
 mod fullwidth;
 mod halfwidth;
 pub mod ignorer;
+mod serde_any;
 pub mod spellcheck;
 mod strategery;
 use code::Results;
