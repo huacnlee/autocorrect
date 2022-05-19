@@ -15,4 +15,4 @@ path = "src/lib.rs"
 proc-macro = true
 
 [dependencies]
-syn = "1.0.80"
+syn = {version = "1.0.80", default-features = false, features = ["derive"]}
