@@ -38,7 +38,10 @@ mod tests {
     ###测试Heading处理，应该忽略#号后再处理.
     ####   测试Heading处理,应该忽略#号后再处理!
 
+    - 【括号】测试中文符号在List里面
+
     > 引用文本：Quote也是可以的。
+    > （括号）在Quote里面
     
     ```rust
     // Codeblock里面也会处理
@@ -86,7 +89,10 @@ mod tests {
     ###测试 Heading 处理，应该忽略#号后再处理。
     ####   测试 Heading 处理，应该忽略#号后再处理！
 
+    - 【括号】测试中文符号在 List 里面
+
     > 引用文本：Quote 也是可以的。
+    > （括号）在 Quote 里面
     
     ```rust
     // Codeblock 里面也会处理
