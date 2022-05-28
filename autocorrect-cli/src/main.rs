@@ -64,8 +64,8 @@ fn get_matches<'a>() -> clap::ArgMatches<'a> {
         .about("Init AutoCorrect config file.")
     )
     .subcommand(
-        App::new("upgrade").alias("update")
-        .about("Upgrade AutoCorrect to latest version.")
+        App::new("update").alias("upgrade")
+        .about("Update AutoCorrect to latest version.")
     )
     .get_matches();
 }
@@ -122,7 +122,7 @@ pub fn main() {
         return;
     }
 
-    if let Some(_sub_matches) = matches.subcommand_matches("upgrade") {
+    if let Some(_sub_matches) = matches.subcommand_matches("update") {
         match update::run() {
             Ok(_) => {}
             Err(e) => {

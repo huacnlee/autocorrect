@@ -7,9 +7,7 @@
 [![NPM](https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg)](https://badge.fury.io/js/%40huacnlee%2Fautocorrect)
 [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect)
 
-
 > 🎯 AutoCorrect 的愿景是提供一套标准化的文案较正方案。以便于在各类场景（例如：撰写书籍、文档、内容发布、项目源代码...）里面应用，让使用者轻松实现标准化、专业化的文案输出 / 校正。
-
 
 A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 
@@ -76,17 +74,17 @@ ARGS:
 SUBCOMMANDS:
     help       Prints this message or the help of the given subcommand(s)
     init       Init AutoCorrect config file.
-    upgrade    Upgrade AutoCorrect to latest version.
+    update     Update AutoCorrect to latest version.
 ```
 
 ## Upgrade
 
 > After: 1.9.0
 
-AutoCorrect allows you to upgrade it self by `autocorrect upgrade` command.
+AutoCorrect allows you to upgrade it self by `autocorrect update` command.
 
 ```bash
-$ autocorrect upgrade
+$ autocorrect update
 ```
 
 > NOTE: This command need you input your password, because it will install bin into `/usr/local/bin` directory.
