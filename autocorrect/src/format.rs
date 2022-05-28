@@ -24,14 +24,14 @@ lazy_static! {
         // Avoid add space when Letter, Number has %, $, \ prefix, eg. %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
         Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
         Strategery::new(r"[^%\$\\][a-zA-Z0-9]", r"\p{CJK}"),
+        // Number, -100, +100
+        Strategery::new(r"\p{CJK}", r"[\-+][\d]+").with_reverse(),
         // Spcial format Letter, Number leading case, because the before Strategery can't cover eg. A开头的case测试
         Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
         // SpecialSymbol
         Strategery::new(r"\p{CJK}", r"[\|+]").with_reverse(),
-        // Number, -100, +100
-        Strategery::new(r"\p{CJK}", r"[\-+][\d]+").with_reverse(),
         // @ after CJK, not not before, 你好 @某某
         Strategery::new(r"\p{CJK}", r"[@]"),
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
@@ -218,7 +218,8 @@ mod tests {
         let cases = map![
             "在Ubuntu 11.10 64位系统安装Go出错" => "在 Ubuntu 11.10 64 位系统安装 Go 出错",
             "喜欢暗黑2却对 D3不满意的可以看看这个。" =>     "喜欢暗黑 2 却对 D3 不满意的可以看看这个。",
-            "Ruby 2.7版本第3次发布"=>          "Ruby 2.7 版本第 3 次发布"
+            "Ruby 2.7版本第3次发布"=>          "Ruby 2.7 版本第 3 次发布",
+            "值范围-255或+255之间" => "值范围 -255 或 +255 之间"
         ];
 
         assert_cases(cases);
@@ -232,6 +233,7 @@ mod tests {
             "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" =>     "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
             "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。",
             "[b]Foo bar dar[/b]" => "[b]Foo bar dar[/b]"
+            // r#"{标签内的"a"元素上的'target'属性在}"# => r#"{标签内的 "a" 元素上的 'target' 属性在}"#
         ];
 
         assert_cases(cases);
@@ -257,8 +259,7 @@ mod tests {
             "「腾讯」-发布-「新版」本微信" => "「腾讯」- 发布 -「新版」本微信",
             "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
             "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版”本微信",
-            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
-            "值范围-255或+255之间" => "值范围 -255 或 +255 之间"
+            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信"
         ];
 
         assert_cases(cases);
