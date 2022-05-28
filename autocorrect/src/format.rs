@@ -30,6 +30,8 @@ lazy_static! {
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
         // SpecialSymbol
         Strategery::new(r"\p{CJK}", r"[\|+]").with_reverse(),
+        // Number, -100, +100
+        Strategery::new(r"\p{CJK}", r"[\-+][\d]+").with_reverse(),
         // @ after CJK, not not before, 你好 @某某
         Strategery::new(r"\p{CJK}", r"[@]"),
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
@@ -255,7 +257,8 @@ mod tests {
             "「腾讯」-发布-「新版」本微信" => "「腾讯」- 发布 -「新版」本微信",
             "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
             "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版”本微信",
-            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信"
+            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
+            "值范围-255或+255之间" => "值范围 -255 或 +255 之间"
         ];
 
         assert_cases(cases);
