@@ -38,9 +38,12 @@ lazy_static! {
         Strategery::new(r"\p{CJK}", r"[@]"),
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
         Strategery::new(r"[\]\)!]", r"\p{CJK}"),
+    ];
 
+    static ref AFTER_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        Strategery::new(r"[\w\p{CJK}]", r"[，。！？：；）」》】”’]").with_remove_space().with_reverse(),
+        // Strategery::new(r" ", r"[，。！？：；]").with_remove_space().with_reverse(),
+        Strategery::new(r"[\w\p{CJK}]", r"[，。、？：；）」》】”’]").with_remove_space().with_reverse(),
         Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]").with_remove_space().with_reverse(),
     ];
 }
@@ -85,6 +88,10 @@ pub fn format(text: &str) -> String {
 
     if !part.is_empty() {
         out.push_str(&format_part(&part));
+    }
+
+    for rule in AFTER_STRATEGIES.iter() {
+        out = rule.format(&out);
     }
 
     out = space_dash_with_hans(&out);
@@ -181,7 +188,7 @@ mod tests {
             "（路透社）-预计全年净亏损约1.3亿港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿港元*预期因出售汽车",
             "（路透社）-预计全年净亏损约1.3亿\n\n港元*预期因出售汽车" => "（路透社）- 预计全年净亏损约 1.3 亿\n\n港元*预期因出售汽车",
             "Cell或RefCell类型使用某种形式的*内部" => "Cell 或 RefCell 类型使用某种形式的*内部",
-            "Cell或RefCell类型使用某种形式的*内部可变性*" => "Cell 或 RefCell 类型使用某种形式的*内部可变性*"
+            "Cell或RefCell类型使用某种形式的*内部可变性*" => "Cell 或 RefCell 类型使用某种形式的*内部可变性*",
         ];
 
         assert_cases(cases);
@@ -200,7 +207,7 @@ mod tests {
             "测试英文,Comma逗号转换." =>    "测试英文，Comma 逗号转换。",
             "英文,逗号后面.阿里巴巴.US有空格?的情况!测试" =>    "英文，逗号后面。阿里巴巴.US 有空格？的情况！测试",
             "你好hello?world!" =>    "你好 hello?world!",
-            "search by%关键词%" => "search by%关键词%"
+            "search by%关键词%" => "search by%关键词%",
         ];
 
         assert_cases(cases);
@@ -212,7 +219,7 @@ mod tests {
             "A开头的case测试" => "A 开头的 case 测试",
             "内容带有\n不会处理" => "内容带有\n不会处理",
             "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊format字符" => "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊 format 字符",
-            "内容带有$1或$2或$3特殊字符" => "内容带有$1或$2或$3特殊字符"
+            "内容带有$1或$2或$3特殊字符" => "内容带有$1或$2或$3特殊字符",
         ];
 
         assert_cases(cases);
@@ -228,16 +235,17 @@ mod tests {
             "正式发布2013年3月10号发布" =>                 "正式发布 2013 年 3 月 10 号发布",
             "2013年12月22号开始出发" =>                  "2013 年 12 月 22 号开始出发",
             "12月22号开始出发" =>                       "12 月 22 号开始出发",
-            "22号开始出发" =>                          "22 号开始出发"
+            "22号开始出发" =>                          "22 号开始出发",
         ];
 
         assert_cases(cases);
     }
 
     #[test]
-    fn it_format_for_english_letter() {
+    fn it_format_for_remove_spaces_with_punctuation() {
         let cases = map![
-            "长桥 LongBridge App 下载" => "长桥 LongBridge App 下载"
+            "注意： 引进给变量， 转换为机器代码。 这意味着任何变量、 常量； 命名的概念都会被删除" => "注意：引进给变量，转换为机器代码。这意味着任何变量、常量；命名的概念都会被删除",
+            "注意 ： 引进给变量 ， 转换为机器代码 。 这意味着任何变量 、 常量 ； 命名的概念都会被删除" => "注意：引进给变量，转换为机器代码。这意味着任何变量、常量；命名的概念都会被删除",
         ];
 
         assert_cases(cases);
@@ -249,7 +257,7 @@ mod tests {
             "在Ubuntu 11.10 64位系统安装Go出错" => "在 Ubuntu 11.10 64 位系统安装 Go 出错",
             "喜欢暗黑2却对 D3不满意的可以看看这个。" =>     "喜欢暗黑 2 却对 D3 不满意的可以看看这个。",
             "Ruby 2.7版本第3次发布"=>          "Ruby 2.7 版本第 3 次发布",
-            "值范围-255或+255之间" => "值范围 -255 或 +255 之间"
+            "值范围-255或+255之间" => "值范围 -255 或 +255 之间",
         ];
 
         assert_cases(cases);
@@ -262,8 +270,8 @@ mod tests {
             "消息github.com解禁了" => "消息 github.com 解禁了",
             "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" => "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
             "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。",
-            "[b]Foo bar dar[/b]" => "[b]Foo bar dar[/b]"
-            // r#"{标签内的"a"元素上的'target'属性在}"# => r#"{标签内的 "a" 元素上的 'target' 属性在}"#
+            "[b]Foo bar dar[/b]" => "[b]Foo bar dar[/b]",
+            // r#"{标签内的"a"元素上的'target'属性在}"# => r#"{标签内的 "a" 元素上的 'target' 属性在}"#,
         ];
 
         assert_cases(cases);
@@ -273,7 +281,7 @@ mod tests {
     fn it_format_for_fullwidth_symbols() {
         let cases = map![
             "（美股）市场：发布「最新」100消息【BABA.US】“大涨”50%；同比上涨20%！" => "（美股）市场：发布「最新」100 消息【BABA.US】“大涨”50%；同比上涨 20%！",
-            "第3季度财报发布看涨看跌？敬请期待。" =>                         "第 3 季度财报发布看涨看跌？敬请期待。"
+            "第3季度财报发布看涨看跌？敬请期待。" =>                         "第 3 季度财报发布看涨看跌？敬请期待。",
         ];
 
         assert_cases(cases);
@@ -289,7 +297,7 @@ mod tests {
             "「腾讯」-发布-「新版」本微信" => "「腾讯」- 发布 -「新版」本微信",
             "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
             "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版”本微信",
-            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信"
+            "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
         ];
 
         assert_cases(cases);
@@ -306,7 +314,7 @@ mod tests {
             "请打开URL地址 https://google.com/这是URL文件名.html 访问" => "请打开 URL 地址 https://google.com/这是URL文件名.html 访问",
             "https://google.com/这是URL文件名.html" => "https://google.com/这是URL文件名.html",
             "https://zh.wikipedia.org/wiki/网页浏览器列表#基於WebKit排版引擎" => "https://zh.wikipedia.org/wiki/网页浏览器列表#基於WebKit排版引擎",
-            "//this is注释" => "//this is 注释"
+            "//this is注释" => "//this is 注释",
         ];
 
         assert_cases(cases);
@@ -315,10 +323,10 @@ mod tests {
     #[test]
     fn it_format_for_cjk() {
         let cases = map![
-            "全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如Firefox、 Dropbox和Cloudflare都在使用Rust。" => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如 Firefox、 Dropbox 和 Cloudflare 都在使用 Rust。",
+            "全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如Firefox、 Dropbox和Cloudflare都在使用Rust。" => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如 Firefox、Dropbox 和 Cloudflare 都在使用 Rust。",
             "現今全世界上百家公司企業為了尋求快速、節約資源而且能跨平台的解決辦法，都已在正式環境中使用Rust。許多耳熟能詳且受歡迎的軟體，諸如Firefox、Dropbox以及Cloudflare都在使用Rust。" => "現今全世界上百家公司企業為了尋求快速、節約資源而且能跨平台的解決辦法，都已在正式環境中使用 Rust。許多耳熟能詳且受歡迎的軟體，諸如 Firefox、Dropbox 以及 Cloudflare 都在使用 Rust。",
             "既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。皆さんがご存じで愛用しているソフトウェア、例えばFirefox、DropboxやCloudflareも、Rustを採用しています。" => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。皆さんがご存じで愛用しているソフトウェア、例えば Firefox、Dropbox や Cloudflare も、Rust を採用しています。",
-            "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust를 사용하고 있습니다." => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare 와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust 를 사용하고 있습니다."
+            "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust를 사용하고 있습니다." => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다. Firefox, Dropbox 및 Cloudflare 와 같이 잘 알려져 있고 널리 사용되는 많은 소프트웨어가 Rust 를 사용하고 있습니다.",
         ];
 
         assert_cases(cases);

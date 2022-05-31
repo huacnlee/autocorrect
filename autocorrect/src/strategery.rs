@@ -63,10 +63,13 @@ impl Strategery {
     fn remove_space(&self, text: &str) -> String {
         let mut out = String::from(text);
 
-        out = (&self.remove_space_re.replace_all(&out, "$1 $2")).to_string();
+        out = self.remove_space_re.replace_all(&out, "$1$2").to_string();
 
         if self.reverse {
-            out = (&self.remove_space_reverse_re.replace_all(&out, "$1 $2")).to_string();
+            out = self
+                .remove_space_reverse_re
+                .replace_all(&out, "$1$2")
+                .to_string();
         }
 
         out
