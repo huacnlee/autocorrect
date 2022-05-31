@@ -15,6 +15,9 @@ item = _{
 // Other
 other = { !(comment | node_element | server | text) ~ ANY }
 
+// Code
+code = ${ "<code>" ~ (!"</code>" ~ ANY)* ~ "</code>" }
+
 //
 // DOCTYPE
 //
@@ -32,7 +35,7 @@ chevron_right_server = { "%>" }
 //
 // NODES
 //
-node = _{ server | comment | node_element | text | other }
+node = _{ code | server | comment | node_element | text | other }
 comment = { comment_if | comment_normal }
 text = ${ (!(chevron_left_normal | comment_tag_start ) ~ ANY)+ } // NOTE: Should we be able to write < in text? ^^
 node_element = { el_void | el_void_xml | el_process_instruct | javascript_text | style_text | el_raw_text | el_normal | el_dangling }
