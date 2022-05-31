@@ -13,10 +13,6 @@ lazy_static! {
     );
     static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
     static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
-    static ref DASH_HANS_RE: Regex = regexp!("{}", r"([\p{CJK}）】」》”’])([\-]+)([\p{CJK}}}（【「《“‘])");
-    // （）【】「」《》
-    static ref LEFT_QUOTE_RE: Regex = regexp!("{}", r" ([（【「《])");
-    static ref RIGHT_QUOTE_RE: Regex = regexp!("{}", r"([）】」》]) ");
     // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
     static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
 
@@ -33,7 +29,8 @@ lazy_static! {
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
         // SpecialSymbol
-        Strategery::new(r"\p{CJK}", r"[\|+]").with_reverse(),
+        Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
+        Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
         // @ after CJK, not not before, 你好 @某某
         Strategery::new(r"\p{CJK}", r"[@]"),
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
@@ -42,9 +39,7 @@ lazy_static! {
 
     static ref AFTER_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        // Strategery::new(r" ", r"[，。！？：；]").with_remove_space().with_reverse(),
-        Strategery::new(r"[\w\p{CJK}]", r"[，。、？：；）」》】”’]").with_remove_space().with_reverse(),
-        Strategery::new(r"[‘“【「《（]", r"[\w\p{CJK}]").with_remove_space().with_reverse(),
+        Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】“”‘’]").with_remove_space().with_reverse(),
     ];
 }
 
@@ -94,7 +89,7 @@ pub fn format(text: &str) -> String {
         out = rule.format(&out);
     }
 
-    out = space_dash_with_hans(&out);
+    // out = space_dash_with_hans(&out);
 
     out
 }
@@ -140,16 +135,6 @@ pub fn format_html(html_str: &str) -> String {
     code::format_html(html_str).to_string()
 }
 
-fn space_dash_with_hans(text: &str) -> String {
-    let mut out = String::from(text);
-
-    // 自由 - 开放
-    out = (&DASH_HANS_RE.replace_all(&out, "$1 $2 $3")).to_string();
-    out = (&LEFT_QUOTE_RE.replace_all(&out, "$1")).to_string();
-    out = (&RIGHT_QUOTE_RE.replace_all(&out, "$1")).to_string();
-    out
-}
-
 #[cfg(test)]
 mod tests {
     use crate::{format_for, lint_for};
@@ -158,9 +143,21 @@ mod tests {
     use std::collections::HashMap;
 
     fn assert_cases(cases: HashMap<&str, &str>) {
+        let mut fails: Vec<(String, String)> = Vec::new();
         for (source, exptected) in cases.into_iter() {
             let actual = format(source);
-            assert_eq!(exptected, actual);
+
+            if exptected != actual {
+                fails.push((exptected.to_string(), actual));
+            }
+        }
+
+        for (expected, actual) in fails.clone() {
+            eprintln!("{}", difference::Changeset::new(&expected, &actual, "\n"));
+        }
+
+        if !fails.is_empty() {
+            panic!("Failed: {} cases.", fails.len());
         }
     }
 
@@ -242,8 +239,25 @@ mod tests {
     }
 
     #[test]
+    fn it_format_with_markdown_td() {
+        // By LEFT_QUOTE_RE, RIGHT_QUOTE_RE
+        let cases = map![
+            "| 8 位有符号整数（补码）   |" => "| 8 位有符号整数（补码）   |",
+            "| 8 位有符号整数（补码） |" => "| 8 位有符号整数（补码） |",
+            "| 8 位有符号整数   |" => "| 8 位有符号整数   |",
+            "| 8 位有符号整数。   |" => "| 8 位有符号整数。   |",
+            "| 包括 8 位有符号整数。 |" => "| 包括 8 位有符号整数。 |",
+            "|   包括 8 位有符号整数！   |" => "|   包括 8 位有符号整数！   |",
+            "| 64 位浮点数（例如：10.90）| `double` |" => "| 64 位浮点数（例如：10.90）| `double` |",
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
     fn it_format_for_remove_spaces_with_punctuation() {
         let cases = map![
+            "以达到快速、 跨平台 、 低资源占用的目的 。 很多著名且受欢迎的软件，例如 Firefox 、 Dropbox 和 Cloudflare 都在使用" => "以达到快速、跨平台、低资源占用的目的。很多著名且受欢迎的软件，例如 Firefox、Dropbox 和 Cloudflare 都在使用",
             "注意： 引进给变量， 转换为机器代码。 这意味着任何变量、 常量； 命名的概念都会被删除" => "注意：引进给变量，转换为机器代码。这意味着任何变量、常量；命名的概念都会被删除",
             "注意 ： 引进给变量 ， 转换为机器代码 。 这意味着任何变量 、 常量 ； 命名的概念都会被删除" => "注意：引进给变量，转换为机器代码。这意味着任何变量、常量；命名的概念都会被删除",
         ];
@@ -290,6 +304,7 @@ mod tests {
     #[test]
     fn it_format_for_space_dash_with_hans() {
         let cases = map![
+            "范围包含A-Z等字符" => "范围包含 A-Z 等字符",
             "第3季度-财报发布看涨看跌？敬请期待。" => "第 3 季度 - 财报发布看涨看跌？敬请期待。",
             "腾讯-ADR-已发行" =>     "腾讯-ADR-已发行",
             "（腾讯）-发布-（新版）本微信" => "（腾讯）- 发布 -（新版）本微信",

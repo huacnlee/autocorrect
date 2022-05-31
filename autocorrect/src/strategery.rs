@@ -21,8 +21,8 @@ impl Strategery {
             reverse: false,
             add_space_re: regexp!("({})({})", one, other),
             add_space_reverse_re: regexp!("({})({})", other, one),
-            remove_space_re: regexp!("({})[ ]({})", one, other),
-            remove_space_reverse_re: regexp!("({})[ ]({})", other, one),
+            remove_space_re: regexp!("({})[ ]+({})", one, other),
+            remove_space_reverse_re: regexp!("({})[ ]+({})", other, one),
         };
     }
 
@@ -46,9 +46,7 @@ impl Strategery {
     }
 
     fn add_space(&self, text: &str) -> String {
-        let mut out = String::from(text);
-
-        out = self.add_space_re.replace_all(&out, "$1 $2").to_string();
+        let mut out = self.add_space_re.replace_all(text, "$1 $2").to_string();
 
         if self.reverse {
             out = self
@@ -61,9 +59,9 @@ impl Strategery {
     }
 
     fn remove_space(&self, text: &str) -> String {
-        let mut out = String::from(text);
-
-        out = self.remove_space_re.replace_all(&out, "$1$2").to_string();
+        // println!("--- remove space before:`{}`", text);
+        let mut out = self.remove_space_re.replace_all(text, "$1$2").to_string();
+        // println!("--- remove space after1:`{}`", out);
 
         if self.reverse {
             out = self
@@ -71,7 +69,8 @@ impl Strategery {
                 .replace_all(&out, "$1$2")
                 .to_string();
         }
-
+        // println!("--- remove space after2:`{}`", self.remove_space_reverse_re);
+        // println!("--- remove space after2:`{}`", out);
         out
     }
 }

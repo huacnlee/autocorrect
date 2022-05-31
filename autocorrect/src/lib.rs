@@ -56,10 +56,22 @@ macro_rules! regexp {
             r"\p{CJK}",
             r"\p{Han}|\p{Hangul}|\p{Hanunoo}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}",
         );
+
+         rule_str = String::from(rule_str).replace(
+            r"\p{CJK_N}",
+            r"\p{Han}\p{Hangul}\p{Hanunoo}\p{Katakana}\p{Hiragana}\p{Bopomofo}",
+        );
+
         rule_str = String::from(rule_str).replace(
             r"\p{CJ}",
             r"\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}",
         );
+
+        rule_str = String::from(rule_str).replace(
+            r"\p{CJ_N}",
+            r"\p{Han}\p{Katakana}\p{Hiragana}\p{Bopomofo}",
+        );
+
         // println!("{}", rule_str);
         let res = regex::Regex::new(&rule_str).unwrap();
         res
