@@ -2,8 +2,8 @@
 use regex::Regex;
 use std::collections::HashMap;
 
-const SPCIAL_PUNCTUATIONS: &str = "[.:]([ ]*)";
-const NORMAL_PUNCTUATIONS: &str = "[,!?]([ ]*)";
+const SPCIAL_PUNCTUATIONS: &str = "[.:!]([ ]*)";
+const NORMAL_PUNCTUATIONS: &str = "[,?]([ ]*)";
 
 lazy_static! {
     static ref FULLWIDTH_MAPS: HashMap<&'static str, &'static str> = map!(

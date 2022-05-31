@@ -32,7 +32,7 @@ lazy_static! {
         Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
         Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
         // @ after CJK, not not before, 你好 @某某
-        Strategery::new(r"\p{CJK}", r"[@]"),
+        Strategery::new(r"\p{CJK}", r"[!@]"),
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
         Strategery::new(r"[\]\)!]", r"\p{CJK}"),
     ];
@@ -170,7 +170,7 @@ mod tests {
             "[北京]美企聘web大型应用开发高手-Ruby" => "[北京] 美企聘 web 大型应用开发高手-Ruby",
             "[成都](团800)招聘Rails工程师" => "[成都](团 800) 招聘 Rails 工程师",
             "Teahour.fm第18期发布" => "Teahour.fm 第 18 期发布",
-            "Yes!升级到了Rails 4" => "Yes！升级到了 Rails 4",
+            "Yes!升级到了Rails 4" => "Yes! 升级到了 Rails 4",
             "WWDC上讲到的Objective C/LLVM 改进" => "WWDC 上讲到的 Objective C/LLVM 改进",
             "在Ubuntu11.10 64位系统安装newrelic出错" => "在 Ubuntu11.10 64 位系统安装 newrelic 出错",
             "升级了macOS 10.9 附遇到的Bug概率有0.1%或更少" => "升级了 macOS 10.9 附遇到的 Bug 概率有 0.1% 或更少",
@@ -217,6 +217,8 @@ mod tests {
             "内容带有\n不会处理" => "内容带有\n不会处理",
             "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊format字符" => "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊 format 字符",
             "内容带有$1或$2或$3特殊字符" => "内容带有$1或$2或$3特殊字符",
+            "来自Yahoo!的文档" => "来自 Yahoo! 的文档",
+            "规则后面是否跟随者!import以及规则的来源" => "规则后面是否跟随者 !import 以及规则的来源",
         ];
 
         assert_cases(cases);
