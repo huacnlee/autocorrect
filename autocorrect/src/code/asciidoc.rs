@@ -68,7 +68,7 @@ mod tests {
 
         == 行为准则
 
-        该项目的贡献者需要遵守以下行为准则: link:CODE_OF_CONDUCT.adoc[code of conduct].
+        该项目的贡献者需要遵守以下行为准则：link:CODE_OF_CONDUCT.adoc[code of conduct].
         如果有特殊情况，请将特殊的情况报告给 huacnlee@gmail.com.
 
         == 使用 GitHub Issues

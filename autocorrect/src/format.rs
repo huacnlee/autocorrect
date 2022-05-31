@@ -17,6 +17,8 @@ lazy_static! {
     // （）【】「」《》
     static ref LEFT_QUOTE_RE: Regex = regexp!("{}", r" ([（【「《])");
     static ref RIGHT_QUOTE_RE: Regex = regexp!("{}", r"([）】」》]) ");
+    // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
+    static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
 
     // Strategies all rules
     static ref STRATEGIES: Vec<Strategery> = vec![
@@ -62,21 +64,49 @@ lazy_static! {
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
 pub fn format(text: &str) -> String {
-    let mut out = String::from(text);
-
     // skip if not has CJK
     if !CJK_RE.is_match(text) {
-        return out;
+        return String::from(text);
     }
 
-    out = fullwidth::fullwidth(&out);
+    let mut out: String = String::new();
+    let mut part = String::new();
+    for ch in text.chars() {
+        part.push(ch);
+
+        // Is next char is newline or space, break part to format
+        if ch == ' ' || ch == '\n' || ch == '\r' {
+            let new_part = part.clone();
+            part.clear();
+
+            out.push_str(&format_part(&new_part));
+        }
+    }
+
+    if !part.is_empty() {
+        out.push_str(&format_part(&part));
+    }
+
+    out = space_dash_with_hans(&out);
+
+    out
+}
+
+fn format_part(text: &str) -> String {
+    if !CJK_RE.is_match(text) {
+        return String::from(text);
+    }
+
+    if PATH_RE.is_match(text) {
+        return String::from(text);
+    }
+
+    let mut out = fullwidth::fullwidth(text);
     out = halfwidth::halfwidth(&out);
 
     for rule in STRATEGIES.iter() {
         out = rule.format(&out)
     }
-
-    out = space_dash_with_hans(&out);
 
     out
 }
@@ -133,11 +163,11 @@ mod tests {
             "!sm" => "!sm",
             "Hello world!" => "Hello world!",
             "部署到heroku有问题网页不能显示" => "部署到 heroku 有问题网页不能显示",
-            "[北京]美企聘site/web大型应用开发高手-Ruby" => "[北京] 美企聘 site/web 大型应用开发高手-Ruby",
+            "[北京]美企聘web大型应用开发高手-Ruby" => "[北京] 美企聘 web 大型应用开发高手-Ruby",
             "[成都](团800)招聘Rails工程师" => "[成都](团 800) 招聘 Rails 工程师",
             "Teahour.fm第18期发布" => "Teahour.fm 第 18 期发布",
             "Yes!升级到了Rails 4" => "Yes！升级到了 Rails 4",
-            "WWDC上讲到的Objective C/LLVM改进" => "WWDC 上讲到的 Objective C/LLVM 改进",
+            "WWDC上讲到的Objective C/LLVM 改进" => "WWDC 上讲到的 Objective C/LLVM 改进",
             "在Ubuntu11.10 64位系统安装newrelic出错" => "在 Ubuntu11.10 64 位系统安装 newrelic 出错",
             "升级了macOS 10.9 附遇到的Bug概率有0.1%或更少" => "升级了 macOS 10.9 附遇到的 Bug 概率有 0.1% 或更少",
             "在做Rails 3.2 Tutorial第Chapter 9.4.2遇到一个问题求助！" => "在做 Rails 3.2 Tutorial 第 Chapter 9.4.2 遇到一个问题求助！",
@@ -228,9 +258,9 @@ mod tests {
     #[test]
     fn it_format_for_special_symbols() {
         let cases = map![
-            "公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!" =>          "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报！",
-            "消息http://github.com解禁了" =>                     "消息 http://github.com 解禁了",
-            "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" =>     "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
+            "公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!" => "公告:(美股) 阿里巴巴 [BABA.US] 发布 2019 下半年财报！",
+            "消息github.com解禁了" => "消息 github.com 解禁了",
+            "美股异动|阿帕奇石油(APA.US)盘前涨超15% 在苏里南近海发现大量石油" => "美股异动 | 阿帕奇石油 (APA.US) 盘前涨超 15% 在苏里南近海发现大量石油",
             "美国统计局：美国11月原油出口下降至302.3万桶/日，10月为338.3万桶/日。" => "美国统计局：美国 11 月原油出口下降至 302.3 万桶/日，10 月为 338.3 万桶/日。",
             "[b]Foo bar dar[/b]" => "[b]Foo bar dar[/b]"
             // r#"{标签内的"a"元素上的'target'属性在}"# => r#"{标签内的 "a" 元素上的 'target' 属性在}"#
@@ -260,6 +290,23 @@ mod tests {
             "《腾讯》-发布-《新版》本微信" => "《腾讯》- 发布 -《新版》本微信",
             "“腾讯”-发布-“新版”本微信" => "“腾讯” - 发布 - “新版”本微信",
             "‘腾讯’-发布-‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信"
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn it_format_for_url() {
+        // URL or Path need keep original format
+        let cases = map![
+            "wiki/网页浏览器列表#基於WebKit排版引擎" => "wiki/网页浏览器列表#基於WebKit排版引擎",
+            "wiki-/_网页浏基於WebKit排版" => "wiki-/_网页浏基於WebKit排版",
+            "wiki/hello网页浏览器列表#基於WebKit排版引擎" => "wiki/hello网页浏览器列表#基於WebKit排版引擎",
+            "URL地址 /wiki/hello网页浏览器 访问" => "URL 地址 /wiki/hello网页浏览器 访问",
+            "请打开URL地址 https://google.com/这是URL文件名.html 访问" => "请打开 URL 地址 https://google.com/这是URL文件名.html 访问",
+            "https://google.com/这是URL文件名.html" => "https://google.com/这是URL文件名.html",
+            "https://zh.wikipedia.org/wiki/网页浏览器列表#基於WebKit排版引擎" => "https://zh.wikipedia.org/wiki/网页浏览器列表#基於WebKit排版引擎",
+            "//this is注释" => "//this is 注释"
         ];
 
         assert_cases(cases);
