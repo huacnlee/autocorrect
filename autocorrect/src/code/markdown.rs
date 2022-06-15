@@ -25,9 +25,13 @@ mod tests {
     slug: /appstore/ipad_and_ios
     ---
 
-    # 这是Heading 1大标题
+    # 这是Heading 1大标题[示例](#示例)
 
     它指向一个[示例](#示例)
+
+    > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
+
+    - 你可以[添加新的条目](#Glossary)或完善条目。
 
     你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
@@ -80,9 +84,13 @@ mod tests {
     slug: /appstore/ipad_and_ios
     ---
 
-    # 这是 Heading 1 大标题
+    # 这是 Heading 1 大标题[示例](#示例)
 
     它指向一个[示例](#示例)
+
+    > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
+
+    - 你可以[添加新的条目](#Glossary)或完善条目。
 
     你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 

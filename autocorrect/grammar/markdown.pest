@@ -2,10 +2,9 @@ item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | text | newline }
 
 inline = _{ img | link | mark }
-block = ${ PUSH(block_prefix) ~ space ~ (inline | string) }
+block = ${ PUSH(block_prefix) ~ space ~ inline* ~ string }
 
 expr = _{ codeblock | inline | td_tag | block }
-text = { (!(expr | newline) ~ ANY)+ }
 newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
 codeblock = ${ 
@@ -31,7 +30,8 @@ link = ${ link_string ~ link_url }
 link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" } 
 link_url = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
 
-mark = ${ PUSH(mark_tag) ~ string ~ PUSH(mark_tag) }
+mark = ${ PUSH(mark_tag) ~ (!(PEEK) ~ string)  ~ PUSH(mark_tag) }
 
-string = ${ (!(newline) ~ ANY)* }
+text = { ( !(expr | inline | newline) ~ ANY)+ }
+string = ${ (!(newline | inline) ~ ANY)* }
 
