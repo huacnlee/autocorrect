@@ -27,6 +27,10 @@ mod tests {
 
     # 这是Heading 1大标题
 
+    它指向一个[示例](#示例)
+
+    你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
+
     https://google.com/foo/__ios__/**ios**
 
     **加粗** 
@@ -77,6 +81,10 @@ mod tests {
     ---
 
     # 这是 Heading 1 大标题
+
+    它指向一个[示例](#示例)
+
+    你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
     https://google.com/foo/__ios__/**ios**
 
