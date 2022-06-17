@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import './App.css';
 import { Button, Input, message, Select } from 'antd';
 import { GitHubIcon } from './icon';
+
+const demoText = `基于 Rust 编写的工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，同时尝试以安全的方式自动纠正标点符号等等。
+
+类似 ESlint、Rubocop、Gofmt 等工具，AutoCorrect 可以用于 CI 环境，它提供 Lint 功能能便捷的检测出项目中有问题的文案，起到统一规范的作用。
+
+支持各种类型源代码文件，能自动识别文件名，并准确找到字符串、注释做自动纠正。`;
 
 const fileTypes = [
   {
@@ -105,10 +111,8 @@ const fileTypes = [
 
 function App() {
   const [fileType, setFileType] = useState(fileTypes[0].value);
-  const [source, setSource] = useState('');
+  const [source, setSource] = useState(demoText);
   const [output, setOutput] = useState('');
-
-  let clearMessageTimer: any;
 
   const onSourceChange = (e: any) => {
     const { value } = e.target;
@@ -146,6 +150,10 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    doFormat(source);
+  }, []);
+
   return (
     <div className="App text-left space-y-6">
       <div className="toolbar flex justify-between items-center">
@@ -174,7 +182,9 @@ function App() {
             <GitHubIcon />
           </a>
 
-          <Button onClick={doCopy}>Copy</Button>
+          <Button onClick={doCopy} type="primary">
+            Copy
+          </Button>
         </div>
       </div>
       <div className="flex absolute left-4 right-4 top-14 bottom-4 space-x-6">

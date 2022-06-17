@@ -17,7 +17,7 @@ fn format_for(text: String, filename: String) -> Result<String, String> {
 fn main() {
     let context = tauri::generate_context!();
     tauri::Builder::default()
-        .menu(tauri::Menu::os_default(&context.package_info().name))
+        .menu(tauri::Menu::os_default("AutoCorrect"))
         .invoke_handler(tauri::generate_handler![format_for])
         .run(context)
         .expect("error while running tauri application");

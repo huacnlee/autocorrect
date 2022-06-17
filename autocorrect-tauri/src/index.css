@@ -2,8 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@import '~antd/dist/antd.css';
-
 body {
-  @apply bg-white dark:bg-gray-900;
+  @apply bg-white;
+}
+
+svg {
+  vertical-align: initial;
 }
