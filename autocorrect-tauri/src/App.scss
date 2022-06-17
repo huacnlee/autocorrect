@@ -2,10 +2,16 @@
 }
 
 .toolbar {
-  @apply bg-white border-b border-gray-200 h-16 px-4;
+  background: #fcfcfc;
+  border-color: #d0d0d0;
+
+  @apply h-16 px-4 shadow-sm;
   @apply dark:bg-gray-800 dark:text-white dark:border-gray-900;
 
   a {
     @apply text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300;
+  }
+
+  @media (prefers-color-scheme: dark) {
   }
 }
