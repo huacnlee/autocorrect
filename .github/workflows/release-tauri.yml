@@ -18,13 +18,26 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 14
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Add macOS target
+        run: |
+          rustup target add aarch64-apple-darwin 
+          rustup target add x86_64-apple-darwin
       - name: Install & Build
-        run: yarn && yarn build
+        run: |
+          cd autocorrect-tauri
+          yarn && yarn build
+      # - name: Deploy | Upload artifacts
+      #   uses: tauri-apps/tauri-action@v0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     projectPath: autocorrect-tauri/
+      #     releaseId: ${{ needs.create-release.outputs.RELEASE_ID }}
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,6 +48,8 @@ jobs:
           APPLE_ID: huacnlee@gmail.com
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         with:
+          args: --target universal-apple-darwin
+          projectPath: autocorrect-tauri/
           tagName: tauri-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: "AutoCorrect v__VERSION__"
           releaseBody: "See the assets to download this version and install."

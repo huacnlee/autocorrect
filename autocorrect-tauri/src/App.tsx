@@ -152,11 +152,11 @@ function App() {
 
   useEffect(() => {
     doFormat(source);
-  }, []);
+  });
 
   return (
-    <div className="App text-left space-y-6">
-      <div className="toolbar flex justify-between items-center">
+    <div className="space-y-6 text-left App">
+      <div className="flex items-center justify-between toolbar">
         <div className="flex items-center space-x-4">
           <Select
             showSearch
@@ -187,9 +187,9 @@ function App() {
           </Button>
         </div>
       </div>
-      <div className="flex absolute left-4 right-4 top-14 bottom-4 space-x-6">
+      <div className="absolute flex space-x-6 left-4 right-4 top-14 bottom-4">
         <Input.TextArea
-          className="block h-full w-full"
+          className="block w-full h-full"
           value={source}
           placeholder="Input source text here..."
           onChange={onSourceChange}
@@ -197,7 +197,7 @@ function App() {
 
         <Input.TextArea
           value={output}
-          className="block h-full w-full outline-none bg-gray-50"
+          className="block w-full h-full outline-none bg-gray-50"
           placeholder="Formatted text will appear here..."
           readOnly
         />
