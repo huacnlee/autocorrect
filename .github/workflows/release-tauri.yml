@@ -63,12 +63,12 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ENABLE_CODE_SIGNING: false
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: org.huacnlee.autocorrect
-          APPLE_ID: huacnlee@gmail.com
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # ENABLE_CODE_SIGNING: false
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: org.huacnlee.autocorrect
+          # APPLE_ID: huacnlee@gmail.com
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         with:
           args: --target ${{ matrix.target }}
           projectPath: autocorrect-tauri/
