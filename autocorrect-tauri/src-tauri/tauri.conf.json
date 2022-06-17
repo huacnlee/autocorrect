@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "autocorrect-tauri",
+    "productName": "AutoCorrect",
     "version": "0.1.0"
   },
   "tauri": {

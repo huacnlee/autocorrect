@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import './App.css';
+import { Button, Input, message, Select } from 'antd';
+import { GitHubIcon } from './icon';
 
 const fileTypes = [
   {
@@ -12,11 +14,11 @@ const fileTypes = [
     value: 'md',
   },
   {
-    name: 'HTML',
+    name: 'HTML / Vue',
     value: 'html',
   },
   {
-    name: 'CSS',
+    name: 'CSS / SCSS / LESS',
     value: 'css',
   },
   {
@@ -59,21 +61,54 @@ const fileTypes = [
     name: 'Java',
     value: 'java',
   },
+  {
+    name: 'PHP',
+    value: 'php',
+  },
+  {
+    name: 'C#',
+    value: 'cs',
+  },
+  {
+    name: 'Objective-C',
+    value: 'objective_c',
+  },
+  {
+    name: 'Strings',
+    value: 'strings',
+  },
+  {
+    name: 'Swift',
+    value: 'swift',
+  },
+  {
+    name: 'Kotlin',
+    value: 'kt',
+  },
+  {
+    name: 'Dart',
+    value: 'dart',
+  },
+  {
+    name: 'Scala',
+    value: 'scala',
+  },
+  {
+    name: 'LaTex',
+    value: 'tex',
+  },
+  {
+    name: 'Gettext',
+    value: 'po',
+  },
 ];
 
 function App() {
-  const [message, setMessage] = useState({ title: '', type: 'info' });
   const [fileType, setFileType] = useState(fileTypes[0].value);
   const [source, setSource] = useState('');
   const [output, setOutput] = useState('');
 
-  const showMessage = (msg: string, type?: string) => {
-    setMessage({ title: msg, type: type || 'info' });
-
-    setTimeout(() => {
-      setMessage({ title: '', type: 'info' });
-    }, 5000);
-  };
+  let clearMessageTimer: any;
 
   const onSourceChange = (e: any) => {
     const { value } = e.target;
@@ -88,15 +123,14 @@ function App() {
     })
       .then((out: any) => {
         setOutput(out);
-        showMessage('执行成功');
+        message.destroy();
       })
       .catch((msg) => {
-        showMessage(msg, 'error');
+        message.error(msg);
       });
   };
 
-  const onFileTypeChange = (e: any) => {
-    const { value } = e.target;
+  const onFileTypeChange = (value: string) => {
     setFileType(value);
     doFormat(source);
   };
@@ -108,7 +142,7 @@ function App() {
 
   const doCopy = () => {
     navigator.clipboard.writeText(output).then(() => {
-      showMessage('复制成功');
+      message.info('复制成功');
     });
   };
 
@@ -116,50 +150,47 @@ function App() {
     <div className="App text-left space-y-6">
       <div className="toolbar flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <select
-            className="dropdown"
-            value={fileType}
+          <Select
+            showSearch
+            className="w-52"
+            defaultValue={fileType}
             onChange={onFileTypeChange}
           >
             {fileTypes.map((item) => (
-              <option key={item.value} value={item.value}>
+              <Select.Option key={item.value} value={item.value}>
                 {item.name}
-              </option>
+              </Select.Option>
             ))}
-          </select>
-          <button onClick={doClear} className="btn">
-            Clear
-          </button>
+          </Select>
+          <Button onClick={doClear}>Clear</Button>
         </div>
-        <div>
-          <button onClick={doCopy} className="btn">
-            Copy
-          </button>
+        <div className="flex items-center space-x-6">
+          <a
+            href="https://github.com/huacnlee/autocorrect"
+            target="_blank"
+            className="text-gray-700"
+            rel="noreferrer"
+          >
+            <GitHubIcon />
+          </a>
+
+          <Button onClick={doCopy}>Copy</Button>
         </div>
       </div>
-      <div className="flex absolute left-4 right-4 top-16 bottom-12 space-x-6 items-center">
-        <textarea
-          className="textarea block h-full w-full"
+      <div className="flex absolute left-4 right-4 top-14 bottom-4 space-x-6">
+        <Input.TextArea
+          className="block h-full w-full"
           value={source}
           placeholder="Input source text here..."
           onChange={onSourceChange}
-        ></textarea>
+        />
 
-        <textarea
+        <Input.TextArea
           value={output}
-          className="textarea block h-full w-full"
+          className="block h-full w-full outline-none bg-gray-50"
           placeholder="Formatted text will appear here..."
           readOnly
-        ></textarea>
-      </div>
-      <div className="flex h-8 absolute bottom-0 left-0 right-0 px-4">
-        <span
-          className={`text-sm ${
-            message.type === 'error' ? 'text-red-600' : 'text-green-600'
-          }`}
-        >
-          {message.title}
-        </span>
+        />
       </div>
     </div>
   );

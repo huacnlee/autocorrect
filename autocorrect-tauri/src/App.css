@@ -1,9 +1,8 @@
 .App {
-  text-align: center;
 }
 
 .toolbar {
-  @apply bg-gray-50 border-b border-t border-gray-200 h-16  px-4;
+  @apply bg-gray-50 border-b border-t border-gray-200 h-16 px-4;
 }
 .toolbar .btn,
 .toolbar .dropdown {
