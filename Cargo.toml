@@ -4,4 +4,5 @@ members = [
   "autocorrect-wasm",
   "autocorrect-derive",
   "autocorrect-cli",
+  "autocorrect-tauri/src-tauri",
 ]

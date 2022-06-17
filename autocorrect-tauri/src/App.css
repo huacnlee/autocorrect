@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+
+.toolbar {
+  @apply bg-gray-50 border-b border-t border-gray-200 h-16  px-4;
+}
+.toolbar .btn,
+.toolbar .dropdown {
+  @apply py-1.5 leading-5;
+}

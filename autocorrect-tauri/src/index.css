@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white dark:bg-gray-900;
+}
+
+.textarea {
+  @apply p-2 max-w-lg shadow-sm block sm:text-sm border border-gray-300 rounded-md outline-none;
+}
+.textarea[readonly] {
+  @apply bg-gray-100 outline-none;
+}
+
+.dropdown {
+  @apply appearance-none block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md;
+}
+
+.btn {
+  @apply inline-flex items-center px-4 py-3 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+
+.btn-sm {
+  @apply px-2 py-1.5;
+}
+
+.btn-primary {
+  @apply bg-blue-500 text-white;
+}
