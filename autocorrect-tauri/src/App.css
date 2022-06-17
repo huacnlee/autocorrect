@@ -3,4 +3,5 @@
 
 .toolbar {
   @apply bg-white border-b border-gray-200 h-16 px-4;
+  @apply dark:bg-gray-800 dark:text-white dark:border-gray-900;
 }

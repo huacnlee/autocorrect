@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fix Tailwind + Ant Deisgn conflict */
+svg {
+  vertical-align: initial;
+}
+
+html {
+  .ant-btn {
+    border-radius: 8px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #363636;
+    }
+
+    .ant-btn {
+      background-color: #2b2b2b;
+      border-color: #5c5c5c;
+      color: #959595;
+
+      &:hover,
+      &:focus {
+        border-color: #5c5c5c;
+        background-color: #212020;
+        color: #959595;
+      }
+    }
+
+    .ant-btn-primary {
+      background-color: #141414;
+      border-color: #5c5c5c;
+      color: #959595;
+
+      &:hover,
+      &:focus {
+        border-color: #5c5c5c;
+        background-color: #1a1a1a;
+      }
+    }
+
+    .ant-input,
+    .ant-select {
+      border-radius: 4px;
+      background-color: #141414;
+      border-color: #141414;
+      color: #959595;
+      box-shadow: 0 0 0;
+
+      &:hover,
+      &:focus {
+        border-color: #141414;
+        background-color: #101010;
+        box-shadow: 0 0 0;
+      }
+    }
+  }
+}

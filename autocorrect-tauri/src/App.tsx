@@ -4,11 +4,11 @@ import './App.css';
 import { Button, Input, message, Select } from 'antd';
 import { GitHubIcon } from './icon';
 
-const demoText = `基于 Rust 编写的工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，同时尝试以安全的方式自动纠正标点符号等等。
+// autocorrect: false
+const demoText = `基于Rust编写的工具,用于「自动纠正」或「检查并建议」文案，给CJK（中文、日语、韩语）与英文混写的场景,补充正确的空格,同时尝试以安全的方式自动纠正标点符号等等.
 
-类似 ESlint、Rubocop、Gofmt 等工具，AutoCorrect 可以用于 CI 环境，它提供 Lint 功能能便捷的检测出项目中有问题的文案，起到统一规范的作用。
-
-支持各种类型源代码文件，能自动识别文件名，并准确找到字符串、注释做自动纠正。`;
+支持各种类型源代码文件,能自动识别文件名,并准确找到字符串、注释做自动纠正.`;
+// autocorrect: true
 
 const fileTypes = [
   {
