@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
-import './App.css';
+import './App.scss';
 import { Button, Input, message, Select } from 'antd';
 import { GitHubIcon } from './icon';
 
@@ -176,7 +176,6 @@ function App() {
           <a
             href="https://github.com/huacnlee/autocorrect"
             target="_blank"
-            className="text-gray-700"
             rel="noreferrer"
           >
             <GitHubIcon />
