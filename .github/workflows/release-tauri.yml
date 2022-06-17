@@ -22,7 +22,18 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v2
         with:
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
           node-version: 14
+
+      # Cache files between builds
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v2.1.6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: tauri-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
