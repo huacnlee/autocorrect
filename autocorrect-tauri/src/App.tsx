@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
+import { listen } from '@tauri-apps/api/event';
+import { readTextFile } from '@tauri-apps/api/fs';
+import type { Event } from '@tauri-apps/api/event';
 import { writeText } from '@tauri-apps/api/clipboard';
 import './App.scss';
 import { Button, Input, message, Select } from 'antd';
 import { GitHubIcon } from './icon';
+import { fs } from '@tauri-apps/api';
 
 // autocorrect: false
 const demoText = `基于Rust编写的工具,用于「自动纠正」或「检查并建议」文案，给CJK（中文、日语、韩语）与英文混写的场景,补充正确的空格,同时尝试以安全的方式自动纠正标点符号等等.
@@ -114,6 +118,34 @@ function App() {
   const [fileType, setFileType] = useState(fileTypes[0].value);
   const [source, setSource] = useState(demoText);
   const [output, setOutput] = useState('');
+
+  useEffect(() => {
+    listen('tauri://file-drop', (event: Event<string[]>) => {
+      const { payload } = event;
+      const filename = payload.pop();
+      // Ignore no filename
+      if (!filename) {
+        return;
+      }
+
+      const extname = filename.split('.').pop() || 'txt';
+      setFileType(extname);
+
+      message.loading('文件读取中...');
+      fs.readTextFile(filename)
+        .then((text) => {
+          message.destroy();
+          message.success('文件读取完成');
+
+          setSource(text);
+          doFormat(text);
+        })
+        .catch((err) => {
+          message.destroy();
+          message.error(err);
+        });
+    });
+  });
 
   const onSourceChange = (e: any) => {
     const { value } = e.target;
