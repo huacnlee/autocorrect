@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
+import { writeText } from '@tauri-apps/api/clipboard';
 import './App.scss';
 import { Button, Input, message, Select } from 'antd';
 import { GitHubIcon } from './icon';
@@ -145,7 +146,7 @@ function App() {
   };
 
   const doCopy = () => {
-    navigator.clipboard.writeText(output).then(() => {
+    writeText(output).then(() => {
       message.info('复制成功');
     });
   };
