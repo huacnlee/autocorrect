@@ -10,20 +10,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest]
+        include:
+          - target: universal-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: setup node
         uses: actions/setup-node@v2
         with:
           node-version: 14
+
       - name: install Rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+
+      - name: Add Rust target
+        if: matrix.os != 'macos-latest'
+        run: |
+          rustup target add ${{ matrix.target }}
       - name: Add macOS target
+        if: matrix.os == 'macos-latest'
         run: |
           rustup target add aarch64-apple-darwin 
           rustup target add x86_64-apple-darwin
@@ -48,7 +59,7 @@ jobs:
           APPLE_ID: huacnlee@gmail.com
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         with:
-          args: --target universal-apple-darwin
+          args: --target ${{ matrix.target }}
           projectPath: autocorrect-tauri/
           tagName: tauri-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: "AutoCorrect v__VERSION__"

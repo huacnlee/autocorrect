@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event';
-import { readTextFile } from '@tauri-apps/api/fs';
 import type { Event } from '@tauri-apps/api/event';
 import { writeText } from '@tauri-apps/api/clipboard';
 import './App.scss';
