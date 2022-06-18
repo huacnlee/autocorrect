@@ -13,8 +13,8 @@ jobs:
         include:
           - target: universal-apple-darwin
             os: macos-latest
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
+          # - target: x86_64-pc-windows-msvc
+          #   os: windows-latest
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -63,14 +63,14 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # ENABLE_CODE_SIGNING: false
-          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          # APPLE_SIGNING_IDENTITY: org.huacnlee.autocorrect
-          # APPLE_ID: huacnlee@gmail.com
-          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          ENABLE_CODE_SIGNING: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: B2A85EC30C6BEC9DABCBC76BFC40DF1A0919C4C0
+          APPLE_ID: huacnlee@gmail.com
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
         with:
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} -- -v
           projectPath: autocorrect-tauri/
           tagName: tauri-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: "AutoCorrect v__VERSION__"
