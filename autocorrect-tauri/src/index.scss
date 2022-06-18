@@ -32,6 +32,14 @@ html {
         background-color: #212020;
         color: #959595;
       }
+
+      &[disabled],
+      &[disabled]:hover,
+      &[disabled]:focus {
+        color: #757575;
+        background-color: #3b3b3b;
+        border-color: #3b3b3b;
+      }
     }
 
     .ant-btn-primary {

@@ -7,115 +7,17 @@ import { open as openDialog } from '@tauri-apps/api/dialog';
 import { writeText } from '@tauri-apps/api/clipboard';
 import './App.scss';
 import { Button, Input, message, Select } from 'antd';
-import { GitHubIcon } from './icon';
+import { GitHubIcon, OpenIcon } from './icon';
 import { fs } from '@tauri-apps/api';
+import { demoText, fileTypes } from './config';
 
-// autocorrect: false
-const demoText = `基于Rust编写的工具,用于「自动纠正」或「检查并建议」文案，给CJK（中文、日语、韩语）与英文混写的场景,补充正确的空格,同时尝试以安全的方式自动纠正标点符号等等.
-
-支持各种类型源代码文件,能自动识别文件名,并准确找到字符串、注释做自动纠正.`;
-// autocorrect: true
-
-const fileTypes = [
-  {
-    name: 'Plain Text',
-    value: 'txt',
-  },
-  {
-    name: 'Markdown',
-    value: 'md',
-  },
-  {
-    name: 'HTML / Vue',
-    value: 'html',
-  },
-  {
-    name: 'CSS / SCSS / LESS',
-    value: 'css',
-  },
-  {
-    name: 'JavaScript',
-    value: 'js',
-  },
-  {
-    name: 'TypeScript',
-    value: 'ts',
-  },
-  {
-    name: 'JSON',
-    value: 'json',
-  },
-  {
-    name: 'YAML',
-    value: 'yaml',
-  },
-  {
-    name: 'XML',
-    value: 'xml',
-  },
-  {
-    name: 'Go',
-    value: 'go',
-  },
-  {
-    name: 'Rust',
-    value: 'rs',
-  },
-  {
-    name: 'Python',
-    value: 'py',
-  },
-  {
-    name: 'Ruby',
-    value: 'rb',
-  },
-  {
-    name: 'Java',
-    value: 'java',
-  },
-  {
-    name: 'PHP',
-    value: 'php',
-  },
-  {
-    name: 'C#',
-    value: 'cs',
-  },
-  {
-    name: 'Objective-C',
-    value: 'objective_c',
-  },
-  {
-    name: 'Strings',
-    value: 'strings',
-  },
-  {
-    name: 'Swift',
-    value: 'swift',
-  },
-  {
-    name: 'Kotlin',
-    value: 'kt',
-  },
-  {
-    name: 'Dart',
-    value: 'dart',
-  },
-  {
-    name: 'Scala',
-    value: 'scala',
-  },
-  {
-    name: 'LaTex',
-    value: 'tex',
-  },
-  {
-    name: 'Gettext',
-    value: 'po',
-  },
-];
+const fileBasename = (filename: string): string => {
+  const parts = filename.split('/');
+  return parts[parts.length - 1];
+};
 
 function App() {
+  const [currentFileName, setCurrentFileName] = useState<string | null>(null);
   const [fileType, setFileType] = useState(fileTypes[0].value);
   const [source, setSource] = useState(demoText);
   const [output, setOutput] = useState('');
@@ -131,24 +33,25 @@ function App() {
 
   /**
    * OpenFile to format
-   * @param filename
+   * @param fname
    * @returns
    */
-  const openFile = (filename?: string) => {
+  const openFile = (fname?: string) => {
     // Ignore no filename
-    if (!filename) {
+    if (!fname) {
       return;
     }
 
-    const extname = filename.split('.').pop() || 'txt';
+    const extname = fname.split('.').pop() || 'txt';
     setFileType(extname);
 
     message.loading('文件读取中...');
-    fs.readTextFile(filename)
+    fs.readTextFile(fname)
       .then((text) => {
         message.destroy();
         message.success('文件读取完成');
 
+        setCurrentFileName(fname);
         setSource(text);
         doFormat(text);
       })
@@ -168,11 +71,35 @@ function App() {
           extensions: fileTypes.map((type) => type.value),
         },
       ],
-    }).then((filename) => {
-      if (filename) {
-        openFile(filename as any);
+    }).then((fname) => {
+      if (fname) {
+        openFile(fname as any);
       }
     });
+  };
+
+  const onSaveClick = (e: any) => {
+    e.preventDefault();
+
+    if (!currentFileName) {
+      return;
+    }
+
+    fs.writeTextFile(currentFileName, output)
+      .then((_) => {
+        message.info('Saved successfully');
+      })
+      .catch((err) => {
+        message.error(err);
+      });
+  };
+
+  const closeFile = (e: any) => {
+    e.preventDefault();
+    setCurrentFileName(null);
+    doClear();
+
+    return false;
   };
 
   // watch Source text change
@@ -221,7 +148,12 @@ function App() {
     <div className="space-y-6 text-left App">
       <div className="flex items-center justify-between toolbar">
         <div className="flex items-center space-x-4">
-          <Button onClick={onOpenFileClick}>Open...</Button>
+          <Button onClick={onOpenFileClick}>
+            <OpenIcon />
+          </Button>
+          <Button onClick={onSaveClick} disabled={!currentFileName}>
+            Save
+          </Button>
           <Select
             showSearch
             className="w-52"
@@ -250,7 +182,7 @@ function App() {
           </Button>
         </div>
       </div>
-      <div className="absolute flex space-x-6 left-4 right-4 top-14 bottom-4">
+      <div className="main-container">
         <Input.TextArea
           className="block w-full h-full"
           value={source}
@@ -264,6 +196,16 @@ function App() {
           placeholder="Formatted text will appear here..."
           readOnly
         />
+      </div>
+      <div className="status-bar">
+        {currentFileName && (
+          <span className="space-x-2 current-filename">
+            <span>{fileBasename(currentFileName)}</span>
+            <a onClick={closeFile} className="cursor-pointer">
+              &times;
+            </a>
+          </span>
+        )}
       </div>
     </div>
   );
