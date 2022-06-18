@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event';
 import type { Event } from '@tauri-apps/api/event';
+import { open as openDialog } from '@tauri-apps/api/dialog';
+
 import { writeText } from '@tauri-apps/api/clipboard';
 import './App.scss';
 import { Button, Input, message, Select } from 'antd';
@@ -119,39 +121,68 @@ function App() {
   const [output, setOutput] = useState('');
 
   useEffect(() => {
+    // Listen file drop to open
     listen('tauri://file-drop', (event: Event<string[]>) => {
       const { payload } = event;
       const filename = payload.pop();
-      // Ignore no filename
-      if (!filename) {
-        return;
-      }
-
-      const extname = filename.split('.').pop() || 'txt';
-      setFileType(extname);
-
-      message.loading('文件读取中...');
-      fs.readTextFile(filename)
-        .then((text) => {
-          message.destroy();
-          message.success('文件读取完成');
-
-          setSource(text);
-          doFormat(text);
-        })
-        .catch((err) => {
-          message.destroy();
-          message.error(err);
-        });
+      openFile(filename);
     });
   });
 
+  /**
+   * OpenFile to format
+   * @param filename
+   * @returns
+   */
+  const openFile = (filename?: string) => {
+    // Ignore no filename
+    if (!filename) {
+      return;
+    }
+
+    const extname = filename.split('.').pop() || 'txt';
+    setFileType(extname);
+
+    message.loading('文件读取中...');
+    fs.readTextFile(filename)
+      .then((text) => {
+        message.destroy();
+        message.success('文件读取完成');
+
+        setSource(text);
+        doFormat(text);
+      })
+      .catch((err) => {
+        message.destroy();
+        message.error(err);
+      });
+  };
+
+  // show OpenFile Disalog and then openfile
+  const onOpenFileClick = (e: any) => {
+    e.preventDefault();
+    openDialog({
+      filters: [
+        {
+          name: 'File',
+          extensions: fileTypes.map((type) => type.value),
+        },
+      ],
+    }).then((filename) => {
+      if (filename) {
+        openFile(filename as any);
+      }
+    });
+  };
+
+  // watch Source text change
   const onSourceChange = (e: any) => {
     const { value } = e.target;
     setSource(value);
     doFormat(value);
   };
 
+  // run Format
   const doFormat = (value: string) => {
     invoke('format_for', {
       text: value,
@@ -190,6 +221,7 @@ function App() {
     <div className="space-y-6 text-left App">
       <div className="flex items-center justify-between toolbar">
         <div className="flex items-center space-x-4">
+          <Button onClick={onOpenFileClick}>Open...</Button>
           <Select
             showSearch
             className="w-52"
