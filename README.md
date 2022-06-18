@@ -36,6 +36,7 @@ Other implements for programming:
 - Speelcheck and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrating to everwhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you wants ignore.
+- [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for MacOS, (Windows, Linux WIP).
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
 
@@ -98,6 +99,7 @@ $ autocorrect update
 - [Use for Rust](#use-for-rust)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
+- [Desktop App](#desktop-app)
 
 ### Using CLI
 
