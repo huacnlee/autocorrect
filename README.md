@@ -42,6 +42,8 @@ Other implements for programming:
 
 ## Install
 
+> 🍏 AutoCorrect 还为非技术人员提供了比较简单的桌面端版本，如有需要可访问 [Download](https://github.com/huacnlee/autocorrect/releases) 页面来下载。
+
 ```bash
 $ curl -sSL https://git.io/JcGER | bash
 ```
@@ -99,7 +101,6 @@ $ autocorrect update
 - [Use for Rust](#use-for-rust)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
-- [Desktop App](#desktop-app)
 
 ### Using CLI
 
