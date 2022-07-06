@@ -1,4 +1,4 @@
-use crate::{CliOption, CONFIG_TEMPLATE};
+use crate::{cli::Cli, CONFIG_TEMPLATE};
 use std::{fs, path::Path, time::Duration};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -12,15 +12,15 @@ pub struct InitOption {
     pub local: bool,
 }
 
-pub fn run(option: &CliOption, init_option: &InitOption) {
-    if Path::exists(Path::new(&option.config_file)) && !init_option.force {
-        log::warn!("{} already exists.", option.config_file);
+pub fn run(cli: &Cli, option: &InitOption) {
+    if Path::exists(Path::new(&cli.config_file)) && !option.force {
+        log::warn!("{} already exists.", cli.config_file);
         return;
     }
 
     let mut template = CONFIG_TEMPLATE.to_string();
 
-    if !init_option.local {
+    if !option.local {
         match fetch_config_template() {
             Ok(out) => {
                 template = out;
@@ -33,9 +33,9 @@ pub fn run(option: &CliOption, init_option: &InitOption) {
         }
     }
 
-    log::info!("AutoCorrect init config: {}", option.config_file);
-    fs::write(Path::new(&option.config_file), template)
-        .unwrap_or_else(|_| panic!("Failed to write config file: {}", &option.config_file));
+    log::info!("AutoCorrect init config: {}", cli.config_file);
+    fs::write(Path::new(&cli.config_file), template)
+        .unwrap_or_else(|_| panic!("Failed to write config file: {}", &cli.config_file));
 }
 
 pub fn fetch_config_template() -> Result<String> {

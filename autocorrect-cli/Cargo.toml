@@ -15,7 +15,7 @@ path = "src/main.rs"
 
 [dependencies]
 autocorrect = {path = "../autocorrect", version = ">1.0.0"}
-clap = "2.33.0"
+clap = {version = "3", features = ['derive']}
 colored = "2"
 ignore = "0.4"
 lazy_static = "1.4.0"
