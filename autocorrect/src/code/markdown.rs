@@ -75,6 +75,7 @@ mod tests {
     
     - ![img图片](https://google.com/a/b/url不处理)
     - [link链接](https://google.com/a/b/url不处理)
+    - 一个[[Wikilinks测试]]示例
     "###;
 
         let expected = r###"
@@ -134,6 +135,7 @@ mod tests {
     
     - ![img 图片](https://google.com/a/b/url不处理)
     - [link 链接](https://google.com/a/b/url不处理)
+    - 一个[[Wikilinks测试]]示例
     "###;
 
         assert_eq!(expected, format_markdown(example).to_string());
