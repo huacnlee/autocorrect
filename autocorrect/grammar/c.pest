@@ -1,0 +1,16 @@
+newline = ${ "\n" | "\r" }
+space = ${ " "+ }
+
+other = ${ !(string) ~ ANY }
+comment = ${ single_line_comment | multiline_comment }
+single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
+multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+include = ${ "#include" ~ " "+ ~  string_val }
+
+string = ${ string_val }
+string_val = _{ 
+  ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+}
+
+line = _{ include | string | comment | space | other | newline }
+item = _{ SOI ~ line* ~ EOI } 

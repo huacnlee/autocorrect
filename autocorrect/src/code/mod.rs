@@ -2,6 +2,7 @@ mod code;
 mod types;
 
 mod asciidoc;
+mod c;
 mod conf;
 mod csharp;
 mod css;
@@ -31,6 +32,7 @@ pub use code::*;
 pub use types::*;
 
 pub use asciidoc::*;
+pub use c::*;
 pub use conf::*;
 pub use csharp::*;
 pub use css::*;
@@ -102,6 +104,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "asciidoc" => lint_asciidoc(raw),
         "gettext" => lint_gettext(raw),
         "conf" => lint_conf(raw),
+        "c" => lint_c(raw),
         "text" => lint_markdown(raw),
         _ => LintResult::new(raw),
     };
@@ -157,6 +160,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "asciidoc" => format_asciidoc(raw),
         "gettext" => format_gettext(raw),
         "conf" => format_conf(raw),
+        "c" => format_c(raw),
         "text" => format_markdown(raw),
         _ => {
             let mut result = FormatResult::new(raw);

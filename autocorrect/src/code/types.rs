@@ -87,6 +87,10 @@ lazy_static! {
     "ini" => "conf",
     "cfg" => "conf",
     "toml" => "conf",
+    // C or C++
+    "cc" => "c",
+    "cpp" => "c",
+    "c" => "c",
     // plain
     "text" => "text",
     "plain" => "text",
