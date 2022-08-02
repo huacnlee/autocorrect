@@ -107,7 +107,7 @@ const map = {
 }
 "###;
 
-        assert_eq!(expect, format_javascript(example).to_string());
+        assert_eq!(expect, format_for(example, "javascript").to_string());
     }
 
     macro_rules! assert_json_eq {
@@ -143,7 +143,7 @@ const map = {
         }
         "###;
 
-        assert_eq!(expect, format_javascript(example).to_string());
+        assert_eq!(expect, format_for(example, "javascript").to_string());
     }
 
     #[test]
@@ -170,7 +170,7 @@ const map = {
 
         let expect = r###"
         {
-            "filepath":"",
+            "filepath":"test.js",
             "lines":[
                 {"c":5,"l":3,"new":"* Hello 你好","old":"* Hello你好"},
                 {"c":5,"l":4,"new":"* 这是第 2 行","old":"* 这是第2行"},
@@ -183,7 +183,7 @@ const map = {
         }
     "###;
 
-        assert_json_eq!(expect, lint_javascript(example).to_json());
-        assert_json_eq!(expect, lint_javascript(example).to_json_pretty());
+        assert_json_eq!(expect, lint_for(example, "test.js").to_json());
+        assert_json_eq!(expect, lint_for(example, "test.js").to_json_pretty());
     }
 }

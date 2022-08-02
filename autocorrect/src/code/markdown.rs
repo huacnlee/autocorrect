@@ -138,9 +138,9 @@ mod tests {
     - 一个[[Wikilinks测试]]示例
     "###;
 
-        assert_eq!(expected, format_markdown(example).to_string());
+        assert_eq!(expected, format_for(example, "markdown").to_string());
 
-        let lint_result = lint_markdown(expected);
+        let lint_result = lint_for(expected, "markdown");
         assert_eq!(false, lint_result.has_error());
         if !lint_result.lines.is_empty() {
             panic!("{}", lint_result.to_string());

@@ -37,6 +37,6 @@ mod tests {
 }
 "###;
 
-        assert_eq!(expect, format_objectivec(example).to_string());
+        assert_eq!(expect, format_for(example, "objective_c").to_string());
     }
 }

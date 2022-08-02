@@ -115,7 +115,7 @@ mod tests {
         </html>
         "###;
 
-        assert_html_eq!(expected, format_html(html).to_string())
+        assert_html_eq!(expected, format_for(html, "html").to_string())
     }
 
     #[test]
@@ -146,7 +146,7 @@ mod tests {
         </body>
         </html>"#;
 
-        assert_html_eq!(expected, format_html(html).to_string())
+        assert_html_eq!(expected, format_for(html, "html").to_string())
     }
 
     #[test]
@@ -171,7 +171,7 @@ mod tests {
         </body>
         </html>"#;
 
-        let lint_result = lint_html(html);
+        let lint_result = lint_for(html, "html");
         assert_eq!("", lint_result.error);
         assert_eq!(7, lint_result.lines.len());
         assert_eq!("这是Heading标题", lint_result.lines[0].old);

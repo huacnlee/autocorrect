@@ -41,6 +41,6 @@ region:
   "abc字段": abc 字段
 "#;
 
-        assert_eq!(expect, format_yaml(example).to_string())
+        assert_eq!(expect, format_for(example, "yaml").to_string())
     }
 }

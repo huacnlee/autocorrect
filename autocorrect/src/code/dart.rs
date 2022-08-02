@@ -65,6 +65,6 @@ String helloWorld(String name) {
 }
 "###;
 
-        assert_eq!(expect, format_dart(example).to_string());
+        assert_eq!(expect, format_for(example, "dart").to_string());
     }
 }

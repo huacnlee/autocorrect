@@ -53,6 +53,6 @@ public String helloWorld(stirng name) {
 }
 "###;
 
-        assert_eq!(expect, format_csharp(example).to_string());
+        assert_eq!(expect, format_for(example, "csharp").to_string());
     }
 }

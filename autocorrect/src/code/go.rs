@@ -54,6 +54,6 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
 }
 "###;
 
-        assert_eq!(expect, format_go(example).to_string());
+        assert_eq!(expect, format_for(example, "go").to_string());
     }
 }

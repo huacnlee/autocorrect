@@ -45,6 +45,6 @@ mod tests {
 "60分" = "60 分";
 "###;
 
-        assert_eq!(expect, format_strings(example).to_string());
+        assert_eq!(expect, format_for(example, "strings").to_string());
     }
 }

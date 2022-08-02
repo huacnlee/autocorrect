@@ -49,6 +49,6 @@ mod tests {
 }
 "###;
 
-        assert_eq!(expect, format_css(example).to_string());
+        assert_eq!(expect, format_for(example, "css").to_string());
     }
 }

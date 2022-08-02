@@ -43,6 +43,6 @@ def hello(a, b: "第 1 个参数")
 end
 "###;
 
-        assert_eq!(expect, format_ruby(example).to_string());
+        assert_eq!(expect, format_for(example, "ruby").to_string());
     }
 }

@@ -82,6 +82,6 @@ mod tests {
         具体来说，我们将会学习变量、基本类型、函数、注释和控制流。
         \end{document}"###;
 
-        assert_eq!(expected, format_latex(example).to_string());
+        assert_eq!(expected, format_for(example, "latex").to_string());
     }
 }

@@ -47,6 +47,6 @@ func helloWorld(name: String) -> String {
 }
 "###;
 
-        assert_eq!(expect, format_swift(example).to_string());
+        assert_eq!(expect, format_for(example, "swift").to_string());
     }
 }

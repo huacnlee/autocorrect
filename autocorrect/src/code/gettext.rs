@@ -53,6 +53,6 @@ msgid_plural "密码长度要求最少6个字符."
 msgstr "密码长度要求最少 6 个字符。"
 "###;
 
-        assert_eq!(expect, format_gettext(example).to_string());
+        assert_eq!(expect, format_for(example, "gettext").to_string());
     }
 }

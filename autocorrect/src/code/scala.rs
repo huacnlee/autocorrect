@@ -59,6 +59,6 @@ object Test {
 }
 "###;
 
-        assert_eq!(expect, format_scala(example).to_string());
+        assert_eq!(expect, format_for(example, "scala").to_string());
     }
 }

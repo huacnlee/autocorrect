@@ -104,6 +104,6 @@ mod tests {
         AutoCorrect spend time: 21ms
         ...."###;
 
-        assert_eq!(expected, format_asciidoc(example).to_string());
+        assert_eq!(expected, format_for(example, "asciidoc").to_string());
     }
 }

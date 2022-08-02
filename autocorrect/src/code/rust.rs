@@ -99,6 +99,6 @@ fn main() {
 }
 "###;
 
-        assert_eq!(expect, format_rust(example).to_string());
+        assert_eq!(expect, format_for(example, "rust").to_string());
     }
 }

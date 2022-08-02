@@ -39,6 +39,6 @@ title = "TOML範例"
   dc = "eqdc10"
 "###;
 
-        assert_eq!(expect, format_conf(example).to_string());
+        assert_eq!(expect, format_for(example, "conf").to_string());
     }
 }

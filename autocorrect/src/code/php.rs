@@ -57,6 +57,6 @@ mod tests {
 </div>
 "###;
 
-        assert_eq!(expect, format_php(example).to_string());
+        assert_eq!(expect, format_for(example, "php").to_string());
     }
 }

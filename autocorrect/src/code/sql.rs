@@ -39,6 +39,6 @@ COMMENT ON COLUMN "topics"."status" IS '3 屏蔽 1 审核中 2 已发布';
 COMMENT ON COLUMN "topics"."kind" IS '0 普通 1 转发';
 "#;
 
-        assert_eq!(expect, format_sql(example).to_string());
+        assert_eq!(expect, format_for(example, "sql").to_string());
     }
 }

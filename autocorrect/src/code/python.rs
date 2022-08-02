@@ -62,6 +62,6 @@ def hello(a):
   print('你好 hello 世界')
 "###;
 
-        assert_eq!(expect, format_python(example).to_string());
+        assert_eq!(expect, format_for(example, "python").to_string());
     }
 }

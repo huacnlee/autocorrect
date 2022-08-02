@@ -51,6 +51,6 @@ mod tests {
 }
 "###;
 
-        assert_eq!(expect, format_json(example).to_string());
+        assert_eq!(expect, format_for(example, "json").to_string());
     }
 }

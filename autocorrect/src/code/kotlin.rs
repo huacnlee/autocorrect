@@ -53,6 +53,6 @@ fun helloWorld(name: String) {
 }
 "###;
 
-        assert_eq!(expect, format_kotlin(example).to_string());
+        assert_eq!(expect, format_for(example, "kotlin").to_string());
     }
 }

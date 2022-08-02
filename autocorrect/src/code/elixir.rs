@@ -65,6 +65,6 @@ defmodule Test do
 end
 "###;
 
-        assert_eq!(expect, format_elixir(example).to_string());
+        assert_eq!(expect, format_for(example, "elixir").to_string());
     }
 }

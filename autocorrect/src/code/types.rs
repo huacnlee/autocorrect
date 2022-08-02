@@ -102,7 +102,7 @@ lazy_static! {
 pub fn match_filename(filename_or_ext: &str) -> &str {
     let ext = get_file_extension(filename_or_ext);
     if !is_support_type(ext.as_str()) {
-        return "";
+        return filename_or_ext;
     }
 
     return FILE_TYPES[ext.as_str()];

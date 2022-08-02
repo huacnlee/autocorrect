@@ -57,6 +57,6 @@ public String helloWorld() {
 }
 "###;
 
-        assert_eq!(expect, format_java(example).to_string());
+        assert_eq!(expect, format_for(example, "java").to_string());
     }
 }
