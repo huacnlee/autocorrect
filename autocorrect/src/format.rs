@@ -31,8 +31,6 @@ lazy_static! {
         // SpecialSymbol
         Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
         Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
-        // @ after CJK, not not before, 你好 @某某
-        Strategery::new(r"\p{CJK}", r"[!@]"),
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
         Strategery::new(r"[\]\)!]", r"\p{CJK}"),
     ];
@@ -197,8 +195,8 @@ mod tests {
             "记事本,记事本显示阅读次数#149" => "记事本，记事本显示阅读次数#149",
             "HashTag的演示#标签" => "HashTag 的演示#标签",
             "HashTag 的演示#标签#演示" =>         "HashTag 的演示#标签#演示",
-            "Mention里面有关于中文的@某某人" =>        "Mention 里面有关于中文的 @某某人",
-            "里面用@foo符号的话后面的变量名会被替换成userN" => "里面用 @foo 符号的话后面的变量名会被替换成 userN",
+            "Mention里面有关于中文的@某某人" =>        "Mention 里面有关于中文的@某某人",
+            "Mention里面有关于中文的 @huacnlee 测试" =>        "Mention 里面有关于中文的 @huacnlee 测试",
             "Dollar的演示$阿里巴巴.US$股票标签" =>    "Dollar 的演示$阿里巴巴.US$股票标签",
             "测试英文,逗号Comma转换." =>    "测试英文，逗号 Comma 转换。",
             "测试英文,Comma逗号转换." =>    "测试英文，Comma 逗号转换。",
@@ -218,7 +216,7 @@ mod tests {
             "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊format字符" => "内容带有%s或%d或%v特殊字符，或者%S或%D或%V这些特殊 format 字符",
             "内容带有$1或$2或$3特殊字符" => "内容带有$1或$2或$3特殊字符",
             "来自Yahoo!的文档" => "来自 Yahoo! 的文档",
-            "规则后面是否跟随者!import以及规则的来源" => "规则后面是否跟随者 !import 以及规则的来源",
+            "规则后面是否跟随者!import以及规则的来源" => "规则后面是否跟随者!import 以及规则的来源",
         ];
 
         assert_cases(cases);
