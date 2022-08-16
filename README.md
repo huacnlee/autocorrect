@@ -11,7 +11,7 @@
 
 A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 
-Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to checking soure code, and output as colorized diff with corrected suggest. You can intergrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
+Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and output as colorized diff with corrected suggest. You can integrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
 
 基于 Rust 编写的 CLI 工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，纠正单词，同时尝试以安全的方式自动纠正标点符号等等。
 
@@ -29,14 +29,14 @@ Other implements for programming:
 
 ## Features
 
-- Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
+- Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
 - Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, Python, Objective-C, Swift, Java, Kotlin, Dart, JavaScript, CSharp ...).
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
-- Speelcheck and correct words by your own dictionary.
-- Lint checking and output diff or JSON result, so you can integrating to everwhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
-- Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you wants ignore.
-- [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for MacOS, (Windows, Linux WIP).
+- Spellcheck and correct words by your own dictionary.
+- Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
+- Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
+- [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
 
@@ -48,7 +48,7 @@ Other implements for programming:
 $ curl -sSL https://git.io/JcGER | bash
 ```
 
-after that, you will get `/usr/local/bin/autocorrect` command.
+After that, you will get `/usr/local/bin/autocorrect` command.
 
 ```bash
 AutoCorrect 1.9.0
@@ -84,7 +84,7 @@ SUBCOMMANDS:
 
 > After: 1.9.0
 
-AutoCorrect allows you to upgrade it self by `autocorrect update` command.
+AutoCorrect allows you to upgrade itself by `autocorrect update` command.
 
 ```bash
 $ autocorrect update
@@ -95,7 +95,7 @@ $ autocorrect update
 ## Usage
 
 - [Using CLI](#using-cli)
-- [Confirguation](#configuration)
+- [Configuration](#configuration)
 - [VS Code Extension](#vs-code-extension)
 - [Use for JavaScript](#use-for-javascript)
 - [Use for Rust](#use-for-rust)
@@ -173,7 +173,7 @@ spellcheck:
 
 **Use `.autocorrectignore` to ignore files**
 
-Some times, you may wants ignore some special files that not wants to check.
+Sometimes, you may want to ignore some special files that not wants to check.
 
 By default, the file matched `.gitignore` rule will be ignored.
 
@@ -184,9 +184,9 @@ You can also use `.autocorrectignore` to ignore other files, format like `.gitig
 If you just want to disable some special lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
 when AutoCorrect matched comment include that, it will disable temporary.
 
-And then, you can use `autocorrect: true` or `autocorrect-enable` to reopen it agian.
+And then, you can use `autocorrect: true` or `autocorrect-enable` to reopen it again.
 
-For example in JavaScript:
+For example, in JavaScript:
 
 ```js
 function hello() {
@@ -197,7 +197,7 @@ function hello() {
 }
 ```
 
-The out put will:
+The output will:
 
 ```js
 function hello() {
@@ -271,7 +271,7 @@ autocorrect.then((autocorrect) => {
 
 ### Use for Rust
 
-In your Cargo.toml
+In your `Cargo.toml`
 
 ```toml
 [dependencies]
@@ -309,7 +309,7 @@ fn main() {
 	// => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
 ```
 
-Use `autocorrect::format_html` to format html content.
+Use `autocorrect::format_html` to format HTML content.
 
 ```rust
 extern crate autocorrect;
@@ -365,15 +365,6 @@ test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
 | spellcheck | 50          | 0.037 ms |
 | spellcheck | 100         | 0.057 ms |
 | spellcheck | 400         | 0.195 ms |
-
-## TODO
-
-- [x] Lint
-- [x] Lint for HTML, Markdown
-- [x] Lint for Plain text by each line
-- [x] Disable next line
-- [x] Speelcheck
-- [x] Config file `.autocorrectrc`
 
 ## License
 
