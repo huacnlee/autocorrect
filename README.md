@@ -1,4 +1,4 @@
-# AutoCorrrect
+# AutoCorrect
 
 [![Go](https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg)](https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/huacnlee/autocorrect?label=Version)](https://github.com/huacnlee/autocorrect/releases)
