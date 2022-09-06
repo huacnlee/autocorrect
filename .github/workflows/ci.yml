@@ -22,6 +22,19 @@ jobs:
       - name: Test
         run: cargo test
 
+  test_node:
+    name: Test for Node.js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
       - name: Test Node.js
         run: make test:node
 
