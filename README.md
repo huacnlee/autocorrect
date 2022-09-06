@@ -98,6 +98,7 @@ $ autocorrect update
 - [Configuration](#configuration)
 - [VS Code Extension](#vs-code-extension)
 - [Use for JavaScript](#use-for-javascript)
+- [Use for Node.js](#use-for-nodejs)
 - [Use for Rust](#use-for-rust)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
@@ -267,6 +268,23 @@ autocorrect.then((autocorrect) => {
   const out = autocorrect.formatHTML(raw);
   // "<p>你好 Hello 世界</p>"
 });
+```
+
+### Use for Node.js
+
+When you wants use AutoCorrect in Node.js, you must install `@huacnlee/autocorrect-node`.
+
+```bash
+yarn add @huacnlee/autocorrect-node
+```
+
+And then:
+
+```js
+const autocorrect = require('@huacnlee/autocorrect-node');
+
+autocorrect.format("你好Hello世界");
+// "你好 Hello 世界"
 ```
 
 ### Use for Rust

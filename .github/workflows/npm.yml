@@ -41,9 +41,16 @@ jobs:
       - name: Install wasm-opt
         run: sudo apt install -y binaryen
 
-      - name: Publish NPM
+      - name: Publish NPM for Bundler
         run: |
           echo $(git describe --abbrev=0 --tags | sed "s/^v//")
           make wasm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish NPM for Node.js
+        run: |
+          echo $(git describe --abbrev=0 --tags | sed "s/^v//")
+          make node:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
