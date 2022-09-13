@@ -66,6 +66,8 @@ mod tests {
             "openios" => "openios",
             "diff_ws_ios\n" => "diff_ws_ios\n",
             "diff_ws_ios " => "diff_ws_ios ",
+            "this-is-ios" => "this-is-ios",
+            "[1]: https://example.com/xxx/yyy/zzz-ios" => "[1]: https://example.com/xxx/yyy/zzz-ios",
             "https://ios.com" => "https://ios.com",
             "support@ios.com" => "support@ios.com",
             "开放 IOS 接口" => "开放 iOS 接口",
@@ -95,7 +97,7 @@ mod tests {
             r#""IOS""# => r#""IOS""#,
             r#"'IOS'"# => r#"'IOS'"#,
             r#""IOS 11""# => r#""IOS 11""#,
-            r#"key: "ios", value: "ipad""# => r#"key: "ios", value: "ipad""#
+            r#"key: "ios", value: "ipad""# => r#"key: "ios", value: "ipad""#,
         ];
 
         assert_spellcheck_cases(cases);
