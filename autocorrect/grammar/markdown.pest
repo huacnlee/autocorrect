@@ -1,7 +1,7 @@
 item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | text | newline }
 
-inline = _{ img | link | mark | wikilinks}
+inline = _{ comment | img | link | mark | wikilinks}
 block = ${ PUSH(block_prefix) ~ space ~ inline* ~ string }
 
 expr = _{ codeblock | inline | td_tag | block }
@@ -37,3 +37,6 @@ mark = ${ PUSH(mark_tag) ~ (!(PEEK) ~ string)  ~ PUSH(mark_tag) }
 text = { ( !(expr | inline | newline) ~ ANY)+ }
 string = ${ (!(newline | inline) ~ ANY)* }
 
+comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
+comment_tag_start = _{  "<!--" }
+comment_tag_end = _{ "-->" }

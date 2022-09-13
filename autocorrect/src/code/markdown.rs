@@ -33,6 +33,8 @@ mod tests {
 
     - 你可以[添加新的条目](#Glossary)或完善条目。
 
+    <!-- 这里是comment文字 -->
+
     你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
     https://google.com/foo/__ios__/**ios**
@@ -59,6 +61,10 @@ mod tests {
     ```json
     { "json的key处理": "你好hello" }
     ```
+
+    <!-- autocorrect: false -->
+    这段应该ignore掉，不应该处理。
+    <!-- autocorrect: true -->
 
     ```foobardar
     这种非String类型的不会格式化
@@ -93,6 +99,8 @@ mod tests {
 
     - 你可以[添加新的条目](#Glossary)或完善条目。
 
+    <!-- 这里是 comment 文字 -->
+
     你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
     https://google.com/foo/__ios__/**ios**
@@ -119,6 +127,10 @@ mod tests {
     ```json
     { "json的key处理": "你好 hello" }
     ```
+
+    <!-- autocorrect: false -->
+    这段应该ignore掉，不应该处理。
+    <!-- autocorrect: true -->
 
     ```foobardar
     这种非String类型的不会格式化
