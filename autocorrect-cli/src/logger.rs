@@ -1,5 +1,8 @@
 use log::{Metadata, Record};
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    time::SystemTime,
+};
 
 #[derive(Debug)]
 pub struct Logger;
@@ -33,5 +36,16 @@ impl log::Log for Logger {
 
     fn flush(&self) {
         io::stdout().flush().unwrap();
+    }
+}
+
+pub trait SystemTimeDuration {
+    /// Time elapsed duration in ms
+    fn elapsed_millis(&self) -> u128;
+}
+
+impl SystemTimeDuration for SystemTime {
+    fn elapsed_millis(&self) -> u128 {
+        self.elapsed().unwrap_or_default().as_millis()
     }
 }

@@ -3,6 +3,7 @@ use clap::Parser;
 use initializer::InitOption;
 use std::fs;
 use std::path::Path;
+use std::time::SystemTime;
 
 mod cli;
 mod initializer;
@@ -12,6 +13,7 @@ mod update;
 
 use cli::Cli;
 use logger::Logger;
+use logger::SystemTimeDuration;
 use threadpool::ThreadPool;
 
 extern crate autocorrect;
@@ -68,7 +70,7 @@ pub fn main() {
     let mut arg_files = cli.files.clone().into_iter();
 
     // calc run time
-    let start_t = std::time::SystemTime::now();
+    let start_t = SystemTime::now();
     let mut lint_results: Vec<String> = Vec::new();
     let (tx, rx) = std::sync::mpsc::channel();
 
@@ -96,8 +98,9 @@ pub fn main() {
         match result {
             Ok(entry) => {
                 let path = entry.path();
+                let path_str = path.to_str().unwrap_or("");
 
-                if ignorer.is_ignored(path.to_str().unwrap()) {
+                if ignorer.is_ignored(path_str) {
                     // skip ignore file
                     continue;
                 }
@@ -109,53 +112,36 @@ pub fn main() {
 
                 // println!("{}", path.display());
 
-                let filepath = String::from(path.to_str().unwrap());
-                let mut filetype = autocorrect::get_file_extension(filepath.as_str());
-                if cli.filetype.is_some() {
-                    filetype = cli.filetype.clone().unwrap();
+                let filepath = String::from(path_str);
+                let mut filetype = autocorrect::get_file_extension(&filepath);
+                if let Some(ref ftype) = cli.filetype {
+                    filetype = ftype.clone();
                 }
-                if !autocorrect::is_support_type(filetype.as_str()) {
+                if !autocorrect::is_support_type(&filetype) {
                     continue;
                 }
 
-                let tx = tx.clone();
                 let cli = cli.clone();
+                let tx = tx.clone();
                 let filepath = filepath.clone();
                 let filetype = filetype.clone();
 
                 pool.execute(move || {
                     if let Ok(raw) = fs::read_to_string(&filepath) {
-                        let file_start_t = std::time::SystemTime::now();
+                        let file_start_t = SystemTime::now();
 
                         if cli.lint {
                             let mut lint_results: Vec<String> = Vec::new();
-                            lint_and_output(
-                                filepath.as_str(),
-                                filetype.as_str(),
-                                raw.as_str(),
-                                &cli,
-                                &mut lint_results,
-                            );
+                            lint_and_output(&filepath, &filetype, &raw, &cli, &mut lint_results);
 
                             for lint_result in lint_results {
                                 tx.send(lint_result).unwrap();
                             }
                         } else {
-                            format_and_output(
-                                filepath.as_str(),
-                                filetype.as_str(),
-                                raw.as_str(),
-                                &cli,
-                            );
+                            format_and_output(&filepath, &filetype, &raw, &cli);
                         }
 
-                        if cli.debug {
-                            log::info!(
-                                "{} {}ms\n",
-                                filepath,
-                                file_start_t.elapsed().unwrap().as_millis()
-                            );
-                        }
+                        log::debug!("{} {}ms\n", filepath, file_start_t.elapsed_millis());
                     }
                 });
             }
@@ -191,12 +177,10 @@ pub fn main() {
             }
 
             // print time spend from start_t to now
-            log::info!(
-                "AutoCorrect spend time {}ms\n",
-                start_t.elapsed().unwrap().as_millis()
-            );
+            log::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
 
             if !lint_results.is_empty() {
+                // Exit with code = 1
                 std::process::exit(1);
             }
         }
@@ -204,10 +188,7 @@ pub fn main() {
         log::info!("Done.\n");
 
         // print time spend from start_t to now
-        log::info!(
-            "AutoCorrect spend time: {}ms\n",
-            start_t.elapsed().unwrap().as_millis()
-        );
+        log::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
     }
 }
 
