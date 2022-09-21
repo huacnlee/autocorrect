@@ -25,7 +25,7 @@ Other implements for programming:
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
 - Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
+- Go - [go-auto-correct](https://github.com/longbridgeapp/autocorrect)
 
 ## Features
 
@@ -40,7 +40,7 @@ Other implements for programming:
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
 
-## Install
+## Installation
 
 > 🍏 AutoCorrect 还为非技术人员提供了比较简单的桌面端版本，如有需要可访问 [Download](https://github.com/huacnlee/autocorrect/releases) 页面来下载。
 
@@ -48,10 +48,16 @@ Other implements for programming:
 $ curl -sSL https://git.io/JcGER | bash
 ```
 
-After that, you will get `/usr/local/bin/autocorrect` command.
+Or you can use Cargo install:
 
 ```bash
-AutoCorrect 1.9.0
+$ cargo install autocorrect
+```
+
+After that, you will get `autocorrect` command.
+
+```bash
+AutoCorrect 1.11.0
 Jason Lee <huacnlee@gmail.com
 A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 

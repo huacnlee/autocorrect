@@ -5,6 +5,5 @@ exclude = [
 members = [
   "autocorrect",
   "autocorrect-wasm",
-  "autocorrect-derive",
-  "autocorrect-cli",
+  "autocorrect-derive", # "autocorrect-cli",
 ]

@@ -1,10 +1,10 @@
 // autocorrect: false
 use clap::Parser;
-use initializer::InitOption;
 use std::fs;
 use std::io;
 use std::path::Path;
 use std::time::SystemTime;
+use threadpool::ThreadPool;
 
 mod cli;
 mod initializer;
@@ -13,9 +13,9 @@ mod progress;
 mod update;
 
 use cli::Cli;
+use initializer::InitOption;
 use logger::Logger;
 use logger::SystemTimeDuration;
-use threadpool::ThreadPool;
 
 extern crate autocorrect;
 

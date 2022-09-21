@@ -4,9 +4,9 @@ LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 bench:
 	cargo bench
 run:
-	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template
+	cargo run --features=bin -- --lint --config $(WORKDIR)/.autocorrectrc.template
 run\:json:
-	cargo run -- --lint --format json
+	cargo run --features=bin -- --lint --format json
 build:
 	cargo build --release --target aarch64-apple-darwin
 	ls -lha target/aarch64-apple-darwin/release/autocorrect
