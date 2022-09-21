@@ -29,6 +29,10 @@ mod tests {
 
     它指向一个[示例](#示例)
 
+    ## Test multiple code will not deadlock
+
+    `svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
+
     > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
     - 你可以[添加新的条目](#Glossary)或完善条目。
@@ -37,7 +41,7 @@ mod tests {
 
     你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
-    https://google.com/foo/__ios__/**ios**
+    https://google.com/foo/__ios__
 
     **加粗** 
     *倾斜*
@@ -95,6 +99,10 @@ mod tests {
 
     它指向一个[示例](#示例)
 
+    ## Test multiple code will not deadlock
+
+    `svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
+
     > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
     - 你可以[添加新的条目](#Glossary)或完善条目。
@@ -103,7 +111,7 @@ mod tests {
 
     你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
-    https://google.com/foo/__ios__/**ios**
+    https://google.com/foo/__ios__
 
     **加粗** 
     *倾斜*

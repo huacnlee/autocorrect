@@ -28,7 +28,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
 
 fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
     let rule = item.as_rule();
-    return format!("{:?}", rule);
+    format!("{:?}", rule)
 }
 
 fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
@@ -37,7 +37,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
     // println!("rule: {}", rule_name);
 
     match rule_name.as_str() {
-        "string" | "link_string" | "text" | "comment" => {
+        "string" | "link_string" | "mark_string" | "text" | "comment" => {
             format_or_lint(results, &rule_name, item);
         }
         "inline_style" | "inline_javascript" | "codeblock" => {
