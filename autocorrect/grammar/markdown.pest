@@ -1,10 +1,11 @@
 item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | text | newline }
 
+expr = _{ meta_info | codeblock | inline | td_tag | block }
+
 inline = _{ comment | img | link | mark | wikilinks }
 block = ${ block_prefix ~ space ~ inline* ~ string }
 
-expr = _{ codeblock | inline | td_tag | block }
 newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
 codeblock = ${
@@ -22,6 +23,10 @@ mark_tag = @{
 block_prefix = @{
   "######" | "#####" | "####" | "###" | "##" | "#" | "*" | "-" | ">"
 }
+
+meta_info = { PUSH("-"{3,}) ~ newline ~ meta_pair* ~ PEEK ~ newline* }
+meta_pair = { meta_key ~ ":" ~ string ~ newline }
+meta_key = { (!":" ~ ANY)* }
 
 image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
