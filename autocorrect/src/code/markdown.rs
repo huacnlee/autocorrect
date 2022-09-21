@@ -74,6 +74,10 @@ mod tests {
     这种非String类型的不会格式化
     ```
 
+    ## HTML
+
+    <div><h2>这是H2标题</h2><p>这里是p段落。</p></div>
+
     ```md
     ![流程图片](../../static/xxxx.png)
     ```
@@ -143,6 +147,10 @@ mod tests {
     ```foobardar
     这种非String类型的不会格式化
     ```
+
+    ## HTML
+
+    <div><h2>这是 H2 标题</h2><p>这里是 p 段落。</p></div>
 
     ```md
     ![流程图片](../../static/xxxx.png)

@@ -177,4 +177,66 @@ mod tests {
         assert_eq!("这是Heading标题", lint_result.lines[0].old);
         assert_eq!("这是 Heading 标题", lint_result.lines[0].new);
     }
+
+    #[test]
+    fn test_bar_html() {
+        let raw = r#"
+        <table>
+            <thead>
+                <tr>
+                <th>1<sup>3</sup> equals:
+                <th>2<sup>3</sup> equals:
+                <th>3<sup>3</sup> equals:
+                <th>4<sup>3</sup> equals:
+                <th>5<sup>3</sup> equals:
+                <th>6<sup>3</sup> equals:
+                <th>7<sup>3</sup> equals:
+            <tbody>
+                <tr>
+                <td>row 1: 1
+                <td>row 1: 8
+                <td>row 1: 27
+                <td>row 1: 64
+                <td>row 1: 125
+                <td>row 1: 216
+                <td>row 1: 343
+                <tr>
+                <td>row 2: 1
+                <td>row 2: 8
+                <td>row 2: 27
+                <td>row 2: 64
+                <td>row 2: 125
+                <td>row 2: 216
+                <td>row 2: 343
+                <tr>
+                <td>row 3: 1
+                <td>row 3: 8
+                <td>row 3: 27
+                <td>row 3: 64
+                <td>row 3: 125
+                <td>row 3: 216
+                <td>row 3: 343
+                <tr>
+                <td>row 4: 1
+                <td>row 4: 8
+                <td>row 4: 27
+                <td>row 4: 64
+                <td>row 4: 125
+                <td>row 4: 216
+                <td>row 4: 343
+                <tr>
+                <td>row 5: 1
+                <td>row 5: 8
+                <td>row 5: 27
+                <td>row 5: 64
+                <td>row 5: 125
+                <td>row 5: 216
+                <td>row 5: 343
+            </table>
+        "#;
+
+        // Bad HTML will return raw text
+        let out = format_for(raw, "html");
+        assert_eq!(raw, out.out)
+    }
 }

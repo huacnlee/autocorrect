@@ -10,6 +10,9 @@ use serde::{Deserialize, Serialize};
 use std::result::Result;
 
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
+    // Limit parse stack max depth for avoiding some complex parser will hangs indefinitely.
+    pest::set_call_limit(Some(10_000_000usize.try_into().unwrap()));
+
     let mut out = out;
 
     match pairs {
@@ -203,28 +206,36 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     if results.is_lint() {
         if rule_name == "inline_style" {
             let sub_reuslts = lint_for(part, "css");
+            if sub_reuslts.has_error() {
+                results.error(&sub_reuslts.error);
+            }
+
             for line in sub_reuslts.lines {
                 results.push(line);
             }
-            results.error(sub_reuslts.error.as_str());
 
             return;
         } else if rule_name == "inline_javascript" {
             let sub_reuslts = lint_for(part, "js");
+            if sub_reuslts.has_error() {
+                results.error(&sub_reuslts.error);
+            }
+
             for line in sub_reuslts.lines {
                 results.push(line);
             }
-            results.error(sub_reuslts.error.as_str());
 
             return;
         } else if rule_name == "codeblock" {
             let codeblock = Codeblock::from_pair(item);
             let sub_reuslts = lint_for(&codeblock.code, &codeblock.lang);
+            if sub_reuslts.has_error() {
+                results.error(&sub_reuslts.error);
+            }
 
             for line in sub_reuslts.lines {
                 results.push(line);
             }
-            results.error(sub_reuslts.error.as_str());
 
             return;
         }
@@ -232,27 +243,34 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 
     if rule_name == "inline_style" {
         let sub_reuslts = format_for(part, "css");
+        if sub_reuslts.has_error() {
+            results.error(&sub_reuslts.error);
+        }
         results.push(LineResult {
             line: 0,
             col: 0,
             old: String::from(part),
             new: sub_reuslts.out,
         });
-        results.error(sub_reuslts.error.as_str());
     } else if rule_name == "inline_javascript" {
         let sub_reuslts = format_for(part, "js");
+        if sub_reuslts.has_error() {
+            results.error(&sub_reuslts.error);
+        }
         results.push(LineResult {
             line: 0,
             col: 0,
             old: String::from(part),
             new: sub_reuslts.out,
         });
-        results.error(sub_reuslts.error.as_str());
     } else if rule_name == "codeblock" {
         // WARNING: nested codeblock, when call format_for again.
         // Because codeblock.data has wrap chars, this make overflowed its stack.
         let mut codeblock = Codeblock::from_pair(item);
         let sub_reuslts = format_for(&codeblock.code, &codeblock.lang);
+        if sub_reuslts.has_error() {
+            results.error(&sub_reuslts.error);
+        }
 
         codeblock.update_data(&sub_reuslts.out);
 
@@ -262,7 +280,6 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             old: String::from(part),
             new: codeblock.data,
         });
-        results.error(sub_reuslts.error.as_str());
     }
 }
 
@@ -356,7 +373,7 @@ impl FormatResult {
     }
 }
 
-impl<'a> Results for FormatResult {
+impl Results for FormatResult {
     fn push(&mut self, line_result: LineResult) {
         self.out.push_str(line_result.new.as_str());
     }
@@ -367,6 +384,8 @@ impl<'a> Results for FormatResult {
     }
 
     fn error(&mut self, err: &str) {
+        // Revert out to raw when has error, make sure return raw value.
+        self.out = self.raw.clone();
         self.error = String::from(err);
     }
 
