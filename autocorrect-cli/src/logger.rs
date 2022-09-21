@@ -41,11 +41,16 @@ impl log::Log for Logger {
 
 pub trait SystemTimeDuration {
     /// Time elapsed duration in ms
-    fn elapsed_millis(&self) -> u128;
+    fn elapsed_millis(&self) -> f64;
 }
 
 impl SystemTimeDuration for SystemTime {
-    fn elapsed_millis(&self) -> u128 {
-        self.elapsed().unwrap_or_default().as_millis()
+    fn elapsed_millis(&self) -> f64 {
+        let micros = self.elapsed().unwrap_or_default().as_micros();
+        if micros == 0 {
+            return 0.0;
+        }
+
+        micros as f64 / 1_000.00
     }
 }
