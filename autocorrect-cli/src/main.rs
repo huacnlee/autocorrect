@@ -2,6 +2,7 @@
 use clap::Parser;
 use initializer::InitOption;
 use std::fs;
+use std::io;
 use std::path::Path;
 use std::time::SystemTime;
 
@@ -127,9 +128,9 @@ pub fn main() {
                 let filetype = filetype.clone();
 
                 pool.execute(move || {
-                    if let Ok(raw) = fs::read_to_string(&filepath) {
-                        let file_start_t = SystemTime::now();
-
+                    if let Ok(raw) = read_file(&filepath) {
+                        let t = SystemTime::now();
+                        log::debug!("Process {}", filepath);
                         if cli.lint {
                             let mut lint_results: Vec<String> = Vec::new();
                             lint_and_output(&filepath, &filetype, &raw, &cli, &mut lint_results);
@@ -141,7 +142,7 @@ pub fn main() {
                             format_and_output(&filepath, &filetype, &raw, &cli);
                         }
 
-                        log::debug!("{} {}ms\n", filepath, file_start_t.elapsed_millis());
+                        log::debug!("Done {} {}ms\n", filepath, t.elapsed_millis());
                     }
                 });
             }
@@ -192,6 +193,17 @@ pub fn main() {
     }
 }
 
+fn read_file(filepath: &str) -> io::Result<String> {
+    let t = SystemTime::now();
+    log::debug!("Loading {} ...", filepath);
+
+    let out = fs::read_to_string(&filepath);
+
+    log::debug!("Loaded {} {}ms", filepath, t.elapsed_millis());
+
+    out
+}
+
 fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
     let result = autocorrect::format_for(raw, filetype);
 
@@ -204,16 +216,16 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
         // do not rewrite ignored file
         if !filepath.is_empty() {
             if result.out.eq(&String::from(raw)) {
-                progress::ok(true);
+                progress::ok(!cli.debug);
             } else {
-                progress::err(true);
+                progress::err(!cli.debug);
             }
 
             fs::write(Path::new(filepath), result.out).unwrap();
         }
     } else {
         if result.has_error() {
-            println!("{}", raw);
+            log::error!("{}", raw);
             return;
         }
 
@@ -234,11 +246,13 @@ fn lint_and_output(
     result.filepath = String::from(filepath);
 
     // do not print anything, when not lint results
-    if result.lines.is_empty() {
-        progress::ok(diff_mode);
-        return;
-    } else {
-        progress::err(diff_mode);
+    if !cli.debug {
+        if result.lines.is_empty() {
+            progress::ok(diff_mode);
+            return;
+        } else {
+            progress::err(diff_mode);
+        }
     }
 
     if diff_mode {
