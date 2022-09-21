@@ -185,6 +185,13 @@ fn bench_spellcheck_400(b: &mut Bencher) {
     挂一个，往背包里塞一个，在打开查找 app 时，除了能追踪自己的 Apple 设备之外，你还能看到钥匙和背包这些物品在哪里。只要放一个 AirTag，钱包在哪里这类问题会迎刃而解。通过查找 app 的全新“物品”标签页，都能让 AirTag 来指示物品位置。"));
 }
 
+fn bench_markdown(b: &mut Bencher) {
+    let raw = include_str!("./fixtures/markdown.md");
+    setup();
+
+    b.iter(|| format_for(raw, "markdown"))
+}
+
 benchmark_group!(
     format_benches,
     bench_format_50,
@@ -193,7 +200,8 @@ benchmark_group!(
     bench_format_html,
     bench_format_json,
     bench_format_javascript,
-    bench_format_json_with_2k_lines
+    bench_format_json_with_2k_lines,
+    bench_markdown
 );
 benchmark_group!(
     spellcheck_benches,
