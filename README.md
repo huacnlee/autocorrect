@@ -38,7 +38,7 @@ Other implements for programming:
 - Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
 
-<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/126027750-fce415a2-3141-4489-8863-ad3aae82d6dd.png">
+<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/191889781-6372ecef-426a-4c67-a1f3-790f8117808e.png">
 
 ## Install
 
@@ -219,7 +219,7 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 如下图：
 
-<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/126027685-cee6f91d-1a10-4fcc-b5f4-1a99ac4cd5ae.png">
+<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
 
 ### GitHub Action
 
