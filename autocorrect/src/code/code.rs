@@ -63,11 +63,13 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
     };
 }
 
+/// Format or Lint a matched item
 pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str, item: Pair<R>) {
     let part = item.as_str();
     let (line, col) = results.move_cursor(part);
 
-    // check autocorrect toggle
+    // Check AutoCorrect enable/disable toggle marker
+    // If disable results.is_enabled() will be false
     if rule_name == "comment" {
         match match_autocorrect_toggle(part) {
             Toggle::Disable => results.toggle(false),
@@ -77,7 +79,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     }
 
     if results.is_lint() {
-        // skip if not enable
+        // Skip lint if AutoCorrect disabled
         if !results.is_enabled() {
             return;
         }
@@ -126,7 +128,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     } else {
         let mut new_part = String::from(part);
 
-        // only for on enable
+        // Skip format if AutoCorrect disabled
         if results.is_enabled() {
             let lines = part.split('\n');
 
@@ -147,6 +149,81 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         results.push(LineResult {
             line,
             col,
+            old: String::from(part),
+            new: new_part,
+        });
+    }
+}
+
+/// Format / Lint for the inline scripts.
+///
+/// For example, The script / style in HTML or Codeblock in Markdown.
+fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
+    results: &mut O,
+    item: Pair<R>,
+    rule_name: &str,
+) {
+    let part = item.as_str();
+
+    results.move_cursor(part);
+
+    if results.is_lint() {
+        // Skip lint if AutoCorrect disabled
+        if !results.is_enabled() {
+            return;
+        }
+
+        let sub_result = match rule_name {
+            "inline_style" => Some(lint_for(part, "css")),
+            "inline_javascript" => Some(lint_for(part, "js")),
+            "codeblock" => {
+                let codeblock = Codeblock::from_pair(item);
+                Some(lint_for(&codeblock.code, &codeblock.lang))
+            }
+            _ => None,
+        };
+
+        if let Some(result) = sub_result {
+            if result.has_error() {
+                results.error(&result.error);
+            }
+
+            for line in result.lines {
+                results.push(line);
+            }
+        }
+    } else {
+        let mut new_part = String::from(part);
+
+        // Skip format if AutoCorrect disabled
+        if results.is_enabled() {
+            let sub_result = match rule_name {
+                "inline_style" => Some(format_for(part, "css")),
+                "inline_javascript" => Some(format_for(part, "js")),
+                "codeblock" => {
+                    // WARNING: nested codeblock, when call format_for again.
+                    // Because codeblock.data has wrap chars, this make overflowed its stack.
+                    let mut codeblock = Codeblock::from_pair(item);
+                    let mut result = format_for(&codeblock.code, &codeblock.lang);
+                    codeblock.update_data(&result.out);
+                    result.out = codeblock.data;
+                    Some(result)
+                }
+                _ => None,
+            };
+
+            if let Some(result) = sub_result {
+                if result.has_error() {
+                    results.error(&result.error);
+                }
+
+                new_part = result.out;
+            }
+        }
+
+        results.push(LineResult {
+            line: 0,
+            col: 0,
             old: String::from(part),
             new: new_part,
         });
@@ -193,96 +270,6 @@ impl Codeblock {
     }
 }
 
-// format_or_lint for inline scripts, for example, script/css in html
-fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
-    results: &mut O,
-    item: Pair<R>,
-    rule_name: &str,
-) {
-    let part = item.as_str();
-
-    results.move_cursor(part);
-
-    if results.is_lint() {
-        if rule_name == "inline_style" {
-            let sub_reuslts = lint_for(part, "css");
-            if sub_reuslts.has_error() {
-                results.error(&sub_reuslts.error);
-            }
-
-            for line in sub_reuslts.lines {
-                results.push(line);
-            }
-
-            return;
-        } else if rule_name == "inline_javascript" {
-            let sub_reuslts = lint_for(part, "js");
-            if sub_reuslts.has_error() {
-                results.error(&sub_reuslts.error);
-            }
-
-            for line in sub_reuslts.lines {
-                results.push(line);
-            }
-
-            return;
-        } else if rule_name == "codeblock" {
-            let codeblock = Codeblock::from_pair(item);
-            let sub_reuslts = lint_for(&codeblock.code, &codeblock.lang);
-            if sub_reuslts.has_error() {
-                results.error(&sub_reuslts.error);
-            }
-
-            for line in sub_reuslts.lines {
-                results.push(line);
-            }
-
-            return;
-        }
-    }
-
-    if rule_name == "inline_style" {
-        let sub_reuslts = format_for(part, "css");
-        if sub_reuslts.has_error() {
-            results.error(&sub_reuslts.error);
-        }
-        results.push(LineResult {
-            line: 0,
-            col: 0,
-            old: String::from(part),
-            new: sub_reuslts.out,
-        });
-    } else if rule_name == "inline_javascript" {
-        let sub_reuslts = format_for(part, "js");
-        if sub_reuslts.has_error() {
-            results.error(&sub_reuslts.error);
-        }
-        results.push(LineResult {
-            line: 0,
-            col: 0,
-            old: String::from(part),
-            new: sub_reuslts.out,
-        });
-    } else if rule_name == "codeblock" {
-        // WARNING: nested codeblock, when call format_for again.
-        // Because codeblock.data has wrap chars, this make overflowed its stack.
-        let mut codeblock = Codeblock::from_pair(item);
-        let sub_reuslts = format_for(&codeblock.code, &codeblock.lang);
-        if sub_reuslts.has_error() {
-            results.error(&sub_reuslts.error);
-        }
-
-        codeblock.update_data(&sub_reuslts.out);
-
-        results.push(LineResult {
-            line: 0,
-            col: 0,
-            old: String::from(part),
-            new: codeblock.data,
-        });
-    }
-}
-
 #[derive(PartialEq, Debug)]
 enum Toggle {
     None,
@@ -323,10 +310,11 @@ pub trait Results {
     fn error(&mut self, err: &str);
     fn to_string(&self) -> String;
     fn is_lint(&self) -> bool;
-    // toggle autocorrect template enable or disable
+    /// Toggle AutoCorrrect template enable or disable
     fn toggle(&mut self, enable: bool);
+    /// Is AutoCorrrect current is enable
     fn is_enabled(&self) -> bool;
-    // Move and save current line,col return the previus line number
+    /// Move and save current line,col return the previus line number
     fn move_cursor(&mut self, part: &str) -> (usize, usize);
 }
 
