@@ -24,9 +24,10 @@ block_prefix = @{
   "######" | "#####" | "####" | "###" | "##" | "#" | "*" | "-" | ">"
 }
 
-meta_info = { PUSH("-"{3,}) ~ newline ~ meta_pair* ~ PEEK ~ newline* }
-meta_pair = { meta_key ~ ":" ~ string ~ newline }
-meta_key = { (!":" ~ ANY)* }
+meta_info = ${ PUSH(meta_wrap) ~ newline ~ meta_pair* ~ PEEK ~ newline* }
+meta_wrap = @{ "-"{3,} }
+meta_pair = ${ meta_key ~ string ~ newline }
+meta_key = @{ (!":" ~ ANY)* ~ ":" ~ " "* }
 
 image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
@@ -44,5 +45,5 @@ string = ${ (!(newline | inline) ~ ANY)* }
 mark_string = {(!(PEEK | newline | inline) ~ ANY)* }
 
 comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
-comment_tag_start = _{  "<!--" }
-comment_tag_end = _{ "-->" }
+comment_tag_start = @{  "<!--" }
+comment_tag_end = @{ "-->" }
