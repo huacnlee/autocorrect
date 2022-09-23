@@ -1,10 +1,6 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-extern crate wee_alloc;
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 pub mod config;
 pub mod ignorer;
 

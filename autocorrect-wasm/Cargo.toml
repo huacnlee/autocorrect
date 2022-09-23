@@ -11,7 +11,6 @@ autocorrect = {path = "../autocorrect", version = ">=1.9.0"}
 serde = {version = "1.0.127", features = ["derive"]}
 serde_json = "1.0.66"
 wasm-bindgen = {version = "0.2.80", features = ["serde-serialize"]}
-wee_alloc = "0.4.5"
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = false
