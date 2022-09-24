@@ -388,7 +388,7 @@ test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
 
 ### Real world benchmark
 
-Use [MDN Translated Content](https://github.com/mdn/translated-content) project, about 30K files.
+With [MDN Translated Content](https://github.com/mdn/translated-content) project, it's has about 30K files.
 
 ```bash
 ~/work/translated-content $ autocorrect --fix
