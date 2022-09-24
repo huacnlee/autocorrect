@@ -2,7 +2,7 @@
 
 [![Go](https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg)](https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/huacnlee/autocorrect?label=Version)](https://github.com/huacnlee/autocorrect/releases)
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker%20Image)](https://hub.docker.com/r/huacnlee/autocorrect)
+[![Docker Image Version (latest server)](https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker%20Image)](https://hub.docker.com/r/huacnlee/autocorrect)
 [![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
 [![NPM](https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg)](https://badge.fury.io/js/%40huacnlee%2Fautocorrect)
 [![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect)
@@ -11,11 +11,11 @@
 
 A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 
-Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and output as colorized diff with corrected suggest. You can integrating to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
+Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and output as colorized diff with corrected suggest. You can integrate to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
 
 基于 Rust 编写的 CLI 工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，纠正单词，同时尝试以安全的方式自动纠正标点符号等等。
 
-类似 ESlint、Rubocop、Gofmt 等工具，AutoCorrect 可以用于 CI 环境，它提供 Lint 功能能便捷的检测出项目中有问题的文案，起到统一规范的作用。
+类似 ESlint、Rubocop、Gofmt 等工具，AutoCorrect 可以用于 CI 环境，它提供 Lint 功能，能便捷的检测出项目中有问题的文案，起到统一规范的作用。
 
 支持各种类型源代码文件，能自动识别文件名，并准确找到字符串、注释做自动纠正。
 
@@ -35,7 +35,7 @@ Other implements for programming:
 - Correct punctuations into Fullwidth near the CJK.
 - Spellcheck and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
-- Allows to use `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
+- Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/191889781-6372ecef-426a-4c67-a1f3-790f8117808e.png">
@@ -142,7 +142,7 @@ Fetching https://github.com/huacnlee/autocorrect/raw/main/.autocorrectrc.templat
 AutoCorrect init config: .autocorrectrc
 ```
 
-> NOTE: You you download fail, try to use `autocorrect init --local` command again.
+> NOTE: If you download fail, try to use `autocorrect init --local` command again.
 
 Now the `.autocorrectrc` file has created.
 
@@ -272,7 +272,7 @@ autocorrect.then((autocorrect) => {
 
 ### Use for Node.js
 
-When you wants use AutoCorrect in Node.js, you must install `@huacnlee/autocorrect-node`.
+When you want use AutoCorrect in Node.js, you must install `@huacnlee/autocorrect-node`.
 
 ```bash
 yarn add @huacnlee/autocorrect-node
