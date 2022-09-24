@@ -57,7 +57,8 @@ mod tests {
         <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
         <div class="content">
             <p>如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p>
-            <a href="#rust_和_webassembly_用例" title="Permalink to Rust 和 WebAssembly 用例">Rust和WebAssembly用例</a>
+            <a href="#link的href不处理" title="Permalink to Rust 和 WebAssembly 用例">Rust和WebAssembly用例</a>
+            <a href="https://zh.wikipedia.org/wiki/NTSC制式">NTSC制式</a>
             <h2>Rust和WebAssembly用例</h2>
             <div @click.prevent="hello" :name="foo" #bar="dar"><p>Rust 和 WebAssembly 有两大主要用例：</p>
             <ul>
@@ -99,7 +100,8 @@ mod tests {
         <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
         <div class="content">
             <p>如果你写了一些 Rust 代码，你可以把它编译成 WebAssembly！这份教程将带你编译 Rust 项目为 wasm 并在一个现存的 web 应用中使用它。</p>
-            <a href="#rust_和_webassembly_用例" title="Permalink to Rust 和 WebAssembly 用例">Rust 和 WebAssembly 用例</a>
+            <a href="#link的href不处理" title="Permalink to Rust 和 WebAssembly 用例">Rust 和 WebAssembly 用例</a>
+            <a href="https://zh.wikipedia.org/wiki/NTSC制式">NTSC 制式</a>
             <h2>Rust 和 WebAssembly 用例</h2>
             <div @click.prevent="hello" :name="foo" #bar="dar"><p>Rust 和 WebAssembly 有两大主要用例：</p>
             <ul>

@@ -32,9 +32,9 @@ meta_key = @{ (!":" ~ ANY)* ~ ":" ~ " "* }
 image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
 
-link = ${ link_string ~ link_url }
+link = ${ link_string ~ href }
 link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" }
-link_url = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
+href = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
 
 wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 

@@ -30,9 +30,9 @@ td_tag = @{ space ~ "|" ~ space }
 img_start = @{ "!" }
 img = ${ img_start ~ link }
 
-link = ${ link_string ~ link_url }
+link = ${ link_string ~ href }
 link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" } 
-link_url = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
+href = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
 
 mark_tag = @{
   "**"
