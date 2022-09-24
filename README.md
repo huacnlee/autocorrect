@@ -386,6 +386,15 @@ test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
 | spellcheck | 100         | 0.057 ms |
 | spellcheck | 400         | 0.195 ms |
 
+### Real world benchmark
+
+Use [MDN Translated Content](https://github.com/mdn/translated-content) project, about 30K files.
+
+```bash
+~/work/translated-content $ autocorrect --fix
+AutoCorrect spend time: 8402.538ms
+```
+
 ## License
 
 This project under MIT license.
