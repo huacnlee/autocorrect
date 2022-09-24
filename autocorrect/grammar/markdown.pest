@@ -1,10 +1,12 @@
 item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | text | newline }
 
-expr = _{ meta_info | codeblock | inline | td_tag | block }
+expr = _{ comment | html_tag | meta_info | codeblock | inline | td_tag | block }
 
-inline = _{ comment | img | link | mark | wikilinks }
+inline = _{ img | link | mark | wikilinks }
 block = ${ block_prefix ~ space ~ inline* ~ string }
+
+html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
 newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
@@ -47,3 +49,4 @@ mark_string = {(!(PEEK | newline | inline) ~ ANY)* }
 comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
 comment_tag_start = @{  "<!--" }
 comment_tag_end = @{ "-->" }
+
