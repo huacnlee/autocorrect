@@ -56,10 +56,10 @@ comment_if_end = _{ chevron_left_bang ~ "[" ~ ^"endif" ~ "]" ~ comment_tag_end }
 // ATTRIBUTES
 //
 attr = { attr_key ~ (equal ~ (attr_non_quoted | attr_quoted ))? }
-attr_quoted =  ${PUSH(quote) ~ attr_value ~ PUSH(quote) }
+attr_quoted =  { PUSH(quote) ~ attr_value ~ PUSH(quote) }
 attr_non_quoted = @{ !quote ~ (!(WHITESPACE | chevron_right) ~ ANY)* }
 attr_key = ${ !WHITESPACE ~ (":" | "@" | "#" | ".")? ~ ASCII_ALPHA ~ text_chars* }
-attr_value = { WHITESPACE* ~ (!PEEK ~ ANY)* ~ WHITESPACE* }
+attr_value = ${ WHITESPACE* ~ (!PEEK ~ ANY)* ~ WHITESPACE* }
 
 //
 // ELEMENTS

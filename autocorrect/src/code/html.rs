@@ -55,7 +55,10 @@ mod tests {
          */
         </script>
         <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
-        <div class="content">
+        <div class="content" visible data-name="test" style="
+          display: flex;
+          flex-direction: column;
+        ">
             <p>如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。</p>
             <a href="#link的href不处理" title="Permalink to Rust 和 WebAssembly 用例">Rust和WebAssembly用例</a>
             <a href="https://zh.wikipedia.org/wiki/NTSC制式">NTSC制式</a>
@@ -98,7 +101,10 @@ mod tests {
          */
         </script>
         <script async src=https://dlswbr.baidu.com/heicha/mw/abclite-2036-s.js></script>
-        <div class="content">
+        <div class="content" visible data-name="test" style="
+          display: flex;
+          flex-direction: column;
+        ">
             <p>如果你写了一些 Rust 代码，你可以把它编译成 WebAssembly！这份教程将带你编译 Rust 项目为 wasm 并在一个现存的 web 应用中使用它。</p>
             <a href="#link的href不处理" title="Permalink to Rust 和 WebAssembly 用例">Rust 和 WebAssembly 用例</a>
             <a href="https://zh.wikipedia.org/wiki/NTSC制式">NTSC 制式</a>
