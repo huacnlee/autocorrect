@@ -349,11 +349,11 @@ mod tests {
 
     #[test]
     fn it_lint_for() {
-        let raw = "<p>Hello你好</p>";
+        let raw = "<p>Hello你好ios版本</p>";
         let result = lint_for(raw, "foo.bar.html");
-        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好","old":"Hello你好"}],"error":""}"#;
+        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好 ios 版本","old":"Hello你好ios版本","kind":1},{"l":1,"c":4,"new":"Hello 你好 iOS 版本","old":"Hello你好ios版本","kind":2}],"error":""}"#;
         assert!(!result.has_error());
-        assert_eq!(1, result.lines.len());
+        assert_eq!(2, result.lines.len());
         assert_eq!(expect_json, result.to_json());
 
         let result1 = lint_for("const a = 'hello世界'", "js");

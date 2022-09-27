@@ -1,5 +1,6 @@
 // autocorrect: false
 use super::*;
+use crate::changeset::ChangesetOutput;
 use crate::spellcheck::spellcheck;
 use crate::{config, format, Config};
 use pest::error::Error;
@@ -7,6 +8,7 @@ use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use serde_repr::*;
 use std::result::Result;
 
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
@@ -90,7 +92,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         let mut sub_line = 0;
         for line_str in lines {
             // format trimmed string
-            let mut new_line = format(line_str);
+            let new_line = format(line_str);
             let spell_new_line = spellcheck(&new_line);
 
             // skip, when no difference
@@ -98,8 +100,6 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
                 sub_line += 1;
                 continue;
             }
-
-            new_line = spell_new_line;
 
             // trim start whitespace
             let mut trimmed = line_str.trim_start();
@@ -117,12 +117,28 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
                 col
             };
 
-            results.push(LineResult {
-                line: current_line,
-                col: current_col,
-                old: String::from(trimmed),
-                new: new_line.trim().to_string(),
-            });
+            // Add error lint result, if new_line has get changed result
+            if new_line.ne(line_str) {
+                results.push(LineResult {
+                    line: current_line,
+                    col: current_col,
+                    old: String::from(trimmed),
+                    new: new_line.trim().to_string(),
+                    kind: LineResultKind::Error,
+                });
+            }
+
+            // If has spelling issues, add more lint result
+            if spell_new_line.ne(&new_line) {
+                results.push(LineResult {
+                    line: current_line,
+                    col: current_col,
+                    old: String::from(trimmed),
+                    new: spell_new_line.trim().to_string(),
+                    kind: LineResultKind::Warning,
+                });
+            }
+
             sub_line += 1;
         }
     } else {
@@ -151,6 +167,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             col,
             old: String::from(part),
             new: new_part,
+            kind: LineResultKind::Pass,
         });
     }
 }
@@ -226,6 +243,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             col: 0,
             old: String::from(part),
             new: new_part,
+            kind: LineResultKind::Pass,
         });
     }
 }
@@ -294,6 +312,14 @@ fn match_autocorrect_toggle(part: &str) -> Toggle {
     Toggle::None
 }
 
+#[derive(Serialize_repr, Deserialize_repr, PartialEq)]
+#[repr(u8)]
+pub enum LineResultKind {
+    Pass = 0,
+    Warning = 2,
+    Error = 1,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct LineResult {
     #[serde(rename(serialize = "l"))]
@@ -302,6 +328,7 @@ pub struct LineResult {
     pub col: usize,
     pub new: String,
     pub old: String,
+    pub kind: LineResultKind,
 }
 
 pub trait Results {
@@ -443,7 +470,18 @@ impl LintResult {
             );
 
             let changeset = difference::Changeset::new(line.old.as_str(), line.new.as_str(), "\n");
-            out.push_str(format!("{}\n", changeset).as_str());
+
+            let out_str = match line.kind {
+                LineResultKind::Pass => todo!(),
+                LineResultKind::Warning => {
+                    format!("{}\n", changeset.as_warning())
+                }
+                LineResultKind::Error => {
+                    format!("{}\n", changeset)
+                }
+            };
+
+            out.push_str(&out_str);
         }
 
         out
