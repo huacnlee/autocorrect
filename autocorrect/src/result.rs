@@ -184,6 +184,14 @@ impl LintResult {
     pub fn errors_count(&self) -> usize {
         self.lines.iter().filter(|l| l.severity.is_error()).count()
     }
+
+    /// Return number of warnings
+    pub fn warnings_count(&self) -> usize {
+        self.lines
+            .iter()
+            .filter(|l| l.severity.is_warning())
+            .count()
+    }
 }
 
 impl Results for LintResult {

@@ -28,13 +28,13 @@ pub(crate) fn diff_lines_with_err_color(old_str: &str, new_str: &str, err_color:
     for i in 0..diffs.len() {
         match diffs[i] {
             diff::Result::Both(x, _) => {
-                writeln!(out, "  {}", x);
+                writeln!(out, " {}", x);
             }
             // -
             diff::Result::Left(x) => {
                 match diffs.get(i + 1) {
                     Some(diff::Result::Right(y)) => {
-                        write!(out, "{}", "- ".color(err_color));
+                        write!(out, "{}", "-".color(err_color));
                         let sub_diffs = diff::chars(y, x);
                         for c in sub_diffs {
                             match c {
@@ -50,7 +50,7 @@ pub(crate) fn diff_lines_with_err_color(old_str: &str, new_str: &str, err_color:
                         writeln!(out);
                     }
                     _ => {
-                        writeln!(out, "{}", format!("- {}", x).color(err_color));
+                        writeln!(out, "{}", format!("-{}", x).color(err_color));
                     }
                 };
             }
@@ -58,7 +58,7 @@ pub(crate) fn diff_lines_with_err_color(old_str: &str, new_str: &str, err_color:
             diff::Result::Right(x) => {
                 match diffs.get(i - 1) {
                     Some(diff::Result::Left(y)) => {
-                        write!(out, "{}", "+ ".green());
+                        write!(out, "{}", "+".green());
                         let sub_diffs = diff::chars(y, x);
 
                         for c in sub_diffs {
@@ -75,7 +75,7 @@ pub(crate) fn diff_lines_with_err_color(old_str: &str, new_str: &str, err_color:
                         writeln!(out);
                     }
                     _ => {
-                        writeln!(out, "{}", format!("+ {}", x).green());
+                        writeln!(out, "{}", format!("+{}", x).green());
                     }
                 };
             }

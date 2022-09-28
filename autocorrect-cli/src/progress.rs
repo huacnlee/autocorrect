@@ -8,6 +8,13 @@ pub fn ok(show: bool) {
     }
 }
 
+pub fn warn(show: bool) {
+    if show {
+        print!("{}", ".".yellow());
+        io::stdout().flush().unwrap();
+    }
+}
+
 pub fn err(show: bool) {
     if show {
         print!("{}", ".".red());

@@ -16,14 +16,14 @@ pub struct Strategery {
 impl Strategery {
     /// Create a new strategery object.
     pub fn new(one: &'static str, other: &'static str) -> Self {
-        return Strategery {
+        Strategery {
             space_mode: SpaceMode::Add,
             reverse: false,
             add_space_re: regexp!("({})({})", one, other),
             add_space_reverse_re: regexp!("({})({})", other, one),
             remove_space_re: regexp!("({})[ ]+({})", one, other),
             remove_space_reverse_re: regexp!("({})[ ]+({})", other, one),
-        };
+        }
     }
 
     // Set Strategery for remove space.
