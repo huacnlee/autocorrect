@@ -13,14 +13,14 @@ pub fn derive_grammar_parser(input: TokenStream) -> TokenStream {
     let code = format!(
         r##"
         #[allow(dead_code)]
-        pub fn format_{name}(text: &str) -> code::FormatResult {{
+        pub fn format_{name}(text: &str) -> FormatResult {{
             let pairs = {struct_name}::parse(Rule::item, text);
             let text = code::FormatResult::new(text);
             code::format_pairs(text, pairs)
         }}
         
         #[allow(dead_code)]
-        pub fn lint_{name}(text: &str) -> code::LintResult {{
+        pub fn lint_{name}(text: &str) -> LintResult {{
             let pairs =  {struct_name}::parse(Rule::item, text);
             let text = code::LintResult::new(text);
             code::format_pairs(text, pairs)

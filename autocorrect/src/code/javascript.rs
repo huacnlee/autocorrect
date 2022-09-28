@@ -172,13 +172,13 @@ const map = {
         {
           "filepath": "test.js",
           "lines": [
-            { "l": 3, "c": 5, "new": "* Hello 你好 IOS 应用", "old": "* Hello你好IOS应用", "kind": 1 },
-            { "l": 3, "c": 5, "new": "* Hello 你好 iOS 应用", "old": "* Hello你好IOS应用", "kind": 2 },
-            { "l": 4, "c": 5, "new": "* 这是第 2 行", "old": "* 这是第2行", "kind": 1 },
-            { "l": 7, "c": 21, "new": "\"这是 single line 单行注释\"", "old": "\"这是single line单行注释\"", "kind": 1 },
-            { "l": 8, "c": 19, "new": "`这是 string 第 1 行", "old": "`这是string第1行", "kind": 1 },
-            { "l": 9, "c": 7, "new": "这是 string 第 2 行", "old": "这是string第2行", "kind": 1 },
-            { "l": 17, "c": 17, "new": "\"这是 string 第 3 行\"", "old": "\"这是string第3行\"", "kind": 1 }
+            { "l": 3, "c": 5, "new": "* Hello 你好 IOS 应用", "old": "* Hello你好IOS应用", "severity": 1 },
+            { "l": 3, "c": 5, "new": "* Hello 你好 iOS 应用", "old": "* Hello你好IOS应用", "severity": 2 },
+            { "l": 4, "c": 5, "new": "* 这是第 2 行", "old": "* 这是第2行", "severity": 1 },
+            { "l": 7, "c": 21, "new": "\"这是 single line 单行注释\"", "old": "\"这是single line单行注释\"", "severity": 1 },
+            { "l": 8, "c": 19, "new": "`这是 string 第 1 行", "old": "`这是string第1行", "severity": 1 },
+            { "l": 9, "c": 7, "new": "这是 string 第 2 行", "old": "这是string第2行", "severity": 1 },
+            { "l": 17, "c": 17, "new": "\"这是 string 第 3 行\"", "old": "\"这是string第3行\"", "severity": 1 }
           ],
           "error": ""
         }

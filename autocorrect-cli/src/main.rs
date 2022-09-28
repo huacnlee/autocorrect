@@ -255,7 +255,7 @@ fn lint_and_output(
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
 
-    let has_lint_error = result.has_lint_error();
+    let has_lint_error = result.errors_count() > 0;
 
     // do not print anything, when not lint results
     if !cli.debug {

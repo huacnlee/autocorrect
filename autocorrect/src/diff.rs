@@ -1,10 +1,10 @@
-use crate::code::{LineResult, LineResultKind};
+use crate::result::LineResult;
 use colored::*;
 use std::fmt::Write;
 
 pub(crate) fn diff_line_result(line: &LineResult) -> String {
     let mut err_color = "red";
-    if line.kind == LineResultKind::Warning {
+    if line.severity.is_warning() {
         err_color = "yellow"
     }
 
