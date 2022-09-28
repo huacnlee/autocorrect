@@ -38,7 +38,7 @@ Other implements for programming:
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
 
-<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/191889781-6372ecef-426a-4c67-a1f3-790f8117808e.png">
+<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png">
 
 ## Install
 
