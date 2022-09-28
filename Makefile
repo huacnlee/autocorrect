@@ -4,7 +4,7 @@ LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 bench:
 	cargo bench
 run1:
-	cargo run -- --lint /Users/jason/work/translated-content/files/zh-cn/web/javascript
+	cargo run -- --lint --config /Users/jason/work/translated-content/.autocorrectrc  /Users/jason/work/translated-content/files/zh-cn/webassembly
 run:
 	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template
 run\:json:

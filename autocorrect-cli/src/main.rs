@@ -74,6 +74,7 @@ pub fn main() {
     let start_t = SystemTime::now();
     let mut lint_results: Vec<String> = Vec::new();
     let (tx, rx) = std::sync::mpsc::channel();
+    let has_lint_error = std::sync::Arc::new(std::sync::Mutex::new(false));
 
     let pool = ThreadPool::new(cli.threads);
     // let mut threads = Vec::new();
@@ -124,6 +125,7 @@ pub fn main() {
 
                 let cli = cli.clone();
                 let tx = tx.clone();
+                let has_lint_error = has_lint_error.clone();
                 let filepath = filepath.clone();
                 let filetype = filetype.clone();
 
@@ -133,7 +135,17 @@ pub fn main() {
                         log::debug!("Process {}", filepath);
                         if cli.lint {
                             let mut lint_results: Vec<String> = Vec::new();
-                            lint_and_output(&filepath, &filetype, &raw, &cli, &mut lint_results);
+                            let _has_err = lint_and_output(
+                                &filepath,
+                                &filetype,
+                                &raw,
+                                &cli,
+                                &mut lint_results,
+                            );
+
+                            if _has_err {
+                                *has_lint_error.lock().unwrap() = true;
+                            }
 
                             for lint_result in lint_results {
                                 tx.send(lint_result).unwrap();
@@ -180,14 +192,12 @@ pub fn main() {
             // print time spend from start_t to now
             log::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
 
-            if !lint_results.is_empty() {
+            if *has_lint_error.lock().unwrap() {
                 // Exit with code = 1
                 std::process::exit(1);
             }
         }
     } else if cli.fix {
-        log::info!("Done.\n");
-
         // print time spend from start_t to now
         log::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
     }
@@ -197,7 +207,7 @@ fn read_file(filepath: &str) -> io::Result<String> {
     let t = SystemTime::now();
     log::debug!("Loading {} ...", filepath);
 
-    let out = fs::read_to_string(&filepath);
+    let out = fs::read_to_string(filepath);
 
     log::debug!("Loaded {} {}ms", filepath, t.elapsed_millis());
 
@@ -240,16 +250,18 @@ fn lint_and_output(
     raw: &str,
     cli: &Cli,
     results: &mut Vec<String>,
-) {
+) -> bool {
     let diff_mode = cli.formatter != "json";
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
+
+    let has_lint_error = result.has_lint_error();
 
     // do not print anything, when not lint results
     if !cli.debug {
         if result.lines.is_empty() {
             progress::ok(diff_mode);
-            return;
+            return has_lint_error;
         } else {
             progress::err(diff_mode);
         }
@@ -258,11 +270,13 @@ fn lint_and_output(
     if diff_mode {
         if result.has_error() {
             log::debug!("{}\n{}", filepath, result.error);
-            return;
+            return has_lint_error;
         }
 
         results.push(result.to_diff());
     } else {
         results.push(result.to_json());
     }
+
+    return has_lint_error;
 }

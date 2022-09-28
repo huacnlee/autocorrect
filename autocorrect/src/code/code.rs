@@ -468,7 +468,7 @@ impl LintResult {
                 .as_str(),
             );
 
-            let out_str = crate::diff::diff_line_result(&line);
+            let out_str = crate::diff::diff_line_result(line);
             out.push_str(&out_str);
         }
 
@@ -478,6 +478,13 @@ impl LintResult {
     #[allow(dead_code)]
     pub fn has_error(&self) -> bool {
         !self.error.is_empty()
+    }
+
+    /// Return true if there is any lint error
+    pub fn has_lint_error(&self) -> bool {
+        self.lines
+            .iter()
+            .any(|line| line.kind == LineResultKind::Error)
     }
 }
 
