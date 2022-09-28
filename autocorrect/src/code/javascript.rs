@@ -150,7 +150,7 @@ const map = {
     fn it_lint_javascript() {
         let example = r###"
     /**
-    * Hello你好
+    * Hello你好IOS应用
     * 这是第2行
     */
     function application() {
@@ -170,20 +170,23 @@ const map = {
 
         let expect = r###"
         {
-            "filepath":"test.js",
-            "lines":[
-                {"c":5,"l":3,"new":"* Hello 你好","old":"* Hello你好"},
-                {"c":5,"l":4,"new":"* 这是第 2 行","old":"* 这是第2行"},
-                {"c":21,"l":7,"new":"\"这是 single line 单行注释\"","old":"\"这是single line单行注释\""},
-                {"c":19,"l":8,"new":"`这是 string 第 1 行","old":"`这是string第1行"},
-                {"c":7,"l":9,"new":"这是 string 第 2 行","old":"这是string第2行"},
-                {"c":17,"l":17,"new":"\"这是 string 第 3 行\"","old":"\"这是string第3行\""}
-            ],
-            "error": ""
+          "filepath": "test.js",
+          "lines": [
+            { "l": 3, "c": 5, "new": "* Hello 你好 IOS 应用", "old": "* Hello你好IOS应用", "severity": 1 },
+            { "l": 3, "c": 5, "new": "* Hello 你好 iOS 应用", "old": "* Hello你好IOS应用", "severity": 2 },
+            { "l": 4, "c": 5, "new": "* 这是第 2 行", "old": "* 这是第2行", "severity": 1 },
+            { "l": 7, "c": 21, "new": "\"这是 single line 单行注释\"", "old": "\"这是single line单行注释\"", "severity": 1 },
+            { "l": 8, "c": 19, "new": "`这是 string 第 1 行", "old": "`这是string第1行", "severity": 1 },
+            { "l": 9, "c": 7, "new": "这是 string 第 2 行", "old": "这是string第2行", "severity": 1 },
+            { "l": 17, "c": 17, "new": "\"这是 string 第 3 行\"", "old": "\"这是string第3行\"", "severity": 1 }
+          ],
+          "error": ""
         }
     "###;
 
-        assert_json_eq!(expect, lint_for(example, "test.js").to_json());
+        let lint_result = lint_for(example, "test.js").to_json();
+
+        assert_json_eq!(expect, lint_result);
         assert_json_eq!(expect, lint_for(example, "test.js").to_json_pretty());
     }
 }

@@ -8,79 +8,92 @@
           "l": 2,
           "c": 2,
           "new": "* Hello 你好",
-          "old": "* Hello你好"
+          "old": "* Hello你好",
+          "severity": 1
         },
         {
           "l": 3,
           "c": 2,
           "new": "* 这是第 2 行",
-          "old": "* 这是第2行"
+          "old": "* 这是第2行",
+          "severity": 1
         },
         {
           "l": 6,
           "c": 17,
           "new": "'这是 single line 单行注释'",
-          "old": "'这是single line单行注释'"
+          "old": "'这是single line单行注释'",
+          "severity": 1
         },
         {
           "l": 7,
           "c": 15,
           "new": "`这是 string 第 1 行",
-          "old": "`这是string第1行"
+          "old": "`这是string第1行",
+          "severity": 1
         },
         {
           "l": 8,
           "c": 3,
           "new": "这是 string 第 2 行",
-          "old": "这是string第2行"
+          "old": "这是string第2行",
+          "severity": 1
         },
         {
           "l": 11,
           "c": 3,
           "new": "// 是否显示第 3 个",
-          "old": "// 是否显示第3个"
+          "old": "// 是否显示第3个",
+          "severity": 1
         },
         {
           "l": 17,
           "c": 13,
           "new": "第 1 项目",
-          "old": "第1项目"
+          "old": "第1项目",
+          "severity": 1
         },
         {
           "l": 17,
           "c": 25,
           "new": "li 标签",
-          "old": "li标签"
+          "old": "li标签",
+          "severity": 1
         },
         {
           "l": 18,
           "c": 13,
           "new": "第 2 项目",
-          "old": "第2项目"
+          "old": "第2项目",
+          "severity": 1
         },
         {
           "l": 18,
           "c": 25,
           "new": "li 标签",
-          "old": "li标签"
+          "old": "li标签",
+          "severity": 1
         },
         {
           "l": 21,
           "c": 18,
           "new": "第 3 项目",
-          "old": "第3项目"
+          "old": "第3项目",
+          "severity": 1
         },
         {
           "l": 21,
           "c": 30,
           "new": "li 标签",
-          "old": "li标签"
+          "old": "li标签",
+          "severity": 1
         },
         {
           "l": 24,
           "c": 23,
           "new": "nested 项",
-          "old": "nested项"
+          "old": "nested项",
+          "severity": 1
         }
       ],
       "error": ""

@@ -13,6 +13,7 @@ mod progress;
 mod update;
 
 use cli::Cli;
+use colored::*;
 use logger::Logger;
 use logger::SystemTimeDuration;
 use threadpool::ThreadPool;
@@ -75,6 +76,9 @@ pub fn main() {
     let mut lint_results: Vec<String> = Vec::new();
     let (tx, rx) = std::sync::mpsc::channel();
 
+    let lint_errors_count = std::sync::Arc::new(std::sync::Mutex::new(0));
+    let lint_warnings_count = std::sync::Arc::new(std::sync::Mutex::new(0));
+
     let pool = ThreadPool::new(cli.threads);
     // let mut threads = Vec::new();
 
@@ -124,6 +128,8 @@ pub fn main() {
 
                 let cli = cli.clone();
                 let tx = tx.clone();
+                let lint_errors_count = lint_errors_count.clone();
+                let lint_warnings_count = lint_warnings_count.clone();
                 let filepath = filepath.clone();
                 let filetype = filetype.clone();
 
@@ -133,7 +139,21 @@ pub fn main() {
                         log::debug!("Process {}", filepath);
                         if cli.lint {
                             let mut lint_results: Vec<String> = Vec::new();
-                            lint_and_output(&filepath, &filetype, &raw, &cli, &mut lint_results);
+
+                            let mut _err_count = 0;
+                            let mut _warn_count = 0;
+                            lint_and_output(
+                                &filepath,
+                                &filetype,
+                                &raw,
+                                &cli,
+                                &mut lint_results,
+                                &mut _err_count,
+                                &mut _warn_count,
+                            );
+
+                            *lint_errors_count.lock().unwrap() += _err_count;
+                            *lint_warnings_count.lock().unwrap() += _warn_count;
 
                             for lint_result in lint_results {
                                 tx.send(lint_result).unwrap();
@@ -172,22 +192,29 @@ pub fn main() {
         } else {
             log::info!("\n");
 
+            let _err_count = *lint_errors_count.lock().unwrap();
+            let _warn_count = *lint_warnings_count.lock().unwrap();
+
+            log::info!(
+                "{}, {}\n",
+                format!("Error: {}", _err_count).red(),
+                format!("Warning: {}", _warn_count).yellow(),
+            );
+
             if !lint_results.is_empty() {
                 // diff will use stderr output
-                log::error!("{}", lint_results.join("\n"));
+                log::info!("{}", lint_results.join("\n"));
             }
 
             // print time spend from start_t to now
             log::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
 
-            if !lint_results.is_empty() {
+            if _err_count > 0 {
                 // Exit with code = 1
                 std::process::exit(1);
             }
         }
     } else if cli.fix {
-        log::info!("Done.\n");
-
         // print time spend from start_t to now
         log::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
     }
@@ -197,7 +224,7 @@ fn read_file(filepath: &str) -> io::Result<String> {
     let t = SystemTime::now();
     log::debug!("Loading {} ...", filepath);
 
-    let out = fs::read_to_string(&filepath);
+    let out = fs::read_to_string(filepath);
 
     log::debug!("Loaded {} {}ms", filepath, t.elapsed_millis());
 
@@ -240,18 +267,27 @@ fn lint_and_output(
     raw: &str,
     cli: &Cli,
     results: &mut Vec<String>,
+    errors_count: &mut usize,
+    warings_count: &mut usize,
 ) {
     let diff_mode = cli.formatter != "json";
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
+
+    *errors_count += result.errors_count();
+    *warings_count += result.warnings_count();
 
     // do not print anything, when not lint results
     if !cli.debug {
         if result.lines.is_empty() {
             progress::ok(diff_mode);
             return;
-        } else {
+        }
+
+        if *errors_count > 0 {
             progress::err(diff_mode);
+        } else if *warings_count > 0 {
+            progress::warn(diff_mode);
         }
     }
 

@@ -90,9 +90,11 @@ macro_rules! map {
 }
 
 mod code;
+mod diff;
 mod format;
 mod fullwidth;
 mod halfwidth;
+mod result;
 mod serde_any;
 mod strategery;
 

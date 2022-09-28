@@ -8,97 +8,113 @@
           "l": 7,
           "c": 7,
           "new": "编译 Rust 为 WebAssembly",
-          "old": "编译Rust为WebAssembly"
+          "old": "编译Rust为WebAssembly",
+          "severity": 1
         },
         {
           "l": 1,
           "c": 1,
           "new": "/* 在 css 里面的注释会转换 */",
-          "old": "/* 在css里面的注释会转换 */"
+          "old": "/* 在css里面的注释会转换 */",
+          "severity": 1
         },
         {
           "l": 6,
           "c": 5,
           "new": "/* 后面个 comment 注释 */",
-          "old": "/* 后面个comment注释 */"
+          "old": "/* 后面个comment注释 */",
+          "severity": 1
         },
         {
           "l": 1,
           "c": 1,
           "new": "// 这个 script 也会转换",
-          "old": "// 这个script也会转换"
+          "old": "// 这个script也会转换",
+          "severity": 1
         },
         {
           "l": 2,
           "c": 5,
           "new": "// 按照 javascript 的方式来处理",
-          "old": "// 按照javascript的方式来处理"
+          "old": "// 按照javascript的方式来处理",
+          "severity": 1
         },
         {
           "l": 3,
           "c": 15,
           "new": "\"hello 你好\"",
-          "old": "\"hello你好\""
+          "old": "\"hello你好\"",
+          "severity": 1
         },
         {
           "l": 5,
           "c": 6,
           "new": "* 多行 comment 测试",
-          "old": "* 多行comment测试"
+          "old": "* 多行comment测试",
+          "severity": 1
         },
         {
           "l": 6,
           "c": 6,
           "new": "* 多行第 2 行",
-          "old": "* 多行第2行"
+          "old": "* 多行第2行",
+          "severity": 1
         },
         {
           "l": 27,
           "c": 8,
           "new": "如果你写了一些 Rust 代码，你可以把它编译成 WebAssembly！这份教程将带你编译 Rust 项目为 wasm 并在一个现存的 web 应用中使用它。",
-          "old": "如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。"
+          "old": "如果你写了一些Rust代码，你可以把它编译成WebAssembly！这份教程将带你编译Rust项目为wasm并在一个现存的web应用中使用它。",
+          "severity": 1
         },
         {
           "l": 28,
           "c": 81,
           "new": "Rust 和 WebAssembly 用例",
-          "old": "Rust和WebAssembly用例"
+          "old": "Rust和WebAssembly用例",
+          "severity": 1
         },
         {
           "l": 29,
           "c": 9,
           "new": "Rust 和 WebAssembly 用例",
-          "old": "Rust和WebAssembly用例"
+          "old": "Rust和WebAssembly用例",
+          "severity": 1
         },
         {
           "l": 33,
           "c": 13,
           "new": "构建完整应用——整个 Web 应用都基于 Rust 开发！",
-          "old": "构建完整应用——整个Web应用都基于Rust开发！"
+          "old": "构建完整应用——整个Web应用都基于Rust开发！",
+          "severity": 1
         },
         {
           "l": 34,
           "c": 13,
           "new": "构建应用的组成部分——在现存的 JavaScript 前端中使用 Rust。",
-          "old": "构建应用的组成部分——在现存的JavaScript前端中使用Rust。"
+          "old": "构建应用的组成部分——在现存的JavaScript前端中使用Rust。",
+          "severity": 1
         },
         {
           "l": 37,
           "c": 9,
           "new": "目前，Rust 团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;",
-          "old": "目前，Rust团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;"
+          "old": "目前，Rust团队正专注于第二种用例，因此我们也将着重介绍它。对于第一种用例，可以参阅&nbsp;",
+          "severity": 1
         },
         {
           "l": 40,
           "c": 9,
           "new": "在本教程中，我们将使用 Rust 的 npm 包构建工具",
-          "old": "在本教程中，我们将使用Rust的npm包构建工具"
+          "old": "在本教程中，我们将使用Rust的npm包构建工具",
+          "severity": 1
         },
         {
           "l": 40,
           "c": 55,
           "new": "来构建一个 npm 包。这个包只包含 WebAssembly 和 JavaScript 代码，以便包的用户无需安装 Rust 就能使用。他们甚至不需要知道这里包含 WebAssembly！",
-          "old": "来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！"
+          "old": "来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！",
+          "severity": 1
         }
       ],
       "error": ""

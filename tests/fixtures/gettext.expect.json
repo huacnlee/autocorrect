@@ -8,37 +8,43 @@
           "l": 2,
           "c": 8,
           "new": "\"这是 msgid\"",
-          "old": "\"这是msgid\""
+          "old": "\"这是msgid\"",
+          "severity": 1
         },
         {
           "l": 9,
           "c": 8,
           "new": "\"请输入 Email 地址：\"",
-          "old": "\"请输入Email地址:\""
+          "old": "\"请输入Email地址:\"",
+          "severity": 1
         },
         {
           "l": 10,
           "c": 11,
           "new": "\"这是 msgstr0\"",
-          "old": "\"这是msgstr0\""
+          "old": "\"这是msgstr0\"",
+          "severity": 1
         },
         {
           "l": 11,
           "c": 11,
           "new": "\"这是 msgstr1\"",
-          "old": "\"这是msgstr1\""
+          "old": "\"这是msgstr1\"",
+          "severity": 1
         },
         {
           "l": 13,
           "c": 1,
           "new": "# 这是 Commit 评论。",
-          "old": "# 这是Commit评论."
+          "old": "# 这是Commit评论.",
+          "severity": 1
         },
         {
           "l": 16,
           "c": 8,
           "new": "\"密码长度要求最少 6 个字符。\"",
-          "old": "\"密码长度要求最少6个字符.\""
+          "old": "\"密码长度要求最少6个字符.\"",
+          "severity": 1
         }
       ],
       "error": ""
