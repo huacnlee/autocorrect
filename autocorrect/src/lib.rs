@@ -89,8 +89,8 @@ macro_rules! map {
     }};
 }
 
-mod changeset;
 mod code;
+mod diff;
 mod format;
 mod fullwidth;
 mod halfwidth;

@@ -151,7 +151,7 @@ mod tests {
         }
 
         for (expected, actual) in fails.clone() {
-            eprintln!("{}", difference::Changeset::new(&expected, &actual, "\n"));
+            eprintln!("{}", crate::diff::diff_lines(&expected, &actual));
         }
 
         if !fails.is_empty() {

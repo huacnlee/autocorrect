@@ -16,7 +16,8 @@ path = "src/lib.rs"
 
 [dependencies]
 autocorrect-derive = {path = "../autocorrect-derive", version = ">=0.1.0"}
-difference = "2.0"
+colored = "2"
+diff = "0.1.13"
 ignore = "0.4"
 lazy_static = "1.4.0"
 pest = "2.3.1"

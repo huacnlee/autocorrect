@@ -24,7 +24,7 @@ mod tests {
             let actual_clean = &re.replace_all(actual.trim(), "><");
 
             if expected_clean != actual_clean {
-                panic!("{}", difference::Changeset::new(expected, &actual, "\n"))
+                panic!("{}", crate::diff::diff_lines(expected, &actual))
             }
         }};
     }

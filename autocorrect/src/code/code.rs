@@ -1,6 +1,5 @@
 // autocorrect: false
 use super::*;
-use crate::changeset::ChangesetOutput;
 use crate::spellcheck::spellcheck;
 use crate::{config, format, Config};
 use pest::error::Error;
@@ -469,18 +468,7 @@ impl LintResult {
                 .as_str(),
             );
 
-            let changeset = difference::Changeset::new(line.old.as_str(), line.new.as_str(), "\n");
-
-            let out_str = match line.kind {
-                LineResultKind::Pass => todo!(),
-                LineResultKind::Warning => {
-                    format!("{}\n", changeset.as_warning())
-                }
-                LineResultKind::Error => {
-                    format!("{}\n", changeset)
-                }
-            };
-
+            let out_str = crate::diff::diff_line_result(&line);
             out.push_str(&out_str);
         }
 
