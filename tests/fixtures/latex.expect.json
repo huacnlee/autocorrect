@@ -8,67 +8,78 @@
           "l": 3,
           "c": 7,
           "new": "{Rust 程序设计语言}",
-          "old": "{Rust程序设计语言}"
+          "old": "{Rust程序设计语言}",
+          "severity": 1
         },
         {
           "l": 7,
           "c": 8,
           "new": "{Steve Klabnik 和 Carol Nichols}",
-          "old": "{Steve Klabnik和Carol Nichols}"
+          "old": "{Steve Klabnik和Carol Nichols}",
+          "severity": 1
         },
         {
           "l": 13,
           "c": 1,
           "new": "让我们开始 Rust 之旅！有很多内容需要学习，但每次旅程总有起点。在本章中，我们会讨论：",
-          "old": "让我们开始Rust之旅!有很多内容需要学习,但每次旅程总有起点.在本章中,我们会讨论:"
+          "old": "让我们开始Rust之旅!有很多内容需要学习,但每次旅程总有起点.在本章中,我们会讨论:",
+          "severity": 1
         },
         {
           "l": 15,
           "c": 2,
           "new": "1. 在 Linux、macOS 和 Windows 上安装 Rust",
-          "old": "1. 在Linux、macOS和Windows上安装Rust"
+          "old": "1. 在Linux、macOS和Windows上安装Rust",
+          "severity": 1
         },
         {
           "l": 16,
           "c": 2,
           "new": "2. 编写一个打印 Hello, world! 的程序",
-          "old": "2. 编写一个打印Hello, world!的程序"
+          "old": "2. 编写一个打印Hello, world!的程序",
+          "severity": 1
         },
         {
           "l": 17,
           "c": 2,
           "new": "3. 使用 Rust 的包管理器和构建系统 cargo",
-          "old": "3. 使用Rust的包管理器和构建系统cargo"
+          "old": "3. 使用Rust的包管理器和构建系统cargo",
+          "severity": 1
         },
         {
           "l": 20,
           "c": 1,
           "new": "正如第二章中“使用变量储存值” 部分提到的那样，变量默认是不可改变的（immutable）。这是 Rust 提供给你的众多优势之一，让你得以充分利用 Rust 提供的安全性和简单并发性来编写代码。不过，你仍然可以使用可变变量。让我们探讨一下 Rust 为何及如何鼓励你利用不可变性，以及何时你会选择不使用不可变性。",
-          "old": "正如第二章中“使用变量储存值” 部分提到的那样，变量默认是不可改变的（immutable）。这是Rust提供给你的众多优势之一，让你得以充分利用Rust提供的安全性和简单并发性来编写代码。不过，你仍然可以使用可变变量。让我们探讨一下Rust为何及如何鼓励你利用不可变性,以及何时你会选择不使用不可变性。"
+          "old": "正如第二章中“使用变量储存值” 部分提到的那样，变量默认是不可改变的（immutable）。这是Rust提供给你的众多优势之一，让你得以充分利用Rust提供的安全性和简单并发性来编写代码。不过，你仍然可以使用可变变量。让我们探讨一下Rust为何及如何鼓励你利用不可变性,以及何时你会选择不使用不可变性。",
+          "severity": 1
         },
         {
           "l": 22,
           "c": 2,
           "new": "当变量不可变时，一旦值被绑定一个名称上，你就不能改变这个值。为了对此进行说明，使用 cargo new variables 命令在 projects 目录生成一个叫做 variables 的新项目。",
-          "old": "当变量不可变时，一旦值被绑定一个名称上，你就不能改变这个值.为了对此进行说明，使用cargo new variables命令在projects目录生成一个叫做variables的新项目。"
+          "old": "当变量不可变时，一旦值被绑定一个名称上，你就不能改变这个值.为了对此进行说明，使用cargo new variables命令在projects目录生成一个叫做variables的新项目。",
+          "severity": 1
         },
         {
           "l": 24,
           "c": 2,
           "new": "接着，在新建的 variables 目录，打开 src/main.rs 并将代码替换为如下代码，这些代码还不能编译，我们会首次检查到不可变错误（immutability error）。",
-          "old": "接着,在新建的variables目录，打开src/main.rs并将代码替换为如下代码,这些代码还不能编译,我们会首次检查到不可变错误（immutability error）。"
+          "old": "接着,在新建的variables目录，打开src/main.rs并将代码替换为如下代码,这些代码还不能编译,我们会首次检查到不可变错误（immutability error）。",
+          "severity": 1
         },
         {
           "l": 27,
           "c": 1,
           "new": "在 Rust 中，每一个值都属于某一个数据类型（data type），这告诉 Rust 它被指定为何种数据，以便明确数据处理方式。",
-          "old": "在Rust中,每一个值都属于某一个数据类型（data type），这告诉Rust它被指定为何种数据,以便明确数据处理方式."
+          "old": "在Rust中,每一个值都属于某一个数据类型（data type），这告诉Rust它被指定为何种数据,以便明确数据处理方式.",
+          "severity": 1
         },
         {
           "l": 29,
           "c": 1,
           "new": "具体来说，我们将会学习变量、基本类型、函数、注释和控制流。",
-          "old": "具体来说,我们将会学习变量、基本类型、函数、注释和控制流。"
+          "old": "具体来说,我们将会学习变量、基本类型、函数、注释和控制流。",
+          "severity": 1
         }
       ],
       "error": ""

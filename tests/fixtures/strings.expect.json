@@ -8,43 +8,50 @@
           "l": 2,
           "c": 5,
           "new": "InfoPlist.strings 测试",
-          "old": "InfoPlist.strings测试"
+          "old": "InfoPlist.strings测试",
+          "severity": 1
         },
         {
           "l": 3,
           "c": 5,
           "new": "Created by 某某",
-          "old": "Created by某某"
+          "old": "Created by某某",
+          "severity": 1
         },
         {
           "l": 6,
           "c": 25,
           "new": "\"App 名称\"",
-          "old": "\"App名称\""
+          "old": "\"App名称\"",
+          "severity": 1
         },
         {
           "l": 6,
           "c": 33,
           "new": "//app 中文名称",
-          "old": "//app中文名称"
+          "old": "//app中文名称",
+          "severity": 1
         },
         {
           "l": 9,
           "c": 30,
           "new": "\"开启 Wi-Fi 后继续使用\"",
-          "old": "\"开启Wi-Fi后继续使用\""
+          "old": "\"开启Wi-Fi后继续使用\"",
+          "severity": 1
         },
         {
           "l": 10,
           "c": 1,
           "new": "// 单行 comment",
-          "old": "// 单行comment"
+          "old": "// 单行comment",
+          "severity": 1
         },
         {
           "l": 11,
           "c": 1,
           "new": "\"中文 key 测试\"",
-          "old": "\"中文key测试\""
+          "old": "\"中文key测试\"",
+          "severity": 1
         }
       ],
       "error": ""
