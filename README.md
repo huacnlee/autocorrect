@@ -30,7 +30,7 @@ Other implements for programming:
 ## Features
 
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
-- Multiple file content support (HTML, YAML, Rust, Go, SQL, Ruby, Python, Objective-C, Swift, Java, Kotlin, Dart, JavaScript, CSharp ...).
+- Support more than 27 programming languages (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
 - Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
 - Spellcheck and correct words by your own dictionary.
