@@ -1,0 +1,14 @@
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  homebrew:
+    name: Bump Homebrew formula
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v2
+        with:
+          formula-name: autocorrect
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
