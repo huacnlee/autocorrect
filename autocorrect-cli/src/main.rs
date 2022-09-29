@@ -215,6 +215,8 @@ pub fn main() {
             }
         }
     } else if cli.fix {
+        log::info!("\n");
+
         // print time spend from start_t to now
         log::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
     }
