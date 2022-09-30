@@ -2,7 +2,7 @@
 mod fullwidth;
 mod halfwidth;
 mod rule;
-pub(crate) mod spellcheck;
+pub mod spellcheck;
 mod strategery;
 mod word;
 

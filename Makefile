@@ -5,7 +5,7 @@ BIN_PATH=$(shell which autocorrect)
 bench:
 	cargo bench
 run1:
-	cargo run -- --lint --config /Users/jason/work/translated-content/.autocorrectrc  /Users/jason/work/translated-content/files/zh-cn/webassembly
+	cargo run -- --lint --config /Users/jason/work/translated-content/.autocorrectrc  /Users/jason/work/translated-content/files/zh-tw/learn/
 run:
 	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template
 run\:json:

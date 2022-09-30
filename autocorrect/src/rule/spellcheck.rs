@@ -14,7 +14,7 @@ pub(crate) fn word_regexp(word: &str) -> Regex {
 }
 
 // Spell check by diect
-pub(crate) fn format(text: &str) -> String {
+pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
     let config = Config::current();
