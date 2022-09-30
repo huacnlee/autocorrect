@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::*;
 
-#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq)]
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug)]
 #[repr(u8)]
 pub enum Severity {
     Pass = 0,
@@ -16,6 +16,10 @@ impl Severity {
 
     pub fn is_warning(&self) -> bool {
         self == &Severity::Warning
+    }
+
+    pub fn is_pass(&self) -> bool {
+        self == &Severity::Pass
     }
 }
 

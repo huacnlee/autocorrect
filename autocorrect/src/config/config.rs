@@ -225,11 +225,15 @@ mod tests {
         let mut keys: Vec<String> = config.rules.keys().map(|k| k.clone()).collect();
         assert_eq!(crate::rule::default_rule_names().sort(), keys.sort());
 
-        for (_, v) in config.rules.clone() {
-            assert_eq!(SeverityMode::Error, v);
+        for (k, v) in config.rules.clone() {
+            if k == "spellcheck" {
+                assert_eq!(SeverityMode::Warning, v);
+            } else {
+                assert_eq!(SeverityMode::Error, v);
+            }
         }
 
-        assert_eq!(Some(SeverityMode::Error), config.spellcheck.mode);
+        assert_eq!(Some(SeverityMode::Warning), config.spellcheck.mode);
         assert_eq!(false, config.spellcheck.words.is_empty());
         assert_eq!(false, config.spellcheck.dict.is_empty());
     }

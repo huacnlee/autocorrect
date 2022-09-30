@@ -88,10 +88,10 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         let mut sub_line = 0;
         for line_str in lines {
             // format trimmed string
-            let new_line = crate::rule::format_or_lint(line_str, true);
+            let line_result = crate::rule::format_or_lint(line_str, true);
 
             // skip, when no difference
-            if new_line.eq(line_str) {
+            if line_result.severity.is_pass() {
                 sub_line += 1;
                 continue;
             }
@@ -102,7 +102,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             let leading_spaces = line_str.len() - trimmed.len();
             // trim end whitespace
             trimmed = trimmed.trim_end();
-            // println!("{}||{},{}", new_line, trimmed, new_line.eq(trimmed));
+            // println!("{}||{},{}", line_result.out, trimmed, new_line.eq(trimmed));
 
             let current_line = line + sub_line;
             let current_col = if sub_line > 0 {
@@ -113,15 +113,13 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             };
 
             // Add error lint result, if new_line has get changed result
-            if new_line.ne(line_str) {
-                results.push(LineResult {
-                    line: current_line,
-                    col: current_col,
-                    old: String::from(trimmed),
-                    new: new_line.trim().to_string(),
-                    severity: Severity::Error,
-                });
-            }
+            results.push(LineResult {
+                line: current_line,
+                col: current_col,
+                old: String::from(trimmed),
+                new: line_result.out.trim().to_string(),
+                severity: line_result.severity,
+            });
 
             sub_line += 1;
         }
@@ -134,7 +132,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
             new_part = lines
                 .into_iter()
-                .map(|l| crate::rule::format_or_lint(l, false))
+                .map(|l| crate::rule::format_or_lint(l, false).out)
                 .collect::<Vec<_>>()
                 .join("\n");
         }

@@ -20,7 +20,7 @@ mod tests {
 
         let example = r###"
 ---
-title: iPad 和 Ios 接入的不同点
+title: iPad 和 iOS 接入的不同点
 id: h
 slug: /appstore/ipad_and_ios
 original_slug: Web/CSS/网格-模板-列

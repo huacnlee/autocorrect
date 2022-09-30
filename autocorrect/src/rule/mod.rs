@@ -1,3 +1,4 @@
+// autocorrect: false
 mod fullwidth;
 mod halfwidth;
 mod rule;
@@ -6,7 +7,9 @@ mod strategery;
 mod word;
 
 use regex::Regex;
-use rule::Rule;
+use rule::{Rule, RuleResult};
+
+use crate::result::Severity;
 
 lazy_static! {
     static ref RULES: Vec<Rule> = vec![
@@ -50,71 +53,74 @@ pub fn default_rule_names() -> Vec<String> {
     rule_names
 }
 
-pub(crate) fn format_or_lint(text: &str, lint: bool) -> String {
+pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
+    let mut result = RuleResult::new(text);
+
     // skip if not has CJK
     if !CJK_RE.is_match(text) {
-        return String::from(text);
+        return result;
     }
 
-    let mut out: String = String::new();
+    result.out = String::from("");
     let mut part = String::new();
     for ch in text.chars() {
         part.push(ch);
 
         // Is next char is newline or space, break part to format
         if ch == ' ' || ch == '\n' || ch == '\r' {
-            let new_part = part.clone();
+            let mut sub_result = RuleResult::new(&part.clone());
+            sub_result.severity = result.severity;
+
             part.clear();
 
-            out.push_str(&format_part(&new_part, lint));
+            format_part(&mut sub_result, lint);
+
+            result.out.push_str(&sub_result.out);
+            result.severity = sub_result.severity;
         }
     }
 
     if !part.is_empty() {
-        out.push_str(&format_part(&part, lint));
+        let mut sub_result = RuleResult::new(&part.clone());
+        sub_result.severity = result.severity;
+
+        format_part(&mut sub_result, lint);
+
+        result.out.push_str(&sub_result.out);
+        result.severity = sub_result.severity;
     }
 
-    format_after_rules(&out, lint)
+    format_after_rules(&mut result, lint);
+
+    result
 }
 
-fn format_part(text: &str, lint: bool) -> String {
-    if !CJK_RE.is_match(text) {
-        return String::from(text);
+fn format_part(result: &mut RuleResult, lint: bool) {
+    if !CJK_RE.is_match(&result.out) {
+        return;
     }
 
-    if PATH_RE.is_match(text) {
-        return String::from(text);
+    if PATH_RE.is_match(&result.out) {
+        return;
     }
-
-    format_rules(&text, lint)
-}
-
-fn format_rules(input: &str, lint: bool) -> String {
-    let mut out = input.to_string();
 
     for rule in RULES.iter() {
         if lint {
-            out = rule.lint(&out);
+            rule.lint(result);
         } else {
-            out = rule.format(&out);
+            rule.format(result);
         }
     }
-
-    out
 }
 
-fn format_after_rules(input: &str, lint: bool) -> String {
-    let mut out = input.to_string();
-
+fn format_after_rules(result: &mut RuleResult, lint: bool) {
     for rule in AFTER_RULES.iter() {
         if lint {
-            out = rule.lint(&out);
+            rule.lint(result);
         } else {
-            out = rule.format(&out);
+            rule.format(result);
         }
     }
-
-    out
 }
 #[cfg(test)]
 mod tests {
@@ -132,5 +138,60 @@ mod tests {
             "spellcheck",
         ];
         assert_eq!(expect, rule_names);
+    }
+
+    #[test]
+    fn test_format_part() {
+        let mut result = RuleResult::new("Hello世界.");
+        format_part(&mut result, false);
+        assert_eq!("Hello 世界。", result.out);
+        assert_eq!(Severity::Error, result.severity);
+
+        let mut result = RuleResult::new("Hello世界.");
+        format_part(&mut result, true);
+        assert_eq!("Hello 世界。", result.out);
+        assert_eq!(Severity::Error, result.severity);
+
+        let mut result = RuleResult::new("Hello 世界。");
+        format_part(&mut result, true);
+        assert_eq!("Hello 世界。", result.out);
+        assert_eq!(Severity::Pass, result.severity);
+    }
+
+    #[test]
+    fn test_format_after_rules() {
+        crate::config::setup_test();
+
+        let mut result = RuleResult::new("测试 ios 应用， 与技术");
+        format_after_rules(&mut result, false);
+        assert_eq!("测试 ios 应用，与技术", result.out);
+        assert_eq!(Severity::Error, result.severity);
+
+        let mut result = RuleResult::new("测试 ios 应用， 与技术");
+        format_after_rules(&mut result, true);
+        assert_eq!("测试 iOS 应用，与技术", result.out);
+        assert_eq!(Severity::Error, result.severity);
+    }
+
+    #[test]
+    fn test_format_or_lint() {
+        crate::config::setup_test();
+
+        let result = format_or_lint("测试ios应用， 与技术", false);
+        assert_eq!("测试 ios 应用，与技术", result.out);
+        assert_eq!(Severity::Error, result.severity);
+
+        let result = format_or_lint("测试ios应用， 与技术", true);
+        assert_eq!("测试 iOS 应用，与技术", result.out);
+        assert_eq!(Severity::Error, result.severity);
+
+        // Pass case
+        let result = format_or_lint("测试 iOS 应用，与技术", false);
+        assert_eq!("测试 iOS 应用，与技术", result.out);
+        assert_eq!(Severity::Pass, result.severity);
+
+        let result = format_or_lint("测试 iOS 应用，与技术", true);
+        assert_eq!("测试 iOS 应用，与技术", result.out);
+        assert_eq!(Severity::Pass, result.severity);
     }
 }

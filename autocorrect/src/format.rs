@@ -20,7 +20,8 @@ use crate::code::{self, Results};
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
 pub fn format(text: &str) -> String {
-    crate::rule::format_or_lint(text, false)
+    let result = crate::rule::format_or_lint(text, false);
+    result.out
 }
 
 /// Format a html content.
@@ -266,9 +267,9 @@ mod tests {
     fn it_lint_for() {
         let raw = "<p>Hello你好ios版本</p>";
         let result = lint_for(raw, "foo.bar.html");
-        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好 ios 版本","old":"Hello你好ios版本","severity":1},{"l":1,"c":4,"new":"Hello 你好 iOS 版本","old":"Hello你好ios版本","severity":2}],"error":""}"#;
+        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好 iOS 版本","old":"Hello你好ios版本","severity":1}],"error":""}"#;
         assert!(!result.has_error());
-        assert_eq!(2, result.lines.len());
+        assert_eq!(1, result.lines.len());
         assert_eq!(expect_json, result.to_json());
 
         let result1 = lint_for("const a = 'hello世界'", "js");
