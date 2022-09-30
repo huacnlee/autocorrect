@@ -1,8 +1,6 @@
 // autocorrect: false
 use super::*;
 pub use crate::result::*;
-use crate::spellcheck::spellcheck;
-use crate::{config, Config};
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -91,10 +89,9 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         for line_str in lines {
             // format trimmed string
             let new_line = crate::rule::format_or_lint(line_str, true);
-            let spell_new_line = spellcheck(&new_line);
 
             // skip, when no difference
-            if new_line.eq(line_str) && spell_new_line.eq(&new_line) {
+            if new_line.eq(line_str) {
                 sub_line += 1;
                 continue;
             }
@@ -126,17 +123,6 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
                 });
             }
 
-            // If has spelling issues, add more lint result
-            if spell_new_line.ne(&new_line) {
-                results.push(LineResult {
-                    line: current_line,
-                    col: current_col,
-                    old: String::from(trimmed),
-                    new: spell_new_line.trim().to_string(),
-                    severity: Severity::Warning,
-                });
-            }
-
             sub_line += 1;
         }
     } else {
@@ -149,13 +135,6 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             new_part = lines
                 .into_iter()
                 .map(|l| crate::rule::format_or_lint(l, false))
-                .map(|l| {
-                    if Config::current().spellcheck.mode == Some(config::SeverityMode::Error) {
-                        spellcheck(&l)
-                    } else {
-                        l
-                    }
-                })
                 .collect::<Vec<_>>()
                 .join("\n");
         }

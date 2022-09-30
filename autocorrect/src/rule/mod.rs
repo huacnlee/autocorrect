@@ -1,6 +1,7 @@
 mod fullwidth;
 mod halfwidth;
 mod rule;
+pub(crate) mod spellcheck;
 mod strategery;
 mod word;
 
@@ -22,6 +23,7 @@ lazy_static! {
     static ref AFTER_RULES: Vec<Rule> = vec![
         // Rule: no-space-fullwidth
         Rule::new("no-space-fullwidth", word::format_no_space_fullwidth),
+        Rule::new("spellcheck", spellcheck::format),
     ];
 }
 
@@ -127,6 +129,7 @@ mod tests {
             "fullwidth",
             "halfwidth",
             "no-space-fullwidth",
+            "spellcheck",
         ];
         assert_eq!(expect, rule_names);
     }

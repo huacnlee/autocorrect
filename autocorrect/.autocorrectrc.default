@@ -4,6 +4,7 @@ rules:
   fullwidth: 1
   halfwidth: 1
   no-space-fullwidth: 1
+  spellcheck: 2
 spellcheck:
   mode: 2
   words:

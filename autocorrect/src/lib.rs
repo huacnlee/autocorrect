@@ -98,7 +98,6 @@ mod serde_any;
 
 pub mod config;
 pub mod ignorer;
-pub mod spellcheck;
 pub use code::{format_for, get_file_extension, is_support_type, lint_for};
 pub use config::Config;
 pub use format::*;

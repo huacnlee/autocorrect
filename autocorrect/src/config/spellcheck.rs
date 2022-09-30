@@ -10,6 +10,10 @@ lazy_static! {
 #[derive(Deserialize, Serialize, Clone, Debug, Default)]
 pub struct SpellcheckConfig {
     #[serde(default)]
+    #[deprecated(
+        since = "2.0.0",
+        note = "Use rules.spellcheck instead, see changelog of v2.0.0"
+    )]
     pub mode: Option<SeverityMode>,
     #[serde(default)]
     pub words: Vec<SpellcheckWord>,
@@ -20,10 +24,6 @@ pub struct SpellcheckConfig {
 }
 
 impl SpellcheckConfig {
-    pub fn is_disabled(&self) -> bool {
-        self.mode == Some(SeverityMode::Off) || self.mode.is_none()
-    }
-
     pub fn prepare(&mut self) {
         if !self.words.is_empty() {
             let mut lines = self.words.clone();
@@ -64,7 +64,7 @@ impl SpellcheckConfig {
                     .insert(left_str.to_string(), right_str.to_string());
                 self.dict_re.insert(
                     left_str.to_string(),
-                    crate::spellcheck::word_regexp(left_str),
+                    crate::rule::spellcheck::word_regexp(left_str),
                 );
             }
         }

@@ -117,12 +117,14 @@ impl Config {
     }
 
     pub fn merge(&mut self, config: &Config) -> Result<Config, Error> {
-        if let Some(mode) = config.spellcheck.mode.clone() {
-            self.spellcheck.mode = Some(mode);
-        }
-
         for (k, v) in config.rules.clone() {
             self.rules.insert(k, v);
+        }
+
+        // DEPRECATED: since 2.0.0, remove this in 2.1.0
+        if let Some(mode) = config.spellcheck.mode.clone() {
+            self.spellcheck.mode = Some(mode.clone());
+            self.rules.insert("spellcheck".to_string(), mode);
         }
 
         self.spellcheck.words = self
@@ -214,19 +216,6 @@ mod tests {
         config = Config::from_str("").unwrap();
         assert_eq!(None, config.spellcheck.mode);
         assert_eq!(Vec::<String>::new(), config.spellcheck.words);
-    }
-
-    #[test]
-    fn test_config_default() {
-        let mut config = Config::default();
-
-        assert!(config.spellcheck.is_disabled());
-        config.spellcheck.mode = Some(SeverityMode::Off);
-        assert!(config.spellcheck.is_disabled());
-        config.spellcheck.mode = Some(SeverityMode::Error);
-        assert!(!config.spellcheck.is_disabled());
-        config.spellcheck.mode = Some(SeverityMode::Warning);
-        assert!(!config.spellcheck.is_disabled());
     }
 
     #[test]
