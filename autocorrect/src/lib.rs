@@ -95,6 +95,7 @@ mod format;
 mod fullwidth;
 mod halfwidth;
 mod result;
+mod rule;
 mod serde_any;
 mod strategery;
 

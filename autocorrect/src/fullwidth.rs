@@ -31,7 +31,7 @@ lazy_static! {
 }
 
 // fullwidth correct punctuations near the CJK chars
-pub fn fullwidth(text: &str) -> String {
+pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
     out = PUNCTUATION_WITH_LEFT_CJK_RE
@@ -76,7 +76,7 @@ mod tests {
 
     fn assert_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {
-            let actual = fullwidth(source);
+            let actual = format(source);
             assert_eq!(exptected, actual);
         }
     }

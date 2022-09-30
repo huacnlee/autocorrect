@@ -2,6 +2,7 @@
 use crate::{
     code::{self, Results},
     fullwidth, halfwidth,
+    rule::Rule,
     strategery::Strategery,
 };
 use regex::Regex;
@@ -17,7 +18,7 @@ lazy_static! {
     static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
 
     // Strategies all rules
-    static ref STRATEGIES: Vec<Strategery> = vec![
+    static ref WORD_STRATEGIES: Vec<Strategery> = vec![
         // EnglishLetter, Number
         // Avoid add space when Letter, Number has %, $, \ prefix, eg. %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
         Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
@@ -28,6 +29,9 @@ lazy_static! {
         Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
+    ];
+
+    static ref PUNCTUATION_STRATEGIES: Vec<Strategery> = vec![
         // SpecialSymbol
         Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
         Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
@@ -35,9 +39,39 @@ lazy_static! {
         Strategery::new(r"[\]\)!]", r"\p{CJK}"),
     ];
 
-    static ref AFTER_STRATEGIES: Vec<Strategery> = vec![
+    static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
         Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】“”‘’]").with_remove_space().with_reverse(),
+    ];
+
+    static ref RULES: Vec<Rule> = vec![
+        // Rule: space-word
+        Rule::new("space-word", |input| {
+            let mut out = String::from(input);
+            WORD_STRATEGIES.iter().for_each(|s| out = s.format(&out));
+            out
+        }),
+
+        // Rule: space-punctuation
+        Rule::new("space-punctuation", |input| {
+            let mut out = String::from(input);
+            PUNCTUATION_STRATEGIES.iter().for_each(|s| out = s.format(&out));
+            out
+        }),
+
+        // Rule: fullwidth
+        Rule::new("fullwidth", |input| fullwidth::format(&input)),
+        // Rule: halfwidth
+        Rule::new("halfwidth", |input| halfwidth::format(&input)),
+    ];
+
+    static ref AFTER_RULES: Vec<Rule> = vec![
+        // Rule: no-space-fullwidth
+        Rule::new("no-space-fullwidth", |input| {
+            let mut out = String::from(input);
+            NO_SPACE_FULLWIDTH_STRATEGIES.iter().for_each(|s| out = s.format(&out));
+            out
+        }),
     ];
 }
 
@@ -83,11 +117,9 @@ pub fn format(text: &str) -> String {
         out.push_str(&format_part(&part));
     }
 
-    for rule in AFTER_STRATEGIES.iter() {
+    for rule in AFTER_RULES.iter() {
         out = rule.format(&out);
     }
-
-    // out = space_dash_with_hans(&out);
 
     out
 }
@@ -101,10 +133,8 @@ fn format_part(text: &str) -> String {
         return String::from(text);
     }
 
-    let mut out = fullwidth::fullwidth(text);
-    out = halfwidth::halfwidth(&out);
-
-    for rule in STRATEGIES.iter() {
+    let mut out = String::from(text);
+    for rule in RULES.iter() {
         out = rule.format(&out)
     }
 
