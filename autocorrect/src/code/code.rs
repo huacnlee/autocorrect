@@ -150,7 +150,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
                 .into_iter()
                 .map(format)
                 .map(|l| {
-                    if Config::current().spellcheck.mode == Some(config::SpellcheckMode::Enabled) {
+                    if Config::current().spellcheck.mode == Some(config::SeverityMode::Error) {
                         spellcheck(&l)
                     } else {
                         l

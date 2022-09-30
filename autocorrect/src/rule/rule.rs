@@ -1,5 +1,6 @@
 pub(crate) struct Rule {
-    name: String,
+    #[allow(dead_code)]
+    pub name: String,
     pub format_fn: fn(input: &str) -> String,
 }
 

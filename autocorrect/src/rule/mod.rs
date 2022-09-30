@@ -24,6 +24,18 @@ lazy_static! {
     ];
 }
 
+/// Get all rule names for default enable
+#[allow(dead_code)]
+pub fn default_rule_names() -> Vec<String> {
+    let mut rule_names = vec![];
+    RULES.iter().for_each(|r| rule_names.push(r.name.clone()));
+    AFTER_RULES
+        .iter()
+        .for_each(|r| rule_names.push(r.name.clone()));
+
+    rule_names
+}
+
 pub fn format_rules(input: &str) -> String {
     let mut out = input.to_string();
 
@@ -42,4 +54,22 @@ pub fn format_after_rules(input: &str) -> String {
     }
 
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_default_rule_names() {
+        let rule_names = default_rule_names();
+        let expect = vec![
+            "space-word",
+            "space-punctuation",
+            "fullwidth",
+            "halfwidth",
+            "no-space-fullwidth",
+        ];
+        assert_eq!(expect, rule_names);
+    }
 }
