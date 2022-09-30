@@ -2,7 +2,7 @@
 use super::*;
 pub use crate::result::*;
 use crate::spellcheck::spellcheck;
-use crate::{config, format, Config};
+use crate::{config, Config};
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -90,7 +90,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         let mut sub_line = 0;
         for line_str in lines {
             // format trimmed string
-            let new_line = format(line_str);
+            let new_line = crate::rule::format_or_lint(line_str, true);
             let spell_new_line = spellcheck(&new_line);
 
             // skip, when no difference
@@ -148,7 +148,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
             new_part = lines
                 .into_iter()
-                .map(format)
+                .map(|l| crate::rule::format_or_lint(l, false))
                 .map(|l| {
                     if Config::current().spellcheck.mode == Some(config::SeverityMode::Error) {
                         spellcheck(&l)

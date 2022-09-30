@@ -1,17 +1,5 @@
 // autocorrect: false
 use crate::code::{self, Results};
-use regex::Regex;
-
-lazy_static! {
-    static ref FULL_DATE_RE: Regex = regexp!(
-        "{}",
-        r"[ ]{0,}\d+[ ]{0,}年 [ ]{0,}\d+[ ]{0,}月 [ ]{0,}\d+[ ]{0,}[日号][ ]{0,}"
-    );
-    static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
-    static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
-    // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
-    static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
-}
 
 /// Automatically add spaces between Chinese and English words.
 ///
@@ -32,42 +20,7 @@ lazy_static! {
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
 pub fn format(text: &str) -> String {
-    // skip if not has CJK
-    if !CJK_RE.is_match(text) {
-        return String::from(text);
-    }
-
-    let mut out: String = String::new();
-    let mut part = String::new();
-    for ch in text.chars() {
-        part.push(ch);
-
-        // Is next char is newline or space, break part to format
-        if ch == ' ' || ch == '\n' || ch == '\r' {
-            let new_part = part.clone();
-            part.clear();
-
-            out.push_str(&format_part(&new_part));
-        }
-    }
-
-    if !part.is_empty() {
-        out.push_str(&format_part(&part));
-    }
-
-    crate::rule::format_after_rules(&out)
-}
-
-fn format_part(text: &str) -> String {
-    if !CJK_RE.is_match(text) {
-        return String::from(text);
-    }
-
-    if PATH_RE.is_match(text) {
-        return String::from(text);
-    }
-
-    crate::rule::format_rules(&text)
+    crate::rule::format_or_lint(text, false)
 }
 
 /// Format a html content.
