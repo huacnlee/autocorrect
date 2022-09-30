@@ -89,6 +89,7 @@ fn format_part(text: &str) -> String {
 /// "#;
 /// autocorrect::format_html(html);
 /// ```
+#[deprecated(since = "2.0.0", note = "Please use `format_for` instead")]
 pub fn format_html(html_str: &str) -> String {
     code::format_html(html_str).to_string()
 }
