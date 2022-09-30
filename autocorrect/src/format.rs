@@ -1,10 +1,5 @@
 // autocorrect: false
-use crate::{
-    code::{self, Results},
-    fullwidth, halfwidth,
-    rule::Rule,
-    strategery::Strategery,
-};
+use crate::code::{self, Results};
 use regex::Regex;
 
 lazy_static! {
@@ -16,63 +11,6 @@ lazy_static! {
     static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
     // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
     static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
-
-    // Strategies all rules
-    static ref WORD_STRATEGIES: Vec<Strategery> = vec![
-        // EnglishLetter, Number
-        // Avoid add space when Letter, Number has %, $, \ prefix, eg. %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
-        Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
-        Strategery::new(r"[^%\$\\][a-zA-Z0-9]", r"\p{CJK}"),
-        // Number, -100, +100
-        Strategery::new(r"\p{CJK}", r"[\-+][\d]+").with_reverse(),
-        // Spcial format Letter, Number leading case, because the before Strategery can't cover eg. A开头的case测试
-        Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
-        // 10%中文
-        Strategery::new(r"[0-9][%]", r"\p{CJK}"),
-    ];
-
-    static ref PUNCTUATION_STRATEGIES: Vec<Strategery> = vec![
-        // SpecialSymbol
-        Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
-        Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
-        Strategery::new(r"\p{CJK}", r"[\[\(]"),
-        Strategery::new(r"[\]\)!]", r"\p{CJK}"),
-    ];
-
-    static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
-        // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】“”‘’]").with_remove_space().with_reverse(),
-    ];
-
-    static ref RULES: Vec<Rule> = vec![
-        // Rule: space-word
-        Rule::new("space-word", |input| {
-            let mut out = String::from(input);
-            WORD_STRATEGIES.iter().for_each(|s| out = s.format(&out));
-            out
-        }),
-
-        // Rule: space-punctuation
-        Rule::new("space-punctuation", |input| {
-            let mut out = String::from(input);
-            PUNCTUATION_STRATEGIES.iter().for_each(|s| out = s.format(&out));
-            out
-        }),
-
-        // Rule: fullwidth
-        Rule::new("fullwidth", |input| fullwidth::format(&input)),
-        // Rule: halfwidth
-        Rule::new("halfwidth", |input| halfwidth::format(&input)),
-    ];
-
-    static ref AFTER_RULES: Vec<Rule> = vec![
-        // Rule: no-space-fullwidth
-        Rule::new("no-space-fullwidth", |input| {
-            let mut out = String::from(input);
-            NO_SPACE_FULLWIDTH_STRATEGIES.iter().for_each(|s| out = s.format(&out));
-            out
-        }),
-    ];
 }
 
 /// Automatically add spaces between Chinese and English words.
@@ -117,11 +55,7 @@ pub fn format(text: &str) -> String {
         out.push_str(&format_part(&part));
     }
 
-    for rule in AFTER_RULES.iter() {
-        out = rule.format(&out);
-    }
-
-    out
+    crate::rule::format_after_rules(&out)
 }
 
 fn format_part(text: &str) -> String {
@@ -133,15 +67,11 @@ fn format_part(text: &str) -> String {
         return String::from(text);
     }
 
-    let mut out = String::from(text);
-    for rule in RULES.iter() {
-        out = rule.format(&out)
-    }
-
-    out
+    crate::rule::format_rules(&text)
 }
 
 /// Format a html content.
+///
 ///
 /// Example:
 ///

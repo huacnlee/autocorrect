@@ -1,5 +1,5 @@
-pub struct Rule {
-    pub name: String,
+pub(crate) struct Rule {
+    name: String,
     pub format_fn: fn(input: &str) -> String,
 }
 

@@ -92,12 +92,9 @@ macro_rules! map {
 mod code;
 mod diff;
 mod format;
-mod fullwidth;
-mod halfwidth;
 mod result;
 mod rule;
 mod serde_any;
-mod strategery;
 
 pub mod config;
 pub mod ignorer;
