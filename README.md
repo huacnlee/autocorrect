@@ -21,12 +21,6 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/688b7f492623baead3477b4cf0baa706777864d6) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（极少数异常情况），你可以放心用来辅助你完成自动纠正动作。
 
-Other implements for programming:
-
-- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
-
 ## Features
 
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
@@ -40,20 +34,24 @@ Other implements for programming:
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png">
 
-## Install
+## Installation
 
-> 🍏 AutoCorrect 还为非技术人员提供了比较简单的桌面端版本，如有需要可访问 [Download](https://github.com/huacnlee/autocorrect/releases) 页面来下载。
+```bash
+$ brew install autocorrect
+```
+
+Or you can just install via this:
 
 ```bash
 $ curl -sSL https://git.io/JcGER | bash
 ```
 
-After that, you will get `/usr/local/bin/autocorrect` command.
+After that, you will get `autocorrect` command.
 
 ```bash
-AutoCorrect 1.9.0
+AutoCorrect 1.11.0
 Jason Lee <huacnlee@gmail.com
-A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
+A linter and formatter to help you to improve copywriting, correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 
 USAGE:
     autocorrect [FLAGS] [OPTIONS] [file]... [SUBCOMMAND]
@@ -353,6 +351,12 @@ fn main() {
 	// </article>
 }
 ````
+
+## Other implements for programming
+
+- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
+- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
+- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
 
 ## Benchmark
 
