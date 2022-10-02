@@ -1,7 +1,7 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(constructor)]
+#[wasm_bindgen]
 pub struct Ignorer {
     ignorer: autocorrect::ignorer::Ignorer,
 }

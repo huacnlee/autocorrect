@@ -31,14 +31,14 @@ pub fn format(text: &str) -> String {
 #[wasm_bindgen(js_name = "formatFor")]
 pub fn format_for(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
     let result = autocorrect::format_for(raw, filename_or_ext);
-    wasm_bindgen::JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 /// Lint content with filetype, and return a json result.
 #[wasm_bindgen(js_name = "lintFor")]
 pub fn lint_for(raw: &str, filename_or_ext: &str) -> wasm_bindgen::JsValue {
     let result = autocorrect::lint_for(raw, filename_or_ext);
-    wasm_bindgen::JsValue::from_serde(&result).unwrap()
+    serde_wasm_bindgen::to_value(&result).unwrap()
 }
 
 #[cfg(test)]
