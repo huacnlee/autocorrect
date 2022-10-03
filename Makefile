@@ -1,5 +1,6 @@
 WORKDIR=$(shell pwd)
 LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
+BIN_PATH=$(shell which autocorrect)
 
 bench:
 	cargo bench
@@ -12,7 +13,7 @@ run\:json:
 build:
 	cargo build --release --target aarch64-apple-darwin
 	ls -lha target/aarch64-apple-darwin/release/autocorrect
-	sudo ln -f target/aarch64-apple-darwin/release/autocorrect /usr/local/bin/autocorrect
+	sudo ln -f target/aarch64-apple-darwin/release/autocorrect $(BIN_PATH)
 test:
 	@cargo test --manifest-path autocorrect/Cargo.toml 
 	@cargo test

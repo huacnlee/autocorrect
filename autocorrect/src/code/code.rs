@@ -180,7 +180,9 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 ) {
     let part = item.as_str();
 
-    results.move_cursor(part);
+    let (mut base_line, _) = results.move_cursor(part);
+    // Inline script start from 0
+    base_line -= 1;
 
     if results.is_lint() {
         // Skip lint if AutoCorrect disabled
@@ -203,7 +205,9 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
                 results.error(&result.error);
             }
 
-            for line in result.lines {
+            for mut line in result.lines {
+                // Inline script's lines need add base_line offset.
+                line.line += base_line;
                 results.push(line);
             }
         }
@@ -401,5 +405,38 @@ mod tests {
         codeblock.update_data("\nhello world\n");
         assert_eq!(codeblock.data, "```rb\nhello world\n```".to_string());
         assert_eq!(codeblock.code, "\nhello world\n".to_string());
+    }
+
+    #[test]
+    fn test_inline_script_line_number() {
+        let raw = r#""Hello world
+        ```js
+        // hello世界
+        ```
+
+        ### 外部test
+
+        Second line
+
+        ```rb
+        class User
+          # 查找user
+          def find
+          end
+        end
+        ```
+        “"#;
+
+        let result = lint_for(raw, "markdown");
+        assert_eq!(result.lines.len(), 3);
+        assert_eq!(result.lines[0].line, 3);
+        assert_eq!(result.lines[0].col, 9);
+        assert_eq!(result.lines[0].new, "// hello 世界");
+        assert_eq!(result.lines[1].line, 6);
+        assert_eq!(result.lines[1].col, 13);
+        assert_eq!(result.lines[1].new, "外部 test");
+        assert_eq!(result.lines[2].line, 12);
+        assert_eq!(result.lines[2].col, 11);
+        assert_eq!(result.lines[2].new, "# 查找 user");
     }
 }
