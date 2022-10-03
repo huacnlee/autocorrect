@@ -12,49 +12,49 @@
           "severity": 1
         },
         {
-          "l": 1,
+          "l": 9,
           "c": 1,
           "new": "/* 在 css 里面的注释会转换 */",
           "old": "/* 在css里面的注释会转换 */",
           "severity": 1
         },
         {
-          "l": 6,
+          "l": 14,
           "c": 5,
           "new": "/* 后面个 comment 注释 */",
           "old": "/* 后面个comment注释 */",
           "severity": 1
         },
         {
-          "l": 1,
+          "l": 17,
           "c": 1,
           "new": "// 这个 script 也会转换",
           "old": "// 这个script也会转换",
           "severity": 1
         },
         {
-          "l": 2,
+          "l": 18,
           "c": 5,
           "new": "// 按照 javascript 的方式来处理",
           "old": "// 按照javascript的方式来处理",
           "severity": 1
         },
         {
-          "l": 3,
+          "l": 19,
           "c": 15,
           "new": "\"hello 你好\"",
           "old": "\"hello你好\"",
           "severity": 1
         },
         {
-          "l": 5,
+          "l": 21,
           "c": 6,
           "new": "* 多行 comment 测试",
           "old": "* 多行comment测试",
           "severity": 1
         },
         {
-          "l": 6,
+          "l": 22,
           "c": 6,
           "new": "* 多行第 2 行",
           "old": "* 多行第2行",
