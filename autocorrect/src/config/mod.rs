@@ -227,8 +227,11 @@ mod tests {
     fn test_current_config_with_default_config_file() {
         let config = Config::current();
 
-        let mut keys: Vec<String> = config.rules.keys().map(|k| k.clone()).collect();
-        assert_eq!(crate::rule::default_rule_names().sort(), keys.sort());
+        let mut keys: Vec<String> = config.rules.keys().cloned().collect();
+        keys.sort();
+        let mut rule_names: Vec<String> = crate::rule::default_rule_names();
+        rule_names.sort();
+        assert_eq!(rule_names, keys);
 
         for (k, v) in config.rules.clone() {
             if k == "spellcheck" {
