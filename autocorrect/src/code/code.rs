@@ -69,13 +69,10 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     // Check AutoCorrect enable/disable toggle marker
     // If disable results.is_enabled() will be false
     if rule_name == "comment" {
-        match toggle::parse(part).match_rule("") {
-            Some(false) => results.toggle(false),
-            Some(true) => results.toggle(true),
-            _ => {}
-        }
+        results.toggle(toggle::parse(part));
     }
 
+    let disabled_rules = results.get_toggle().disable_rules();
     if results.is_lint() {
         // Skip lint if AutoCorrect disabled
         if !results.is_enabled() {
@@ -88,7 +85,8 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         let mut sub_line = 0;
         for line_str in lines {
             // format trimmed string
-            let line_result = crate::rule::format_or_lint(line_str, true);
+            let line_result =
+                crate::rule::format_or_lint_with_disable_rules(line_str, true, &disabled_rules);
 
             // skip, when no difference
             if line_result.severity.is_pass() {
@@ -132,7 +130,9 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
             new_part = lines
                 .into_iter()
-                .map(|l| crate::rule::format_or_lint(l, false).out)
+                .map(|l| {
+                    crate::rule::format_or_lint_with_disable_rules(l, false, &disabled_rules).out
+                })
                 .collect::<Vec<_>>()
                 .join("\n");
         }
@@ -348,5 +348,41 @@ mod tests {
         assert_eq!(result.lines[2].line, 12);
         assert_eq!(result.lines[2].col, 11);
         assert_eq!(result.lines[2].new, "# 查找 user");
+    }
+
+    #[test]
+    fn test_disable_rules_all() {
+        let raw = r#"// autocorrect-disable
+        // hello世界
+        // autocorrect-enable
+        // hello世界
+        // autocorrect-disable space-word
+        // hello世界.
+        // autocorrect-disable fullwidth
+        // hello世界.
+        // autocorrect-disable space-word,fullwidth
+        // hello世界.
+        const a = "hello世界."
+        “"#;
+
+        let expected = r#"// autocorrect-disable
+        // hello世界
+        // autocorrect-enable
+        // hello 世界
+        // autocorrect-disable space-word
+        // hello世界。
+        // autocorrect-disable fullwidth
+        // hello 世界.
+        // autocorrect-disable space-word,fullwidth
+        // hello世界.
+        const a = "hello世界."
+        “"#;
+
+        assert_eq!(expected, format_for(raw, "js").out);
+        let result = lint_for(raw, "js");
+        assert_eq!(result.lines.len(), 3);
+        assert_eq!(result.lines[0].new, "// hello 世界");
+        assert_eq!(result.lines[1].new, "// hello世界。");
+        assert_eq!(result.lines[2].new, "// hello 世界.");
     }
 }

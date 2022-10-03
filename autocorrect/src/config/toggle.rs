@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use pest::Parser;
 use pest_derive::Parser;
 
@@ -5,11 +7,17 @@ use pest_derive::Parser;
 #[grammar = "./config/toggle.pest"]
 pub struct ToggleParser;
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub enum Toggle {
     None,
     Disable(Vec<String>),
     Enable(Vec<String>),
+}
+
+impl Default for Toggle {
+    fn default() -> Self {
+        Toggle::Enable(vec![])
+    }
 }
 
 impl Toggle {
@@ -30,6 +38,19 @@ impl Toggle {
                     Some(rules.contains(&rule_name.to_string()))
                 }
             }
+        }
+    }
+
+    pub fn disable_rules(&self) -> HashMap<String, bool> {
+        match self {
+            Toggle::Disable(rules) => {
+                let mut map = HashMap::new();
+                for rule in rules {
+                    map.insert(rule.to_string(), true);
+                }
+                map
+            }
+            _ => HashMap::new(),
         }
     }
 }
@@ -122,6 +143,7 @@ mod tests {
             Toggle::Enable(vec!["foo".to_owned()]),
             parse("autocorrect-enable foo")
         );
+
         assert_eq!(
             Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]),
             parse("// autocorrect-enable foo, bar")
@@ -146,6 +168,35 @@ mod tests {
                 "foo-bar_dar".to_owned()
             ]),
             parse("// autocorrect-disable foo,Bar, Foo-bAr_dar")
+        );
+    }
+
+    #[test]
+    fn test_disable_rules() {
+        // disable_rules
+        assert_eq!(
+            Some(&true),
+            parse("// autocorrect-disable foo,Bar, Foo-bAr_dar")
+                .disable_rules()
+                .get("foo")
+        );
+        assert_eq!(
+            Some(&true),
+            parse("// autocorrect-disable foo,Bar, Foo-bAr_dar")
+                .disable_rules()
+                .get("bar")
+        );
+        assert_eq!(
+            Some(&true),
+            parse("// autocorrect-disable foo,Bar, Foo-bAr_dar")
+                .disable_rules()
+                .get("foo-bar_dar")
+        );
+        assert_eq!(
+            None,
+            parse("// autocorrect-disable foo,Bar, Foo-bAr_dar")
+                .disable_rules()
+                .get("foo-bar")
         );
     }
 }

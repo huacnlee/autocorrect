@@ -6,6 +6,8 @@ pub mod spellcheck;
 mod strategery;
 mod word;
 
+use std::collections::HashMap;
+
 use regex::Regex;
 use rule::{Rule, RuleResult};
 
@@ -52,6 +54,14 @@ pub fn default_rule_names() -> Vec<String> {
 }
 
 pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
+    format_or_lint_with_disable_rules(text, lint, &map![])
+}
+
+pub(crate) fn format_or_lint_with_disable_rules(
+    text: &str,
+    lint: bool,
+    disable_rules: &HashMap<String, bool>,
+) -> RuleResult {
     let mut result = RuleResult::new(text);
 
     // skip if not has CJK
@@ -71,7 +81,7 @@ pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
 
             part.clear();
 
-            format_part(&mut sub_result, lint);
+            format_part(&mut sub_result, lint, disable_rules);
 
             result.out.push_str(&sub_result.out);
             result.severity = sub_result.severity;
@@ -82,18 +92,18 @@ pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
         let mut sub_result = RuleResult::new(&part.clone());
         sub_result.severity = result.severity;
 
-        format_part(&mut sub_result, lint);
+        format_part(&mut sub_result, lint, disable_rules);
 
         result.out.push_str(&sub_result.out);
         result.severity = sub_result.severity;
     }
 
-    format_after_rules(&mut result, lint);
+    format_after_rules(&mut result, lint, disable_rules);
 
     result
 }
 
-fn format_part(result: &mut RuleResult, lint: bool) {
+fn format_part(result: &mut RuleResult, lint: bool, disable_rules: &HashMap<String, bool>) {
     if !CJK_RE.is_match(&result.out) {
         return;
     }
@@ -102,7 +112,10 @@ fn format_part(result: &mut RuleResult, lint: bool) {
         return;
     }
 
-    for rule in RULES.iter() {
+    for rule in RULES
+        .iter()
+        .filter(|r| !disable_rules.get(r.name.as_str()).unwrap_or(&false))
+    {
         if lint {
             rule.lint(result);
         } else {
@@ -111,8 +124,11 @@ fn format_part(result: &mut RuleResult, lint: bool) {
     }
 }
 
-fn format_after_rules(result: &mut RuleResult, lint: bool) {
-    for rule in AFTER_RULES.iter() {
+fn format_after_rules(result: &mut RuleResult, lint: bool, disable_rules: &HashMap<String, bool>) {
+    for rule in AFTER_RULES
+        .iter()
+        .filter(|r| !disable_rules.get(r.name.as_str()).unwrap_or(&false))
+    {
         if lint {
             rule.lint(result);
         } else {
@@ -143,17 +159,17 @@ mod tests {
     #[test]
     fn test_format_part() {
         let mut result = RuleResult::new("Hello世界.");
-        format_part(&mut result, false);
+        format_part(&mut result, false, &map!());
         assert_eq!("Hello 世界。", result.out);
         assert_eq!(Severity::Error, result.severity);
 
         let mut result = RuleResult::new("Hello世界.");
-        format_part(&mut result, true);
+        format_part(&mut result, true, &map!());
         assert_eq!("Hello 世界。", result.out);
         assert_eq!(Severity::Error, result.severity);
 
         let mut result = RuleResult::new("Hello 世界。");
-        format_part(&mut result, true);
+        format_part(&mut result, true, &map!());
         assert_eq!("Hello 世界。", result.out);
         assert_eq!(Severity::Pass, result.severity);
     }
@@ -163,12 +179,12 @@ mod tests {
         crate::config::setup_test();
 
         let mut result = RuleResult::new("测试 ios 应用， 与技术");
-        format_after_rules(&mut result, false);
+        format_after_rules(&mut result, false, &map!());
         assert_eq!("测试 ios 应用，与技术", result.out);
         assert_eq!(Severity::Error, result.severity);
 
         let mut result = RuleResult::new("测试 ios 应用， 与技术");
-        format_after_rules(&mut result, true);
+        format_after_rules(&mut result, true, &map!());
         assert_eq!("测试 iOS 应用，与技术", result.out);
         assert_eq!(Severity::Error, result.severity);
     }

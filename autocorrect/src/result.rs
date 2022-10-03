@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::*;
 
+use crate::config::toggle;
+
 #[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug)]
 #[repr(u8)]
 pub enum Severity {
@@ -40,12 +42,29 @@ pub trait Results {
     fn error(&mut self, err: &str);
     fn to_string(&self) -> String;
     fn is_lint(&self) -> bool;
-    /// Toggle AutoCorrrect template enable or disable
-    fn toggle(&mut self, enable: bool);
-    /// Is AutoCorrrect current is enable
-    fn is_enabled(&self) -> bool;
+    fn get_toggle(&self) -> toggle::Toggle;
+    fn set_toggle(&mut self, t: toggle::Toggle);
+
     /// Move and save current line,col return the previus line number
     fn move_cursor(&mut self, part: &str) -> (usize, usize);
+
+    /// Toggle AutoCorrrect template enable or disable
+    /// If new toggle is None, ignore
+    fn toggle(&mut self, new_toggle: toggle::Toggle) {
+        if new_toggle == toggle::Toggle::None {
+            return;
+        }
+
+        self.set_toggle(new_toggle);
+    }
+
+    /// Is AutoCorrrect current is enable
+    fn is_enabled(&self) -> bool {
+        match self.get_toggle().match_rule("") {
+            Some(enable) => enable,
+            _ => true,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -56,6 +75,8 @@ pub struct FormatResult {
     pub raw: String,
     #[serde(skip)]
     pub enable: bool,
+    #[serde(skip)]
+    pub toggle: toggle::Toggle,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -67,6 +88,8 @@ pub struct LintResult {
     pub error: String,
     #[serde(skip)]
     pub enable: bool,
+    #[serde(skip)]
+    pub toggle: toggle::Toggle,
     // For store line number in loop
     #[serde(skip)]
     line: usize,
@@ -82,6 +105,7 @@ impl FormatResult {
             out: String::from(""),
             error: String::from(""),
             enable: true,
+            toggle: toggle::Toggle::default(),
         }
     }
 
@@ -115,12 +139,12 @@ impl Results for FormatResult {
         false
     }
 
-    fn toggle(&mut self, enable: bool) {
-        self.enable = enable;
+    fn set_toggle(&mut self, t: toggle::Toggle) {
+        self.toggle = t;
     }
 
-    fn is_enabled(&self) -> bool {
-        self.enable
+    fn get_toggle(&self) -> toggle::Toggle {
+        self.toggle.clone()
     }
 
     fn move_cursor(&mut self, _part: &str) -> (usize, usize) {
@@ -138,6 +162,7 @@ impl LintResult {
             lines: Vec::new(),
             error: String::from(""),
             enable: true,
+            toggle: toggle::Toggle::default(),
         }
     }
 
@@ -220,12 +245,12 @@ impl Results for LintResult {
         true
     }
 
-    fn toggle(&mut self, enable: bool) {
-        self.enable = enable;
+    fn set_toggle(&mut self, t: toggle::Toggle) {
+        self.toggle = t;
     }
 
-    fn is_enabled(&self) -> bool {
-        self.enable
+    fn get_toggle(&self) -> toggle::Toggle {
+        self.toggle.clone()
     }
 
     /// Move the (line, col) with string part

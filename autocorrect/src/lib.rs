@@ -87,6 +87,9 @@ macro_rules! map {
         )+
         m
     }};
+    () => (
+        HashMap::new()
+    );
 }
 
 mod code;

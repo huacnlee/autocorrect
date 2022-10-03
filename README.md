@@ -178,20 +178,21 @@ By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
 
-**Disable with inline comment**
+#### Disable with inline comment
 
-If you just want to disable some special lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
+If you just want to disable some special lines in file, you can write a comment `autocorrect-disable`,
 when AutoCorrect matched comment include that, it will disable temporary.
 
-And then, you can use `autocorrect: true` or `autocorrect-enable` to reopen it again.
+And then, you can use `autocorrect-enable` to reopen it again.
 
 For example, in JavaScript:
 
 ```js
 function hello() {
+  // autocorrect-disable
   console.log('现在这行开始autocorrect会暂时禁用');
   console.log('这行也是disable的状态');
-  // autocorrect: true
+  // autocorrect-enable
   let a = '现在起autocorrect回到了启用的状态';
 }
 ```
@@ -200,10 +201,48 @@ The output will:
 
 ```js
 function hello() {
+  // autocorrect-disable
   console.log('现在这行开始autocorrect会暂时禁用');
   console.log('这行也是disable的状态');
-  // autocorrect: true
+  // autocorrect-enable
   let a = '现在起 autocorrect 回到了启用的状态';
+}
+```
+
+#### Disable some rules
+
+You can use `autocorrect-disable <rule>` in comment to disable some rules.
+
+Rules:
+
+- `space-word` - Disable to add space between words.
+- `space-punctuation` - Disable to add space between some punctuations.
+- `no-space-fullwidth` - Disable to remove space near the fullwidth.
+- `fullwidth` - Disable to convert to fullwidth.
+- `halfwidth` - Disable to convert to halfwidth.
+- `spellcheck` - Disable to check spell.
+
+```js
+function hello() {
+  // autocorrect-disable space-word
+  console.log('现在这行开始autocorrect会暂时禁用.');
+  // autocorrect-disable fullwidth
+  console.log('这行也是disable的状态.');
+  // autocorrect-enable
+  let a = '现在起autocorrect回到了启用的状态.';
+}
+```
+
+Will get:
+
+```js
+function hello() {
+  // autocorrect-disable space-word
+  console.log('现在这行开始autocorrect会暂时禁用。');
+  // autocorrect-disable fullwidth, space-word
+  console.log('这行也是disable的状态.');
+  // autocorrect-enable
+  let a = '现在起 autocorrect 回到了启用的状态。';
 }
 ```
 
