@@ -324,6 +324,7 @@ mod tests {
         let cases = map![
             "wiki/网页浏览器列表#基於WebKit排版引擎" => "wiki/网页浏览器列表#基於WebKit排版引擎",
             "wiki-/_网页浏基於WebKit排版" => "wiki-/_网页浏基於WebKit排版",
+            "Web/CSS/网格-模板-列" => "Web/CSS/网格-模板-列",
             "wiki/hello网页浏览器列表#基於WebKit排版引擎" => "wiki/hello网页浏览器列表#基於WebKit排版引擎",
             "URL地址 /wiki/hello网页浏览器 访问" => "URL 地址 /wiki/hello网页浏览器 访问",
             "请打开URL地址 https://google.com/这是URL文件名.html 访问" => "请打开 URL 地址 https://google.com/这是URL文件名.html 访问",
