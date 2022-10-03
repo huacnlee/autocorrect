@@ -1,10 +1,10 @@
 // autocorrect: false
 use super::*;
+use crate::config::toggle;
 pub use crate::result::*;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
-use regex::Regex;
 use std::result::Result;
 
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
@@ -69,9 +69,9 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     // Check AutoCorrect enable/disable toggle marker
     // If disable results.is_enabled() will be false
     if rule_name == "comment" {
-        match match_autocorrect_toggle(part) {
-            Toggle::Disable => results.toggle(false),
-            Toggle::Enable => results.toggle(true),
+        match toggle::parse(part).match_rule("") {
+            Some(false) => results.toggle(false),
+            Some(true) => results.toggle(true),
             _ => {}
         }
     }
@@ -265,75 +265,10 @@ impl Codeblock {
     }
 }
 
-#[derive(PartialEq, Debug)]
-enum Toggle {
-    None,
-    Disable,
-    Enable,
-}
-
-lazy_static! {
-    static ref DISABLE_RE: Regex = Regex::new(r"autocorrect(:[ ]*|\-)(false|disable)").unwrap();
-    static ref ENABLE_RE: Regex = Regex::new(r"autocorrect(:[ ]*|\-)(true|enable)").unwrap();
-}
-
-fn match_autocorrect_toggle(part: &str) -> Toggle {
-    if DISABLE_RE.is_match(part) {
-        return Toggle::Disable;
-    }
-
-    if ENABLE_RE.is_match(part) {
-        return Toggle::Enable;
-    }
-
-    Toggle::None
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
-
-    #[test]
-    fn it_match_autocorrect_toggle() {
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("autocorrect-enable")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("// autocorrect-enable")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("# autocorrect-enable")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("# autocorrect: true")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("# autocorrect:true")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("# autocorrect: false")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("# autocorrect:false")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("# autocorrect-disable")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("// autocorrect-disable")
-        );
-        assert_eq!(Toggle::None, match_autocorrect_toggle("// hello world"));
-    }
 
     #[test]
     fn test_format_for() {

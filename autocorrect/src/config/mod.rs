@@ -1,5 +1,6 @@
 mod severity;
 mod spellcheck;
+pub mod toggle;
 
 pub use severity::*;
 pub use spellcheck::*;
