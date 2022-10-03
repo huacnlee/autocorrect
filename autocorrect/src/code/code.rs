@@ -180,9 +180,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
 ) {
     let part = item.as_str();
 
-    let (mut base_line, _) = results.move_cursor(part);
-    // Inline script start from 0
-    base_line -= 1;
+    let (base_line, _) = results.move_cursor(part);
 
     if results.is_lint() {
         // Skip lint if AutoCorrect disabled
@@ -206,8 +204,8 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             }
 
             for mut line in result.lines {
-                // Inline script's lines need add base_line offset.
-                line.line += base_line;
+                // Inline script's lines need add base_line - 1 offset.
+                line.line += base_line - 1;
                 results.push(line);
             }
         }
