@@ -47,13 +47,11 @@ impl Rule {
         }
         let input = result.out.clone();
         result.out = (self.format_fn)(&input);
-        if result.out.ne(&input) {
-            if result.severity == Severity::Pass {
-                if self.severity() == SeverityMode::Warning {
-                    result.severity = Severity::Warning;
-                } else {
-                    result.severity = Severity::Error;
-                }
+        if result.out.ne(&input) && result.severity == Severity::Pass {
+            if self.severity() == SeverityMode::Warning {
+                result.severity = Severity::Warning;
+            } else {
+                result.severity = Severity::Error;
             }
         }
     }

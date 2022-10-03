@@ -10,10 +10,7 @@ lazy_static! {
 #[derive(Deserialize, Serialize, Clone, Debug, Default)]
 pub struct SpellcheckConfig {
     #[serde(default)]
-    #[deprecated(
-        since = "2.0.0",
-        note = "Use rules.spellcheck instead, see changelog of v2.0.0"
-    )]
+    /// DEPRACTED: use `rules.spellcheck` instead
     pub mode: Option<SeverityMode>,
     #[serde(default)]
     pub words: Vec<SpellcheckWord>,

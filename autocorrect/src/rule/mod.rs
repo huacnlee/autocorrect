@@ -9,8 +9,6 @@ mod word;
 use regex::Regex;
 use rule::{Rule, RuleResult};
 
-use crate::result::Severity;
-
 lazy_static! {
     static ref RULES: Vec<Rule> = vec![
         // Rule: space-word
@@ -124,6 +122,8 @@ fn format_after_rules(result: &mut RuleResult, lint: bool) {
 }
 #[cfg(test)]
 mod tests {
+    use crate::result::Severity;
+
     use super::*;
 
     #[test]
