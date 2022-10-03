@@ -16,7 +16,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     match pairs {
         Ok(items) => {
             for item in items {
-                format_pair(&mut out, item, "");
+                format_pair(&mut out, item);
             }
         }
         Err(_err) => {
@@ -32,7 +32,7 @@ fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
     format!("{:?}", rule)
 }
 
-fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
+fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
     let rule_name = get_rule_name(&item);
 
     // println!("rule: {}, {}", rule_name, item.as_str());
@@ -50,7 +50,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
             let sub_items = item.into_inner();
 
             for child in sub_items {
-                format_pair(results, child, scope_rule);
+                format_pair(results, child);
                 has_child = true;
             }
 

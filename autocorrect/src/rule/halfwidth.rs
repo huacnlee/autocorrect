@@ -14,8 +14,8 @@ pub fn format(text: &str) -> String {
 
     for str in text.split("") {
         let new_str = CHAR_WIDTH_MAP.get(str);
-        if new_str != None {
-            out.push_str(new_str.unwrap())
+        if let Some(new_str) = new_str {
+            out.push_str(new_str)
         } else {
             out.push_str(str)
         }

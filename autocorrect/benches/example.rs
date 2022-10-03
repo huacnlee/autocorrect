@@ -1,4 +1,4 @@
-// autocorrect: false
+// autocorrect-disable
 
 use autocorrect::*;
 use bencher::Bencher;
@@ -135,7 +135,6 @@ const c = `这是string第1行
 // autocorrect-disable
 const disable_1 = "这行将会disable掉";
 const disable_2 = "这行将也会disable掉";
-// autocorrect-enable
 
 return <>
 <div className="react-name">

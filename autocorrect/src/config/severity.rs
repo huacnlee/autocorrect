@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize, Serializer};
 
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Debug)]
 pub enum SeverityMode {
     Off = 0,
     Error = 1,
     Warning = 2,
 }
 
-impl<'a> Serialize for SeverityMode {
+impl Serialize for SeverityMode {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
