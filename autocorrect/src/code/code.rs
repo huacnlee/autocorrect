@@ -1,12 +1,10 @@
 // autocorrect: false
 use super::*;
+use crate::config::toggle;
 pub use crate::result::*;
-use crate::spellcheck::spellcheck;
-use crate::{config, format, Config};
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
-use regex::Regex;
 use std::result::Result;
 
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
@@ -18,7 +16,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     match pairs {
         Ok(items) => {
             for item in items {
-                format_pair(&mut out, item, "");
+                format_pair(&mut out, item);
             }
         }
         Err(_err) => {
@@ -34,7 +32,7 @@ fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
     format!("{:?}", rule)
 }
 
-fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
+fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
     let rule_name = get_rule_name(&item);
 
     // println!("rule: {}, {}", rule_name, item.as_str());
@@ -52,7 +50,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_ru
             let sub_items = item.into_inner();
 
             for child in sub_items {
-                format_pair(results, child, scope_rule);
+                format_pair(results, child);
                 has_child = true;
             }
 
@@ -71,13 +69,10 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     // Check AutoCorrect enable/disable toggle marker
     // If disable results.is_enabled() will be false
     if rule_name == "comment" {
-        match match_autocorrect_toggle(part) {
-            Toggle::Disable => results.toggle(false),
-            Toggle::Enable => results.toggle(true),
-            _ => {}
-        }
+        results.toggle(toggle::parse(part));
     }
 
+    let disabled_rules = results.get_toggle().disable_rules();
     if results.is_lint() {
         // Skip lint if AutoCorrect disabled
         if !results.is_enabled() {
@@ -90,11 +85,11 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
         let mut sub_line = 0;
         for line_str in lines {
             // format trimmed string
-            let new_line = format(line_str);
-            let spell_new_line = spellcheck(&new_line);
+            let line_result =
+                crate::rule::format_or_lint_with_disable_rules(line_str, true, &disabled_rules);
 
             // skip, when no difference
-            if new_line.eq(line_str) && spell_new_line.eq(&new_line) {
+            if line_result.severity.is_pass() {
                 sub_line += 1;
                 continue;
             }
@@ -105,7 +100,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             let leading_spaces = line_str.len() - trimmed.len();
             // trim end whitespace
             trimmed = trimmed.trim_end();
-            // println!("{}||{},{}", new_line, trimmed, new_line.eq(trimmed));
+            // println!("{}||{},{}", line_result.out, trimmed, new_line.eq(trimmed));
 
             let current_line = line + sub_line;
             let current_col = if sub_line > 0 {
@@ -116,26 +111,13 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
             };
 
             // Add error lint result, if new_line has get changed result
-            if new_line.ne(line_str) {
-                results.push(LineResult {
-                    line: current_line,
-                    col: current_col,
-                    old: String::from(trimmed),
-                    new: new_line.trim().to_string(),
-                    severity: Severity::Error,
-                });
-            }
-
-            // If has spelling issues, add more lint result
-            if spell_new_line.ne(&new_line) {
-                results.push(LineResult {
-                    line: current_line,
-                    col: current_col,
-                    old: String::from(trimmed),
-                    new: spell_new_line.trim().to_string(),
-                    severity: Severity::Warning,
-                });
-            }
+            results.push(LineResult {
+                line: current_line,
+                col: current_col,
+                old: String::from(trimmed),
+                new: line_result.out.trim().to_string(),
+                severity: line_result.severity,
+            });
 
             sub_line += 1;
         }
@@ -148,13 +130,8 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
             new_part = lines
                 .into_iter()
-                .map(format)
                 .map(|l| {
-                    if Config::current().spellcheck.mode == Some(config::SpellcheckMode::Enabled) {
-                        spellcheck(&l)
-                    } else {
-                        l
-                    }
+                    crate::rule::format_or_lint_with_disable_rules(l, false, &disabled_rules).out
                 })
                 .collect::<Vec<_>>()
                 .join("\n");
@@ -288,75 +265,10 @@ impl Codeblock {
     }
 }
 
-#[derive(PartialEq, Debug)]
-enum Toggle {
-    None,
-    Disable,
-    Enable,
-}
-
-lazy_static! {
-    static ref DISABLE_RE: Regex = Regex::new(r"autocorrect(:[ ]*|\-)(false|disable)").unwrap();
-    static ref ENABLE_RE: Regex = Regex::new(r"autocorrect(:[ ]*|\-)(true|enable)").unwrap();
-}
-
-fn match_autocorrect_toggle(part: &str) -> Toggle {
-    if DISABLE_RE.is_match(part) {
-        return Toggle::Disable;
-    }
-
-    if ENABLE_RE.is_match(part) {
-        return Toggle::Enable;
-    }
-
-    Toggle::None
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
-
-    #[test]
-    fn it_match_autocorrect_toggle() {
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("autocorrect-enable")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("// autocorrect-enable")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("# autocorrect-enable")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("# autocorrect: true")
-        );
-        assert_eq!(
-            Toggle::Enable,
-            match_autocorrect_toggle("# autocorrect:true")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("# autocorrect: false")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("# autocorrect:false")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("# autocorrect-disable")
-        );
-        assert_eq!(
-            Toggle::Disable,
-            match_autocorrect_toggle("// autocorrect-disable")
-        );
-        assert_eq!(Toggle::None, match_autocorrect_toggle("// hello world"));
-    }
 
     #[test]
     fn test_format_for() {
@@ -408,33 +320,69 @@ mod tests {
     #[test]
     fn test_inline_script_line_number() {
         let raw = r#""Hello world
-        ```js
-        // hello世界
-        ```
+```js
+// hello世界
+```
 
-        ### 外部test
+### 外部test
 
-        Second line
+Second line
 
-        ```rb
-        class User
-          # 查找user
-          def find
-          end
-        end
-        ```
-        “"#;
+```rb
+class User
+    # 查找user
+    def find
+    end
+end
+```
+“"#;
 
         let result = lint_for(raw, "markdown");
         assert_eq!(result.lines.len(), 3);
         assert_eq!(result.lines[0].line, 3);
-        assert_eq!(result.lines[0].col, 9);
+        assert_eq!(result.lines[0].col, 1);
         assert_eq!(result.lines[0].new, "// hello 世界");
         assert_eq!(result.lines[1].line, 6);
-        assert_eq!(result.lines[1].col, 13);
+        assert_eq!(result.lines[1].col, 5);
         assert_eq!(result.lines[1].new, "外部 test");
         assert_eq!(result.lines[2].line, 12);
-        assert_eq!(result.lines[2].col, 11);
+        assert_eq!(result.lines[2].col, 5);
         assert_eq!(result.lines[2].new, "# 查找 user");
+    }
+
+    #[test]
+    fn test_disable_rules_all() {
+        let raw = r#"// autocorrect-disable
+        // hello世界
+        // autocorrect-enable
+        // hello世界
+        // autocorrect-disable space-word
+        // hello世界.
+        // autocorrect-disable fullwidth
+        // hello世界.
+        // autocorrect-disable space-word,fullwidth
+        // hello世界.
+        const a = "hello世界."
+        “"#;
+
+        let expected = r#"// autocorrect-disable
+        // hello世界
+        // autocorrect-enable
+        // hello 世界
+        // autocorrect-disable space-word
+        // hello世界。
+        // autocorrect-disable fullwidth
+        // hello 世界.
+        // autocorrect-disable space-word,fullwidth
+        // hello世界.
+        const a = "hello世界."
+        “"#;
+
+        assert_eq!(expected, format_for(raw, "js").out);
+        let result = lint_for(raw, "js");
+        assert_eq!(result.lines.len(), 3);
+        assert_eq!(result.lines[0].new, "// hello 世界");
+        assert_eq!(result.lines[1].new, "// hello世界。");
+        assert_eq!(result.lines[2].new, "// hello 世界.");
     }
 }

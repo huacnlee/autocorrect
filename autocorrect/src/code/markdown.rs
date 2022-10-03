@@ -20,7 +20,7 @@ mod tests {
 
         let example = r###"
 ---
-title: iPad 和 Ios 接入的不同点
+title: iPad 和 iOS 接入的不同点
 id: h
 slug: /appstore/ipad_and_ios
 original_slug: Web/CSS/网格-模板-列
@@ -52,6 +52,9 @@ https://google.com/foo/__ios__
 ## （一）测试Heading处理,应该忽略#号后再处理.
 ###测试Heading处理，应该忽略#号后再处理.
 ####   测试Heading处理,应该忽略#号后再处理!
+
+    // 这行不应该处理,因为无法识别codeblock的语言.
+    $ echo linux ios
 
 - 【括号】测试中文符号在List里面
 
@@ -133,6 +136,9 @@ https://google.com/foo/__ios__
 ###测试 Heading 处理，应该忽略#号后再处理。
 ####   测试 Heading 处理，应该忽略#号后再处理！
 
+    // 这行不应该处理,因为无法识别codeblock的语言.
+    $ echo linux ios
+
 - 【括号】测试中文符号在 List 里面
 
 > 引用文本：Quote 也是可以的。
@@ -185,5 +191,35 @@ let a = "你好 hello";
         if !lint_result.lines.is_empty() {
             panic!("{}", lint_result.to_string());
         }
+    }
+
+    #[test]
+    fn test_lint_for_inline_code() {
+        crate::config::setup_test();
+
+        let raw = r###"
+## Spellcheck测试ios和html和WIFI
+
+    ```rb
+    # 这里是markdown缩进的codeblock
+    wifi = "ios"
+    ```
+
+    // 这行不应该处理，因为无法识别codeblock的语言
+    $ echo ios
+    wifi = "ios"
+    $ echo html
+
+这里是普通的段落。
+"###;
+
+        let lint_result = lint_for(raw, "markdown");
+        assert_eq!(false, lint_result.has_error());
+        assert_eq!(2, lint_result.lines.len());
+        assert_eq!(
+            "Spellcheck 测试 iOS 和 HTML 和 Wi-Fi",
+            lint_result.lines[0].new
+        );
+        assert_eq!("这里是 markdown 缩进的 codeblock", lint_result.lines[1].new);
     }
 }

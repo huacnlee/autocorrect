@@ -14,13 +14,10 @@ pub(crate) fn word_regexp(word: &str) -> Regex {
 }
 
 // Spell check by diect
-pub fn spellcheck(text: &str) -> String {
+pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
     let config = Config::current();
-    if config.spellcheck.is_disabled() {
-        return out;
-    }
 
     let spellcheck_dict_re = &config.spellcheck.dict_re;
     let spellcheck_dict = &config.spellcheck.dict;
@@ -46,7 +43,7 @@ mod tests {
 
     fn assert_spellcheck_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {
-            let actual = spellcheck(source);
+            let actual = format(source);
             assert_eq!(exptected, actual);
         }
     }
@@ -118,9 +115,9 @@ mod tests {
                 right = pair[1];
             }
 
-            assert_eq!(right, spellcheck(left));
-            assert_eq!(right, spellcheck(&left.to_uppercase()));
-            assert_eq!(right, spellcheck(&left.to_lowercase()));
+            assert_eq!(right, format(left));
+            assert_eq!(right, format(&left.to_uppercase()));
+            assert_eq!(right, format(&left.to_lowercase()));
         }
     }
 }

@@ -12,35 +12,35 @@
           "severity": 1
         },
         {
-          "l": 4,
+          "l": 8,
           "c": 2,
           "new": "* 第 1 行注释",
           "old": "* 第1行注释",
           "severity": 1
         },
         {
-          "l": 5,
+          "l": 9,
           "c": 2,
           "new": "* 第 2 行注释",
           "old": "* 第2行注释",
           "severity": 1
         },
         {
-          "l": 8,
+          "l": 12,
           "c": 3,
           "new": "// 这是 setup 方法",
           "old": "// 这是setup方法",
           "severity": 1
         },
         {
-          "l": 10,
+          "l": 14,
           "c": 19,
           "new": "`这是 string 变量`",
           "old": "`这是string变量`",
           "severity": 1
         },
         {
-          "l": 1,
+          "l": 19,
           "c": 1,
           "new": "/* 这是 inline 的 css 代码 */",
           "old": "/* 这是inline的css代码 */",

@@ -1,45 +1,5 @@
 // autocorrect: false
-use crate::{
-    code::{self, Results},
-    fullwidth, halfwidth,
-    strategery::Strategery,
-};
-use regex::Regex;
-
-lazy_static! {
-    static ref FULL_DATE_RE: Regex = regexp!(
-        "{}",
-        r"[ ]{0,}\d+[ ]{0,}年 [ ]{0,}\d+[ ]{0,}月 [ ]{0,}\d+[ ]{0,}[日号][ ]{0,}"
-    );
-    static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
-    static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
-    // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
-    static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
-
-    // Strategies all rules
-    static ref STRATEGIES: Vec<Strategery> = vec![
-        // EnglishLetter, Number
-        // Avoid add space when Letter, Number has %, $, \ prefix, eg. %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
-        Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
-        Strategery::new(r"[^%\$\\][a-zA-Z0-9]", r"\p{CJK}"),
-        // Number, -100, +100
-        Strategery::new(r"\p{CJK}", r"[\-+][\d]+").with_reverse(),
-        // Spcial format Letter, Number leading case, because the before Strategery can't cover eg. A开头的case测试
-        Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
-        // 10%中文
-        Strategery::new(r"[0-9][%]", r"\p{CJK}"),
-        // SpecialSymbol
-        Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
-        Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
-        Strategery::new(r"\p{CJK}", r"[\[\(]"),
-        Strategery::new(r"[\]\)!]", r"\p{CJK}"),
-    ];
-
-    static ref AFTER_STRATEGIES: Vec<Strategery> = vec![
-        // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】“”‘’]").with_remove_space().with_reverse(),
-    ];
-}
+use crate::code::{self, Results};
 
 /// Automatically add spaces between Chinese and English words.
 ///
@@ -60,58 +20,12 @@ lazy_static! {
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
 pub fn format(text: &str) -> String {
-    // skip if not has CJK
-    if !CJK_RE.is_match(text) {
-        return String::from(text);
-    }
-
-    let mut out: String = String::new();
-    let mut part = String::new();
-    for ch in text.chars() {
-        part.push(ch);
-
-        // Is next char is newline or space, break part to format
-        if ch == ' ' || ch == '\n' || ch == '\r' {
-            let new_part = part.clone();
-            part.clear();
-
-            out.push_str(&format_part(&new_part));
-        }
-    }
-
-    if !part.is_empty() {
-        out.push_str(&format_part(&part));
-    }
-
-    for rule in AFTER_STRATEGIES.iter() {
-        out = rule.format(&out);
-    }
-
-    // out = space_dash_with_hans(&out);
-
-    out
-}
-
-fn format_part(text: &str) -> String {
-    if !CJK_RE.is_match(text) {
-        return String::from(text);
-    }
-
-    if PATH_RE.is_match(text) {
-        return String::from(text);
-    }
-
-    let mut out = fullwidth::fullwidth(text);
-    out = halfwidth::halfwidth(&out);
-
-    for rule in STRATEGIES.iter() {
-        out = rule.format(&out)
-    }
-
-    out
+    let result = crate::rule::format_or_lint(text, false);
+    result.out
 }
 
 /// Format a html content.
+///
 ///
 /// Example:
 ///
@@ -129,6 +43,7 @@ fn format_part(text: &str) -> String {
 /// "#;
 /// autocorrect::format_html(html);
 /// ```
+#[deprecated(since = "2.0.0", note = "Please use `format_for` instead")]
 pub fn format_html(html_str: &str) -> String {
     code::format_html(html_str).to_string()
 }
@@ -352,9 +267,9 @@ mod tests {
     fn it_lint_for() {
         let raw = "<p>Hello你好ios版本</p>";
         let result = lint_for(raw, "foo.bar.html");
-        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好 ios 版本","old":"Hello你好ios版本","severity":1},{"l":1,"c":4,"new":"Hello 你好 iOS 版本","old":"Hello你好ios版本","severity":2}],"error":""}"#;
+        let expect_json = r#"{"filepath":"foo.bar.html","lines":[{"l":1,"c":4,"new":"Hello 你好 iOS 版本","old":"Hello你好ios版本","severity":1}],"error":""}"#;
         assert!(!result.has_error());
-        assert_eq!(2, result.lines.len());
+        assert_eq!(1, result.lines.len());
         assert_eq!(expect_json, result.to_json());
 
         let result1 = lint_for("const a = 'hello世界'", "js");

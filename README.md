@@ -178,20 +178,21 @@ By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
 
-**Disable with inline comment**
+#### Disable with inline comment
 
-If you just want to disable some special lines in file, you can write a comment `autocorrect: false` or `autocorrect-disable`,
+If you just want to disable some special lines in file, you can write a comment `autocorrect-disable`,
 when AutoCorrect matched comment include that, it will disable temporary.
 
-And then, you can use `autocorrect: true` or `autocorrect-enable` to reopen it again.
+And then, you can use `autocorrect-enable` to reopen it again.
 
 For example, in JavaScript:
 
 ```js
 function hello() {
+  // autocorrect-disable
   console.log('现在这行开始autocorrect会暂时禁用');
   console.log('这行也是disable的状态');
-  // autocorrect: true
+  // autocorrect-enable
   let a = '现在起autocorrect回到了启用的状态';
 }
 ```
@@ -200,10 +201,48 @@ The output will:
 
 ```js
 function hello() {
+  // autocorrect-disable
   console.log('现在这行开始autocorrect会暂时禁用');
   console.log('这行也是disable的状态');
-  // autocorrect: true
+  // autocorrect-enable
   let a = '现在起 autocorrect 回到了启用的状态';
+}
+```
+
+#### Disable some rules
+
+You can use `autocorrect-disable <rule>` in comment to disable some rules.
+
+Rules:
+
+- `space-word` - Disable to add space between words.
+- `space-punctuation` - Disable to add space between some punctuations.
+- `no-space-fullwidth` - Disable to remove space near the fullwidth.
+- `fullwidth` - Disable to convert to fullwidth.
+- `halfwidth` - Disable to convert to halfwidth.
+- `spellcheck` - Disable to check spell.
+
+```js
+function hello() {
+  // autocorrect-disable space-word
+  console.log('现在这行开始autocorrect会暂时禁用.');
+  // autocorrect-disable fullwidth
+  console.log('这行也是disable的状态.');
+  // autocorrect-enable
+  let a = '现在起autocorrect回到了启用的状态.';
+}
+```
+
+Will get:
+
+```js
+function hello() {
+  // autocorrect-disable space-word
+  console.log('现在这行开始autocorrect会暂时禁用。');
+  // autocorrect-disable fullwidth, space-word
+  console.log('这行也是disable的状态.');
+  // autocorrect-enable
+  let a = '现在起 autocorrect 回到了启用的状态。';
 }
 ```
 
@@ -325,7 +364,7 @@ fn main() {
 	// => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
 ```
 
-Use `autocorrect::format_html` to format HTML content.
+Use `autocorrect::format_for` to format HTML content.
 
 ```rust
 extern crate autocorrect;
@@ -341,7 +380,7 @@ fn main() {
 	</article>
 	"#;
 
-	println!("{}", autocorrect::format_html(html));
+	println!("{}", autocorrect::format_for(html, "html"));
 	// <article>
 	// <h1>这是 Heading 标题</h1>
 	// <div class="content">
@@ -374,7 +413,7 @@ test bench_format_html               ... bench:     156,654 ns/iter (+/- 4,773)
 test bench_format_javascript         ... bench:      89,387 ns/iter (+/- 8,365)
 test bench_format_json               ... bench:      29,356 ns/iter (+/- 718)
 test bench_format_json_with_2k_lines ... bench:   3,829,479 ns/iter (+/- 76,499)
-test bench_markdown                  ... bench:   2,821,642 ns/iter (+/- 38,704)
+test bench_markdown                  ... bench:     749,033 ns/iter (+/- 38,704)
 test bench_spellcheck_50             ... bench:      37,371 ns/iter (+/- 844)
 test bench_spellcheck_100            ... bench:      57,835 ns/iter (+/- 745)
 test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
@@ -385,7 +424,7 @@ test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
 | format     | 50          | 0.014 ms |
 | format     | 100         | 0.019 ms |
 | format     | 400         | 0.045 ms |
-| format     | Markdown    | 2.8 ms   |
+| format     | Markdown    | 0.749 ms |
 | spellcheck | 50          | 0.037 ms |
 | spellcheck | 100         | 0.057 ms |
 | spellcheck | 400         | 0.195 ms |

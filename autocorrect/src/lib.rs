@@ -87,20 +87,37 @@ macro_rules! map {
         )+
         m
     }};
+    () => (
+        HashMap::new()
+    );
 }
 
 mod code;
 mod diff;
 mod format;
-mod fullwidth;
-mod halfwidth;
 mod result;
+mod rule;
 mod serde_any;
-mod strategery;
 
 pub mod config;
 pub mod ignorer;
-pub mod spellcheck;
+
 pub use code::{format_for, get_file_extension, is_support_type, lint_for};
 pub use config::Config;
 pub use format::*;
+pub use rule::spellcheck;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format() {
+        assert_eq!("Hello 世界。", format("Hello世界."));
+    }
+
+    #[test]
+    fn test_format_for() {
+        assert_eq!("Hello 世界。", format_for("Hello世界.", "text").out);
+    }
+}

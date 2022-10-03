@@ -68,7 +68,7 @@ fn main() {
 	// => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
 ```
 
-Use `autocorrect::format_html` to format html content.
+Use `autocorrect::format_for` to format html content.
 
 ```rust
 extern crate autocorrect;
@@ -84,7 +84,7 @@ fn main() {
 	</article>
 	"#;
 
-	println!("{}", autocorrect::format_html(html));
+	println!("{}", autocorrect::format_for(html, "html"));
 	// <article>
 	// <h1>这是 Heading 标题</h1>
 	// <div class="content">

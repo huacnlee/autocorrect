@@ -1,0 +1,10 @@
+item = _{ SOI ~ line* ~ EOI }
+
+line = _{ enable | disable | other }
+
+newline = _{ "\n" | "\r" }
+enable = ${ "autocorrect" ~ (":" ~ " "* | "-") ~ ("enable" | "true") ~ pair* }
+disable = ${ "autocorrect" ~ (":" ~ " "* | "-") ~ ("disable" | "false") ~ pair* }
+pair = _{ " " ~ (rule_name ~ ","* ~ " "*)+  }
+rule_name = @{ !("," | newline) ~ (ASCII_ALPHANUMERIC ~ ("-" | "_")*)+ }
+other = _{ ANY }
