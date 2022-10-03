@@ -320,33 +320,33 @@ mod tests {
     #[test]
     fn test_inline_script_line_number() {
         let raw = r#""Hello world
-        ```js
-        // hello世界
-        ```
+```js
+// hello世界
+```
 
-        ### 外部test
+### 外部test
 
-        Second line
+Second line
 
-        ```rb
-        class User
-          # 查找user
-          def find
-          end
-        end
-        ```
-        “"#;
+```rb
+class User
+    # 查找user
+    def find
+    end
+end
+```
+“"#;
 
         let result = lint_for(raw, "markdown");
         assert_eq!(result.lines.len(), 3);
         assert_eq!(result.lines[0].line, 3);
-        assert_eq!(result.lines[0].col, 9);
+        assert_eq!(result.lines[0].col, 1);
         assert_eq!(result.lines[0].new, "// hello 世界");
         assert_eq!(result.lines[1].line, 6);
-        assert_eq!(result.lines[1].col, 13);
+        assert_eq!(result.lines[1].col, 5);
         assert_eq!(result.lines[1].new, "外部 test");
         assert_eq!(result.lines[2].line, 12);
-        assert_eq!(result.lines[2].col, 11);
+        assert_eq!(result.lines[2].col, 5);
         assert_eq!(result.lines[2].new, "# 查找 user");
     }
 

@@ -12,6 +12,10 @@ newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
 codeblock = ${
   PUSH("```") ~ codeblock_lang ~ codeblock_code ~ "```"
+  | indent_code
+}
+indent_code = ${
+  "\n" ~ "    " ~ (!"\n" ~ ANY)* ~ "\n"*
 }
 codeblock_lang = { ASCII_ALPHA* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
@@ -49,4 +53,3 @@ mark_string = {(!(PEEK | newline | inline) ~ ANY)* }
 comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
 comment_tag_start = @{  "<!--" }
 comment_tag_end = @{ "-->" }
-
