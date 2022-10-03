@@ -23,6 +23,7 @@ mod tests {
 title: iPad 和 Ios 接入的不同点
 id: h
 slug: /appstore/ipad_and_ios
+original_slug: Web/CSS/网格-模板-列
 ---
 
 # 这是Heading 1大标题[示例](#示例)
@@ -102,6 +103,7 @@ let a = "你好hello";
 title: iPad 和 iOS 接入的不同点
 id: h
 slug: /appstore/ipad_and_ios
+original_slug: Web/CSS/网格-模板-列
 ---
 
 # 这是 Heading 1 大标题[示例](#示例)

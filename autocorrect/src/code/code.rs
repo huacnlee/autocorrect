@@ -37,7 +37,7 @@ fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
 fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>, scope_rule: &str) {
     let rule_name = get_rule_name(&item);
 
-    // println!("rule: {}", rule_name);
+    // println!("rule: {}, {}", rule_name, item.as_str());
 
     match rule_name.as_str() {
         "string" | "link_string" | "mark_string" | "text" | "comment" => {

@@ -26,10 +26,10 @@ block_prefix = @{
   "######" | "#####" | "####" | "###" | "##" | "#" | "*" | "-" | ">"
 }
 
-meta_info = ${ PUSH(meta_wrap) ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }
+meta_info = ${ meta_wrap ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }
 meta_wrap = @{ "-"{3,} }
 meta_pair = ${ meta_key ~ string ~ newline }
-meta_key = @{ (!":" ~ ANY)* ~ ":" ~ " "* }
+meta_key = @{ (!(":" | newline) ~ ANY)* ~ ":" ~ " "* }
 
 image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
