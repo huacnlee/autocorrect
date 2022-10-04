@@ -149,10 +149,22 @@ Now the `.autocorrectrc` file has created.
 Config file example:
 
 ```yml
-# Config for Speelcheck
+# Config rules
+rules:
+  # Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
+  # 0 - off, 1 - error, 2 - warning
+  space-word: 1
+  # Add space between some punctuations.
+  space-punctuation: 1
+  # Convert to fullwidth.
+  fullwidth: 1
+  # Convert to halfwidth.
+  halfwidth: 1
+  # To remove space near the fullwidth.
+  no-space-fullwidth: 1
+  # Spellcheck
+  spellcheck: 2
 spellcheck:
-  # 0 - Disabled, 1 - Format and Lint, 2 - LintOnly
-  mode: 1
   # Correct Words (Case insensitive) for by Spellcheck
   words:
     - GitHub
@@ -211,16 +223,11 @@ function hello() {
 
 #### Disable some rules
 
+> Since: 2.0
+
 You can use `autocorrect-disable <rule>` in comment to disable some rules.
 
-Rules:
-
-- `space-word` - Disable to add space between words.
-- `space-punctuation` - Disable to add space between some punctuations.
-- `no-space-fullwidth` - Disable to remove space near the fullwidth.
-- `fullwidth` - Disable to convert to fullwidth.
-- `halfwidth` - Disable to convert to halfwidth.
-- `spellcheck` - Disable to check spell.
+> Rule names please see: [Configuration](#configuration)
 
 ```js
 function hello() {
