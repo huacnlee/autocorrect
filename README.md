@@ -1,11 +1,22 @@
-# AutoCorrect
-
-[![Go](https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg)](https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/huacnlee/autocorrect?label=Version)](https://github.com/huacnlee/autocorrect/releases)
-[![Docker Image Version (latest server)](https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker%20Image)](https://hub.docker.com/r/huacnlee/autocorrect)
-[![Crates.io](https://img.shields.io/crates/v/autocorrect)](https://crates.io/crates/autocorrect)
-[![NPM](https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg)](https://badge.fury.io/js/%40huacnlee%2Fautocorrect)
-[![Documentation](https://docs.rs/autocorrect/badge.svg)](https://docs.rs/autocorrect)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/5518/194691346-13856309-266b-4bf6-b505-5a8b15d0c02e.png"
+    alt="AutoCorrect Icon" width="128" height="128" />
+  <h1 align="center">AutoCorrect</h1>
+  <p align="center"><a href="https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI"><img
+        src="https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg" alt="Go"></a>
+    <a href="https://github.com/huacnlee/autocorrect/releases"><img
+        src="https://img.shields.io/github/v/release/huacnlee/autocorrect?label=Version"
+        alt="GitHub release (latest by date)"></a>
+    <a href="https://hub.docker.com/r/huacnlee/autocorrect"><img
+        src="https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker%20Image"
+        alt="Docker Image Version (latest server)"></a>
+    <a href="https://crates.io/crates/autocorrect"><img src="https://img.shields.io/crates/v/autocorrect"
+        alt="Crates.io"></a>
+    <a href="https://badge.fury.io/js/%40huacnlee%2Fautocorrect"><img
+        src="https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg" alt="NPM"></a>
+    <a href="https://docs.rs/autocorrect"><img src="https://docs.rs/autocorrect/badge.svg" alt="Documentation"></a>
+  </p>
+</p>
 
 > 🎯 AutoCorrect 的愿景是提供一套标准化的文案较正方案。以便于在各类场景（例如：撰写书籍、文档、内容发布、项目源代码...）里面应用，让使用者轻松实现标准化、专业化的文案输出 / 校正。
 
