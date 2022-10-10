@@ -461,18 +461,18 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
 
 ```bash
-test bench_format_050                 ... bench:       9,390 ns/iter (+/- 74)
-test bench_format_100                 ... bench:      17,299 ns/iter (+/- 461)
-test bench_format_400                 ... bench:      57,316 ns/iter (+/- 2,845)
-test bench_format_html                ... bench:     174,572 ns/iter (+/- 7,530)
-test bench_format_javascript          ... bench:      80,637 ns/iter (+/- 3,315)
-test bench_format_json                ... bench:      34,212 ns/iter (+/- 189)
-test bench_format_json_with_2k_lines  ... bench:   5,339,445 ns/iter (+/- 110,482)
-test bench_halfwidth_full_english_100 ... bench:      12,584 ns/iter (+/- 2,244)
-test bench_markdown                   ... bench:     790,159 ns/iter (+/- 88,039)
-test bench_spellcheck_100             ... bench:      59,318 ns/iter (+/- 17,063)
-test bench_spellcheck_400             ... bench:     200,657 ns/iter (+/- 21,931)
-test bench_spellcheck_50              ... bench:      35,396 ns/iter (+/- 755)
+test bench_format_050                 ... bench:       9,132 ns/iter (+/- 88)
+test bench_format_100                 ... bench:      16,892 ns/iter (+/- 319)
+test bench_format_400                 ... bench:      55,126 ns/iter (+/- 1,086)
+test bench_format_html                ... bench:     198,822 ns/iter (+/- 2,228)
+test bench_format_javascript          ... bench:      88,774 ns/iter (+/- 1,333)
+test bench_format_json                ... bench:      42,868 ns/iter (+/- 325)
+test bench_format_json_with_2k_lines  ... bench:   9,664,245 ns/iter (+/- 494,651)
+test bench_halfwidth_full_english_100 ... bench:      11,242 ns/iter (+/- 550)
+test bench_markdown                   ... bench:     998,470 ns/iter (+/- 18,294)
+test bench_spellcheck_100             ... bench:      54,168 ns/iter (+/- 451)
+test bench_spellcheck_400             ... bench:     189,885 ns/iter (+/- 4,172)
+test bench_spellcheck_50              ... bench:      34,920 ns/iter (+/- 2,111)
 ```
 
 | Type       | Total chars | Duration |
@@ -483,9 +483,9 @@ test bench_spellcheck_50              ... bench:      35,396 ns/iter (+/- 755)
 | format     | HTML        | 0.174 ms |
 | format     | JavaScript  | 0.086 ms |
 | format     | JSON        | 0.034 ms |
-| format     | Large JSON  | 3.829 ms |
+| format     | Large JSON  | 9.629 ms |
 | halfwidth  | 100         | 0.012 ms |
-| format     | Markdown    | 0.749 ms |
+| format     | Markdown    | 0.998 ms |
 | spellcheck | 50          | 0.037 ms |
 | spellcheck | 100         | 0.057 ms |
 | spellcheck | 400         | 0.195 ms |

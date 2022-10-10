@@ -40,7 +40,7 @@ original_slug: Web/CSS/网格-模板-列
 
 ## Test multiple code will not deadlock
 
-`svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
+`svh`, `lvh`, `dvh`, `svw`, `lvw`, `dvw`, `svmax`, `lvmax`, `dvmax`, `svmin`, `lvmin`, `dvmin` 
 
 > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
@@ -109,7 +109,7 @@ let a = "你好hello";
     - Third indent item.
 - [link链接](https://google.com/a/b/url不处理)
 - 一个[[Wikilinks测试]]示例
-    "###;
+"###;
 
         let expected = r###"
 ---
@@ -133,7 +133,7 @@ original_slug: Web/CSS/网格-模板-列
 
 ## Test multiple code will not deadlock
 
-`svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
+`svh`, `lvh`, `dvh`, `svw`, `lvw`, `dvw`, `svmax`, `lvmax`, `dvmax`, `svmin`, `lvmin`, `dvmin` 
 
 > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
@@ -202,7 +202,7 @@ let a = "你好 hello";
     - Third indent item.
 - [link 链接](https://google.com/a/b/url不处理)
 - 一个[[Wikilinks测试]]示例
-    "###;
+"###;
 
         assert_eq!(expected, format_for(example, "markdown").to_string());
 
@@ -224,10 +224,10 @@ let a = "你好 hello";
         let raw = r###"
 ## Spellcheck测试ios和html和WIFI
 
-    ```rb
-    # 这里是markdown缩进的codeblock
-    wifi = "ios"
-    ```
+```rb
+# 这里是markdown缩进的codeblock
+wifi = "ios"
+```
 
     // 这行不应该处理，因为无法识别codeblock的语言
     $ echo ios

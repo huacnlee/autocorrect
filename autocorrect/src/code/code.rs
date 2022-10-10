@@ -335,7 +335,7 @@ class User
     end
 end
 ```
-“"#;
+""#;
 
         let result = lint_for(raw, "markdown");
         assert_eq!(result.lines.len(), 3);

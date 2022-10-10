@@ -2,6 +2,8 @@
 use regex::Regex;
 use std::collections::HashMap;
 
+use super::CJK_RE;
+
 lazy_static! {
     static ref CHAR_WIDTH_MAP: HashMap<&'static str, &'static str> = map!(
       "ａ" => "a", "ｂ" => "b", "ｃ" => "c", "ｄ" => "d", "ｅ" => "e", "ｆ" => "f", "ｇ" => "g", "ｈ" => "h", "ｉ" => "i", "ｊ" => "j", "ｋ" => "k", "ｌ" => "l", "ｍ" => "m", "ｎ" => "n", "ｏ" => "o", "ｐ" => "p", "ｑ" => "q", "ｒ" => "r", "ｓ" => "s", "ｔ" => "t", "ｕ" => "u", "ｖ" => "v", "ｗ" => "w", "ｘ" => "x", "ｙ" => "y", "ｚ" => "z", "Ａ" => "A", "Ｂ" => "B", "Ｃ" => "C", "Ｄ" => "D", "Ｅ" => "E", "Ｆ" => "F", "Ｇ" => "G", "Ｈ" => "H", "Ｉ" => "I", "Ｊ" => "J", "Ｋ" => "K", "Ｌ" => "L", "Ｍ" => "M", "Ｎ" => "N", "Ｏ" => "O", "Ｐ" => "P", "Ｑ" => "Q", "Ｒ" => "R", "Ｓ" => "S", "Ｔ" => "T", "Ｕ" => "U", "Ｖ" => "V", "Ｗ" => "W", "Ｘ" => "X", "Ｙ" => "Y", "Ｚ" => "Z", "１" => "1", "２" => "2", "３" => "3", "４" => "4", "５" => "5", "６" => "6", "７" => "7", "８" => "8", "９" => "9", "０" => "0", "　" => " ",
@@ -31,7 +33,7 @@ lazy_static! {
         "《" => r#"""#,
     );
     static ref HALF_TIME_RE: Regex = regexp!("{}", r"(\d)(：)(\d)");
-    static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
+    static ref WORD_RE: Regex = regexp!("{}", r"[a-zA-Z]");
 }
 
 trait CharMatching {
@@ -46,22 +48,37 @@ impl CharMatching for char {
 }
 
 pub fn format(text: &str) -> String {
+    let mut out = String::from("");
+    for line in text.split_inclusive('\n') {
+        out.push_str(&format_line(line));
+    }
+
+    out
+}
+
+fn format_line(text: &str) -> String {
     let has_cjk = CJK_RE.is_match(text);
+    let has_word = WORD_RE.is_match(text);
     let mut out = String::new();
 
+    // If there not have any words, skip
+    if !has_word && !has_cjk {
+        return String::from(text);
+    }
+
     let mut parts = text.split("").peekable();
-    while let Some(mut part) = parts.next() {
+    while let Some(part) = parts.next() {
         let next_part = parts.peek().unwrap_or(&"");
         let last_part = out.chars().last().unwrap_or(' ');
 
         // TODO: Here has force disable this feature, still working...
         if !has_cjk && false == true {
             // Remove duplicate space without CJK contents
-            if part.ends_with(|s: char| s.is_whitespace())
-                && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
-            {
-                part = "";
-            }
+            // if part.ends_with(|s: char| s.is_whitespace())
+            //     && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
+            // {
+            //     part = "";
+            // }
 
             // Fix punctuation without CJK contents
             if let Some(new_str) = PUNCTUATION_WITH_SPACE_SUFFIX_MAP.get(part) {
@@ -117,9 +134,9 @@ mod tests {
 
     #[test]
     fn test_halfwidth_alphabetic_numbers() {
-        let source = "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ１２３４５６７８９０";
+        let source = "Test:ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ１２３４５６７８９０";
         assert_eq!(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+            "Test:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
             format(source)
         );
 
@@ -138,19 +155,21 @@ mod tests {
     #[test]
     fn test_halfwidth_punctuation() {
         let cases = map! [
-            // "说：你好 english。" => "说：你好 english。",
-            // "‘腾讯’ - 发布 - ‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
-            // "Said：Come and，Join us！" => "Said: Come and, Join us!",
+            "说：你好 english。" => "说：你好 english。",
+            "‘腾讯’ - 发布 - ‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
+            "中文1\nhello，world。\n中文2" => "中文1\nhello, world.\n中文2",
+            "  \n  Said：Come and，Join us！  \n  " => "  \n  Said: Come and, Join us!  \n  ",
+            "Said：Come and，Join us！" => "Said: Come and, Join us!",
             // "Said： Come  and， [Join]   us  " => "Said: Come and, [Join] us",
-            // "Come and？Join us?" => "Come and? Join us?",
-            // "Come and， Join us！" => "Come and, Join us!",
-            // "The microphone or camera is occupied，Please check and re-record the video。" => "The microphone or camera is occupied, Please check and re-record the video.",
-            // "Exchange’s" => "Exchange's",
-            // "The“Convertible Amount”case。" => r#"The "Convertible Amount" case."#,
-            // "The（Convertible Amount）case！" => r#"The (Convertible Amount) case!"#,
-            // "The【Convertible Amount】case？" => "The [Convertible Amount] case?",
-            // "The「Convertible Amount」case：" => "The [Convertible Amount] case:",
-            // "The《Convertible Amount》case，" => r#"The "Convertible Amount" case,"#,
+            "Come and？Join us?" => "Come and? Join us?",
+            "Come and， Join us！" => "Come and, Join us!",
+            "The microphone or camera is occupied，Please check and re-record the video。" => "The microphone or camera is occupied, Please check and re-record the video.",
+            "Exchange’s" => "Exchange's",
+            "The“Convertible Amount”case。" => r#"The "Convertible Amount" case."#,
+            "The（Convertible Amount）case！" => r#"The (Convertible Amount) case!"#,
+            "The【Convertible Amount】case？" => "The [Convertible Amount] case?",
+            "The「Convertible Amount」case：" => "The [Convertible Amount] case:",
+            "The《Convertible Amount》case，" => r#"The "Convertible Amount" case,"#,
         ];
 
         assert_cases(cases);

@@ -22,11 +22,11 @@ lazy_static! {
         Rule::new("space-punctuation", word::format_space_punctuation),
         // Rule: fullwidth
         Rule::new("fullwidth", fullwidth::format),
-        // Rule: halfwidth
-        Rule::new("halfwidth", halfwidth::format),
     ];
 
     static ref AFTER_RULES: Vec<Rule> = vec![
+        // Rule: halfwidth
+        Rule::new("halfwidth", halfwidth::format),
         // Rule: no-space-fullwidth
         Rule::new("no-space-fullwidth", word::format_no_space_fullwidth),
         Rule::new("spellcheck", spellcheck::format),
@@ -68,21 +68,29 @@ pub(crate) fn format_or_lint_with_disable_rules(
     let mut result = RuleResult::new(text);
 
     // skip if not has CJK
-    if !CJK_RE.is_match(text) {
-        return result;
-    }
+    if CJK_RE.is_match(text) {
+        result.out = String::from("");
+        let mut part = String::new();
+        for ch in text.chars() {
+            part.push(ch);
 
-    result.out = String::from("");
-    let mut part = String::new();
-    for ch in text.chars() {
-        part.push(ch);
+            // Is next char is newline or space, break part to format
+            if ch == ' ' || ch == '\n' || ch == '\r' {
+                let mut sub_result = RuleResult::new(&part.clone());
+                sub_result.severity = result.severity;
 
-        // Is next char is newline or space, break part to format
-        if ch == ' ' || ch == '\n' || ch == '\r' {
+                part.clear();
+
+                format_part(&mut sub_result, lint, disable_rules);
+
+                result.out.push_str(&sub_result.out);
+                result.severity = sub_result.severity;
+            }
+        }
+
+        if !part.is_empty() {
             let mut sub_result = RuleResult::new(&part.clone());
             sub_result.severity = result.severity;
-
-            part.clear();
 
             format_part(&mut sub_result, lint, disable_rules);
 
@@ -91,26 +99,12 @@ pub(crate) fn format_or_lint_with_disable_rules(
         }
     }
 
-    if !part.is_empty() {
-        let mut sub_result = RuleResult::new(&part.clone());
-        sub_result.severity = result.severity;
-
-        format_part(&mut sub_result, lint, disable_rules);
-
-        result.out.push_str(&sub_result.out);
-        result.severity = sub_result.severity;
-    }
-
     format_after_rules(&mut result, lint, disable_rules);
 
     result
 }
 
 fn format_part(result: &mut RuleResult, lint: bool, disable_rules: &HashMap<String, bool>) {
-    if !CJK_RE.is_match(&result.out) {
-        return;
-    }
-
     if PATH_RE.is_match(&result.out) {
         return;
     }
