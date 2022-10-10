@@ -15,8 +15,11 @@ build:
 	ls -lha target/aarch64-apple-darwin/release/autocorrect
 	sudo ln -f target/aarch64-apple-darwin/release/autocorrect $(BIN_PATH)
 test:
-	@cargo test --manifest-path autocorrect/Cargo.toml 
 	@cargo test
+test\:stdin:
+	@echo "hello你好" | cargo run -q -- --stdin
+	@echo "hello你好" | cargo run -q -- --lint --format json --stdin
+	@echo "hello你好" | cargo run -q -- --lint --stdin
 test\:lint:
 	@cargo run -q -- --lint tests/fixtures/*.fixed.*
 test\:init:

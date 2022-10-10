@@ -3,6 +3,7 @@ use clap::Parser;
 use initializer::InitOption;
 use std::fs;
 use std::io;
+use std::io::BufRead;
 use std::path::Path;
 use std::time::SystemTime;
 
@@ -74,110 +75,138 @@ pub fn main() {
     // calc run time
     let start_t = SystemTime::now();
     let mut lint_results: Vec<String> = Vec::new();
-    let (tx, rx) = std::sync::mpsc::channel();
-
     let lint_errors_count = std::sync::Arc::new(std::sync::Mutex::new(0));
     let lint_warnings_count = std::sync::Arc::new(std::sync::Mutex::new(0));
 
-    let pool = ThreadPool::new(cli.threads);
-    // let mut threads = Vec::new();
+    if cli.stdin {
+        let mut _err_count = 0;
+        let mut _warn_count = 0;
 
-    // create a walker
-    // take first file arg, because ignore::WalkBuilder::new need a file path.
-    let first_file = arg_files.next().expect("Not file args");
-    let mut walker = ignore::WalkBuilder::new(Path::new(&first_file));
-    // Add other files
-    for arg_file in arg_files {
-        walker.add(arg_file);
-    }
-    walker
-        .skip_stdout(true)
-        .parents(true)
-        .git_ignore(true)
-        .follow_links(false);
+        let raw = io::stdin()
+            .lock()
+            .lines()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap()
+            .join("\n");
 
-    // create ignorer for ignore directly file
-    let ignorer = autocorrect::ignorer::Ignorer::new("./");
+        if cli.lint {
+            lint_and_output(
+                "<STDIN>",
+                "text",
+                &raw,
+                &cli,
+                &mut lint_results,
+                &mut _err_count,
+                &mut _warn_count,
+            );
+        } else {
+            format_and_output("", "text", &raw, &cli)
+        }
 
-    for result in walker.build() {
-        match result {
-            Ok(entry) => {
-                let path = entry.path();
-                let path_str = path.to_str().unwrap_or("");
+        *lint_errors_count.lock().unwrap() += _err_count;
+        *lint_warnings_count.lock().unwrap() += _warn_count;
+    } else {
+        let (tx, rx) = std::sync::mpsc::channel();
 
-                if ignorer.is_ignored(path_str) {
-                    // skip ignore file
-                    continue;
-                }
+        let pool = ThreadPool::new(cli.threads);
 
-                // ignore unless file
-                if !path.is_file() {
-                    continue;
-                }
+        // create a walker
+        // take first file arg, because ignore::WalkBuilder::new need a file path.
+        let first_file = arg_files.next().expect("Not file args");
+        let mut walker = ignore::WalkBuilder::new(Path::new(&first_file));
+        // Add other files
+        for arg_file in arg_files {
+            walker.add(arg_file);
+        }
+        walker
+            .skip_stdout(true)
+            .parents(true)
+            .git_ignore(true)
+            .follow_links(false);
 
-                // println!("{}", path.display());
+        // create ignorer for ignore directly file
+        let ignorer = autocorrect::ignorer::Ignorer::new("./");
 
-                let filepath = String::from(path_str);
-                let mut filetype = autocorrect::get_file_extension(&filepath);
-                if let Some(ref ftype) = cli.filetype {
-                    filetype = ftype.clone();
-                }
-                if !autocorrect::is_support_type(&filetype) {
-                    continue;
-                }
+        for result in walker.build() {
+            match result {
+                Ok(entry) => {
+                    let path = entry.path();
+                    let path_str = path.to_str().unwrap_or("");
 
-                let cli = cli.clone();
-                let tx = tx.clone();
-                let lint_errors_count = lint_errors_count.clone();
-                let lint_warnings_count = lint_warnings_count.clone();
-                let filepath = filepath.clone();
-                let filetype = filetype.clone();
-
-                pool.execute(move || {
-                    if let Ok(raw) = read_file(&filepath) {
-                        let t = SystemTime::now();
-                        log::debug!("Process {}", filepath);
-                        if cli.lint {
-                            let mut lint_results: Vec<String> = Vec::new();
-
-                            let mut _err_count = 0;
-                            let mut _warn_count = 0;
-                            lint_and_output(
-                                &filepath,
-                                &filetype,
-                                &raw,
-                                &cli,
-                                &mut lint_results,
-                                &mut _err_count,
-                                &mut _warn_count,
-                            );
-
-                            *lint_errors_count.lock().unwrap() += _err_count;
-                            *lint_warnings_count.lock().unwrap() += _warn_count;
-
-                            for lint_result in lint_results {
-                                tx.send(lint_result).unwrap();
-                            }
-                        } else {
-                            format_and_output(&filepath, &filetype, &raw, &cli);
-                        }
-
-                        log::debug!("Done {} {}ms\n", filepath, t.elapsed_millis());
+                    if ignorer.is_ignored(path_str) {
+                        // skip ignore file
+                        continue;
                     }
-                });
-            }
-            Err(_err) => {
-                log::error!("ERROR: {}", _err);
+
+                    // ignore unless file
+                    if !path.is_file() {
+                        continue;
+                    }
+
+                    // println!("{}", path.display());
+
+                    let filepath = String::from(path_str);
+                    let mut filetype = autocorrect::get_file_extension(&filepath);
+                    if let Some(ref ftype) = cli.filetype {
+                        filetype = ftype.clone();
+                    }
+                    if !autocorrect::is_support_type(&filetype) {
+                        continue;
+                    }
+
+                    let cli = cli.clone();
+                    let tx = tx.clone();
+                    let lint_errors_count = lint_errors_count.clone();
+                    let lint_warnings_count = lint_warnings_count.clone();
+                    let filepath = filepath.clone();
+                    let filetype = filetype.clone();
+
+                    pool.execute(move || {
+                        if let Ok(raw) = read_file(&filepath) {
+                            let t = SystemTime::now();
+                            log::debug!("Process {}", filepath);
+                            if cli.lint {
+                                let mut lint_results: Vec<String> = Vec::new();
+
+                                let mut _err_count = 0;
+                                let mut _warn_count = 0;
+                                lint_and_output(
+                                    &filepath,
+                                    &filetype,
+                                    &raw,
+                                    &cli,
+                                    &mut lint_results,
+                                    &mut _err_count,
+                                    &mut _warn_count,
+                                );
+
+                                *lint_errors_count.lock().unwrap() += _err_count;
+                                *lint_warnings_count.lock().unwrap() += _warn_count;
+
+                                for lint_result in lint_results {
+                                    tx.send(lint_result).unwrap();
+                                }
+                            } else {
+                                format_and_output(&filepath, &filetype, &raw, &cli);
+                            }
+
+                            log::debug!("Done {} {}ms\n", filepath, t.elapsed_millis());
+                        }
+                    });
+                }
+                Err(_err) => {
+                    log::error!("ERROR: {}", _err);
+                }
             }
         }
-    }
-    // wait all threads complete
-    // println!("\n---- threads {}", threads.len());
-    pool.join();
+        // wait all threads complete
+        // println!("\n---- threads {}", threads.len());
+        pool.join();
 
-    // wait all threads send result
-    while let Ok(lint_result) = rx.try_recv() {
-        lint_results.push(lint_result)
+        // wait all threads send result
+        while let Ok(lint_result) = rx.try_recv() {
+            lint_results.push(lint_result)
+        }
     }
 
     log::debug!("\n\nLint result found: {} issues.", lint_results.len());
@@ -236,7 +265,7 @@ fn read_file(filepath: &str) -> io::Result<String> {
 fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
     let result = autocorrect::format_for(raw, filetype);
 
-    if cli.fix {
+    if cli.fix && !filepath.is_empty() {
         if result.has_error() {
             log::debug!("{}\n{}", filepath, result.error);
             return;

@@ -56,6 +56,9 @@ pub struct Cli {
         multiple = true
     )]
     pub files: Vec<String>,
+
+    #[clap(long = "stdin", help = "Input text from <STDIN>")]
+    pub stdin: bool,
 }
 
 #[derive(Debug, Subcommand, Clone)]

@@ -118,6 +118,9 @@ $ autocorrect update
 $ autocorrect text.txt
 你好 Hello 世界
 
+$ echo "hello世界" | autcorrect --stdin
+hello 世界
+
 $ autocorrect --fix text.txt
 $ autocorrect --fix zh-CN.yml
 $ autocorrect --fix
@@ -132,9 +135,11 @@ $ autocorrect --lint text.txt
 ```
 
 ```diff
-  --> text.txt:1:3
-- 你好Hello世界
-+ 你好 Hello 世界
+Error: 1, Warning: 0
+
+text.txt:1:3
+-你好Hello世界
++你好 Hello 世界
 ```
 
 You also can lint multiple files:
