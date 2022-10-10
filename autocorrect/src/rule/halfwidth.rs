@@ -54,8 +54,8 @@ pub fn format(text: &str) -> String {
         let next_part = parts.peek().unwrap_or(&"");
         let last_part = out.chars().last().unwrap_or(' ');
 
-        #[allow(clippy::collapsible_if)]
-        if !has_cjk {
+        // TODO: Here has force disable this feature, still working...
+        if !has_cjk && false == true {
             // Remove duplicate space without CJK contents
             if part.ends_with(|s: char| s.is_whitespace())
                 && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
