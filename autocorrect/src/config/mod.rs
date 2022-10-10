@@ -128,7 +128,7 @@ impl Config {
 
         // DEPRECATED: since 2.0.0, remove this in 2.1.0
         if let Some(mode) = config.spellcheck.mode.clone() {
-            println!("DEPRECATED: `spellcheck.mode` use `rules.spellcheck` instead since 2.0.0, remove this in 2.1.0");
+            println!("DEPRECATED: `spellcheck.mode` use `rules.spellcheck` instead since 2.0.0");
             self.spellcheck.mode = Some(mode.clone());
             self.rules.insert("spellcheck".to_string(), mode);
         }
