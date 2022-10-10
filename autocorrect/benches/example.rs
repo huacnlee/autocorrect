@@ -34,7 +34,7 @@ fn fixture(path: &str) -> String {
     contents
 }
 
-fn bench_format_50(b: &mut Bencher) {
+fn bench_format_050(b: &mut Bencher) {
     b.iter(|| format("【野村：重申吉利汽车(00175)“买入”评级 上调目标价至17.9港元】智通财经APP获悉，野村发布报告称"));
 }
 
@@ -161,6 +161,11 @@ fn bench_format_json_with_2k_lines(b: &mut Bencher) {
     b.iter(|| format_for(raw.as_str(), "json"));
 }
 
+fn bench_halfwidth_full_english_100(b: &mut Bencher) {
+    let raw = "Internal interface for communicating between a `proc_macro` client (a proc macro crate) and a `proc_macro` server (a compiler front-end).";
+    b.iter(|| halfwidth::format(raw));
+}
+
 fn bench_spellcheck_50(b: &mut Bencher) {
     setup();
 
@@ -191,10 +196,11 @@ fn bench_markdown(b: &mut Bencher) {
 
 benchmark_group!(
     format_benches,
-    bench_format_50,
+    bench_format_050,
     bench_format_100,
     bench_format_400,
     bench_format_html,
+    bench_halfwidth_full_english_100,
     bench_format_json,
     bench_format_javascript,
     bench_format_json_with_2k_lines,

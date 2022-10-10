@@ -36,9 +36,9 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and
 
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
 - Support more than 27 programming languages (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
-- Fullwidth -> halfwidth (only for [a-zA-Z0-9], and `：` in time).
 - Correct punctuations into Fullwidth near the CJK.
-- Spellcheck and correct words by your own dictionary.
+- Correct punctuations into Halfwidth, and remove duplication spaces in english contents.
+- Spellcheck (experimental) and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
@@ -424,24 +424,30 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
 
 ```bash
-test bench_format_50                 ... bench:       7,525 ns/iter (+/- 171)
-test bench_format_100                ... bench:      13,586 ns/iter (+/- 304)
-test bench_format_400                ... bench:      48,858 ns/iter (+/- 1,078)
-test bench_format_html               ... bench:     156,654 ns/iter (+/- 4,773)
-test bench_format_javascript         ... bench:      89,387 ns/iter (+/- 8,365)
-test bench_format_json               ... bench:      29,356 ns/iter (+/- 718)
-test bench_format_json_with_2k_lines ... bench:   3,829,479 ns/iter (+/- 76,499)
-test bench_markdown                  ... bench:     749,033 ns/iter (+/- 38,704)
-test bench_spellcheck_50             ... bench:      37,371 ns/iter (+/- 844)
-test bench_spellcheck_100            ... bench:      57,835 ns/iter (+/- 745)
-test bench_spellcheck_400            ... bench:     195,606 ns/iter (+/- 2,996)
+test bench_format_050                 ... bench:       9,390 ns/iter (+/- 74)
+test bench_format_100                 ... bench:      17,299 ns/iter (+/- 461)
+test bench_format_400                 ... bench:      57,316 ns/iter (+/- 2,845)
+test bench_format_html                ... bench:     174,572 ns/iter (+/- 7,530)
+test bench_format_javascript          ... bench:      80,637 ns/iter (+/- 3,315)
+test bench_format_json                ... bench:      34,212 ns/iter (+/- 189)
+test bench_format_json_with_2k_lines  ... bench:   5,339,445 ns/iter (+/- 110,482)
+test bench_halfwidth_full_english_100 ... bench:      12,584 ns/iter (+/- 2,244)
+test bench_markdown                   ... bench:     790,159 ns/iter (+/- 88,039)
+test bench_spellcheck_100             ... bench:      59,318 ns/iter (+/- 17,063)
+test bench_spellcheck_400             ... bench:     200,657 ns/iter (+/- 21,931)
+test bench_spellcheck_50              ... bench:      35,396 ns/iter (+/- 755)
 ```
 
 | Type       | Total chars | Duration |
 | ---------- | ----------- | -------- |
-| format     | 50          | 0.014 ms |
-| format     | 100         | 0.019 ms |
-| format     | 400         | 0.045 ms |
+| format     | 50          | 0.010 ms |
+| format     | 100         | 0.017 ms |
+| format     | 400         | 0.057 ms |
+| format     | HTML        | 0.174 ms |
+| format     | JavaScript  | 0.086 ms |
+| format     | JSON        | 0.034 ms |
+| format     | Large JSON  | 3.829 ms |
+| halfwidth  | 100         | 0.012 ms |
 | format     | Markdown    | 0.749 ms |
 | spellcheck | 50          | 0.037 ms |
 | spellcheck | 100         | 0.057 ms |

@@ -1,10 +1,11 @@
 // autocorrect: false
 mod fullwidth;
-mod halfwidth;
 mod rule;
-pub mod spellcheck;
 mod strategery;
 mod word;
+
+pub mod halfwidth;
+pub mod spellcheck;
 
 use std::collections::HashMap;
 

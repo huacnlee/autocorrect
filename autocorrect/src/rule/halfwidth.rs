@@ -49,47 +49,51 @@ pub fn format(text: &str) -> String {
     let has_cjk = CJK_RE.is_match(text);
     let mut out = String::new();
 
-    let mut last_part = String::new();
     let mut parts = text.split("").peekable();
-    while let Some(part) = parts.next() {
+    while let Some(mut part) = parts.next() {
         let next_part = parts.peek().unwrap_or(&"");
+        let last_part = out.chars().last().unwrap_or(' ');
 
-        let mut part = CHAR_WIDTH_MAP.get(part).unwrap_or(&part);
-
-        // Remove duplicate space without CJK contents
         #[allow(clippy::collapsible_if)]
         if !has_cjk {
+            // Remove duplicate space without CJK contents
             if part.ends_with(|s: char| s.is_whitespace())
                 && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
             {
-                part = &"";
+                part = "";
             }
-        }
 
-        let mut new_part = String::from(*part);
-
-        // Fix punctuation without CJK contents
-        if !has_cjk {
-            if let Some(new_str) = PUNCTUATION_WITH_SPACE_SUFFIX_MAP.get(new_part.as_str()) {
-                new_part = String::from(*new_str);
+            // Fix punctuation without CJK contents
+            if let Some(new_str) = PUNCTUATION_WITH_SPACE_SUFFIX_MAP.get(part) {
+                out.push_str(new_str);
                 // Suffix with a space, if next is alphanumeric or punctuation
                 if next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation()) {
-                    new_part.push(' ')
+                    out.push(' ');
                 }
-            } else if let Some(new_str) = PUNCTUATION_WITH_SPACE_PREFIX_MAP.get(part) {
-                new_part = String::from("");
+                continue;
+            }
+
+            if let Some(new_str) = PUNCTUATION_WITH_SPACE_PREFIX_MAP.get(part) {
                 // Prefix with a space, if last char is alphanumeric or punctuation
-                if last_part.ends_with(|s: char| s.is_ascii_alphanumeric_punctuation()) {
-                    new_part.push(' ')
+                if last_part.is_ascii_alphanumeric_punctuation() {
+                    out.push(' ')
                 }
-                new_part.push_str(new_str);
-            } else if let Some(new_str) = PUNCTUATION_WITHOUT_SPACE_MAP.get(part) {
-                new_part = String::from(*new_str);
+                out.push_str(new_str);
+                continue;
+            }
+
+            if let Some(new_str) = PUNCTUATION_WITHOUT_SPACE_MAP.get(part) {
+                out.push_str(new_str);
+                continue;
             }
         }
 
-        out.push_str(new_part.as_str());
-        last_part = new_part;
+        if let Some(new_str) = CHAR_WIDTH_MAP.get(part) {
+            out.push_str(new_str);
+            continue;
+        }
+
+        out.push_str(part);
     }
 
     // Fix 12：00 -> 12:00
