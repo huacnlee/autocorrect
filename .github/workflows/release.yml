@@ -36,12 +36,12 @@ jobs:
 
           - target: x86_64-pc-windows-msvc
             os: windows-latest
-            name: autocorrect-windows-amd64.tar.gz
+            name: autocorrect-windows-amd64.zip
             arch: x86_64
 
           # - target: aarch64-pc-windows-msvc
           #   os: windows-latest
-          #   name: autocorrect-windows-arm64.tar.gz
+          #   name: autocorrect-windows-arm64.zip
           #   arch: aarch64
 
     runs-on: ${{ matrix.os }}
