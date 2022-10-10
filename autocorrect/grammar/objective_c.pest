@@ -7,12 +7,18 @@ single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
 
 string = ${ string_val }
 string_val = _{ 
-  ("@\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+  ("@\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"")
 }
 
-regexp = ${
-  ("WithPattern" ~ ":" ~ " "* ~ string_val)
-  | ("Match" ~ "(" ~ " "* ~ string_val)
+BLANK = _{ NEWLINE | WHITE_SPACE }
+
+ingore_methods = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
+ignore_arguments = _{ ("WithPattern" | "WithKey") ~ ":"  }
+
+ignore_string = ${
+  (ignore_arguments ~ BLANK* ~ string_val)
+  | (ingore_methods ~ "(" ~ BLANK* ~ string_val)
 }
-line = _{ regexp | string | comment | space | other | newline }
+
+line = _{ ignore_string | string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

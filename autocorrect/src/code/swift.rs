@@ -27,6 +27,13 @@ func helloWorld(name: String) -> String {
 "Begin at the beginning," the King said gravely.
 """
 
+  NSLocalizedString("hello世界不会修改", nil)
+
+  NSLocalizedString(
+    "hello世界不会修改", nil)
+
+  let val = try! NSLocalizedString(key: "key名称不会处理")
+
   let re = try! NSRegularExpression(pattern:    "re正则")
 }
 "###;
@@ -42,6 +49,13 @@ func helloWorld(name: String) -> String {
 这是多行 string 里面包含"双引号"
 "Begin at the beginning," the King said gravely.
 """
+
+  NSLocalizedString("hello世界不会修改", nil)
+
+  NSLocalizedString(
+    "hello世界不会修改", nil)
+
+  let val = try! NSLocalizedString(key: "key名称不会处理")
 
   let re = try! NSRegularExpression(pattern:    "re正则")
 }

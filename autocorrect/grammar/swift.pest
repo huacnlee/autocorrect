@@ -12,9 +12,15 @@ string_val = _{
   | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
 }
 
-regexp = ${
-  ("pattern:" ~ " "* ~ string_val)
+BLANK = _{ NEWLINE | WHITE_SPACE }
+
+ingore_methods = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
+ignore_arguments = _{ ("pattern" | "key") ~ ":"  }
+
+ignore_string = ${
+  (ignore_arguments ~ BLANK* ~ string_val)
+  | (ingore_methods ~ "(" ~ BLANK* ~ string_val)
 }
 
-line = _{ regexp | string | comment | space | other | newline }
+line = _{ ignore_string | string | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 

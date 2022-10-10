@@ -22,6 +22,11 @@ mod tests {
   // 第3行注释
   NSString *geotestUrl = @"第1个字符串string";
 
+  NSLocalizedString(@"hello世界不会修改", nil);
+
+  NSLocalizedString(
+    @"hello世界不会修改", nil);
+
   NSRegularExpression* re0 = [NSRegularExpression regularExpressionWithPattern:  @"re正则" options:0 error:&err];
 }
 "###;
@@ -32,6 +37,11 @@ mod tests {
 - (void) helloWorld {
   // 第 3 行注释
   NSString *geotestUrl = @"第 1 个字符串 string";
+
+  NSLocalizedString(@"hello世界不会修改", nil);
+
+  NSLocalizedString(
+    @"hello世界不会修改", nil);
 
   NSRegularExpression* re0 = [NSRegularExpression regularExpressionWithPattern:  @"re正则" options:0 error:&err];
 }
