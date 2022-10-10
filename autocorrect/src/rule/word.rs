@@ -1,5 +1,5 @@
 // autocorrect: false
-use super::strategery::Strategery;
+use super::{strategery::Strategery, CJK_RE};
 
 lazy_static! {
        // Strategies all rules
@@ -47,6 +47,11 @@ pub fn format_space_punctuation(input: &str) -> String {
 
 pub fn format_no_space_fullwidth(input: &str) -> String {
     let mut out = String::from(input);
+
+    if !CJK_RE.is_match(input) {
+        return out;
+    }
+
     NO_SPACE_FULLWIDTH_STRATEGIES
         .iter()
         .for_each(|s| out = s.format(&out));

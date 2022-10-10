@@ -33,7 +33,7 @@ lazy_static! {
         "《" => r#"""#,
     );
     static ref HALF_TIME_RE: Regex = regexp!("{}", r"(\d)(：)(\d)");
-    static ref WORD_RE: Regex = regexp!("{}", r"[a-zA-Z]");
+    static ref WORD_RE: Regex = regexp!("{}", r"[a-zA-Z]{2,}");
 }
 
 trait CharMatching {
@@ -62,7 +62,7 @@ fn format_line(text: &str) -> String {
     let mut out = String::new();
 
     // If there not have any words, skip
-    if !has_word && !has_cjk {
+    if !has_word && !has_cjk || text.len() < 10 {
         return String::from(text);
     }
 
@@ -71,14 +71,18 @@ fn format_line(text: &str) -> String {
         let next_part = parts.peek().unwrap_or(&"");
         let last_part = out.chars().last().unwrap_or(' ');
 
-        // TODO: Here has force disable this feature, still working...
-        if !has_cjk && false == true {
+        if !has_cjk {
             // Remove duplicate space without CJK contents
             // if part.ends_with(|s: char| s.is_whitespace())
             //     && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
             // {
             //     part = "";
             // }
+
+            if !last_part.is_alphanumeric() && last_part != ' ' {
+                out.push_str(part);
+                continue;
+            }
 
             // Fix punctuation without CJK contents
             if let Some(new_str) = PUNCTUATION_WITH_SPACE_SUFFIX_MAP.get(part) {
@@ -134,9 +138,9 @@ mod tests {
 
     #[test]
     fn test_halfwidth_alphabetic_numbers() {
-        let source = "Test:ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ１２３４５６７８９０";
+        let source = "测试:ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ１２３４５６７８９０";
         assert_eq!(
-            "Test:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+            "测试:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
             format(source)
         );
 
@@ -153,10 +157,21 @@ mod tests {
     }
 
     #[test]
-    fn test_halfwidth_punctuation() {
+    fn test_halfwidth_punctuation_ignores() {
         let cases = map! [
+            "SHA1。" => "SHA1。",
+            "a。" => "a。",
             "说：你好 english。" => "说：你好 english。",
             "‘腾讯’ - 发布 - ‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
+            "${item.name}（ID ${item.id}）" => "${item.name}（ID ${item.id}）",
+            "{{ t('name') }}：{{ item.extraKeys.join(' | ') }}" => "{{ t('name') }}：{{ item.extraKeys.join(' | ') }}",
+        ];
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn test_halfwidth_punctuation() {
+        let cases = map! [
             "中文1\nhello，world。\n中文2" => "中文1\nhello, world.\n中文2",
             "  \n  Said：Come and，Join us！  \n  " => "  \n  Said: Come and, Join us!  \n  ",
             "Said：Come and，Join us！" => "Said: Come and, Join us!",
@@ -165,6 +180,7 @@ mod tests {
             "Come and， Join us！" => "Come and, Join us!",
             "The microphone or camera is occupied，Please check and re-record the video。" => "The microphone or camera is occupied, Please check and re-record the video.",
             "Exchange’s" => "Exchange's",
+            "The “Convertible Amount” case。" => r#"The "Convertible Amount" case."#,
             "The“Convertible Amount”case。" => r#"The "Convertible Amount" case."#,
             "The（Convertible Amount）case！" => r#"The (Convertible Amount) case!"#,
             "The【Convertible Amount】case？" => "The [Convertible Amount] case?",

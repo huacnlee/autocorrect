@@ -38,8 +38,8 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
 - Support more than 27 programming languages (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
 - Correct punctuations into Fullwidth near the CJK.
-- Correct punctuations into Halfwidth, and remove duplication spaces in english contents.
-- Spellcheck (experimental) and correct words by your own dictionary.
+- (Experimental) Correct punctuations into Halfwidth, and remove duplication spaces in english contents.
+- (Experimental) Spellcheck and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
@@ -175,10 +175,10 @@ rules:
   space-punctuation: 1
   # Convert to fullwidth.
   fullwidth: 1
-  # Convert to halfwidth.
-  halfwidth: 1
   # To remove space near the fullwidth.
   no-space-fullwidth: 1
+  # Convert to halfwidth.
+  halfwidth: 0
   # Spellcheck
   spellcheck: 2
 textRules:
