@@ -1,6 +1,6 @@
 FROM debian:buster-slim
 
-RUN apt update && apt install -y --no-install-recommends curl ca-certificates
+RUN apt update && apt install -y --no-install-recommends curl ca-certificates git
 
 ADD install /install 
 RUN ./install
