@@ -33,7 +33,8 @@ lazy_static! {
         "《" => r#"""#,
     );
     static ref HALF_TIME_RE: Regex = regexp!("{}", r"(\d)(：)(\d)");
-    static ref WORD_RE: Regex = regexp!("{}", r"[a-zA-Z]{2,}");
+    // More than 3 words
+    static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ]+)([\w]+[ ]+)([\w]+[ ]+)"#);
 }
 
 trait CharMatching {
@@ -57,21 +58,15 @@ pub fn format(text: &str) -> String {
 }
 
 fn format_line(text: &str) -> String {
-    let has_cjk = CJK_RE.is_match(text);
-    let has_word = WORD_RE.is_match(text);
+    let is_english = ENGLISH_RE.is_match(text) && !CJK_RE.is_match(text);
     let mut out = String::new();
-
-    // If there not have any words, skip
-    if !has_word && !has_cjk || text.len() < 10 {
-        return String::from(text);
-    }
 
     let mut parts = text.split("").peekable();
     while let Some(part) = parts.next() {
         let next_part = parts.peek().unwrap_or(&"");
         let last_part = out.chars().last().unwrap_or(' ');
 
-        if !has_cjk {
+        if is_english {
             // Remove duplicate space without CJK contents
             // if part.ends_with(|s: char| s.is_whitespace())
             //     && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
@@ -79,6 +74,7 @@ fn format_line(text: &str) -> String {
             //     part = "";
             // }
 
+            // Skip if last char is not a number, alpha or space
             if !last_part.is_alphanumeric() && last_part != ' ' {
                 out.push_str(part);
                 continue;
@@ -161,6 +157,8 @@ mod tests {
         let cases = map! [
             "SHA1。" => "SHA1。",
             "a。" => "a。",
+            "。" => "。",
+            "hello)。" => "hello)。",
             "说：你好 english。" => "说：你好 english。",
             "‘腾讯’ - 发布 - ‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
             "${item.name}（ID ${item.id}）" => "${item.name}（ID ${item.id}）",
