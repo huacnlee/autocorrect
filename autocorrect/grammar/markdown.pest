@@ -14,12 +14,13 @@ html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
 newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
+
 codeblock = ${
   PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
   | indent_code
 }
 indent_code = ${
-  "\n" ~ "    " ~ (!"\n" ~ ANY)* ~ "\n"*
+  newline ~ "    " ~ (!newline ~ ANY)* ~ newline*
 }
 codeblock_lang = { ASCII_ALPHA* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
@@ -44,7 +45,7 @@ href = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
 wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 
 mark = ${ PUSH(mark_wrap) ~ mark_string ~ mark_wrap }
-mark_wrap = @{ "***" | "**" | "*" | "~~" | "__" | "`" }
+mark_wrap = @{ "***" | "**" | "*" | "~~" | "`" }
 mark_string = { (!(PEEK | newline | inline) ~ ANY)* }
 
 string = @{ (!(newline | inline) ~ ANY)+ }
