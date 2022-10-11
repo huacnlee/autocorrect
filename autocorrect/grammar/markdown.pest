@@ -1,17 +1,21 @@
 item = _{ SOI ~ line* ~ EOI }
-line = _{ expr | text | newline }
+line = _{ expr | newline }
 
-expr = _{ comment | html_tag | meta_info | codeblock | inline | td_tag | block }
+expr = _{ 
+  comment | html_tag | meta_info
+  | codeblock | block | paragraph | inline | td_tag
+}
 
-inline = _{ img | link | mark | wikilinks }
-block = ${ block_prefix ~ space ~ inline* ~ string }
+block = ${ block_prefix ~ (inline | string)+  }
+inline = ${ img | link | mark | wikilinks }
+paragraph = { (string | inline)+ }
 
 html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
 newline = ${ "\n" | "\r" }
 space = @{ (" ")* }
 codeblock = ${
-  PUSH("```") ~ codeblock_lang ~ codeblock_code ~ "```"
+  PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
   | indent_code
 }
 indent_code = ${
@@ -20,14 +24,9 @@ indent_code = ${
 codeblock_lang = { ASCII_ALPHA* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
 td_tag = @{ space ~ "|" ~ space }
-mark_tag = @{
-  "**"
-  | "*"
-  | "~~"
-  | "`"
-}
 block_prefix = @{
-  "######" | "#####" | "####" | "###" | "##" | "#" | "*" | "-" | ">"
+   ("######" | "#####" | "####" | "###" | "##" | "#" | ">") ~ " "*
+   | (" "* ~ ("*" | "-" | ASCII_DIGIT ~ ".") ~ " "+)
 }
 
 meta_info = ${ meta_wrap ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }
@@ -44,11 +43,11 @@ href = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
 
 wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 
-mark = ${ PUSH(mark_tag) ~ mark_string ~ mark_tag }
+mark = ${ PUSH(mark_wrap) ~ mark_string ~ mark_wrap }
+mark_wrap = @{ "***" | "**" | "*" | "~~" | "__" | "`" }
+mark_string = { (!(PEEK | newline | inline) ~ ANY)* }
 
-text = { (!(expr | inline | newline) ~ ANY)+ }
-string = ${ (!(newline | inline) ~ ANY)* }
-mark_string = {(!(PEEK | newline | inline) ~ ANY)* }
+string = @{ (!(newline | inline) ~ ANY)+ }
 
 comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
 comment_tag_start = @{  "<!--" }

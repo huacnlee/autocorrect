@@ -30,6 +30,14 @@ original_slug: Web/CSS/网格-模板-列
 
 它指向一个[示例](#示例)
 
+## This is list
+
+1. Item 1
+    1. Item 1.1
+    1. Item 1.1.1
+2. Item 2
+3. Item 3
+
 ## Test multiple code will not deadlock
 
 `svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
@@ -53,7 +61,7 @@ https://google.com/foo/__ios__
 ###测试Heading处理，应该忽略#号后再处理.
 ####   测试Heading处理,应该忽略#号后再处理!
 
-    // 这行不应该处理,因为无法识别codeblock的语言.
+    // 这行不应该处理,因为无法识别codeblock的语言,test html code.
     $ echo linux ios
 
 - 【括号】测试中文符号在List里面
@@ -97,6 +105,8 @@ let a = "你好hello";
 | timeout    | 16(uint16) | 2            | `timeout` 单位毫秒，最大60000（60s）                                       |
 
 - ![img图片](https://google.com/a/b/url不处理)
+    - Sub list item
+    - Third indent item.
 - [link链接](https://google.com/a/b/url不处理)
 - 一个[[Wikilinks测试]]示例
     "###;
@@ -112,6 +122,14 @@ original_slug: Web/CSS/网格-模板-列
 # 这是 Heading 1 大标题[示例](#示例)
 
 它指向一个[示例](#示例)
+
+## This is list
+
+1. Item 1
+    1. Item 1.1
+    1. Item 1.1.1
+2. Item 2
+3. Item 3
 
 ## Test multiple code will not deadlock
 
@@ -136,7 +154,7 @@ https://google.com/foo/__ios__
 ###测试 Heading 处理，应该忽略#号后再处理。
 ####   测试 Heading 处理，应该忽略#号后再处理！
 
-    // 这行不应该处理,因为无法识别codeblock的语言.
+    // 这行不应该处理,因为无法识别codeblock的语言,test html code.
     $ echo linux ios
 
 - 【括号】测试中文符号在 List 里面
@@ -180,17 +198,23 @@ let a = "你好 hello";
 | timeout    | 16(uint16) | 2            | `timeout` 单位毫秒，最大 60000（60s）                                       |
 
 - ![img 图片](https://google.com/a/b/url不处理)
+    - Sub list item
+    - Third indent item.
 - [link 链接](https://google.com/a/b/url不处理)
 - 一个[[Wikilinks测试]]示例
     "###;
 
         assert_eq!(expected, format_for(example, "markdown").to_string());
 
+        let expected_json_result = r#"{
+  "filepath": "markdown",
+  "lines": [],
+  "error": ""
+}"#;
+
         let lint_result = lint_for(expected, "markdown");
         assert_eq!(false, lint_result.has_error());
-        if !lint_result.lines.is_empty() {
-            panic!("{}", lint_result.to_string());
-        }
+        assert_eq!(expected_json_result, lint_result.to_json_pretty());
     }
 
     #[test]
@@ -220,6 +244,9 @@ let a = "你好 hello";
             "Spellcheck 测试 iOS 和 HTML 和 Wi-Fi",
             lint_result.lines[0].new
         );
-        assert_eq!("这里是 markdown 缩进的 codeblock", lint_result.lines[1].new);
+        assert_eq!(
+            "# 这里是 markdown 缩进的 codeblock",
+            lint_result.lines[1].new
+        );
     }
 }
