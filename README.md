@@ -118,7 +118,7 @@ $ autocorrect update
 $ autocorrect text.txt
 你好 Hello 世界
 
-$ echo "hello世界" | autcorrect --stdin
+$ echo "hello世界" | autocorrect --stdin
 hello 世界
 
 $ autocorrect --fix text.txt
