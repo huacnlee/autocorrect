@@ -4,47 +4,87 @@ use std::collections::HashMap;
 
 use super::CJK_RE;
 
+#[derive(Clone)]
+enum ReplaceMode {
+    Replace,
+    PrefixSpace,
+    SuffixSpace,
+}
+
+#[derive(Clone)]
+struct ReplaceRule {
+    to: &'static str,
+    mode: ReplaceMode,
+}
+
+impl ReplaceRule {
+    fn new(to: &'static str) -> Self {
+        Self {
+            to,
+            mode: ReplaceMode::Replace,
+        }
+    }
+
+    fn with_suffix_space(&mut self) -> Self {
+        self.mode = ReplaceMode::SuffixSpace;
+        self.clone()
+    }
+
+    fn with_prefix_space(&mut self) -> Self {
+        self.mode = ReplaceMode::PrefixSpace;
+        self.clone()
+    }
+}
+
 lazy_static! {
     static ref CHAR_WIDTH_MAP: HashMap<&'static str, &'static str> = map!(
       "ａ" => "a", "ｂ" => "b", "ｃ" => "c", "ｄ" => "d", "ｅ" => "e", "ｆ" => "f", "ｇ" => "g", "ｈ" => "h", "ｉ" => "i", "ｊ" => "j", "ｋ" => "k", "ｌ" => "l", "ｍ" => "m", "ｎ" => "n", "ｏ" => "o", "ｐ" => "p", "ｑ" => "q", "ｒ" => "r", "ｓ" => "s", "ｔ" => "t", "ｕ" => "u", "ｖ" => "v", "ｗ" => "w", "ｘ" => "x", "ｙ" => "y", "ｚ" => "z", "Ａ" => "A", "Ｂ" => "B", "Ｃ" => "C", "Ｄ" => "D", "Ｅ" => "E", "Ｆ" => "F", "Ｇ" => "G", "Ｈ" => "H", "Ｉ" => "I", "Ｊ" => "J", "Ｋ" => "K", "Ｌ" => "L", "Ｍ" => "M", "Ｎ" => "N", "Ｏ" => "O", "Ｐ" => "P", "Ｑ" => "Q", "Ｒ" => "R", "Ｓ" => "S", "Ｔ" => "T", "Ｕ" => "U", "Ｖ" => "V", "Ｗ" => "W", "Ｘ" => "X", "Ｙ" => "Y", "Ｚ" => "Z", "１" => "1", "２" => "2", "３" => "3", "４" => "4", "５" => "5", "６" => "6", "７" => "7", "８" => "8", "９" => "9", "０" => "0", "　" => " ",
     );
-    static ref PUNCTUATION_WITHOUT_SPACE_MAP: HashMap<&'static str, &'static str> = map!(
-        "’" => "'",
-    );
-    static ref PUNCTUATION_WITH_SPACE_SUFFIX_MAP: HashMap<&'static str, &'static str> = map!(
-        "，" => ",",
-        "、" => ",",
-        "。" => ".",
-        "：" => ":",
-        "；" => ".",
-        "！" => "!",
-        "？" => "?",
-        "”" => r#"""#,
-        "）" => ")",
-        "】" => "]",
-        "」" => "]",
-        "》" => r#"""#,
-    );
-    static ref PUNCTUATION_WITH_SPACE_PREFIX_MAP: HashMap<&'static str, &'static str> = map!(
-        "“" => r#"""#,
-        "（" => "(",
-        "【" => "[",
-        "「" => "[",
-        "《" => r#"""#,
-    );
+
     static ref HALF_TIME_RE: Regex = regexp!("{}", r"(\d)(：)(\d)");
-    // More than 3 words
-    static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ]+)([\w]+[ ]+)([\w]+[ ]+)"#);
+    // More than 2 words
+    static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ]+[\w]+)"#);
+
+    static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
+        "’" => ReplaceRule::new("'"),
+
+        "，" => ReplaceRule::new(",").with_suffix_space(),
+        "、" => ReplaceRule::new(",").with_suffix_space(),
+        "。" => ReplaceRule::new(".").with_suffix_space(),
+        "：" => ReplaceRule::new(":").with_suffix_space(),
+        "；" => ReplaceRule::new(".").with_suffix_space(),
+        "！" => ReplaceRule::new("!").with_suffix_space(),
+        "？" => ReplaceRule::new("?").with_suffix_space(),
+        "”" => ReplaceRule::new(r#"""#).with_suffix_space(),
+
+        // Quotes prefix
+        "“" => ReplaceRule::new(r#"""#).with_prefix_space(),
+        "（" => ReplaceRule::new("(").with_prefix_space(),
+        "【" => ReplaceRule::new("[").with_prefix_space(),
+        "「" => ReplaceRule::new("[").with_prefix_space(),
+        "《" => ReplaceRule::new(r#"""#).with_prefix_space(),
+
+        // Quotes suffix
+        "）" => ReplaceRule::new(")").with_suffix_space(),
+        "】" => ReplaceRule::new("]").with_suffix_space(),
+        "」" => ReplaceRule::new("]").with_suffix_space(),
+        "》" => ReplaceRule::new(r#"""#).with_suffix_space(),
+    );
 }
 
 trait CharMatching {
     fn is_ascii_alphanumeric_punctuation(&self) -> bool;
+    fn is_alphanumeric_or_space(&self) -> bool;
 }
 
 impl CharMatching for char {
     /// Match is a-z, A-Z, 0-9, all ASCII punctuations
     fn is_ascii_alphanumeric_punctuation(&self) -> bool {
         self.is_ascii_alphanumeric() || self.is_ascii_punctuation()
+    }
+
+    fn is_alphanumeric_or_space(&self) -> bool {
+        self.is_ascii_alphanumeric() || self.eq(&' ') || self.eq(&'\t')
     }
 }
 
@@ -74,33 +114,31 @@ fn format_line(text: &str) -> String {
             //     part = "";
             // }
 
-            // Skip if last char is not a number, alpha or space
-            if !last_part.is_alphanumeric() && last_part != ' ' {
+            // Skip if last char is not a [a-z0-9 ]
+            if !last_part.is_alphanumeric_or_space() {
                 out.push_str(part);
                 continue;
             }
 
             // Fix punctuation without CJK contents
-            if let Some(new_str) = PUNCTUATION_WITH_SPACE_SUFFIX_MAP.get(part) {
-                out.push_str(new_str);
-                // Suffix with a space, if next is alphanumeric or punctuation
-                if next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation()) {
-                    out.push(' ');
+            if let Some(rule) = PUNCTUATION_MAP.get(part) {
+                match rule.mode {
+                    ReplaceMode::SuffixSpace => {
+                        out.push_str(rule.to);
+                        if next_part.starts_with(|s: char| s.is_alphanumeric()) {
+                            out.push(' ');
+                        }
+                    }
+                    ReplaceMode::PrefixSpace => {
+                        if last_part.is_alphanumeric() {
+                            out.push(' ');
+                        }
+                        out.push_str(rule.to);
+                    }
+                    ReplaceMode::Replace => {
+                        out.push_str(rule.to);
+                    }
                 }
-                continue;
-            }
-
-            if let Some(new_str) = PUNCTUATION_WITH_SPACE_PREFIX_MAP.get(part) {
-                // Prefix with a space, if last char is alphanumeric or punctuation
-                if last_part.is_ascii_alphanumeric_punctuation() {
-                    out.push(' ')
-                }
-                out.push_str(new_str);
-                continue;
-            }
-
-            if let Some(new_str) = PUNCTUATION_WITHOUT_SPACE_MAP.get(part) {
-                out.push_str(new_str);
                 continue;
             }
         }
@@ -158,6 +196,7 @@ mod tests {
             "SHA1。" => "SHA1。",
             "a。" => "a。",
             "。" => "。",
+            "foo-bar-dar。" => "foo-bar-dar。",
             "hello)。" => "hello)。",
             "说：你好 english。" => "说：你好 english。",
             "‘腾讯’ - 发布 - ‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
@@ -170,20 +209,31 @@ mod tests {
     #[test]
     fn test_halfwidth_punctuation() {
         let cases = map! [
-            "中文1\nhello，world。\n中文2" => "中文1\nhello, world.\n中文2",
+            "中文1\nhello world。\n中文2" => "中文1\nhello world.\n中文2",
             "  \n  Said：Come and，Join us！  \n  " => "  \n  Said: Come and, Join us!  \n  ",
             "Said：Come and，Join us！" => "Said: Come and, Join us!",
             // "Said： Come  and， [Join]   us  " => "Said: Come and, [Join] us",
             "Come and？Join us?" => "Come and? Join us?",
             "Come and， Join us！" => "Come and, Join us!",
             "The microphone or camera is occupied，Please check and re-record the video。" => "The microphone or camera is occupied, Please check and re-record the video.",
-            "Exchange’s" => "Exchange's",
+            "The Exchange’s" => "The Exchange's",
             "The “Convertible Amount” case。" => r#"The "Convertible Amount" case."#,
             "The“Convertible Amount”case。" => r#"The "Convertible Amount" case."#,
             "The（Convertible Amount）case！" => r#"The (Convertible Amount) case!"#,
             "The【Convertible Amount】case？" => "The [Convertible Amount] case?",
             "The「Convertible Amount」case：" => "The [Convertible Amount] case:",
             "The《Convertible Amount》case，" => r#"The "Convertible Amount" case,"#,
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn test_halfwidth_punctuation_with_in_quote() {
+        let cases = map! [
+            r#""Only the first time break。""# => r#""Only the first time break.""#,
+            r#"'Only the first time break？'"# => r#"'Only the first time break?'"#,
+            r#"`Only the first time break！`"# => r#"`Only the first time break!`"#,
         ];
 
         assert_cases(cases);

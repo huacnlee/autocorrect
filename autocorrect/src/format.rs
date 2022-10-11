@@ -304,7 +304,10 @@ mod tests {
 
     #[test]
     fn test_format_halfwidth() {
-        let raw = "你好\nhello，world。\n你好world";
-        assert_eq!("你好\nhello, world.\n你好 world", format(raw));
+        let raw = "你好\nWelcome all say hello，world。\n你好world";
+        assert_eq!(
+            "你好\nWelcome all say hello, world.\n你好 world",
+            format(raw)
+        );
     }
 }
