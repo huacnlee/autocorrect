@@ -7,4 +7,5 @@ members = [
   "autocorrect-wasm",
   "autocorrect-derive",
   "autocorrect-cli",
+  "autocorrect-py",
 ]
