@@ -417,8 +417,10 @@ fn main() {
 ## Other implements for programming
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct)
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct)
+- Ruby - [autocorrect.rb](https://github.com/huacnlee/auto-correct)
+- Go - [autocorrect.go](https://github.com/longbridgeapp/autocorrect)
+- Python - [autocorrect.py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
+- Node.js / JavaScript - [autocorrect.wasm](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-wasm)
 
 ## Benchmark
 

@@ -1,13 +1,11 @@
-import pytest
-
 import autocorrect_py as autocorrect
+import pytest
 
 
 @pytest.mark.parametrize(
     "text,expected",
     [
-        ("长桥 LongBridge App 下载", "长桥 LongBridge App 下载"),
-        ("长桥LongBridge App下载", "长桥 LongBridge App 下载"),
+        ("Hello你好.", "Hello 你好。"),
     ],
 )
 def test_format(text, expected):
@@ -18,8 +16,7 @@ def test_format(text, expected):
 @pytest.mark.parametrize(
     "raw,filename,expected",
     [
-        ("<h1>这是 Heading 标题</h1>", "html", "<h1>这是 Heading 标题</h1>"),
-        ("<h1>这是 Heading标题</h1>", "html", "<h1>这是 Heading 标题</h1>"),
+        ("<h1>Hello你好.</h1>", "html", "<h1>Hello 你好。</h1>"),
     ],
 )
 def test_format_for(raw, filename, expected):

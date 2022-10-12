@@ -30,7 +30,7 @@ test\:node:
 	make node
 	node tests/node.test.js
 test\:python:
-	make python
+	cd autocorrect-py; python3 -m pip install .; cd -
 	cd autocorrect-py; python3 -m pytest; cd -
 install:
 	curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
@@ -55,5 +55,3 @@ crate\:publish:
 	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml $(LAST_TAG_VERSION)
 tauri\:release:
 	cd autocorrect-tauri; yarn tauri build --target universal-apple-darwin
-python:
-	cd autocorrect-py; python3 -m pip install .; cd -
