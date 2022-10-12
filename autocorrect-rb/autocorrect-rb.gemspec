@@ -2,7 +2,7 @@ $:.push File.expand_path("lib", __dir__)
 
 Gem::Specification.new do |s|
   s.name = "autocorrect-rb"
-  s.version = "2.1.1"
+  s.version = "2.1.1.beta1"
   s.platform = Gem::Platform::RUBY
   s.authors = ["Jason Lee"]
   s.email = ["huacnlee@gmail.com"]
@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("lib/**/*") + %w[README.md Rakefile]
   s.require_paths = ["lib"]
   s.license = "MIT"
+  s.required_ruby_version = ">= 2.7.0"
 
   # needed until rubygems supports Rust support is out of beta
   s.add_dependency "rb_sys", ">= 0.9.18"

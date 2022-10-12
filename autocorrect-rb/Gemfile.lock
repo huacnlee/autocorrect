@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.1.1)
-      rb_sys (~> 0.9.18)
+    autocorrect-rb (2.1.1.beta1)
+      rb_sys (>= 0.9.18)
 
 GEM
   remote: https://rubygems.org/
