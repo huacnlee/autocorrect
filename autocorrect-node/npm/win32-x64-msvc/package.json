@@ -1,0 +1,18 @@
+{
+  "name": "autocorrect-node-win32-x64-msvc",
+  "version": "2.1.1",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "autocorrect-node.win32-x64-msvc.node",
+  "files": [
+    "autocorrect-node.win32-x64-msvc.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  }
+}

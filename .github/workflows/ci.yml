@@ -32,14 +32,9 @@ jobs:
           node-version: "16.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
-      - name: Install wasm-opt
-        run: sudo apt install -y binaryen
-
       - name: Test Node.js
-        run: make test:node
+        run: |
+          make test:node
 
   test_python:
     name: Test for Python
@@ -48,7 +43,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install pytest
         run: python3 -m pip install pytest

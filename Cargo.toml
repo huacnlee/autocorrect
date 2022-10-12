@@ -8,4 +8,5 @@ members = [
   "autocorrect-derive",
   "autocorrect-cli",
   "autocorrect-py",
+  "autocorrect-node",
 ]

@@ -48,11 +48,3 @@ jobs:
           make wasm:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish NPM for Node.js
-        run: |
-          git config advice.addIgnoredFile false
-          echo $(git describe --abbrev=0 --tags | sed "s/^v//")
-          make node:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
