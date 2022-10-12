@@ -26,7 +26,6 @@ Rake::TestTask.new(:test) do |t|
   t.libs << "lib"
   t.test_files = FileList["test/**/*_test.rb"]
 end
-require "./lib/autocorrect"
 
 Rake::ExtensionTask.new("autocorrect") do |ext|
   ext.gem_spec = spec

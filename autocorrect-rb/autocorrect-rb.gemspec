@@ -12,4 +12,7 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("lib/**/*") + %w[README.md Rakefile]
   s.require_paths = ["lib"]
   s.license = "MIT"
+
+  # needed until rubygems supports Rust support is out of beta
+  s.add_dependency "rb_sys", "~> 0.9.18"
 end

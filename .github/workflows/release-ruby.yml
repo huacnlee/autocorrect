@@ -5,7 +5,6 @@ on:
       - "v*"
     branches:
       - feat/ruby
-
 jobs:
   build:
     name: Build compile gems
@@ -15,10 +14,10 @@ jobs:
       matrix:
         ruby-platform:
           - "aarch64-linux"
-          - "arm64-darwin"
-          - "x64-mingw32"
-          - "x86_64-darwin"
-          - "x86_64-linux"
+          # - "arm64-darwin"
+          # - "x64-mingw32"
+          # - "x86_64-darwin"
+          # - "x86_64-linux"
     steps:
       - uses: actions/checkout@v3
 
@@ -33,6 +32,7 @@ jobs:
       - uses: oxidize-rb/cross-gem-action@v6
         with:
           platform: ${{ matrix.ruby-platform }}
+          directory: autocorrect-rb/
 
       - uses: actions/download-artifact@v3
         with:
@@ -40,5 +40,4 @@ jobs:
           path: pkg/
 
       - name: Display structure of built gems
-        run: ls -R
-        working-directory: pkg/
+        run: ls -R pkg/

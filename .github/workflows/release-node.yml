@@ -3,13 +3,10 @@ env:
   DEBUG: napi:*
   APP_NAME: autocorrect-node
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-"on":
+on:
   push:
     tags:
       - "v*"
-    branches:
-      - "feat/napi"
-  pull_request: null
 defaults:
   run:
     working-directory: autocorrect-node
