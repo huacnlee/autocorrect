@@ -41,6 +41,21 @@ jobs:
       - name: Test Node.js
         run: make test:node
 
+  test_python:
+    name: Test for Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install pytest
+        run: python3 -m pip install pytest
+
+      - name: Test Python
+        run: make test:python
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
