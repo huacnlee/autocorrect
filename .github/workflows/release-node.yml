@@ -8,8 +8,11 @@ env:
     tags:
       - "v*"
     branches:
-      - "release-node"
+      - "feat/napi"
   pull_request: null
+defaults:
+  run:
+    working-directory: autocorrect-node
 jobs:
   build:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -23,12 +26,14 @@ jobs:
               yarn build
               strip -x *.node
           - host: windows-latest
-            build: yarn build
+            build: |
+              yarn build
             target: x86_64-pc-windows-msvc
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
             build: |-
+              cd autocorrect-node &&
               set -e &&
               yarn build --target x86_64-unknown-linux-gnu &&
               strip *.node
@@ -42,7 +47,7 @@ jobs:
               export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
               yarn build --target aarch64-apple-darwin
               strip -x *.node
-    name: stable - ${{ matrix.settings.target }} - node@16
+    name: Build - ${{ matrix.settings.target }}- node
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
@@ -53,6 +58,7 @@ jobs:
           node-version: 16
           check-latest: true
           cache: yarn
+          cache-dependency-path: "autocorrect-node/yarn.lock"
       - name: Install
         uses: actions-rs/toolchain@v1
         if: ${{ !matrix.settings.docker }}
@@ -68,13 +74,13 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            .cargo-cache
+            autocorrect-node/.cargo-cache
             target/
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
-          path: .yarn/cache
+          path: autocorrect-node/.yarn/cache
           key: npm-cache-build-${{ matrix.settings.target }}-node@16
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
@@ -93,6 +99,7 @@ jobs:
           node-version: 16
           check-latest: true
           cache: yarn
+          cache-dependency-path: "autocorrect-node/yarn.lock"
           architecture: x86
       - name: Build in docker
         uses: addnab/docker-run-action@v3
@@ -109,7 +116,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ${{ env.APP_NAME }}.*.node
+          path: autocorrect-node/${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   test-macOS-windows-binding:
     name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
@@ -122,7 +129,6 @@ jobs:
           - host: windows-latest
             target: x86_64-pc-windows-msvc
         node:
-          - "14"
           - "16"
           - "18"
     runs-on: ${{ matrix.settings.host }}
@@ -134,6 +140,7 @@ jobs:
           node-version: ${{ matrix.node }}
           check-latest: true
           cache: yarn
+          cache-dependency-path: "autocorrect-node/yarn.lock"
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
@@ -145,7 +152,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: .
+          path: autocorrect-node/
       - name: List packages
         run: ls -R .
         shell: bash
@@ -171,10 +178,11 @@ jobs:
           node-version: ${{ matrix.node }}
           check-latest: true
           cache: yarn
+          cache-dependency-path: "autocorrect-node/yarn.lock"
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
-          path: .yarn/cache
+          path: autocorrect-node/.yarn/cache
           key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}
       - name: Install dependencies
         run: yarn install
@@ -182,7 +190,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-gnu
-          path: .
+          path: autocorrect-node/
       - name: List packages
         run: ls -R .
         shell: bash
@@ -202,17 +210,18 @@ jobs:
           node-version: 16
           check-latest: true
           cache: yarn
+          cache-dependency-path: "autocorrect-node/yarn.lock"
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
-          path: .yarn/cache
+          path: autocorrect-node/.yarn/cache
           key: npm-cache-ubuntu-latest-publish
       - name: Install dependencies
         run: yarn install
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: artifacts
+          path: autocorrect-node/artifacts
       - name: Move artifacts
         run: yarn artifacts
       - name: List packages
@@ -220,17 +229,8 @@ jobs:
         shell: bash
       - name: Publish
         run: |
-          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --access public
-          elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --tag next --access public
-          else
-            echo "Not a release, skipping publish"
-          fi
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+          npm publish --access public
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

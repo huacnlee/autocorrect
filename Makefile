@@ -27,7 +27,7 @@ test\:init:
 test\:lint-json:
 	tests/test_lint_json.sh
 test\:node:
-	cd autocorrect-node && yarn build && yarn test
+	cd autocorrect-node && yarn && yarn build && yarn test
 test\:python:
 	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
 install:

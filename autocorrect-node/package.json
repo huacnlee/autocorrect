@@ -30,11 +30,5 @@
     "test": "ava",
     "version": "napi version"
   },
-  "packageManager": "yarn@3.2.4",
-  "optionalDependencies": {
-    "autocorrect-node-win32-x64-msvc": "2.1.1",
-    "autocorrect-node-darwin-x64": "2.1.1",
-    "autocorrect-node-linux-x64-gnu": "2.1.1",
-    "autocorrect-node-darwin-arm64": "2.1.1"
-  }
+  "packageManager": "yarn@3.2.4"
 }
