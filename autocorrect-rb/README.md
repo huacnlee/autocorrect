@@ -1,9 +1,9 @@
-# AutoCorrect for Node.js
+# AutoCorrect for Ruby
 
-The Native Node.js version of [AutoCorrect](https://github.com/huacnlee/autocorrect) built on [NAPI.RS](https://napi.rs).
+The Native Ruby version of [AutoCorrect](https://github.com/huacnlee/autocorrect).
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
+- Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-rb)
 - Go - [autocorrect-go](https://github.com/longbridgeapp/autocorrect)
 - Python - [autocorrect-py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
 - Node.js - [autocorrect-node](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-node)
@@ -12,28 +12,29 @@ The Native Node.js version of [AutoCorrect](https://github.com/huacnlee/autocorr
 ## Installation
 
 ```bash
-$ yarn add autocorrect-node
+$ bundle add autocorrect-rb
 ```
 
 ## Usage
 
-```js
-const autocorrect = require('autocorrect-node');
+```rb
+require('autocorrect-rb');
 
-const out = autocorrect.format('Hello你好.');
-console.log(out);
-// Hello 你好。
+out = AutoCorrect.format('Hello你好.')
+puts out
+# Hello 你好。
 
-out = autocorrect.formatFor("let title = 'Hello你好。'", 'js');
-// let title = 'Hello 你好。'
+out = AutoCorrect.format_for("title = 'Hello你好。'", 'rb')
+puts out
+# title = 'Hello 你好。'
 
-const result = autocorrect.lintFor("let title = 'Hello你好。'", 'js');
-console.log(result);
-// {
-//   filepath: 'js',
-//   lines: [
-//     { l: 1, c: 13, new: "'Hello 你好。'", old: "'Hello你好。'", severity: 1 }
-//   ],
-//   error: ''
-// }
+result = AutoCorrect.lint_lor("title = 'Hello你好。'", 'rb')
+puts result
+# {
+#   filepath: 'rb',
+#   lines: [
+#     { l: 1, c: 13, new: "'Hello 你好。'", old: "'Hello你好。'", severity: 1 }
+#   ],
+#   error: ''
+# }
 ```

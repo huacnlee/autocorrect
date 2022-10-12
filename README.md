@@ -15,6 +15,7 @@
     <a href="https://www.npmjs.com/package/@huacnlee/autocorrect"><img
         src="https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg" alt="NPM"></a>
     <a href="https://pypi.org/project/autocorrect-py/"><img src="https://badge.fury.io/py/autocorrect-py.svg" alt="PyPI version"></a>
+    <a href="https://rubygems.org/gems/autocorrect-rb"><img src="https://badge.fury.io/rb/autocorrect-rb.svg" alt="Gem Version"></a>
   </p>
 </p>
 
@@ -417,7 +418,7 @@ fn main() {
 ## Other implements for programming
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
+- Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-rb)
 - Go - [autocorrect-go](https://github.com/longbridgeapp/autocorrect)
 - Python - [autocorrect-py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
 - Node.js - [autocorrect-node](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-node)

@@ -3,8 +3,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - feat/ruby
 jobs:
   build:
     name: Build compile gems
