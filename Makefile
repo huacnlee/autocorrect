@@ -30,8 +30,7 @@ test\:node:
 	make node
 	node tests/node.test.js
 test\:python:
-	cd autocorrect-py; python3 -m pip install .; cd -
-	cd autocorrect-py; python3 -m pytest; cd -
+	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
 install:
 	curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 	brew install binaryen
