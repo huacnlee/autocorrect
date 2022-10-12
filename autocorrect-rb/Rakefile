@@ -36,4 +36,5 @@ Rake::ExtensionTask.new("autocorrect") do |ext|
 end
 
 task build: :compile
+task test: :compile
 task default: %i[compile test]

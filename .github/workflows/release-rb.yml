@@ -13,11 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         ruby-platform:
-          - "aarch64-linux"
-          # - "arm64-darwin"
-          # - "x64-mingw32"
-          # - "x86_64-darwin"
-          # - "x86_64-linux"
+          - "arm64-darwin"
+          - "x86_64-darwin"
+          - "x86_64-linux"
     steps:
       - uses: actions/checkout@v3
 
@@ -29,15 +27,27 @@ jobs:
           cargo-vendor: true
           cache-version: v1
 
+      - name: Touch Rakefile
+        run: |
+          touch Rakefile
+
       - uses: oxidize-rb/cross-gem-action@v6
         with:
           platform: ${{ matrix.ruby-platform }}
-          directory: autocorrect-rb/
+          directory: ./
+          setup: cd autocorrect-rb/ && bundle install || gem install rb_sys
 
-      - uses: actions/download-artifact@v3
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/download-artifact@v2
         with:
           name: cross-gem
-          path: pkg/
-
-      - name: Display structure of built gems
-        run: ls -R pkg/
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+      - name: Publish to RubyGems
+        run: |
+          gem push --key ${{ secrets.RUBYGEM_TOKEN }} autocorrect-rb/pkg/*.gem

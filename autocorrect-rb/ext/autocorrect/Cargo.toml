@@ -10,4 +10,4 @@ name = "autocorrect"
 
 [dependencies]
 autocorrect = {path = "../../../autocorrect", version = ">=1.0.0"}
-rb-sys = {version = "0.9.31"}
+magnus = "0.3"

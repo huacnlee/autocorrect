@@ -3,7 +3,7 @@ use serde_repr::*;
 
 use crate::config::toggle;
 
-#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug)]
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug, Clone)]
 #[repr(u8)]
 pub enum Severity {
     Pass = 0,
