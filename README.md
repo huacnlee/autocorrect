@@ -12,9 +12,9 @@
         alt="Docker Image Version (latest server)"></a>
     <a href="https://crates.io/crates/autocorrect"><img src="https://img.shields.io/crates/v/autocorrect"
         alt="Crates.io"></a>
-    <a href="https://badge.fury.io/js/%40huacnlee%2Fautocorrect"><img
+    <a href="https://www.npmjs.com/package/@huacnlee/autocorrect"><img
         src="https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg" alt="NPM"></a>
-    <a href="https://docs.rs/autocorrect"><img src="https://docs.rs/autocorrect/badge.svg" alt="Documentation"></a>
+    <a href="https://pypi.org/project/autocorrect-py/"><img src="https://badge.fury.io/py/autocorrect-py.svg" alt="PyPI version"></a>
   </p>
 </p>
 
