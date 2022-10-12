@@ -14,5 +14,5 @@ Gem::Specification.new do |s|
   s.license = "MIT"
 
   # needed until rubygems supports Rust support is out of beta
-  s.add_dependency "rb_sys", "~> 0.9.18"
+  s.add_dependency "rb_sys", ">= 0.9.18"
 end

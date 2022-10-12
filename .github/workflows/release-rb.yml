@@ -49,5 +49,13 @@ jobs:
         with:
           ruby-version: "3.1"
       - name: Publish to RubyGems
+        env:
+          RUBYGEM_TOKEN: "${{secrets.RUBYGEM_TOKEN}}"
         run: |
-          gem push --key ${{ secrets.RUBYGEM_TOKEN }} autocorrect-rb/pkg/*.gem
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${RUBYGEM_TOKEN}\n" > $HOME/.gem/credentials
+          for filename in autocorrect-rb/pkg/*.gem; do
+            gem push $filename
+          done
