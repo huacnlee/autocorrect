@@ -38,3 +38,39 @@ puts result
 #   error: ''
 # }
 ```
+
+## Benchmarks
+
+🎊 Rust version is 3x faster than the Ruby (pure) version.
+
+> NOTE: In this case Rust version has more complex rules.
+
+### Rust version
+
+```bash
+Warming up --------------------------------------
+     format 50 chars    11.348k i/100ms
+    format 100 chars     6.033k i/100ms
+    format 400 chars     1.772k i/100ms
+         format_html   545.000  i/100ms
+Calculating -------------------------------------
+     format 50 chars    111.904k (± 3.1%) i/s -    567.400k in   5.075674s
+    format 100 chars     58.684k (± 2.1%) i/s -    295.617k in   5.039837s
+    format 400 chars     17.266k (± 2.9%) i/s -     86.828k in   5.033234s
+         format_html      5.448k (± 1.5%) i/s -     27.250k in   5.002853s
+```
+
+### Pure [Ruby version](https://rubygems.org/gems/auto-correct/versions/1.0.0) result:
+
+```bash
+Warming up --------------------------------------
+     format 50 chars     3.167k i/100ms
+    format 100 chars     1.588k i/100ms
+    format 400 chars   496.000  i/100ms
+         format_html   166.000  i/100ms
+Calculating -------------------------------------
+     format 50 chars     31.589k (± 2.5%) i/s -    158.350k in   5.016131s
+    format 100 chars     16.122k (± 1.2%) i/s -     80.988k in   5.024082s
+    format 400 chars      4.946k (± 2.6%) i/s -     24.800k in   5.017711s
+         format_html      1.659k (± 1.7%) i/s -      8.300k in   5.003164s
+```
