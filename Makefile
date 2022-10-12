@@ -30,6 +30,8 @@ test\:node:
 	cd autocorrect-node && yarn && yarn build && yarn test
 test\:python:
 	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
+test\:ruby:
+	cd autocorrect-rb && bundle && rake compile && rake test
 install:
 	curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 	brew install binaryen

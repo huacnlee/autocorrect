@@ -51,6 +51,21 @@ jobs:
       - name: Test Python
         run: make test:python
 
+  test_ruby:
+    name: Test for Ruby
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+          cargo-cache: true
+
+      - name: Test Ruby
+        run: make test:ruby
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

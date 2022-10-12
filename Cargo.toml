@@ -9,4 +9,5 @@ members = [
   "autocorrect-cli",
   "autocorrect-py",
   "autocorrect-node",
+  "autocorrect-rb/ext/autocorrect",
 ]

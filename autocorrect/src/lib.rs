@@ -2,12 +2,6 @@
 /*!
 Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
 
-## Other implements
-
-- Ruby - [auto-correct](https://github.com/huacnlee/auto-correct).
-- Go - [go-auto-correct](https://github.com/huacnlee/go-auto-correct).
-- Rust - [autocorrect](https://github.com/huacnlee/autocorrect).
-
 ## Features
 
 - Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
