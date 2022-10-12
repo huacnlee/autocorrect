@@ -1,0 +1,19 @@
+[package]
+edition = "2021"
+name = "autocorrect-node"
+version = "2.1.1"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
+autocorrect = {path = "../autocorrect", version = ">= 1.0.0"}
+napi = {version = "2.10.0", default-features = false, features = ["napi4"]}
+napi-derive = "2.9.1"
+
+[build-dependencies]
+napi-build = "2.0.1"
+
+[profile.release]
+lto = true

@@ -27,8 +27,7 @@ test\:init:
 test\:lint-json:
 	tests/test_lint_json.sh
 test\:node:
-	make node
-	node tests/node.test.js
+	cd autocorrect-node && yarn build && yarn test
 test\:python:
 	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
 install:
@@ -42,14 +41,6 @@ wasm\:publish:
 	make wasm
 	@echo "\n\nWill release version: $(LAST_TAG_VERSION)\n\n"
 	cd pkg && yarn publish --new-version $(LAST_TAG_VERSION)
-node:
-	wasm-pack build --target nodejs --release --scope huacnlee -d $(WORKDIR)/node-pkg --out-name autocorrect autocorrect-wasm
-	sed -ie "s/autocorrect\-wasm/autocorrect-node/" $(WORKDIR)/node-pkg/package.json
-	wasm-opt -Os -o node-pkg/autocorrect_bg.wasm node-pkg/autocorrect_bg.wasm
-node\:publish:
-	make node
-	@echo "\n\nWill release version: $(LAST_TAG_VERSION)\n\n"
-	cd node-pkg && yarn publish --access public --new-version $(LAST_TAG_VERSION)
 crate\:publish:
 	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml $(LAST_TAG_VERSION)
 tauri\:release:
