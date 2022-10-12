@@ -1,0 +1,40 @@
+PATH
+  remote: .
+  specs:
+    autocorrect-rb (2.1.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (7.0.4)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    benchmark-ips (2.10.0)
+    concurrent-ruby (1.1.10)
+    i18n (1.12.0)
+      concurrent-ruby (~> 1.0)
+    minitest (5.16.3)
+    rake (13.0.6)
+    rake-compiler (1.2.0)
+      rake
+    rb_sys (0.9.31)
+    tzinfo (2.0.5)
+      concurrent-ruby (~> 1.0)
+
+PLATFORMS
+  arm64-darwin-20
+  arm64-darwin-21
+
+DEPENDENCIES
+  activesupport
+  autocorrect-rb!
+  benchmark-ips
+  minitest
+  rake
+  rake-compiler (~> 1.2)
+  rb_sys
+
+BUNDLED WITH
+   2.3.18

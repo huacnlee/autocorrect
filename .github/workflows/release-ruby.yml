@@ -1,0 +1,44 @@
+name: "Release RubyGem"
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - feat/ruby
+
+jobs:
+  build:
+    name: Build compile gems
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-platform:
+          - "aarch64-linux"
+          - "arm64-darwin"
+          - "x64-mingw32"
+          - "x86_64-darwin"
+          - "x86_64-linux"
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@main
+        with:
+          ruby-version: "3.1"
+          bundler-cache: false
+          cargo-cache: true
+          cargo-vendor: true
+          cache-version: v1
+
+      - uses: oxidize-rb/cross-gem-action@v6
+        with:
+          platform: ${{ matrix.ruby-platform }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: cross-gem
+          path: pkg/
+
+      - name: Display structure of built gems
+        run: ls -R
+        working-directory: pkg/

@@ -417,7 +417,7 @@ fn main() {
 ## Other implements for programming
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [autocorrect-rb](https://github.com/huacnlee/auto-correct)
+- Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
 - Go - [autocorrect-go](https://github.com/longbridgeapp/autocorrect)
 - Python - [autocorrect-py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
 - Node.js - [autocorrect-node](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-node)
