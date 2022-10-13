@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - "release-gem"
 jobs:
   build:
     name: Build compile gems
@@ -23,7 +25,6 @@ jobs:
           bundler-cache: false
           cargo-cache: true
           cargo-vendor: true
-          cache-version: v1
 
       - name: Touch Rakefile
         run: |
@@ -37,18 +38,16 @@ jobs:
           env: |
             RUBY_CC_VERSION=3.1.0:3.0.0:2.7.0
 
-  publish:
-    name: Publish
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: cross-gem
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: "3.1"
-      - name: Publish to RubyGems
+          path: pkg/
+
+      - name: Display structure of built gems
+        run: ls -R
+        working-directory: autocorrect-rb/pkg/
+
+      - name: Publish to RubyGem
         env:
           RUBYGEM_TOKEN: "${{secrets.RUBYGEM_TOKEN}}"
         run: |
@@ -59,3 +58,8 @@ jobs:
           for filename in autocorrect-rb/pkg/*.gem; do
             gem push $filename
           done
+
+      - name: Install RubyGem & Test Run
+        run: |
+          gem install autocorrect-rb --verbose
+          ruby -e "require 'autocorrect-rb'; puts AutoCorrect.format('Hello你好.');"

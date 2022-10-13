@@ -7,6 +7,7 @@ rescue LoadError
 end
 
 require "bundler/gem_tasks"
+require "rubygems/package_task"
 require "rake/testtask"
 require "rake/extensiontask"
 require "bundler"
@@ -19,16 +20,21 @@ CROSS_PLATFORMS = %w[
   x86_64-linux
 ]
 
-spec = Bundler.load_gemspec("autocorrect-rb.gemspec")
-
 Rake::TestTask.new(:test) do |t|
   t.libs << "test"
   t.libs << "lib"
   t.test_files = FileList["test/**/*_test.rb"]
 end
 
-Rake::ExtensionTask.new("autocorrect") do |ext|
-  ext.gem_spec = spec
+spec = Bundler.load_gemspec("autocorrect-rb.gemspec")
+
+# Make a autocorrect-rb-0.0.0.gem
+# Disable release gem for platform: ruby, because autocorrect rust source build is complex.
+# Gem::PackageTask.new(spec).define
+
+# Make a native gem, eg. autocorrect-rb-0.0.0-x86_64-linux.gem
+Rake::ExtensionTask.new("autocorrect", spec) do |ext|
+  # Compile output autocorrect.so into lib/autocorrect/autocorrect.so
   ext.lib_dir = "lib/autocorrect"
   ext.source_pattern = "*.{rs,toml}"
   ext.cross_compile = true
@@ -66,6 +72,5 @@ task :bench do
   end
 end
 
-task build: :compile
 task test: :compile
-task default: %i[compile test]
+task default: %i[test]
