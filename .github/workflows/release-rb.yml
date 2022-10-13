@@ -58,3 +58,8 @@ jobs:
           for filename in autocorrect-rb/pkg/*.gem; do
             gem push $filename
           done
+
+      - name: Install RubyGem & Test Run
+        run: |
+          gem install autocorrect-rb --verbose
+          ruby -e "require 'autocorrect-rb'; puts AutoCorrect.format('Hello你好.');"
