@@ -74,3 +74,21 @@ Calculating -------------------------------------
     format 400 chars      4.946k (± 2.6%) i/s -     24.800k in   5.017711s
          format_html      1.659k (± 1.7%) i/s -      8.300k in   5.003164s
 ```
+
+## Know issues
+
+Bundler install error:
+
+```
+Could not find gem 'autocorrect-rb' with platform 'ruby' in rubygems repository https://rubygems.org/ or installed locally.
+```
+
+To fix this you can run:
+
+```bash
+$ bundle lock --remove-platform ruby
+```
+
+Because of autocorrect-rb not release the gem for `platform: ruby`, but your `Gemfile.lock` specialed that. This command will remove `ruby` platform from your `Gemfile.lock`
+
+
