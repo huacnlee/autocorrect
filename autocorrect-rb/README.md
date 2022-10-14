@@ -18,7 +18,7 @@ $ bundle add autocorrect-rb
 ## Usage
 
 ```rb
-require('autocorrect-rb');
+require('autocorrect-rb')
 
 out = AutoCorrect.format('Hello你好.')
 puts out
@@ -28,7 +28,7 @@ out = AutoCorrect.format_for("title = 'Hello你好。'", 'rb')
 puts out
 # title = 'Hello 你好。'
 
-result = AutoCorrect.lint_lor("title = 'Hello你好。'", 'rb')
+result = AutoCorrect.lint_for("title = 'Hello你好。'", 'rb')
 puts result
 # {
 #   filepath: 'rb',
