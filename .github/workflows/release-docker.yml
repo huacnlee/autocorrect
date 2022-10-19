@@ -1,4 +1,4 @@
-name: Release Docker
+name: Release Docker Latest
 on:
   push:
     branches:
@@ -8,9 +8,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: olegtarasov/get-tag@v2.1
-        id: tagName
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -30,7 +27,6 @@ jobs:
           push: true
           tags: |
             huacnlee/autocorrect:latest
-            huacnlee/autocorrect:${{ steps.tagName.outputs.tag }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
