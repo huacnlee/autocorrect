@@ -76,7 +76,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
+          args: --manifest-path autocorrect-cli/Cargo.toml --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
           use-cross: ${{ matrix.os == 'ubuntu-latest' }}
 
       - name: Prepare artifacts [Windows]
