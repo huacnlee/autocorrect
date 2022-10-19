@@ -14,7 +14,7 @@ extern crate bencher;
 
 fn setup() {
     STEUP_ONCE.call_once(|| {
-        let config_str = include_str!("../../.autocorrectrc.template").to_owned();
+        let config_str = include_str!("../../autocorrect/tests/.autocorrectrc.test").to_owned();
         autocorrect::config::load(&config_str).unwrap();
     })
 }

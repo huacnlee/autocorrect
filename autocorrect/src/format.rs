@@ -288,4 +288,17 @@ mod tests {
         assert!(!result1.has_error());
         assert_eq!("const a = 'hello 世界'", result1.out);
     }
+
+    #[test]
+    fn test_format_with_text_rules() {
+        crate::config::setup_test();
+
+        let raw = "textRule忽略测试，这是一个文本。\n这行是textRule警告\n这行word应该改变.";
+        let expected = "textRule忽略测试，这是一个文本。\n这行是textRule警告\n这行 word 应该改变。";
+        let lint_result = r#"{"filepath":"text","lines":[{"l":2,"c":1,"new":"这行是 textRule 警告","old":"这行是textRule警告","severity":2},{"l":3,"c":1,"new":"这行 word 应该改变。","old":"这行word应该改变.","severity":1}],"error":""}"#;
+        assert_eq!(expected, format(raw));
+
+        assert_eq!(expected, format_for(raw, "text").out);
+        assert_eq!(lint_result, lint_for(raw, "text").to_json());
+    }
 }

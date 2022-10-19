@@ -5,6 +5,18 @@ rules:
   halfwidth: 1
   no-space-fullwidth: 1
   spellcheck: 2
+textRules:
+  textRule忽略: 0
+  textRule警告: 2
+  textRule警告1: 2
+  textRule警告2: 2
+  textRule警告3: 2
+  textRule警告4: 2
+  textRule警告5: 2
+  textRule警告6: 2
+  textRule警告7: 2
+  textRule警告8: 2
+  textRule警告9: 2
 spellcheck:
   words:
     - HTML

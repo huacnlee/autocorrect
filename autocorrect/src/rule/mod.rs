@@ -12,6 +12,8 @@ use std::collections::HashMap;
 use regex::Regex;
 use rule::{Rule, RuleResult};
 
+use crate::result::Severity;
+
 lazy_static! {
     static ref RULES: Vec<Rule> = vec![
         // Rule: space-word
@@ -113,6 +115,8 @@ fn format_part(result: &mut RuleResult, lint: bool, disable_rules: &HashMap<Stri
         return;
     }
 
+    let raw = result.out.clone();
+
     for rule in RULES
         .iter()
         .filter(|r| !disable_rules.get(r.name.as_str()).unwrap_or(&false))
@@ -121,6 +125,29 @@ fn format_part(result: &mut RuleResult, lint: bool, disable_rules: &HashMap<Stri
             rule.lint(result);
         } else {
             rule.format(result);
+        }
+    }
+
+    // Check textRules to change result
+    for (text, mode) in crate::Config::current().text_rules.iter() {
+        if raw.contains(text) {
+            match mode {
+                crate::config::SeverityMode::Off => {
+                    result.severity = Severity::Pass;
+                    result.out = raw;
+                    return;
+                }
+                crate::config::SeverityMode::Warning => {
+                    if lint {
+                        result.severity = Severity::Warning;
+                    } else {
+                        result.severity = Severity::Pass;
+                        result.out = raw;
+                    }
+                    return;
+                }
+                _ => {}
+            }
         }
     }
 }
