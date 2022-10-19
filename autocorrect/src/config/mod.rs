@@ -19,17 +19,22 @@ use crate::serde_any;
 include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Config {
     #[serde(default)]
     pub spellcheck: SpellcheckConfig,
     #[serde(default)]
     pub rules: HashMap<String, SeverityMode>,
+    // Speical text to ignore
+    #[serde(default)]
+    pub text_rules: HashMap<String, SeverityMode>,
 }
 
 impl Default for Config {
     fn default() -> Self {
         Config {
             rules: HashMap::new(),
+            text_rules: HashMap::new(),
             spellcheck: SpellcheckConfig {
                 mode: None,
                 words: vec![],
@@ -132,6 +137,9 @@ impl Config {
             self.spellcheck.mode = Some(mode.clone());
             self.rules.insert("spellcheck".to_string(), mode);
         }
+        config.text_rules.clone().into_iter().for_each(|(k, v)| {
+            self.text_rules.insert(k, v);
+        });
 
         self.spellcheck.words = self
             .spellcheck
@@ -165,7 +173,7 @@ mod tests {
     #[test]
     fn test_parse_json() {
         let mut config =
-            Config::from_str(r#"{ "rules": { "foo": 1, "bar": "off", "dar": "2" }, "spellcheck": { "mode": 0, "words": ["Foo", "Bar"] } }"#)
+            Config::from_str(r#"{ "rules": { "foo": 1, "bar": "off", "dar": "2" }, "textRules": { "hello": 1, "word": 2 }, "spellcheck": { "mode": 0, "words": ["Foo", "Bar"] } }"#)
                 .unwrap();
 
         assert_eq!(Some(&SeverityMode::Error), config.rules.get("foo"));
@@ -177,6 +185,9 @@ mod tests {
         assert_eq!(Some(&SeverityMode::Error), config.rules.get("foo"));
         assert_eq!(Some(&SeverityMode::Off), config.rules.get("bar"));
         assert_eq!(Some(&SeverityMode::Warning), config.rules.get("dar"));
+
+        assert_eq!(Some(&SeverityMode::Error), config.text_rules.get("hello"));
+        assert_eq!(Some(&SeverityMode::Warning), config.text_rules.get("word"));
 
         config = Config::from_str(r#"{ "spellcheck": { } }"#).unwrap();
         assert_eq!(None, config.spellcheck.mode);
@@ -210,11 +221,14 @@ mod tests {
         assert_eq!(Some(SeverityMode::Off), config.spellcheck.mode);
 
         config =
-            Config::from_str("rules:\n  foo: '1'\n  bar: off\n  dar: warning\nspellcheck:\n  mode: 1\n  words:\n    - Foo\n    - Bar").unwrap();
+            Config::from_str("rules:\n  foo: '1'\n  bar: off\n  dar: warning\ntextRules:\n  hello: error\n  word: '0'\nspellcheck:\n  mode: 1\n  words:\n    - Foo\n    - Bar").unwrap();
 
         assert_eq!(Some(&SeverityMode::Error), config.rules.get("foo"));
         assert_eq!(Some(&SeverityMode::Off), config.rules.get("bar"));
         assert_eq!(Some(&SeverityMode::Warning), config.rules.get("dar"));
+
+        assert_eq!(Some(&SeverityMode::Error), config.text_rules.get("hello"));
+        assert_eq!(Some(&SeverityMode::Off), config.text_rules.get("word"));
 
         assert_eq!(Some(SeverityMode::Error), config.spellcheck.mode);
         assert_eq!(vec!["Foo", "Bar"], config.spellcheck.words);
@@ -250,14 +264,38 @@ mod tests {
     #[test]
     fn test_merge_config() {
         let mut config = Config::default();
+        config.rules = map! {
+            "foo".to_owned() => SeverityMode::Error
+        };
+        config.text_rules = map! {
+            "hello".to_owned() => SeverityMode::Error
+        };
         config.spellcheck.mode = Some(SeverityMode::Warning);
         config.spellcheck.words = vec!["foo".to_string(), "bar".to_string(), "baz".to_string()];
 
         let mut config1 = Config::default();
+        config1.rules = map! {
+            "bar".to_owned() => SeverityMode::Warning
+        };
+        config1.text_rules = map! {
+            "world".to_owned() => SeverityMode::Off
+        };
         config1.spellcheck.mode = Some(SeverityMode::Off);
         config1.spellcheck.words = vec!["foo1".to_string(), "bar1".to_string()];
         config.merge(&config1).unwrap();
 
+        let new_rules = map! {
+            "spellcheck".to_owned() => SeverityMode::Off,
+            "foo".to_owned() => SeverityMode::Error,
+            "bar".to_owned() => SeverityMode::Warning
+        };
+        assert_eq!(new_rules, config.rules);
+
+        let new_text_rules = map! {
+            "hello".to_owned() => SeverityMode::Error,
+            "world".to_owned() => SeverityMode::Off
+        };
+        assert_eq!(new_text_rules, config.text_rules);
         assert_eq!(config.spellcheck.mode, Some(SeverityMode::Off));
         assert_eq!(
             config.spellcheck.words,

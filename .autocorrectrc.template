@@ -1,5 +1,10 @@
 rules:
   spellcheck: 2
+textRules:
+  # Config some special rule for some texts
+  # For example, if we wants to let "Hello你好" just warning, and "Hi你好" to ignore
+  # "Hello你好": 2
+  # "Hi你好": 0
 spellcheck:
   words:
     # Please do not add a general English word (eg. apple, python) here.
