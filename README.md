@@ -181,6 +181,11 @@ rules:
   no-space-fullwidth: 1
   # Spellcheck
   spellcheck: 2
+textRules:
+  # Config some special rule for some texts
+  # For example, if we wants to let "Hello你好" just warning, and "Hi你好" to ignore
+  # "Hello你好": 2
+  # "Hi你好": 0
 spellcheck:
   # Correct Words (Case insensitive) for by Spellcheck
   words:
@@ -206,6 +211,8 @@ Sometimes, you may want to ignore some special files that not wants to check.
 By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
+
+Or you can special `textRules` to ingore in `.autocorrectrc`.
 
 #### Disable with inline comment
 
