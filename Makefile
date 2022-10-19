@@ -1,6 +1,7 @@
 WORKDIR=$(shell pwd)
 LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 BIN_PATH=$(shell which autocorrect)
+VERSION_FILES=autocorrect/Cargo.toml autocorrect-cli/Cargo.toml autocorrect-node/package.json autocorrect-rb/autocorrect-rb.gemspec autocorrect-py/Cargo.toml autocorrect-wasm/Cargo.toml
 
 bench:
 	cargo bench
@@ -47,3 +48,6 @@ crate\:publish:
 	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml $(LAST_TAG_VERSION)
 tauri\:release:
 	cd autocorrect-tauri; yarn tauri build --target universal-apple-darwin
+version:
+	# Use ripgrep
+	rg -N $(FROM) -r $(TO) --files-with-matches $(VERSION_FILES) | xargs sed -i '' 's%$(FROM)%$(TO)%g'
