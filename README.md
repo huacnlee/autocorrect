@@ -92,7 +92,7 @@ SUBCOMMANDS:
 
 ## Upgrade
 
-> After: 1.9.0
+> Since: 1.9.0
 
 AutoCorrect allows you to upgrade itself by `autocorrect update` command.
 
@@ -182,7 +182,7 @@ rules:
   # Spellcheck
   spellcheck: 2
 textRules:
-  # Config some special rule for some texts
+  # Config special rules for some texts
   # For example, if we wants to let "Hello你好" just warning, and "Hi你好" to ignore
   # "Hello你好": 2
   # "Hi你好": 0
@@ -204,6 +204,29 @@ spellcheck:
 
 #### Ignore option
 
+> Since: 2.2.0
+
+When you wants to config some special words or texts to ignore on format or lint.
+
+The `textRules` config may help you.
+
+For example we wants:
+
+- `Hello世界` - To just give warning.
+- `Hi你好` - To ignore.
+
+Use can config:
+
+```yml
+textRules:
+  Hello世界: 2
+  Hi你好: 0
+```
+
+After that, the AutoCorrect will follow your `textRules` to process.
+
+#### Ignore files
+
 **Use `.autocorrectignore` to ignore files**
 
 Sometimes, you may want to ignore some special files that not wants to check.
@@ -211,8 +234,6 @@ Sometimes, you may want to ignore some special files that not wants to check.
 By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
-
-Or you can special `textRules` to ingore in `.autocorrectrc`.
 
 #### Disable with inline comment
 
