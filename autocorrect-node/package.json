@@ -1,6 +1,6 @@
 {
   "name": "autocorrect-node",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
