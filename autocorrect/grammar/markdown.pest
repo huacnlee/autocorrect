@@ -17,10 +17,10 @@ space = @{ (" ")* }
 
 codeblock = ${
   PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
-  | indent_code
+  | indent_code+
 }
-indent_code = ${
-  newline ~ "    " ~ (!newline ~ ANY)* ~ newline*
+indent_code = {
+  ("    " | "\t") ~ (!"\n" ~ ANY)* ~ newline
 }
 codeblock_lang = { ASCII_ALPHA* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
