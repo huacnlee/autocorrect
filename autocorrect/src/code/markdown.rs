@@ -50,6 +50,8 @@ original_slug: Web/CSS/网格-模板-列
 
 你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
+在JavaScript中，几乎所有的对象都是 `Object` 类型的实例，（比如说：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+
 https://google.com/foo/__ios__
 
 **加粗** 
@@ -89,7 +91,7 @@ let a = "你好hello";
 这种非String类型的不会格式化
 ```
 
-是则保持挂起直到被唤醒或超时。返回值为 "`ok`"、"**~~not-equal~~**" 或 "**`time-out`**"。
+是则保持挂起直到被唤醒或超时。返回值为 "`ok`"、"**~~not-equal~~**" 或 `timeout` var。
 
 ## HTML标签里面的不处理，只处理文本
 
@@ -146,6 +148,8 @@ original_slug: Web/CSS/网格-模板-列
 
 你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
+在 JavaScript 中，几乎所有的对象都是 `Object` 类型的实例，（比如说：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+
 https://google.com/foo/__ios__
 
 **加粗** 
@@ -185,7 +189,7 @@ let a = "你好 hello";
 这种非String类型的不会格式化
 ```
 
-是则保持挂起直到被唤醒或超时。返回值为 "`ok`"、"**~~not-equal~~**" 或 "**`time-out`**"。
+是则保持挂起直到被唤醒或超时。返回值为 "`ok`"、"**~~not-equal~~**" 或 `timeout` var。
 
 ## HTML 标签里面的不处理，只处理文本
 
