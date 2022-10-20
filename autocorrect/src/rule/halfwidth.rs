@@ -154,12 +154,6 @@ fn format_line(text: &str) -> String {
             //     part = "";
             // }
 
-            // Skip if last char is not a [a-z0-9 ]
-            if !last_part.is_alphanumeric_or_space() {
-                out.push_str(part);
-                continue;
-            }
-
             // Fix punctuation without CJK contents
             if let Some(rule) = PUNCTUATION_MAP.get(part) {
                 // Do not change left quote when is last char.
@@ -261,6 +255,7 @@ mod tests {
             "中文1\nhello world。\n中文2" => "中文1\nhello world.\n中文2",
             "  \n  Said：Come and，Join us！  \n  " => "  \n  Said: Come and, Join us!  \n  ",
             "Said：Come and，Join us！" => "Said: Come and, Join us!",
+            "_（HTML5 Rocks）_" => "_(HTML5 Rocks)_",
             "  Start with space next word？Join us?" => "  Start with space next word? Join us?",
             ", Not start with word will not change。" => ", Not start with word will not change。",
             "：“Not start with word will not change”" => "：“Not start with word will not change”",
