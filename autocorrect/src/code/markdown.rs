@@ -237,7 +237,10 @@ wifi = "ios"
 这里是普通的段落。
 "###;
 
+        let json_result = r##"{"filepath":"markdown","lines":[{"l":2,"c":4,"new":"Spellcheck 测试 iOS 和 HTML 和 Wi-Fi","old":"Spellcheck测试ios和html和WIFI","severity":1},{"l":5,"c":1,"new":"# 这里是 markdown 缩进的 codeblock","old":"# 这里是markdown缩进的codeblock","severity":1}],"error":""}"##;
+
         let lint_result = lint_for(raw, "markdown");
+        assert_eq!(json_result, lint_result.to_json());
         assert_eq!(false, lint_result.has_error());
         assert_eq!(2, lint_result.lines.len());
         assert_eq!(
