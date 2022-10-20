@@ -4,6 +4,8 @@ rules:
   space-word: 1
   # Add space between some punctuations.
   space-punctuation: 1
+  # Add space between brackets (), [] when near the CJK.
+  space-bracket: 1
   # Convert to fullwidth.
   fullwidth: 1
   # To remove space near the fullwidth.

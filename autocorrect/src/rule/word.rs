@@ -20,14 +20,20 @@ lazy_static! {
         // SpecialSymbol
         Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
         Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
+        Strategery::new(r"[!]", r"\p{CJK}"),
+    ];
+
+    static ref BRACKETS_STRATEGIES: Vec<Strategery> = vec![
+        // Add space before and after brackets [] or () near the CJK
         Strategery::new(r"\p{CJK}", r"[\[\(]"),
-        Strategery::new(r"[\]\)!]", r"\p{CJK}"),
+        Strategery::new(r"[\]\)]", r"\p{CJK}"),
     ];
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
         Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】“”‘’]").with_remove_space().with_reverse(),
     ];
+
 
 }
 
@@ -40,6 +46,14 @@ pub fn format_space_word(input: &str) -> String {
 pub fn format_space_punctuation(input: &str) -> String {
     let mut out = String::from(input);
     PUNCTUATION_STRATEGIES
+        .iter()
+        .for_each(|s| out = s.format(&out));
+    out
+}
+
+pub fn format_space_bracket(input: &str) -> String {
+    let mut out = String::from(input);
+    BRACKETS_STRATEGIES
         .iter()
         .for_each(|s| out = s.format(&out));
     out

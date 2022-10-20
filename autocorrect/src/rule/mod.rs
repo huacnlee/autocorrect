@@ -20,6 +20,8 @@ lazy_static! {
         Rule::new("space-word", word::format_space_word),
         // Rule: space-punctuation
         Rule::new("space-punctuation", word::format_space_punctuation),
+        // Rule: space-bracket
+        Rule::new("space-bracket", word::format_space_bracket),
         // Rule: fullwidth
         Rule::new("fullwidth", fullwidth::format),
     ];
@@ -170,6 +172,7 @@ mod tests {
         let expect = vec![
             "space-word",
             "space-punctuation",
+            "space-bracket",
             "fullwidth",
             "halfwidth",
             "no-space-fullwidth",
