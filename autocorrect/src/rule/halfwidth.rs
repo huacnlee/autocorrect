@@ -42,11 +42,14 @@ lazy_static! {
     );
 
     static ref HALF_TIME_RE: Regex = regexp!("{}", r"(\d)(：)(\d)");
-    // More than 2 words
-    static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ]+[\w]+)"#);
+    // More than 2 words and leading with words
+    static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ,.'?!&:]+[\w]+)"#);
+    static ref START_WITH_WORD_RE: Regex = regexp!("{}", r#"^\s*[\w]+"#);
+    static ref QUOTE_RE: Regex = regexp!("{}", r#"^\s*(["'`]).+(["'`])\s*$"#);
 
     static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
         "’" => ReplaceRule::new("'"),
+        "‘" => ReplaceRule::new("'"),
 
         "，" => ReplaceRule::new(",").with_suffix_space(),
         "、" => ReplaceRule::new(",").with_suffix_space(),
@@ -97,8 +100,26 @@ pub fn format(text: &str) -> String {
     out
 }
 
+fn is_may_only_english(text: &str) -> bool {
+    if CJK_RE.is_match(text) {
+        return false;
+    }
+
+    // Characters which pass CHAR_WIDTH_MAP replacement
+    if ENGLISH_RE.is_match(text) && START_WITH_WORD_RE.is_match(text) {
+        // Maybe English, pass
+        return true;
+    }
+
+    if QUOTE_RE.is_match(text) {
+        return true;
+    }
+
+    false
+}
+
 fn format_line(text: &str) -> String {
-    let is_english = ENGLISH_RE.is_match(text) && !CJK_RE.is_match(text);
+    let is_english = is_may_only_english(text);
     let mut out = String::new();
 
     let mut parts = text.split("").peekable();
@@ -193,9 +214,10 @@ mod tests {
     #[test]
     fn test_halfwidth_punctuation_ignores() {
         let cases = map! [
+            "。" => "。",
+            "，" => "，",
             "SHA1。" => "SHA1。",
             "a。" => "a。",
-            "。" => "。",
             "foo-bar-dar。" => "foo-bar-dar。",
             "hello)。" => "hello)。",
             "说：你好 english。" => "说：你好 english。",
@@ -209,11 +231,14 @@ mod tests {
     #[test]
     fn test_halfwidth_punctuation() {
         let cases = map! [
+            "hello。" => "hello。",
+            "hello 你好。" => "hello 你好。",
             "中文1\nhello world。\n中文2" => "中文1\nhello world.\n中文2",
             "  \n  Said：Come and，Join us！  \n  " => "  \n  Said: Come and, Join us!  \n  ",
             "Said：Come and，Join us！" => "Said: Come and, Join us!",
-            // "Said： Come  and， [Join]   us  " => "Said: Come and, [Join] us",
-            "Come and？Join us?" => "Come and? Join us?",
+            "  Start with space next word？Join us?" => "  Start with space next word? Join us?",
+            ", Not start with word will not change。" => ", Not start with word will not change。",
+            "：“Not start with word will not change”" => "：“Not start with word will not change”",
             "Come and， Join us！" => "Come and, Join us!",
             "The microphone or camera is occupied，Please check and re-record the video。" => "The microphone or camera is occupied, Please check and re-record the video.",
             "The Exchange’s" => "The Exchange's",
@@ -223,6 +248,8 @@ mod tests {
             "The【Convertible Amount】case？" => "The [Convertible Amount] case?",
             "The「Convertible Amount」case：" => "The [Convertible Amount] case:",
             "The《Convertible Amount》case，" => r#"The "Convertible Amount" case,"#,
+            "revenue conditions among the suppliers’ customers" => "revenue conditions among the suppliers' customers",
+            "Reason: CORS header ‘Origin’ cannot be added" => "Reason: CORS header 'Origin' cannot be added"
         ];
 
         assert_cases(cases);
@@ -231,6 +258,8 @@ mod tests {
     #[test]
     fn test_halfwidth_punctuation_with_in_quote() {
         let cases = map! [
+            r#""Hi！""# => r#""Hi!""#,
+            r#""hello-world。""# => r#""hello-world.""#,
             r#""Only the first time break。""# => r#""Only the first time break.""#,
             r#"'Only the first time break？'"# => r#"'Only the first time break?'"#,
             r#"`Only the first time break！`"# => r#"`Only the first time break!`"#,

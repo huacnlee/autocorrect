@@ -9,7 +9,7 @@ rules:
   # To remove space near the fullwidth.
   no-space-fullwidth: 1
   # Convert to halfwidth.
-  halfwidth: 0
+  halfwidth: 1
   # Spellcheck
   spellcheck: 0
 spellcheck:
