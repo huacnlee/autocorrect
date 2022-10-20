@@ -201,7 +201,7 @@ let a = "你好 hello";
 - ![img 图片](https://google.com/a/b/url不处理)
     - Sub list item
     - Third indent item.
-- [link链接](https://google.com/a/b/url不处理)
+- [link 链接](https://google.com/a/b/url不处理)
 - Escher puzzle（[链接](https://google.com)）
 - 一个[[Wikilinks测试]]示例
 "###;

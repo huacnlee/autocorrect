@@ -11,10 +11,18 @@ enum ReplaceMode {
     SuffixSpace,
 }
 
+#[derive(Clone, PartialEq)]
+enum CharType {
+    LeftQuote,
+    RightQuote,
+    Other,
+}
+
 #[derive(Clone)]
 struct ReplaceRule {
     to: &'static str,
     mode: ReplaceMode,
+    char_type: CharType,
 }
 
 impl ReplaceRule {
@@ -22,6 +30,7 @@ impl ReplaceRule {
         Self {
             to,
             mode: ReplaceMode::Replace,
+            char_type: CharType::Other,
         }
     }
 
@@ -32,6 +41,16 @@ impl ReplaceRule {
 
     fn with_prefix_space(&mut self) -> Self {
         self.mode = ReplaceMode::PrefixSpace;
+        self.clone()
+    }
+
+    fn left_quote(&mut self) -> Self {
+        self.char_type = CharType::LeftQuote;
+        self.clone()
+    }
+
+    fn right_quote(&mut self) -> Self {
+        self.char_type = CharType::RightQuote;
         self.clone()
     }
 }
@@ -48,8 +67,8 @@ lazy_static! {
     static ref QUOTE_RE: Regex = regexp!("{}", r#"^\s*(["'`]).+(["'`])\s*$"#);
 
     static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
-        "’" => ReplaceRule::new("'"),
-        "‘" => ReplaceRule::new("'"),
+        "‘" => ReplaceRule::new("'").left_quote(),
+        "’" => ReplaceRule::new("'").right_quote(),
 
         "，" => ReplaceRule::new(",").with_suffix_space(),
         "、" => ReplaceRule::new(",").with_suffix_space(),
@@ -58,20 +77,20 @@ lazy_static! {
         "；" => ReplaceRule::new(".").with_suffix_space(),
         "！" => ReplaceRule::new("!").with_suffix_space(),
         "？" => ReplaceRule::new("?").with_suffix_space(),
-        "”" => ReplaceRule::new(r#"""#).with_suffix_space(),
 
         // Quotes prefix
-        "“" => ReplaceRule::new(r#"""#).with_prefix_space(),
-        "（" => ReplaceRule::new("(").with_prefix_space(),
-        "【" => ReplaceRule::new("[").with_prefix_space(),
-        "「" => ReplaceRule::new("[").with_prefix_space(),
-        "《" => ReplaceRule::new(r#"""#).with_prefix_space(),
+        "“" => ReplaceRule::new(r#"""#).left_quote().with_prefix_space(),
+        "（" => ReplaceRule::new("(").left_quote().with_prefix_space(),
+        "【" => ReplaceRule::new("[").left_quote().with_prefix_space(),
+        "「" => ReplaceRule::new("[").left_quote().with_prefix_space(),
+        "《" => ReplaceRule::new(r#"""#).left_quote().with_prefix_space(),
 
         // Quotes suffix
-        "）" => ReplaceRule::new(")").with_suffix_space(),
-        "】" => ReplaceRule::new("]").with_suffix_space(),
-        "」" => ReplaceRule::new("]").with_suffix_space(),
-        "》" => ReplaceRule::new(r#"""#).with_suffix_space(),
+        "”" => ReplaceRule::new(r#"""#).right_quote().with_suffix_space(),
+        "）" => ReplaceRule::new(")").right_quote().with_suffix_space(),
+        "】" => ReplaceRule::new("]").right_quote().with_suffix_space(),
+        "」" => ReplaceRule::new("]").right_quote().with_suffix_space(),
+        "》" => ReplaceRule::new(r#"""#).right_quote().with_suffix_space(),
     );
 }
 
@@ -143,6 +162,12 @@ fn format_line(text: &str) -> String {
 
             // Fix punctuation without CJK contents
             if let Some(rule) = PUNCTUATION_MAP.get(part) {
+                // Do not change left quote when is last char.
+                if rule.char_type == CharType::LeftQuote && next_part.is_empty() {
+                    out.push_str(part);
+                    continue;
+                }
+
                 match rule.mode {
                     ReplaceMode::SuffixSpace => {
                         out.push_str(rule.to);
@@ -249,7 +274,21 @@ mod tests {
             "The「Convertible Amount」case：" => "The [Convertible Amount] case:",
             "The《Convertible Amount》case，" => r#"The "Convertible Amount" case,"#,
             "revenue conditions among the suppliers’ customers" => "revenue conditions among the suppliers' customers",
-            "Reason: CORS header ‘Origin’ cannot be added" => "Reason: CORS header 'Origin' cannot be added"
+            "Reason: CORS header ‘Origin’ cannot be added" => "Reason: CORS header 'Origin' cannot be added",
+        ];
+
+        assert_cases(cases);
+    }
+
+    #[test]
+    fn test_ignore_left_quote_in_last() {
+        let cases = map! [
+            "Escher puzzle (" => "Escher puzzle (",
+            "Escher puzzle【" => "Escher puzzle【",
+            "Escher puzzle《" => "Escher puzzle《",
+            "Escher puzzle“" => "Escher puzzle“",
+            "Escher puzzle‘" => "Escher puzzle‘",
+            "Escher puzzle「" => "Escher puzzle「",
         ];
 
         assert_cases(cases);
