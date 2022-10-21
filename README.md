@@ -37,8 +37,8 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and
 
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
 - Support more than 27 programming languages (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
-- Correct punctuations into Fullwidth near the CJK.
-- (Experimental) Correct punctuations into Halfwidth, and remove duplication spaces in english contents.
+- Correct punctuations into full-width near the CJK.
+- Correct punctuations into half-width in english contents.
 - (Experimental) Spellcheck and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
