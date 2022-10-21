@@ -10,8 +10,10 @@ rules:
   fullwidth: 1
   # To remove space near the fullwidth.
   no-space-fullwidth: 1
-  # Convert to halfwidth.
-  halfwidth: 1
+  # Fullwidth alphanumeric characters to halfwidth.
+  halfwidth-word: 1
+  # Fullwidth punctuations to halfwidth in english.
+  halfwidth-punctuation: 1
   # Spellcheck
   spellcheck: 0
 spellcheck:

@@ -51,11 +51,13 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
             let sub_items = item.into_inner();
 
             // Special hotfix for Markdown block / paragraph / blockquote
-            // If they has CJK chars, disable `halfwidth` rule temporary.
+            // If they has CJK chars, disable `halfwidth-punctuation` rule temporary.
             let mut last_toggle = None;
             if rule_name == "block" && CJK_RE.is_match(item_text) {
                 last_toggle = Some(results.get_toggle());
-                results.toggle_merge(toggle::Toggle::Disable(vec!["halfwidth".to_owned()]));
+                results.toggle_merge(toggle::Toggle::Disable(vec![
+                    "halfwidth-punctuation".to_owned()
+                ]));
             }
 
             for child in sub_items {

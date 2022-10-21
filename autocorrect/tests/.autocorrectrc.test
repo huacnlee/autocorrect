@@ -1,9 +1,4 @@
 rules:
-  space-word: 1
-  space-punctuation: 1
-  fullwidth: 1
-  halfwidth: 1
-  no-space-fullwidth: 1
   spellcheck: 2
 textRules:
   textRule忽略: 0

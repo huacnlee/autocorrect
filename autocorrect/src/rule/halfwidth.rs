@@ -110,11 +110,31 @@ impl CharMatching for char {
     }
 }
 
-pub fn format(text: &str) -> String {
+pub fn format_punctuation(text: &str) -> String {
     let mut out = String::from("");
     for line in text.split_inclusive('\n') {
         out.push_str(&format_line(line));
     }
+
+    out
+}
+
+pub fn format_word(text: &str) -> String {
+    let mut out = String::new();
+
+    for part in text.split("") {
+        if let Some(new_str) = CHAR_WIDTH_MAP.get(part) {
+            out.push_str(new_str);
+            continue;
+        }
+
+        out.push_str(part);
+    }
+
+    // Fix 12：00 -> 12:00
+    out = HALF_TIME_RE
+        .replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"))
+        .to_string();
 
     out
 }
@@ -138,7 +158,10 @@ fn is_may_only_english(text: &str) -> bool {
 }
 
 fn format_line(text: &str) -> String {
-    let is_english = is_may_only_english(text);
+    if !is_may_only_english(text) {
+        return String::from(text);
+    }
+
     let mut out = String::new();
 
     let mut parts = text.split("").peekable();
@@ -146,55 +169,43 @@ fn format_line(text: &str) -> String {
         let next_part = parts.peek().unwrap_or(&"");
         let last_part = out.chars().last().unwrap_or(' ');
 
-        if is_english {
-            // Remove duplicate space without CJK contents
-            // if part.ends_with(|s: char| s.is_whitespace())
-            //     && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
-            // {
-            //     part = "";
-            // }
+        // Remove duplicate space without CJK contents
+        // if part.ends_with(|s: char| s.is_whitespace())
+        //     && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
+        // {
+        //     part = "";
+        // }
 
-            // Fix punctuation without CJK contents
-            if let Some(rule) = PUNCTUATION_MAP.get(part) {
-                // Do not change left quote when is last char.
-                if rule.char_type == CharType::LeftQuote && next_part.is_empty() {
-                    out.push_str(part);
-                    continue;
-                }
-
-                match rule.mode {
-                    ReplaceMode::SuffixSpace => {
-                        out.push_str(rule.to);
-                        if next_part.starts_with(|s: char| s.is_alphanumeric()) {
-                            out.push(' ');
-                        }
-                    }
-                    ReplaceMode::PrefixSpace => {
-                        if last_part.is_alphanumeric() {
-                            out.push(' ');
-                        }
-                        out.push_str(rule.to);
-                    }
-                    ReplaceMode::Replace => {
-                        out.push_str(rule.to);
-                    }
-                }
+        // Fix punctuation without CJK contents
+        if let Some(rule) = PUNCTUATION_MAP.get(part) {
+            // Do not change left quote when is last char.
+            if rule.char_type == CharType::LeftQuote && next_part.is_empty() {
+                out.push_str(part);
                 continue;
             }
-        }
 
-        if let Some(new_str) = CHAR_WIDTH_MAP.get(part) {
-            out.push_str(new_str);
+            match rule.mode {
+                ReplaceMode::SuffixSpace => {
+                    out.push_str(rule.to);
+                    if next_part.starts_with(|s: char| s.is_alphanumeric()) {
+                        out.push(' ');
+                    }
+                }
+                ReplaceMode::PrefixSpace => {
+                    if last_part.is_alphanumeric() {
+                        out.push(' ');
+                    }
+                    out.push_str(rule.to);
+                }
+                ReplaceMode::Replace => {
+                    out.push_str(rule.to);
+                }
+            }
             continue;
         }
 
         out.push_str(part);
     }
-
-    // Fix 12：00 -> 12:00
-    out = HALF_TIME_RE
-        .replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"))
-        .to_string();
 
     out
 }
@@ -205,7 +216,7 @@ mod tests {
 
     fn assert_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {
-            let actual = format(source);
+            let actual = format_punctuation(source);
             assert_eq!(exptected, actual);
         }
     }
@@ -215,18 +226,18 @@ mod tests {
         let source = "测试:ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ１２３４５６７８９０";
         assert_eq!(
             "测试:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-            format(source)
+            format_word(source)
         );
 
         assert_eq!(
             "他说：我们将在16:32分出发去CBD中心。",
-            format("他说：我们将在１６：３２分出发去ＣＢＤ中心。")
+            format_word("他说：我们将在１６：３２分出发去ＣＢＤ中心。")
         );
 
         // Fullwidth space
         assert_eq!(
             "ジョイフル－後場売り気配 200 店舗を閉鎖へ 7 月以降、不採算店中心に",
-            format("ジョイフル－後場売り気配　200 店舗を閉鎖へ　7 月以降、不採算店中心に")
+            format_word("ジョイフル－後場売り気配　200 店舗を閉鎖へ　7 月以降、不採算店中心に")
         );
     }
 

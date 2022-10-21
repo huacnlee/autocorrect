@@ -27,8 +27,10 @@ lazy_static! {
     ];
 
     static ref AFTER_RULES: Vec<Rule> = vec![
-        // Rule: halfwidth
-        Rule::new("halfwidth", halfwidth::format),
+        // Rule: halfwidth-word
+        Rule::new("halfwidth-word", halfwidth::format_word),
+        // Rule: halfwidth punctuations
+        Rule::new("halfwidth-punctuation", halfwidth::format_punctuation),
         // Rule: no-space-fullwidth
         Rule::new("no-space-fullwidth", word::format_no_space_fullwidth),
         Rule::new("spellcheck", spellcheck::format),
@@ -174,7 +176,8 @@ mod tests {
             "space-punctuation",
             "space-bracket",
             "fullwidth",
-            "halfwidth",
+            "halfwidth-word",
+            "halfwidth-punctuation",
             "no-space-fullwidth",
             "spellcheck",
         ];
