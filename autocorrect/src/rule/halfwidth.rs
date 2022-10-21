@@ -66,6 +66,8 @@ lazy_static! {
     static ref START_WITH_WORD_RE: Regex = regexp!("{}", r#"^\s*[\w]+"#);
     static ref QUOTE_RE: Regex = regexp!("{}", r#"^\s*(["'`]).+(["'`])\s*$"#);
     static ref WORD_RE: Regex = regexp!("{}", r#"[a-zA-Z]{2,}"#);
+    // %{xxx}, #{xxx}, i18n.t(
+    static ref CODE_STRING_RE: Regex = regexp!("{}", r#"([#%$]\{.+\})|([\w]+\.[\w]+\()"#);
 
     static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
         "‘" => ReplaceRule::new("'").left_quote(),
@@ -153,6 +155,12 @@ fn is_may_only_english(text: &str) -> bool {
 
     // In quote and including words
     if QUOTE_RE.is_match(text) && WORD_RE.is_match(text) {
+        // If there not english and space or there have complex punctuation, skip
+        // `${this.$t('hello')}：${items.join('，')}`, `%{foo}，hello`
+        if CODE_STRING_RE.is_match(text) {
+            return false;
+        }
+
         return true;
     }
 
@@ -313,6 +321,9 @@ mod tests {
             r#""Only the first time break。""# => r#""Only the first time break.""#,
             r#"'Only the first time break？'"# => r#"'Only the first time break?'"#,
             r#"`Only the first time break！`"# => r#"`Only the first time break!`"#,
+            r#"`${this.$t('hello')}：${items.join('，')}`"# => r#"`${this.$t('hello')}：${items.join('，')}`"#,
+            r#"`${t('hello')}：${user.name}`"# => r#"`${t('hello')}：${user.name}`"#,
+            r##""#{vars.join("，")}""## => r##""#{vars.join("，")}""##
         ];
 
         assert_cases(cases);
