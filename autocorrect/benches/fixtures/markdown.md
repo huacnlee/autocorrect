@@ -14,7 +14,7 @@ JavaScript 运行在网页的客户端，能被用来设计和编程网页在事
 
 JavaScript 既是一个 [面向过程的语言](http://en.wikipedia.org/wiki/Procedural_programming) 又是一个 [面向对象的语言](/zh-CN/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript)。在 JavaScript 中，通过**在运行时**给空对象附加方法和属性来创建对象，与编译语言如 C++ 和 Java 中常见的通过语法来定义类相反。对象构造后，它可以用作是创建相似对象的原型。
 
-`svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin`
+`svh`, `lvh`, `dvh`, `svw`, `lvw`, `dvw`, `svmax`, `lvmax`, `dvmax`, `svmin`, `lvmin`, `dvmin` 
 
 JavaScript 的动态特性包括运行时构造对象、可变参数列表、函数变量、动态脚本执行（通过 [`eval`](/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/eval)）、对象内枚举（通过 `for ... in`）和源码恢复（JavaScript 程序可以将函数反编译回源代码）。
 

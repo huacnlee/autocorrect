@@ -10,7 +10,9 @@ pub struct ToggleParser;
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum Toggle {
     None,
+    // Empty to disable all
     Disable(Vec<String>),
+    // Empty to enable all
     Enable(Vec<String>),
 }
 
@@ -51,6 +53,39 @@ impl Toggle {
                 map
             }
             _ => HashMap::new(),
+        }
+    }
+
+    // Merge two toggle if it posible, otherwise override
+    pub fn merge(&mut self, new_toggle: Self) {
+        match new_toggle {
+            Toggle::Disable(rules) => {
+                if let Toggle::Disable(old_rules) = self {
+                    if !old_rules.is_empty() {
+                        old_rules.extend(rules.clone());
+                    }
+
+                    if rules.is_empty() {
+                        old_rules.clear();
+                    }
+                } else {
+                    *self = Toggle::Disable(rules);
+                }
+            }
+            Toggle::Enable(rules) => {
+                if let Toggle::Enable(old_rules) = self {
+                    if !old_rules.is_empty() {
+                        old_rules.extend(rules.clone());
+                    }
+
+                    if rules.is_empty() {
+                        old_rules.clear();
+                    }
+                } else {
+                    *self = Toggle::Enable(rules);
+                }
+            }
+            _ => *self = new_toggle,
         }
     }
 }
@@ -198,5 +233,43 @@ mod tests {
                 .disable_rules()
                 .get("foo-bar")
         );
+    }
+
+    #[test]
+    fn test_merge() {
+        let mut toggle = Toggle::Enable(vec!["foo".to_owned()]);
+        toggle.merge(Toggle::Enable(vec!["bar".to_owned()]));
+        assert_eq!(
+            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]),
+            toggle
+        );
+        toggle.merge(Toggle::Enable(vec![]));
+        assert_eq!(Toggle::Enable(vec![]), toggle);
+        toggle.merge(Toggle::Enable(vec!["foo".to_owned()]));
+        assert_eq!(Toggle::Enable(vec![]), toggle);
+
+        let mut toggle = Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned()]);
+        toggle.merge(Toggle::Disable(vec!["dar".to_owned()]));
+        assert_eq!(
+            Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned(), "dar".to_owned()]),
+            toggle
+        );
+        toggle.merge(Toggle::Disable(vec![]));
+        assert_eq!(Toggle::Disable(vec![]), toggle);
+        toggle.merge(Toggle::Disable(vec!["foo".to_owned()]));
+        assert_eq!(Toggle::Disable(vec![]), toggle);
+
+        // Merge with disable enum value, override
+        let mut toggle = Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]);
+        toggle.merge(Toggle::Disable(vec!["dar".to_owned()]));
+        assert_eq!(Toggle::Disable(vec!["dar".to_owned()]), toggle);
+        toggle.merge(Toggle::None);
+        assert_eq!(Toggle::None, toggle);
+
+        let mut toggle = Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned()]);
+        toggle.merge(Toggle::Enable(vec!["dar".to_owned()]));
+        assert_eq!(Toggle::Enable(vec!["dar".to_owned()]), toggle);
+        toggle.merge(Toggle::None);
+        assert_eq!(Toggle::None, toggle);
     }
 }

@@ -38,8 +38,8 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
 - Support more than 27 programming languages (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
 - Correct punctuations into Fullwidth near the CJK.
-- Correct punctuations into Halfwidth, and remove duplication spaces in english contents.
-- Spellcheck (experimental) and correct words by your own dictionary.
+- (Experimental) Correct punctuations into Halfwidth, and remove duplication spaces in english contents.
+- (Experimental) Spellcheck and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
@@ -173,12 +173,16 @@ rules:
   space-word: 1
   # Add space between some punctuations.
   space-punctuation: 1
+  # Add space between brackets (), [] when near the CJK.
+  space-bracket: 1
   # Convert to fullwidth.
   fullwidth: 1
-  # Convert to halfwidth.
-  halfwidth: 1
   # To remove space near the fullwidth.
   no-space-fullwidth: 1
+  # Fullwidth alphanumeric characters to halfwidth.
+  halfwidth-word: 1
+  # Fullwidth punctuations to halfwidth in english.
+  halfwidth-punctuation: 1
   # Spellcheck
   spellcheck: 2
 textRules:
@@ -461,18 +465,18 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
 
 ```bash
-test bench_format_050                 ... bench:       9,390 ns/iter (+/- 74)
-test bench_format_100                 ... bench:      17,299 ns/iter (+/- 461)
-test bench_format_400                 ... bench:      57,316 ns/iter (+/- 2,845)
-test bench_format_html                ... bench:     174,572 ns/iter (+/- 7,530)
-test bench_format_javascript          ... bench:      80,637 ns/iter (+/- 3,315)
-test bench_format_json                ... bench:      34,212 ns/iter (+/- 189)
-test bench_format_json_with_2k_lines  ... bench:   5,339,445 ns/iter (+/- 110,482)
-test bench_halfwidth_full_english_100 ... bench:      12,584 ns/iter (+/- 2,244)
-test bench_markdown                   ... bench:     790,159 ns/iter (+/- 88,039)
-test bench_spellcheck_100             ... bench:      59,318 ns/iter (+/- 17,063)
-test bench_spellcheck_400             ... bench:     200,657 ns/iter (+/- 21,931)
-test bench_spellcheck_50              ... bench:      35,396 ns/iter (+/- 755)
+test bench_format_050                 ... bench:       9,132 ns/iter (+/- 88)
+test bench_format_100                 ... bench:      16,892 ns/iter (+/- 319)
+test bench_format_400                 ... bench:      55,126 ns/iter (+/- 1,086)
+test bench_format_html                ... bench:     198,822 ns/iter (+/- 2,228)
+test bench_format_javascript          ... bench:      88,774 ns/iter (+/- 1,333)
+test bench_format_json                ... bench:      42,868 ns/iter (+/- 325)
+test bench_format_json_with_2k_lines  ... bench:   9,664,245 ns/iter (+/- 494,651)
+test bench_halfwidth_full_english_100 ... bench:      11,242 ns/iter (+/- 550)
+test bench_markdown                   ... bench:     998,470 ns/iter (+/- 18,294)
+test bench_spellcheck_100             ... bench:      54,168 ns/iter (+/- 451)
+test bench_spellcheck_400             ... bench:     189,885 ns/iter (+/- 4,172)
+test bench_spellcheck_50              ... bench:      34,920 ns/iter (+/- 2,111)
 ```
 
 | Type       | Total chars | Duration |
@@ -483,9 +487,9 @@ test bench_spellcheck_50              ... bench:      35,396 ns/iter (+/- 755)
 | format     | HTML        | 0.174 ms |
 | format     | JavaScript  | 0.086 ms |
 | format     | JSON        | 0.034 ms |
-| format     | Large JSON  | 3.829 ms |
+| format     | Large JSON  | 9.629 ms |
 | halfwidth  | 100         | 0.012 ms |
-| format     | Markdown    | 0.749 ms |
+| format     | Markdown    | 0.998 ms |
 | spellcheck | 50          | 0.037 ms |
 | spellcheck | 100         | 0.057 ms |
 | spellcheck | 400         | 0.195 ms |

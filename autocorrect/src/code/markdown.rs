@@ -40,7 +40,7 @@ original_slug: Web/CSS/网格-模板-列
 
 ## Test multiple code will not deadlock
 
-`svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
+`svh`, `lvh`, `dvh`, `svw`, `lvw`, `dvw`, `svmax`, `lvmax`, `dvmax`, `svmin`, `lvmin`, `dvmin` 
 
 > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
@@ -49,6 +49,14 @@ original_slug: Web/CSS/网格-模板-列
 <!-- 这里是comment文字 -->
 
 你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
+
+在paragraph中，这行用于测试在有中文的段落中，忽略halfwidth处理（测试：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+
+> blockquote中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+- list中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+This line is all in english，to test convert “full-width” into ‘half-width’！
 
 https://google.com/foo/__ios__
 
@@ -89,6 +97,8 @@ let a = "你好hello";
 这种非String类型的不会格式化
 ```
 
+是则保持挂起直到被唤醒或超时。返回值为 "`ok`"、"**~~not-equal~~**" 或 `timeout` var。
+
 ## HTML标签里面的不处理，只处理文本
 
 <div title="HTML标签里面都不处理"><h2>这是H2标题</h2><p>这里是p段落。</p></div>
@@ -108,8 +118,9 @@ let a = "你好hello";
     - Sub list item
     - Third indent item.
 - [link链接](https://google.com/a/b/url不处理)
+- Escher puzzle（[链接](https://google.com)）
 - 一个[[Wikilinks测试]]示例
-    "###;
+"###;
 
         let expected = r###"
 ---
@@ -133,7 +144,7 @@ original_slug: Web/CSS/网格-模板-列
 
 ## Test multiple code will not deadlock
 
-`svh`、`lvh`、`dvh`、`svw`、`lvw`、`dvw`、`svmax`、`lvmax`、`dvmax`、`svmin`、`lvmin`、`dvmin` 
+`svh`, `lvh`, `dvh`, `svw`, `lvw`, `dvw`, `svmax`, `lvmax`, `dvmax`, `svmin`, `lvmin`, `dvmin` 
 
 > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
@@ -142,6 +153,14 @@ original_slug: Web/CSS/网格-模板-列
 <!-- 这里是 comment 文字 -->
 
 你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
+
+在 paragraph 中，这行用于测试在有中文的段落中，忽略 halfwidth 处理（测试：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+
+> blockquote 中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+- list 中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+This line is all in english, to test convert "full-width" into 'half-width'!
 
 https://google.com/foo/__ios__
 
@@ -182,6 +201,8 @@ let a = "你好 hello";
 这种非String类型的不会格式化
 ```
 
+是则保持挂起直到被唤醒或超时。返回值为 "`ok`"、"**~~not-equal~~**" 或 `timeout` var。
+
 ## HTML 标签里面的不处理，只处理文本
 
 <div title="HTML标签里面都不处理"><h2>这是 H2 标题</h2><p>这里是 p 段落。</p></div>
@@ -201,8 +222,9 @@ let a = "你好 hello";
     - Sub list item
     - Third indent item.
 - [link 链接](https://google.com/a/b/url不处理)
+- Escher puzzle（[链接](https://google.com)）
 - 一个[[Wikilinks测试]]示例
-    "###;
+"###;
 
         assert_eq!(expected, format_for(example, "markdown").to_string());
 
@@ -224,10 +246,10 @@ let a = "你好 hello";
         let raw = r###"
 ## Spellcheck测试ios和html和WIFI
 
-    ```rb
-    # 这里是markdown缩进的codeblock
-    wifi = "ios"
-    ```
+```rb
+# 这里是markdown缩进的codeblock
+wifi = "ios"
+```
 
     // 这行不应该处理，因为无法识别codeblock的语言
     $ echo ios
@@ -237,7 +259,10 @@ let a = "你好 hello";
 这里是普通的段落。
 "###;
 
+        let json_result = r##"{"filepath":"markdown","lines":[{"l":2,"c":4,"new":"Spellcheck 测试 iOS 和 HTML 和 Wi-Fi","old":"Spellcheck测试ios和html和WIFI","severity":1},{"l":5,"c":1,"new":"# 这里是 markdown 缩进的 codeblock","old":"# 这里是markdown缩进的codeblock","severity":1}],"error":""}"##;
+
         let lint_result = lint_for(raw, "markdown");
+        assert_eq!(json_result, lint_result.to_json());
         assert_eq!(false, lint_result.has_error());
         assert_eq!(2, lint_result.lines.len());
         assert_eq!(

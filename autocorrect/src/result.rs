@@ -58,6 +58,16 @@ pub trait Results {
         self.set_toggle(new_toggle);
     }
 
+    fn toggle_merge(&mut self, new_toggle: toggle::Toggle) {
+        if new_toggle == toggle::Toggle::None {
+            return;
+        }
+
+        let mut toggle = self.get_toggle();
+        toggle.merge(new_toggle);
+        self.set_toggle(toggle);
+    }
+
     /// Is AutoCorrrect current is enable
     fn is_enabled(&self) -> bool {
         match self.get_toggle().match_rule("") {
@@ -140,7 +150,7 @@ impl Results for FormatResult {
     }
 
     fn set_toggle(&mut self, t: toggle::Toggle) {
-        self.toggle = t;
+        self.toggle = t
     }
 
     fn get_toggle(&self) -> toggle::Toggle {
@@ -246,7 +256,7 @@ impl Results for LintResult {
     }
 
     fn set_toggle(&mut self, t: toggle::Toggle) {
-        self.toggle = t;
+        self.toggle = t
     }
 
     fn get_toggle(&self) -> toggle::Toggle {

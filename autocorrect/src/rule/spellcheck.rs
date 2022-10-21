@@ -13,7 +13,7 @@ pub(crate) fn word_regexp(word: &str) -> Regex {
     )
 }
 
-// Spell check by diect
+// Spell check by dict
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
