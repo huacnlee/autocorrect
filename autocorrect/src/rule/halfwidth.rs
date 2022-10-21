@@ -65,6 +65,7 @@ lazy_static! {
     static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ,.'?!&:]+[\w]+)"#);
     static ref START_WITH_WORD_RE: Regex = regexp!("{}", r#"^\s*[\w]+"#);
     static ref QUOTE_RE: Regex = regexp!("{}", r#"^\s*(["'`]).+(["'`])\s*$"#);
+    static ref WORD_RE: Regex = regexp!("{}", r#"[a-zA-Z]{2,}"#);
 
     static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
         "‘" => ReplaceRule::new("'").left_quote(),
@@ -150,7 +151,8 @@ fn is_may_only_english(text: &str) -> bool {
         return true;
     }
 
-    if QUOTE_RE.is_match(text) {
+    // In quote and including words
+    if QUOTE_RE.is_match(text) && WORD_RE.is_match(text) {
         return true;
     }
 
@@ -303,6 +305,9 @@ mod tests {
     #[test]
     fn test_halfwidth_punctuation_with_in_quote() {
         let cases = map! [
+            r#""，""# => r#""，""#,
+            r#""。""# => r#""。""#,
+            r#""a。""# => r#""a。""#,
             r#""Hi！""# => r#""Hi!""#,
             r#""hello-world。""# => r#""hello-world.""#,
             r#""Only the first time break。""# => r#""Only the first time break.""#,
