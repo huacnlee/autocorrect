@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "autocorrect-wasm"
-version = "2.3.0"
+version = "2.3.1"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
