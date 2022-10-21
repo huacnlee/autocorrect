@@ -40,7 +40,7 @@ lazy_static! {
         "{}",
         r"[ ]{0,}\d+[ ]{0,}年 [ ]{0,}\d+[ ]{0,}月 [ ]{0,}\d+[ ]{0,}[日号][ ]{0,}"
     );
-    static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
+    pub static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
     static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
     // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
     static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");

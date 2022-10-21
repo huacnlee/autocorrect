@@ -14,7 +14,7 @@ run\:json:
 build:
 	cargo build --manifest-path autocorrect-cli/Cargo.toml --release --target aarch64-apple-darwin
 	ls -lha target/aarch64-apple-darwin/release/autocorrect
-	sudo ln -f target/aarch64-apple-darwin/release/autocorrect $(BIN_PATH)
+	ln -f target/aarch64-apple-darwin/release/autocorrect $(BIN_PATH)
 test:
 	@cargo test
 test\:stdin:

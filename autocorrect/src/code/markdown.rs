@@ -50,7 +50,13 @@ original_slug: Web/CSS/网格-模板-列
 
 你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
-在JavaScript中，几乎所有的对象都是 `Object` 类型的实例，（比如说：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+在paragraph中，这行用于测试在有中文的段落中，忽略halfwidth处理（测试：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+
+> blockquote中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+- list中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+This line is all in english，to test convert “full-width” into ‘half-width’！
 
 https://google.com/foo/__ios__
 
@@ -148,7 +154,13 @@ original_slug: Web/CSS/网格-模板-列
 
 你可以[添加新的条目](/zh-CN/docs/MDN/Contribute/Howto/Write_a_new_entry_in_the_Glossary)或改进、完善现有条目。
 
-在 JavaScript 中，几乎所有的对象都是 `Object` 类型的实例，（比如说：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+在 paragraph 中，这行用于测试在有中文的段落中，忽略 halfwidth 处理（测试：`{{jsxref("Object.setPrototypeOf")}}` World Wide Web）。
+
+> blockquote 中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+- list 中，忽略 [halfwidth](#halfwidth) World Wide Web。
+
+This line is all in english, to test convert "full-width" into 'half-width'!
 
 https://google.com/foo/__ios__
 

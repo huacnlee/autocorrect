@@ -2,6 +2,7 @@
 use super::*;
 use crate::config::toggle;
 pub use crate::result::*;
+use crate::rule::CJK_RE;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -46,16 +47,29 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
         }
         _ => {
             let mut has_child = false;
-            let item_str = item.as_str();
+            let item_text = item.as_str();
             let sub_items = item.into_inner();
+
+            // Special hotfix for Markdown block / paragraph / blockquote
+            // If they has CJK chars, disable `halfwidth` rule temporary.
+            let mut last_toggle = None;
+            if rule_name == "block" && CJK_RE.is_match(item_text) {
+                last_toggle = Some(results.get_toggle());
+                results.toggle_merge(toggle::Toggle::Disable(vec!["halfwidth".to_owned()]));
+            }
 
             for child in sub_items {
                 format_pair(results, child);
                 has_child = true;
             }
 
+            // Restore toggle if last_toggle is some
+            if let Some(t) = last_toggle {
+                results.toggle(t);
+            }
+
             if !has_child {
-                results.ignore(item_str);
+                results.ignore(item_text);
             }
         }
     };

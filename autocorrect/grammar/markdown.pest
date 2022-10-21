@@ -3,10 +3,13 @@ line = _{ expr | newline }
 
 expr = _{ 
   comment | html_tag | meta_info
-  | codeblock | block | paragraph | inline | td_tag
+  | codeblock | block | inline | td_tag
 }
 
-block = ${ block_prefix ~ (inline | string)+  }
+block = ${ 
+  (block_prefix ~ (inline | string)+) 
+  | paragraph  
+}
 inline = ${ img | link | mark | wikilinks }
 paragraph = { (string | inline)+ }
 
