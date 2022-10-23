@@ -12,6 +12,7 @@ public class AutoCorrectTest
     @Test
     public void shouldAnswerWithTrue()
     {
-        assertEquals(AutoCorrect.format("hello你好."), "hello 你好。");
+        assertEquals(AutoCorrect.format("Hello你好."), "Hello 你好。");
+        assertEquals(AutoCorrect.formatFor("// Hello你好,这是Java注释.", "test.java"), "// Hello 你好，这是 Java 注释。");
     }
 }
