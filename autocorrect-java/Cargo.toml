@@ -1,0 +1,11 @@
+[package]
+edition = "2021"
+name = "autocorrect-java"
+version = "2.1.1"
+
+[dependencies]
+autocorrect = {path = "../autocorrect"}
+jni = "0.20.0"
+
+[lib]
+crate_type = ["cdylib"]
