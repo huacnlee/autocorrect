@@ -6,7 +6,7 @@ run: lib
 javah:
 	javac -h . -sourcepath javasrc/src/main/java -d classes javasrc/src/main/java/org/huacnlee/AutoCorrect.java
 
-test: 
+test: lib
 	cd javasrc; mvn test
 
 lib:

@@ -1,5 +1,5 @@
-class AutoCorrect {
-    private static native String format(String input);
+public class AutoCorrect {
+    public static native String format(String input);
     
     static {
         System.loadLibrary("autocorrect_java");
