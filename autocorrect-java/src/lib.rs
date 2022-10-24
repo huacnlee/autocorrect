@@ -1,64 +1,128 @@
 use autocorrect::{LineResult, LintResult};
 use jni::objects::{JClass, JString};
-use jni::sys::{jlong, jstring};
+use jni::sys::{jintArray, jlong, jsize, jstring};
 use jni::JNIEnv;
 
 #[no_mangle]
-pub extern "system" fn Java_AutoCorrect_format(
+pub extern "system" fn Java_org_huacnlee_AutoCorrect_format(
     env: JNIEnv,
     _class: JClass,
-    input: JString,
+    text: JString,
 ) -> jstring {
-    let input: String = env.get_string(input).unwrap().into();
-    let out = autocorrect::format(&input);
+    let text: String = env.get_string(text).unwrap().into();
+    let out = autocorrect::format(&text);
     let output = env.new_string(out).unwrap();
 
     output.into_raw()
 }
 
 #[no_mangle]
-pub extern "system" fn Java_AutoCorrect_formatFor(
+pub extern "system" fn Java_org_huacnlee_AutoCorrect_formatFor(
     env: JNIEnv,
     _class: JClass,
-    input: JString,
+    text: JString,
     filename: JString,
 ) -> jstring {
-    let input: String = env.get_string(input).unwrap().into();
+    let text: String = env.get_string(text).unwrap().into();
     let filename: String = env.get_string(filename).unwrap().into();
-    let result = autocorrect::format_for(&input, &filename);
+    let result = autocorrect::format_for(&text, &filename);
     let output = env.new_string(result.out).unwrap();
 
     output.into_raw()
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_AutoCorrect_lintFor(
+pub extern "system" fn Java_org_huacnlee_AutoCorrect_nativeLintFor(
     env: JNIEnv,
     _class: JClass,
-    input: JString,
+    text: JString,
     filename: JString,
 ) -> jlong {
-    let input: String = env.get_string(input).unwrap().into();
+    let text: String = env.get_string(text).unwrap().into();
     let filename: String = env.get_string(filename).unwrap().into();
 
-    let result = autocorrect::lint_for(&input, &filename);
+    let result = autocorrect::lint_for(&text, &filename);
     Box::into_raw(Box::new(result)) as jlong
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_AutoCorrect_lintResultGetString(
+/// # Safety
+pub unsafe extern "system" fn Java_org_huacnlee_AutoCorrect_nativeLintResultString(
     env: JNIEnv,
     _class: JClass,
-    result: jlong,
+    lint_result: jlong,
     field: JString,
 ) -> jstring {
-    let result = &*(result as *const LintResult);
+    let result = &*(lint_result as *const LintResult);
     let field: String = env.get_string(field).unwrap().into();
-    let val = match field {
+
+    let val = match field.as_str() {
         "filepath" => result.filepath.clone(),
         "raw" => result.raw.clone(),
-    }
+        _ => "".to_owned(),
+    };
 
     let output = env.new_string(val).unwrap();
     output.into_raw()
+}
+
+#[no_mangle]
+/// # Safety
+pub unsafe extern "system" fn Java_org_huacnlee_AutoCorrect_nativeLintResultLines(
+    env: JNIEnv,
+    _class: JClass,
+    lint_result: jlong,
+) -> jintArray {
+    let result = &*(lint_result as *const LintResult);
+
+    let mut line_ptrs: Vec<jlong> = vec![];
+    for line in result.lines.clone() {
+        let line_ptr = Box::into_raw(Box::new(line)) as jlong;
+        line_ptrs.push(line_ptr);
+    }
+
+    let lines = env.new_long_array(line_ptrs.len() as jsize).unwrap();
+    env.set_long_array_region(lines, 0, &line_ptrs).unwrap();
+    lines
+}
+
+#[no_mangle]
+/// # Safety
+pub unsafe extern "system" fn Java_org_huacnlee_AutoCorrect_nativeLineResultString(
+    env: JNIEnv,
+    _class: JClass,
+    line_result: jlong,
+    field: JString,
+) -> jstring {
+    let result = &*(line_result as *const LineResult);
+    let field: String = env.get_string(field).unwrap().into();
+    let val = match field.as_str() {
+        "new" => result.new.clone(),
+        "old" => result.old.clone(),
+        _ => "".to_owned(),
+    };
+
+    let output = env.new_string(val).unwrap();
+    output.into_raw()
+}
+
+#[no_mangle]
+/// # Safety
+pub unsafe extern "system" fn Java_org_huacnlee_AutoCorrect_nativeLineResultLong(
+    env: JNIEnv,
+    _class: JClass,
+    line_result: jlong,
+    field: JString,
+) -> jlong {
+    let result = &*(line_result as *const LineResult);
+    let field: String = env.get_string(field).unwrap().into();
+
+    let val = match field.as_str() {
+        "line" => result.line,
+        "col" => result.col,
+        "severity" => result.severity as usize,
+        _ => 0,
+    };
+
+    val as jlong
 }

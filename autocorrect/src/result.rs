@@ -25,7 +25,7 @@ impl Severity {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct LineResult {
     #[serde(rename(serialize = "l"))]
     pub line: usize,
@@ -89,7 +89,7 @@ pub struct FormatResult {
     pub toggle: toggle::Toggle,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct LintResult {
     #[serde(skip)]
     pub raw: String,

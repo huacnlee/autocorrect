@@ -1,16 +1,30 @@
-public class LintResult implements AutoCloseable {
-    private long ptr;
+package org.huacnlee;
 
-    LintResult(long ptr) {
-      this.ptr = ptr;
+public class LintResult  {
+    private long ptr;
+    private LineResult[] lines;
+
+    public LintResult(long ptr) {
+        this.ptr = ptr;
+
+        // Initialize lines
+        long[] ptrs = AutoCorrect.nativeLintResultLines(this.ptr);
+        this.lines = new LineResult[ptrs.length];
+
+        for (int i = 0; i < ptrs.length; i++) {
+            this.lines[i] = new LineResult(ptrs[i]);
+        }
     }
 
     public String getFilepath() {
-      return AutoCorrect.lintResultGetString(this.ptr, "filepath");
+      return AutoCorrect.nativeLintResultString(this.ptr, "filepath");
     }
 
     public String getRaw() {
-      return AutoCorrect.lintResultGetString(this.ptr, "raw");
+      return AutoCorrect.nativeLintResultString(this.ptr, "raw");
     }
 
+    public LineResult[] getLines() {
+        return this.lines;
+    }
 }
