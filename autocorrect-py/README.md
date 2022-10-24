@@ -8,6 +8,7 @@ The Python version of [AutoCorrect](https://github.com/huacnlee/autocorrect).
 - Python - [autocorrect-py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
 - Node.js - [autocorrect-node](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-node)
 - JavaScript (Browser) - [autocorrect-wasm](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-wasm)
+- Java - [autocorrect-java](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-java)
 
 ## Installation
 
