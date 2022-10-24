@@ -1,4 +1,4 @@
-package org.huacnlee;
+package github.huacnlee;
 
 public class LineResult {
     private long ptr;

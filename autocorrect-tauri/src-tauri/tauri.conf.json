@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "org.huacnlee.autocorrect",
+      "identifier": "github.huacnlee.autocorrect",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

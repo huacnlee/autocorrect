@@ -1,5 +1,5 @@
 // autocorrect-disable
-package org.huacnlee;
+package github.huacnlee;
 
 import static org.junit.Assert.assertEquals;
 

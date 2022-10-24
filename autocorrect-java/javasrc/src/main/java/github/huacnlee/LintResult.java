@@ -1,4 +1,4 @@
-package org.huacnlee;
+package github.huacnlee;
 
 public class LintResult  {
     private long ptr;

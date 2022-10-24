@@ -1,5 +1,5 @@
 // autocorrect-disable
-package org.huacnlee;
+package github.huacnlee;
 
 public class AutoCorrect {
     /**
