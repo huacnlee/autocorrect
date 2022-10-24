@@ -4,7 +4,7 @@ use jni::sys::{jintArray, jlong, jsize, jstring};
 use jni::JNIEnv;
 
 #[no_mangle]
-pub extern "system" fn Java_github_huacnlee_AutoCorrect_format(
+pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_format(
     env: JNIEnv,
     _class: JClass,
     text: JString,
@@ -17,7 +17,7 @@ pub extern "system" fn Java_github_huacnlee_AutoCorrect_format(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_github_huacnlee_AutoCorrect_formatFor(
+pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_formatFor(
     env: JNIEnv,
     _class: JClass,
     text: JString,
@@ -32,7 +32,7 @@ pub extern "system" fn Java_github_huacnlee_AutoCorrect_formatFor(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLintFor(
+pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintFor(
     env: JNIEnv,
     _class: JClass,
     text: JString,
@@ -47,7 +47,7 @@ pub extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLintFor(
 
 #[no_mangle]
 /// # Safety
-pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLintResultString(
+pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResultString(
     env: JNIEnv,
     _class: JClass,
     lint_result: jlong,
@@ -68,7 +68,7 @@ pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLintResultS
 
 #[no_mangle]
 /// # Safety
-pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLintResultLines(
+pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResultLines(
     env: JNIEnv,
     _class: JClass,
     lint_result: jlong,
@@ -88,7 +88,7 @@ pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLintResultL
 
 #[no_mangle]
 /// # Safety
-pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLineResultString(
+pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResultString(
     env: JNIEnv,
     _class: JClass,
     line_result: jlong,
@@ -108,7 +108,7 @@ pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLineResultS
 
 #[no_mangle]
 /// # Safety
-pub unsafe extern "system" fn Java_github_huacnlee_AutoCorrect_nativeLineResultLong(
+pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResultLong(
     env: JNIEnv,
     _class: JClass,
     line_result: jlong,
