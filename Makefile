@@ -1,7 +1,7 @@
 WORKDIR=$(shell pwd)
 LAST_TAG_VERSION=$(shell git describe --abbrev=0 --tags | sed "s/^v//")
 BIN_PATH=$(shell which autocorrect)
-VERSION_FILES=autocorrect/Cargo.toml autocorrect-cli/Cargo.toml autocorrect-node/package.json autocorrect-rb/autocorrect-rb.gemspec autocorrect-py/Cargo.toml autocorrect-wasm/Cargo.toml
+VERSION_FILES=autocorrect/Cargo.toml autocorrect-cli/Cargo.toml autocorrect-node/Cargo.toml autocorrect-node/package.json autocorrect-rb/ext/autocorrect/Cargo.toml autocorrect-rb/autocorrect-rb.gemspec autocorrect-py/Cargo.toml autocorrect-wasm/Cargo.toml autocorrect-java/Cargo.toml autocorrect-java/javasrc/pom.xml
 
 bench:
 	cargo bench
