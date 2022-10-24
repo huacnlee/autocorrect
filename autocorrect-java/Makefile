@@ -8,7 +8,7 @@ javah:
 	javac -h . -sourcepath javasrc/src/main/java -d classes javasrc/src/main/java/io/github/huacnlee/AutoCorrect.java
 
 test: lib
-	cd javasrc; mvn test
+	cd javasrc; mvn test --activate-profiles debug
 
 lib:
 	cargo build

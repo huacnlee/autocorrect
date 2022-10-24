@@ -1,4 +1,4 @@
-name: Release Python
+name: Release Java
 on:
   push:
     branches:
@@ -68,10 +68,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jnis
-          path: ./java/jnis
+          path: ./autocorrect-java/jnis
 
       - name: Copy Jnis
-        working-directory: java
+        working-directory: autocorrect-java
         run: |
           mkdir -p javasrc/target/natives/linux_64
           mkdir -p javasrc/target/natives/windows_64
@@ -82,19 +82,19 @@ jobs:
           mv jnis/autocorrect_java-x86_64-apple-darwin.dylib javasrc/target/natives/osx_64/libautocorrect_java.dylib
           mv jnis/autocorrect_java-aarch64-apple-darwin.dylib javasrc/target/natives/osx_arm64/libautocorrect_java.dylib
       - name: Get version
-        working-directory: java
+        working-directory: autocorrect-java
         run: echo PACKAGE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
 
       - name: Update version
-        working-directory: java/javasrc
+        working-directory: autocorrect-java/javasrc
         run: mvn versions:set -DnewVersion=${PACKAGE_VERSION}
 
       - name: Publish maven package
         uses: samuelmeuli/action-maven-publish@v1
         with:
-          directory: java/javasrc
           maven_profiles: release
           maven_goals_phases: deploy
+          directory: autocorrect-java/javasrc
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
           nexus_username: ${{ secrets.OSSRH_USERNAME }}
