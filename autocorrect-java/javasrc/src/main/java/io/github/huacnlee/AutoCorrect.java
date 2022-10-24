@@ -1,5 +1,7 @@
 // autocorrect-disable
 package io.github.huacnlee;
+import org.scijava.nativelib.NativeLoader;
+import java.io.IOException;
 
 public class AutoCorrect {
     /**
@@ -18,6 +20,14 @@ public class AutoCorrect {
      * @return Formatted text
      */
     public static native String formatFor(String text, String filename);
+
+
+    /**
+     * Load .autocorrectrc config for AutoCorrect
+     *
+     * @param text JSON | YAML format config text.
+     */
+    public static native String loadConfig(String configStr);
 
     /**
      * AutoCorrect lint text by type
@@ -63,16 +73,29 @@ public class AutoCorrect {
      */
     static native String nativeLintResultString(long ptr, String field);
 
+    static native long nativeNewIgnorer(String work_dir);
+    static native boolean nativeIgnorerIsIgnored(long ptr, String filepath);
+
     public static LintResult lintFor(String text, String filepath) {
         long ptr = AutoCorrect.nativeLintFor(text, filepath);
         return new LintResult(ptr);
     }
 
     static {
-        System.loadLibrary("autocorrect_java");
+        try {
+            NativeLoader.loadLibrary("autocorrect_java");
+        } catch (IOException e) {
+            System.out.println("======================================");
+            System.out.println("Failed to load autocorrect_java");
+            e.printStackTrace();
+            System.out.println("======================================");
+            System.loadLibrary("autocorrect_java");
+        }
     }
 
     public static void main(String[] args) {
+        AutoCorrect.loadConfig("textRules:\n  warning文本: 2");
+
         System.out.println("\nAutoCorrect Test");
         String output = AutoCorrect.format("Hello你好");
         System.out.printf("format: %s\n", output);
@@ -80,7 +103,7 @@ public class AutoCorrect {
         output = AutoCorrect.formatFor("// Hello你好,这是Java注释.", "test.java");
         System.out.printf("formatFor: %s\n", output);
 
-        LintResult result = AutoCorrect.lintFor("// Hello你好,这是Java注释.", "test.java");
+        LintResult result = AutoCorrect.lintFor("// Hello你好,这是Java注释.\nString a = \"warning文本\"", "test.java");
         System.out.printf("LintResult.raw: %s\n", result.getRaw());
         System.out.printf("LintResult.filepath: %s\n", result.getFilepath());
 

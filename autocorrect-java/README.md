@@ -12,8 +12,16 @@ The Java version of [AutoCorrect](https://github.com/huacnlee/autocorrect) built
 
 ## Installation
 
-```bash
+Add `io.github.huacnlee:autocorrect-java` to your `pom.xml`:
 
+```xml
+<dependencies>
+    <dependency>
+        <groupId>io.github.huacnlee</groupId>
+        <artifactId>autocorrect-java</artifactId>
+        <version>2.3.1</version>
+    </dependency>
+</dependencies>
 ```
 
 ## Usage

@@ -1,6 +1,6 @@
 use autocorrect::{LineResult, LintResult};
 use jni::objects::{JClass, JString};
-use jni::sys::{jintArray, jlong, jsize, jstring};
+use jni::sys::{jboolean, jintArray, jlong, jsize, jstring};
 use jni::JNIEnv;
 
 #[no_mangle]
@@ -125,4 +125,45 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     };
 
     val as jlong
+}
+
+#[no_mangle]
+pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
+    env: JNIEnv,
+    _class: JClass,
+    config_str: JString,
+) {
+    let config_str: String = env.get_string(config_str).unwrap().into();
+
+    match autocorrect::config::load(&config_str) {
+        Ok(config) => Ok(()),
+        Err(e) => Err(&format!("{}", e)),
+    };
+}
+
+#[no_mangle]
+pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeNewIgnorer(
+    env: JNIEnv,
+    _class: JClass,
+    work_dir: JString,
+) -> jlong {
+    let work_dir: String = env.get_string(work_dir).unwrap().into();
+
+    let ignorer = autocorrect::ignorer::Ignorer::new(&work_dir);
+
+    Box::into_raw(Box::new(ignorer)) as jlong
+}
+
+#[no_mangle]
+/// # Safety
+pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeIgnorerIsIgnored(
+    env: JNIEnv,
+    _class: JClass,
+    ignorer: jlong,
+    filepath: JString,
+) -> jboolean {
+    let ignorer = &*(ignorer as *const autocorrect::ignorer::Ignorer);
+    let filepath: String = env.get_string(filepath).unwrap().into();
+
+    ignorer.is_ignored(&filepath) as jboolean
 }
