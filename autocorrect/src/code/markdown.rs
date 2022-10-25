@@ -26,7 +26,7 @@ slug: /appstore/ipad_and_ios
 original_slug: Web/CSS/网格-模板-列
 ---
 
-# 这是Heading 1大标题[示例](#示例)
+# 这是Heading 1大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 
 它指向一个[示例](#示例)
 
@@ -132,7 +132,7 @@ slug: /appstore/ipad_and_ios
 original_slug: Web/CSS/网格-模板-列
 ---
 
-# 这是 Heading 1 大标题[示例](#示例)
+# 这是 Heading 1 大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 
 它指向一个[示例](#示例)
 
@@ -171,7 +171,7 @@ https://google.com/foo/__ios__
 **加粗** 
 *倾斜*
 ~~删除线~~
-这是**Bold 加粗**在 1 个段落中，这端会 correct 掉，如果是 inline code，例如`Rust 语言`，也可以应该处理。
+这是**Bold 加粗**在 1 个段落中，这端会 correct 掉，如果是 inline code，例如`Rust语言`，也可以应该处理。
 
 ## （一）测试 Heading 处理，应该忽略#号后再处理。
 ###测试 Heading 处理，应该忽略#号后再处理。

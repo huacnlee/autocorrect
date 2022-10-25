@@ -10,7 +10,7 @@ block = ${
   (block_prefix ~ (inline | string)+) 
   | paragraph  
 }
-inline = ${ wikilinks | img | link | mark }
+inline = ${ wikilinks | img | link | code | mark }
 paragraph = { (string | inline)+ }
 
 html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
@@ -50,6 +50,10 @@ wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 mark = ${ PUSH(mark_wrap) ~ (mark | mark_string) ~ mark_wrap }
 mark_wrap = @{ "***" | "**" | "*" | "~~" | "`" | "\"" }
 mark_string = { (!(PEEK | newline | inline) ~ ANY)* }
+
+code = ${ code_wrap ~ inner_code ~ code_wrap }
+code_wrap = @{ "`" }
+inner_code = @{ (!(newline | code_wrap) ~ ANY)*  }
 
 string = @{ (!(newline | inline) ~ ANY)+ }
 
