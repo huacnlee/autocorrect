@@ -128,6 +128,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
 }
 
 #[no_mangle]
+#[allow(unused)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
     env: JNIEnv,
     _class: JClass,
@@ -136,7 +137,7 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
     let config_str: String = env.get_string(config_str).unwrap().into();
 
     match autocorrect::config::load(&config_str) {
-        Ok(config) => Ok(()),
+        Ok(_config) => Ok(()),
         Err(e) => Err(&format!("{}", e)),
     };
 }

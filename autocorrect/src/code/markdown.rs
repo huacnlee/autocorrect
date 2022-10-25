@@ -44,6 +44,8 @@ original_slug: Web/CSS/网格-模板-列
 
 > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
 
+它无需[握手](<https://zh.wikipedia.org/wiki/握手_(技术)>)会话。
+
 - 你可以[添加新的条目](#Glossary)或完善条目。
 
 <!-- 这里是comment文字 -->
@@ -147,6 +149,8 @@ original_slug: Web/CSS/网格-模板-列
 `svh`, `lvh`, `dvh`, `svw`, `lvw`, `dvw`, `svmax`, `lvmax`, `dvmax`, `svmin`, `lvmin`, `dvmin` 
 
 > **备注：** 你可以[添加新的条目](#Glossary)或完善条目。
+
+它无需[握手](<https://zh.wikipedia.org/wiki/握手_(技术)>)会话。
 
 - 你可以[添加新的条目](#Glossary)或完善条目。
 

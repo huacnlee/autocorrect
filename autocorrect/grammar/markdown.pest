@@ -10,7 +10,7 @@ block = ${
   (block_prefix ~ (inline | string)+) 
   | paragraph  
 }
-inline = ${ img | link | mark | wikilinks }
+inline = ${ wikilinks | img | link | mark }
 paragraph = { (string | inline)+ }
 
 html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
@@ -43,7 +43,7 @@ img = ${ image_prefix ~ link }
 
 link = ${ link_string ~ href }
 link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" }
-href = { "(" ~ (!(")" | newline) ~ ANY)* ~ ")" }
+href = { paren }
 
 wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 
@@ -56,3 +56,8 @@ string = @{ (!(newline | inline) ~ ANY)+ }
 comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
 comment_tag_start = @{  "<!--" }
 comment_tag_end = @{ "-->" }
+
+paren = { open_paren ~ paren* ~ close_paren | inner_paren }
+inner_paren = { (!(newline | open_paren | close_paren) ~ ANY)+ } 
+open_paren = { "(" }
+close_paren = { ")" }
