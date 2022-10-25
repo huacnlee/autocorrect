@@ -19,9 +19,25 @@ Add `io.github.huacnlee:autocorrect-java` to your `pom.xml`:
     <dependency>
         <groupId>io.github.huacnlee</groupId>
         <artifactId>autocorrect-java</artifactId>
-        <version>2.3.1</version>
+        <version>2.3.2</version>
+    </dependency>
+    <!-- NativeLibrary need slf4j, so there need add -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>1.7.36</version>
     </dependency>
 </dependencies>
+```
+
+With Gradle:
+
+```groovy
+dependencies {
+    implementation 'io.github.huacnlee:autocorrect-java:2.3.2'
+    // NativeLibrary need slf4j, so there need add
+    implementation 'org.slf4j:slf4j-nop:1.7.36'
+}
 ```
 
 ## Usage
@@ -30,6 +46,10 @@ Add `io.github.huacnlee:autocorrect-java` to your `pom.xml`:
 import io.github.huacnlee.AutoCorrect;
 
 public static void main(String[] args) {
+    // Load config from string
+    String configStr = "{ ... }";
+    AutoCorrect.loadConfig(configStr);
+
     String output = AutoCorrect.format("Hello你好");
     System.out.println(output);
     // Hello 你好

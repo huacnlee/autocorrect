@@ -104,16 +104,14 @@ $ autocorrect update
 
 ## Usage
 
-- [Using CLI](#using-cli)
+- [Use in CLI](#use-in-cli)
 - [Configuration](#configuration)
 - [VS Code Extension](#vs-code-extension)
-- [Use for JavaScript](#use-for-javascript)
-- [Use for Node.js](#use-for-nodejs)
-- [Use for Rust](#use-for-rust)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
+- [Use for programming](#use-for-programming)
 
-### Using CLI
+### Use in CLI
 
 ```bash
 $ autocorrect text.txt
@@ -343,111 +341,9 @@ autocorrect:
   # allow_failure: true
 ```
 
-### Use for JavaScript
+### Use for programming
 
-AutoCorrect also provide a JavaScript module via WebAssembly, you can use it in your JavaScript project.
-
-```bash
-yarn add @huacnlee/autocorrect
-```
-
-And then:
-
-```js
-const autocorrect = import('@huacnlee/autocorrect');
-
-const raw = `<p>你好Hello世界</p>`;
-autocorrect.then((autocorrect) => {
-  const out = autocorrect.formatHTML(raw);
-  // "<p>你好 Hello 世界</p>"
-});
-```
-
-### Use for Node.js
-
-When you want use AutoCorrect in Node.js, you must install `autocorrect-node`.
-
-```bash
-yarn add autocorrect-node
-```
-
-And then:
-
-```js
-const autocorrect = require('autocorrect-node');
-
-autocorrect.format('你好Hello世界');
-// "你好 Hello 世界"
-```
-
-### Use for Rust
-
-In your `Cargo.toml`
-
-```toml
-[dependencies]
-autocorrect = "1.0.0"
-```
-
-Use `autocorrect::format` to format plain text.
-
-````rust
-extern crate autocorrect;
-
-fn main() {
-	println!("{}", autocorrect::format("长桥LongBridge App下载"));
-	// => "长桥 LongBridge App 下载"
-
-	println!("{}", autocorrect::format("Ruby 2.7版本第1次发布"));
-	// => "Ruby 2.7 版本第 1 次发布"
-
-	println!("{}", autocorrect::format("于3月10日开始"));
-	// => "于 3 月 10 日开始"
-
-	println!("{}", autocorrect::format("包装日期为2013年3月10日"));
-	// => "包装日期为 2013 年 3 月 10 日"
-
-	println!("{}", autocorrect::format("全世界已有数百家公司在生产环境中使用Rust，以达到快速、跨平台、低资源占用的目的。"));
-	// => "全世界已有数百家公司在生产环境中使用 Rust，以达到快速、跨平台、低资源占用的目的。"
-
-	println!("{}", autocorrect::format("既に、世界中の数百という企業がRustを採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"));
-	// => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
-
-	println!("{}", autocorrect::format("전 세계 수백 개의 회사가 프로덕션 환경에서 Rust를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."));
-	// => "전 세계 수백 개의 회사가 프로덕션 환경에서 Rust 를 사용하여 빠르고, 크로스 플랫폼 및 낮은 리소스 사용량을 달성했습니다."
-
-	println!("{}", autocorrect::format("需要符号?自动转换全角字符、数字:我们将在１６：３２分出发去ＣＢＤ中心.")
-	// => "需要符号？自动转换全角字符、数字：我们将在 16:32 分出发去 CBD 中心。"
-```
-
-Use `autocorrect::format_for` to format HTML content.
-
-```rust
-extern crate autocorrect;
-
-fn main() {
-	let html = r#"
-	<article>
-	<h1>这是Heading标题</h1>
-	<div class="content">
-	<p>你好Rust世界<strong>Bold文本</strong></p>
-	<p>这是第二行p标签</p>
-	</div>
-	</article>
-	"#;
-
-	println!("{}", autocorrect::format_for(html, "html"));
-	// <article>
-	// <h1>这是 Heading 标题</h1>
-	// <div class="content">
-	//     <p>你好 Rust 世界<strong>Bold 文本</strong></p>
-	//     <p>这是第二行 p 标签</p>
-	// </div>
-	// </article>
-}
-````
-
-## Other implements for programming
+AutoCorrect make for supports use in many programming languages.
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
 - Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-rb)
@@ -455,6 +351,7 @@ fn main() {
 - Python - [autocorrect-py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
 - Node.js - [autocorrect-node](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-node)
 - JavaScript (Browser) - [autocorrect-wasm](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-wasm)
+- Java - [autocorrect-java](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-java)
 
 ## Benchmark
 
