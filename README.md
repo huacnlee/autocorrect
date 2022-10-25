@@ -16,6 +16,7 @@
         src="https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg" alt="NPM"></a>
     <a href="https://pypi.org/project/autocorrect-py/"><img src="https://badge.fury.io/py/autocorrect-py.svg" alt="PyPI version"></a>
     <a href="https://rubygems.org/gems/autocorrect-rb"><img src="https://badge.fury.io/rb/autocorrect-rb.svg" alt="Gem Version"></a>
+    <a href="https://repo1.maven.org/maven2/io/github/huacnlee/autocorrect-java/"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.huacnlee/autocorrect-java"></a>
   </p>
 </p>
 
