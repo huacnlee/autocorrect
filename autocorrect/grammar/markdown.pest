@@ -15,8 +15,9 @@ paragraph = { (string | inline)+ }
 
 html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
+
 newline = ${ "\n" | "\r" }
-space = @{ (" ")* }
+space = @{ " "* }
 
 codeblock = ${
   PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
@@ -47,19 +48,21 @@ href = { paren }
 
 wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 
-mark = ${ PUSH(mark_wrap) ~ (mark | mark_string) ~ mark_wrap }
-mark_wrap = @{ "***" | "**" | "*" | "~~" | "`" | "\"" }
+mark = ${ PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
+open_mark = @{ "***" | "**" | "*" | "~~" | "`" | "\"" }
+close_mark = @{ POP }
 mark_string = { (!(PEEK | newline | inline) ~ ANY)* }
 
-code = ${ code_wrap ~ inner_code ~ code_wrap }
-code_wrap = @{ "`" }
-inner_code = @{ (!(newline | code_wrap) ~ ANY)*  }
+code = ${ PUSH(open_code) ~ inner_code ~ close_code }
+open_code = @{ "`" }
+close_code = @{ POP }
+inner_code = @{ (!(newline | PEEK) ~ ANY)*  }
 
 string = @{ (!(newline | inline) ~ ANY)+ }
 
-comment = ${ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_tag_end }
-comment_tag_start = @{  "<!--" }
-comment_tag_end = @{ "-->" }
+comment = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
+open_comment = @{  "<!--" }
+close_comment = @{ "-->" }
 
 paren = { open_paren ~ paren* ~ close_paren | inner_paren }
 inner_paren = { (!(newline | open_paren | close_paren) ~ ANY)+ } 

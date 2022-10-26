@@ -1,3 +1,6 @@
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ string | regexp | comment | space | other | newline }
+
 newline = ${ "\n" | "\r" }
 space = ${ " "+ }
 
@@ -6,17 +9,13 @@ comment = ${ single_line_comment | multiline_comment }
 single_line_comment = _{ "#" ~ (!(newline) ~ ANY)* }
 multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
-string = ${ string_val }
-string_val = _{
-  ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") 
-  | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
-}
+string = ${ PUSH(open_string) ~ string_val ~ close_string }
+string_val = { (!(newline | PEEK) ~ ANY)* }
+open_string = @{ "'" | "\"" }
+close_string = @{ POP }
 
 regexp = ${
-  (PUSH("/") ~ (!(newline | "/") ~ ANY)* ~ POP ) 
+  PUSH("/") ~ (!(newline | "/") ~ ANY)* ~ POP
   | ( "%r{" ~ (!(newline | "}") ~ ANY)* ~ "}" )
-  | ("Regexp.new(" ~ " "* ~ string_val ~  (!")" ~ ANY)* ~ ")")
+  | ("Regexp.new(" ~ " "* ~ (!")" ~ ANY)* ~ ")")
 }
-
-line = _{ string | regexp | comment | space | other | newline }
-item = _{ SOI ~ line* ~ EOI } 
