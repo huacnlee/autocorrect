@@ -26,6 +26,8 @@ slug: /appstore/ipad_and_ios
 original_slug: Web/CSS/网格-模板-列
 ---
 
+page-tags: 美国, 中国,德国 , 法国
+
 # 这是Heading 1大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 
 它指向一个[示例](#示例)
@@ -131,6 +133,8 @@ id: h
 slug: /appstore/ipad_and_ios
 original_slug: Web/CSS/网格-模板-列
 ---
+
+page-tags: 美国, 中国,德国 , 法国
 
 # 这是 Heading 1 大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 

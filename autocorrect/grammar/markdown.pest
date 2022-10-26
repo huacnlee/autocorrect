@@ -7,7 +7,8 @@ expr = _{
 }
 
 block = ${ 
-  (block_prefix ~ (inline | string)+) 
+  meta_tags
+  | (block_prefix ~ (inline | string)+) 
   | paragraph  
 }
 inline = ${ wikilinks | img | link | code | mark }
@@ -38,6 +39,13 @@ meta_info = ${ meta_wrap ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }
 meta_wrap = @{ "-"{3,} }
 meta_pair = ${ meta_key ~ string ~ newline }
 meta_key = @{ (!(":" | newline) ~ ANY)* ~ ":" ~ " "* }
+
+// Ignore tags in Markdown
+// tags: 美国, 中国
+meta_tags = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item }
+meta_tags_val = @{ meta_tags_item ~ meta_tags_divider }
+meta_tags_item = { (!(newline | ",")  ~ ANY)* }
+meta_tags_divider = { " "* ~ "," ~ " "* }
 
 image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
