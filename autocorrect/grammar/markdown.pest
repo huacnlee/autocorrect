@@ -2,13 +2,14 @@ item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | newline }
 
 expr = _{ 
-  comment | html_tag | meta_info
-  | codeblock | block | inline | td_tag
+  comment | html_tag | meta_info | block | inline | td_tag
 }
 
 block = ${ 
   meta_tags
-  | (block_prefix ~ (inline | string)+) 
+  | list
+  | codeblock
+  | block_item
   | paragraph  
 }
 inline = ${ wikilinks | img | link | code | mark }
@@ -19,20 +20,44 @@ html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
 newline = ${ "\n" | "\r" }
 space = @{ " "* }
+indent = @{ " "{4,} | "\t" }
 
 codeblock = ${
   PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
   | indent_code+
 }
-indent_code = {
-  ("    " | "\t") ~ (!"\n" ~ ANY)* ~ newline
+indent_code = @{
+  indent ~ (!"\n" ~ ANY)* ~ newline
 }
 codeblock_lang = { ASCII_ALPHA* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
 td_tag = @{ space ~ "|" ~ space }
+
 block_prefix = @{
    ("######" | "#####" | "####" | "###" | "##" | "#" | ">") ~ " "*
-   | (" "* ~ ("*" | "-" | ASCII_DIGIT ~ ".") ~ " "+)
+}
+block_item = { (block_prefix ~ (inline | string)+)  }
+
+list = { list_item ~ (list_item | list_paragraph)*  }
+list_item = ${ list_prefix ~ (inline | string)+ ~ newline+ }
+list_paragraph = { indent ~ (inline | string)* ~ newline+ }
+list_prefix = @{
+  /*
+    - Foo
+    * Foo
+    1. Foo
+    [ ] Foo
+    [x] Foo
+  */
+  (
+    " "* ~ 
+    (
+      "*" 
+      | "-" 
+      | ASCII_DIGIT ~ "." 
+      | "[" ~ (" " | "x" | "X") ~ "]"
+    ) ~ " "*
+  )
 }
 
 meta_info = ${ meta_wrap ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }

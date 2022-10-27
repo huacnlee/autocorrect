@@ -34,11 +34,26 @@ page-tags: 美国, 中国,德国 , 法国
 
 ## This is list
 
-1. Item 1
-    1. Item 1.1
-    1. Item 1.1.1
-2. Item 2
-3. Item 3
+1. List有序列表1
+    1. 有序列表1.1
+      2. 有序列表1.1.1
+    1. 有序列表1.2
+3. List有序列表2
+  - 无序列表2.1
+    无序列表paragraph
+
+    无序列表paragraph，这里是第2段。
+
+    * 无序列表2.1.1
+    * 无序列表2.1.2
+
+      无序列表paragraph，以及里面有`code代码`的例子，还有**加粗bold**。
+
+  - 无序列表2.2
+4. List有序列表3
+  [ ] TODO列表1
+  [x] TODO列表checked
+  [X] TODO列表checked
 
 ## Test multiple code will not deadlock
 
@@ -142,11 +157,26 @@ page-tags: 美国, 中国,德国 , 法国
 
 ## This is list
 
-1. Item 1
-    1. Item 1.1
-    1. Item 1.1.1
-2. Item 2
-3. Item 3
+1. List 有序列表 1
+    1. 有序列表 1.1
+      2. 有序列表 1.1.1
+    1. 有序列表 1.2
+3. List 有序列表 2
+  - 无序列表 2.1
+    无序列表 paragraph
+
+    无序列表 paragraph，这里是第 2 段。
+
+    * 无序列表 2.1.1
+    * 无序列表 2.1.2
+
+      无序列表 paragraph，以及里面有`code代码`的例子，还有**加粗 bold**。
+
+  - 无序列表 2.2
+4. List 有序列表 3
+  [ ] TODO 列表 1
+  [x] TODO 列表 checked
+  [X] TODO 列表 checked
 
 ## Test multiple code will not deadlock
 
