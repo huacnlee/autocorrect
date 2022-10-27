@@ -6,7 +6,7 @@
 
     <groupId>io.github.huacnlee</groupId>
     <artifactId>autocorrect-java</artifactId>
-    <version>2.4.0</version>
+    <version>2.4.1</version>
     <name>autocorrect-java</name>
     <description>A linter and formatter to help you to improve copywriting, correct spaces, words, punctuations between
         CJK (Chinese, Japanese, Korean).
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.scijava</groupId>
             <artifactId>native-lib-loader</artifactId>
-            <version>2.4.0</version>
+            <version>2.4.1</version>
         </dependency>
     </dependencies>
 

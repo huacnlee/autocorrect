@@ -2,7 +2,7 @@ $:.push File.expand_path("lib", __dir__)
 
 Gem::Specification.new do |s|
   s.name = "autocorrect-rb"
-  s.version = "2.4.0"
+  s.version = "2.4.1"
   s.platform = Gem::Platform::RUBY
   s.authors = ["Jason Lee"]
   s.email = ["huacnlee@gmail.com"]
