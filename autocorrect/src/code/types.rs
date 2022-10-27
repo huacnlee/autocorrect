@@ -94,6 +94,8 @@ lazy_static! {
     "cc" => "c",
     "cpp" => "c",
     "c" => "c",
+    // XML
+    "xml" => "xml",
     // plain
     "text" => "text",
     "plain" => "text",
@@ -184,5 +186,7 @@ mod tests {
 
         assert_eq!("kotlin", match_filename("app.gradle"));
         assert_eq!("kotlin", match_filename("app.kt"));
+
+        assert_eq!("xml", match_filename("zh-CN.xml"));
     }
 }

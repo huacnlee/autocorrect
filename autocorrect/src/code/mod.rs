@@ -26,6 +26,7 @@ mod scala;
 mod sql;
 mod strings;
 mod swift;
+mod xml;
 mod yaml;
 
 pub use code::*;
@@ -56,6 +57,7 @@ pub use scala::*;
 pub use sql::*;
 pub use strings::*;
 pub use swift::*;
+pub use xml::*;
 pub use yaml::*;
 
 /// Lint a file content with filetype.
@@ -105,6 +107,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "gettext" => lint_gettext(raw),
         "conf" => lint_conf(raw),
         "c" => lint_c(raw),
+        "xml" => lint_xml(raw),
         "text" => lint_markdown(raw),
         _ => LintResult::new(raw),
     };
@@ -161,6 +164,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "gettext" => format_gettext(raw),
         "conf" => format_conf(raw),
         "c" => format_c(raw),
+        "xml" => format_xml(raw),
         "text" => format_markdown(raw),
         _ => {
             let mut result = FormatResult::new(raw);
