@@ -2,21 +2,15 @@
   <img src="https://user-images.githubusercontent.com/5518/194691346-13856309-266b-4bf6-b505-5a8b15d0c02e.png"
     alt="AutoCorrect Icon" width="128" height="128" />
   <h1 align="center">AutoCorrect</h1>
-  <p align="center"><a href="https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI"><img
-        src="https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg" alt="Go"></a>
-    <a href="https://github.com/huacnlee/autocorrect/releases"><img
-        src="https://img.shields.io/github/v/release/huacnlee/autocorrect?label=Version"
-        alt="GitHub release (latest by date)"></a>
-    <a href="https://hub.docker.com/r/huacnlee/autocorrect"><img
-        src="https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker%20Image"
-        alt="Docker Image Version (latest server)"></a>
-    <a href="https://crates.io/crates/autocorrect"><img src="https://img.shields.io/crates/v/autocorrect"
-        alt="Crates.io"></a>
-    <a href="https://www.npmjs.com/package/@huacnlee/autocorrect"><img
-        src="https://badge.fury.io/js/%40huacnlee%2Fautocorrect.svg" alt="NPM"></a>
-    <a href="https://pypi.org/project/autocorrect-py/"><img src="https://badge.fury.io/py/autocorrect-py.svg" alt="PyPI version"></a>
-    <a href="https://rubygems.org/gems/autocorrect-rb"><img src="https://badge.fury.io/rb/autocorrect-rb.svg" alt="Gem Version"></a>
-    <a href="https://repo1.maven.org/maven2/io/github/huacnlee/autocorrect-java/"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.huacnlee/autocorrect-java"></a>
+  <p align="center">
+    <a href="https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI"><img src="https://github.com/huacnlee/autocorrect/workflows/CI/badge.svg" alt="Go"></a>
+    <a href="https://github.com/huacnlee/autocorrect/releases"><img src="https://img.shields.io/github/v/release/huacnlee/autocorrect?label=CLI&color=blue" alt="GitHub release (latest by date)"></a>
+    <a href="https://hub.docker.com/r/huacnlee/autocorrect"><img src="https://img.shields.io/docker/v/huacnlee/autocorrect?label=Docker&color=blue" alt="Docker Image Version (latest server)"></a>
+    <a href="https://crates.io/crates/autocorrect"><img src="https://img.shields.io/crates/v/autocorrect?color=1t&label=Crate" alt="Crates.io"></a>
+    <a href="https://www.npmjs.com/package/@huacnlee/autocorrect"><img src="https://img.shields.io/npm/v/@huacnlee/autocorrect?color=1t&label=NPM" alt="NPM"></a>
+    <a href="https://pypi.org/project/autocorrect-py/"><img src="https://img.shields.io/pypi/v/autocorrect-py?color=1&label=PyPI" alt="PyPI version"></a>
+    <a href="https://rubygems.org/gems/autocorrect-rb"><img src="https://img.shields.io/gem/v/autocorrect-rb?color=1&label=Gem" alt="Gem Version"></a>
+    <a href="https://repo1.maven.org/maven2/io/github/huacnlee/autocorrect-java/"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.huacnlee/autocorrect-java?color=1&label=Maven"></a>
   </p>
 </p>
 
