@@ -200,6 +200,7 @@ jobs:
     name: Publish Node
     runs-on: ubuntu-latest
     needs:
+      - build
       - test-macOS-windows-binding
       - test-linux-x64-gnu-binding
     steps:
