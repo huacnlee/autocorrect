@@ -50,5 +50,5 @@ console.log(out);
 
 // Ignorer, if /path/to/workdir contains .autocorrectignore or .gitignore
 const ignorer = new autocorrect.Ignorer('/path/to/workdir');
-ignorer.ignored('README.md');
+ignorer.isIgnored('README.md');
 ```

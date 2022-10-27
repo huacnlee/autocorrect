@@ -59,6 +59,25 @@ impl LintResult {
     }
 }
 
+#[pyclass]
+struct Ignorer {
+    core: autocorrect::ignorer::Ignorer,
+}
+
+#[pymethods]
+impl Ignorer {
+    #[new]
+    fn new(work_dir: &str) -> Self {
+        Ignorer {
+            core: autocorrect::ignorer::Ignorer::new(work_dir),
+        }
+    }
+
+    fn is_ignored(&self, path: &str) -> bool {
+        self.core.is_ignored(path)
+    }
+}
+
 /// Automatically add spaces between Chinese and English words.
 ///
 /// This method only work for plain text.
@@ -111,6 +130,11 @@ fn lint_for(raw: &str, filename_or_ext: &str) -> PyResult<LintResult> {
     }
 }
 
+#[pyfunction]
+fn load_config(config_str: &str) {
+    autocorrect::config::load(config_str).unwrap();
+}
+
 /// Automatically add whitespace between CJK (Chinese, Japanese, Korean)
 /// and half-width characters (alphabetical letters, numerical digits and symbols).
 #[pymodule]
@@ -118,10 +142,12 @@ fn autocorrect_py(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Severity>()?;
     m.add_class::<LineResult>()?;
     m.add_class::<LintResult>()?;
+    m.add_class::<Ignorer>()?;
 
     m.add_function(wrap_pyfunction!(format, m)?)?;
     m.add_function(wrap_pyfunction!(format_for, m)?)?;
     m.add_function(wrap_pyfunction!(lint_for, m)?)?;
+    m.add_function(wrap_pyfunction!(load_config, m)?)?;
 
     Ok(())
 }
