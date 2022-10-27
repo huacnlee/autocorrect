@@ -22,7 +22,7 @@ lazy_static = "1.4.0"
 log = "0.4"
 num_cpus = "1.13.0"
 threadpool = "1.8.1"
-walkdir = "2.4.0"
+walkdir = "2.3.2"
 
 # Config template from remote
 # Request features:
