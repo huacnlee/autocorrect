@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import { format, formatFor, lintFor } from '../index.js';
+import { format, formatFor, Ignorer, lintFor, loadConfig } from '../index.js';
 
 test('format', (t) => {
   t.assert(format('Hello你好.') === 'Hello 你好。');
@@ -25,4 +25,19 @@ test('lintFor', (t) => {
       },
     ],
   });
+});
+
+test('loadConfig', (t) => {
+  loadConfig("{ textRules: { '你好hello': 0 } }");
+  t.assert(format('Hello你好.') === 'Hello 你好。');
+  t.assert(format('你好hello.') === '你好hello.');
+});
+
+test('Ignorer', (t) => {
+  const ignorer = new Ignorer('../');
+  t.assert(ignorer.isIgnored('node_modules/foo/bar') === true);
+  t.assert(ignorer.isIgnored('README.md') === true);
+  t.assert(ignorer.isIgnored('src/lib.rs') === true);
+  t.assert(ignorer.isIgnored('Cagro.toml') === false);
+  t.assert(ignorer.isIgnored('__test__/foo/bar.js') === false);
 });

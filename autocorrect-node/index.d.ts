@@ -18,3 +18,8 @@ export interface LintResult {
 export function format(text: string): string
 export function formatFor(text: string, filepath: string): string
 export function lintFor(text: string, filepath: string): LintResult
+export function loadConfig(configStr: string): void
+export class Ignorer {
+  constructor(workDir: string)
+  isIgnored(path: string): boolean
+}
