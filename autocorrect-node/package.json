@@ -27,7 +27,7 @@
     "build": "napi build --platform --release",
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
-    "test": "yarn build && ava",
+    "test": "ava",
     "version": "napi version"
   },
   "packageManager": "yarn@3.2.4"
