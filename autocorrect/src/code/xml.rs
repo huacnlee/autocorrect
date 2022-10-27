@@ -14,7 +14,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn it_format_yaml() {
+    fn it_format_xml() {
         let example = r#"
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
