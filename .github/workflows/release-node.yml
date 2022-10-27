@@ -3,7 +3,6 @@ env:
   DEBUG: napi:*
   APP_NAME: autocorrect-node
   MACOSX_DEPLOYMENT_TARGET: "10.13"
-  CI: release-node
 on:
   push:
     tags:
