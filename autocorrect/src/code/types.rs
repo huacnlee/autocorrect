@@ -59,12 +59,15 @@ lazy_static! {
     "cs" => "csharp",
     // java
     "java" => "java",
+    "proto" => "java",
     // scala
     "scala" => "scala",
     // swift
     "swift" => "swift",
     // kotlin
     "kotlin" => "kotlin",
+    "kt" => "kotlin",
+    "gradle" => "kotlin",
     // php
     "php" => "php",
     // dart
@@ -169,5 +172,17 @@ mod tests {
         assert_eq!("Gemfile", get_file_extension("Gemfile"));
         assert_eq!("js", get_file_extension("/dar.js"));
         assert_eq!("dar", get_file_extension("/foo/bar/dar"));
+    }
+
+    #[test]
+    fn test_match_filename() {
+        assert_eq!("conf", match_filename("app.properties"));
+        assert_eq!("conf", match_filename("app.ini"));
+        assert_eq!("conf", match_filename("app.toml"));
+
+        assert_eq!("java", match_filename("main.proto"));
+
+        assert_eq!("kotlin", match_filename("app.gradle"));
+        assert_eq!("kotlin", match_filename("app.kt"));
     }
 }
