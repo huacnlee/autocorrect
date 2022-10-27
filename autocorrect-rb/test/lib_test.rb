@@ -24,4 +24,19 @@ class FormatTest < ActiveSupport::TestCase
       }, result
     )
   end
+
+  test "load_config" do
+    AutoCorrect.load_config(%({ textRules: { "你好hello": 0 } }))
+    assert_equal AutoCorrect.format("Hello你好."), "Hello 你好。"
+    assert_equal AutoCorrect.format("你好hello."), "你好hello."
+  end
+
+  test "Ignorer" do
+    ignorer = AutoCorrect::Ignorer.new("../")
+    assert ignorer.ignored?("README.md")
+    assert ignorer.ignored?("src/lib.rs")
+    assert ignorer.ignored?("target/foo/bar")
+    assert !ignorer.ignored?("Cagro.toml")
+    assert !ignorer.ignored?("autocorrect-rb.gemspec")
+  end
 end

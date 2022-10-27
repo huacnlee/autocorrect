@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.1.2.beta2)
+    autocorrect-rb (2.4.0)
       rb_sys (>= 0.9.18)
 
 GEM

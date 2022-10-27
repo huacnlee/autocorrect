@@ -38,6 +38,19 @@ puts result
 #   ],
 #   error: ''
 # }
+
+config_str = %({ textRules: { "你好hello": 0 } })
+AutoCorrect.load_config(config_str)
+out = AutoCorrect.format('Hello你好.')
+puts out
+# Hello 你好。
+out = AutoCorrect.format('你好hello')
+puts out
+# 你好hello
+
+# Ignorer, if /path/to/workdir contains .autocorrectignore or .gitignore
+ignorer = AutoCorrect::Ignorer.new("/path/to/")
+ignorer.ignored?("README.md")
 ```
 
 ## Benchmarks

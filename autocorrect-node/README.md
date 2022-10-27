@@ -37,4 +37,18 @@ console.log(result);
 //   ],
 //   error: ''
 // }
+
+// Load Config
+const configStr = JSON.stringify({ textRules: { 你好hello: 0 } });
+autocorrect.loadConfig(configStr);
+out = autocorrect.format('Hello你好.');
+console.log(out);
+// Hello 你好。
+out = autocorrect.format('你好hello');
+console.log(out);
+// 你好hello
+
+// Ignorer, if /path/to/workdir contains .autocorrectignore or .gitignore
+const ignorer = new autocorrect.Ignorer('/path/to/workdir');
+ignorer.ignored('README.md');
 ```

@@ -1,4 +1,4 @@
-use magnus::{define_class, function, Error, Object};
+use magnus::{define_class, function, method, Error, Module, Object};
 
 #[derive(Debug, Clone)]
 pub struct LineResult {
@@ -84,6 +84,23 @@ impl LintResult {
     }
 }
 
+#[magnus::wrap(class = "AutoCorrect::Ignorer")]
+pub struct Ignorer {
+    core: autocorrect::ignorer::Ignorer,
+}
+
+impl Ignorer {
+    pub fn new(work_dir: String) -> Self {
+        Ignorer {
+            core: autocorrect::ignorer::Ignorer::new(&work_dir),
+        }
+    }
+
+    fn is_ignored(&self, path: String) -> bool {
+        self.core.is_ignored(&path)
+    }
+}
+
 pub fn format(input: String) -> String {
     autocorrect::format(&input)
 }
@@ -105,7 +122,7 @@ pub fn lint_for(input: String, filename_or_ext: String) -> magnus::RHash {
                 col: l.col,
                 new: l.new.clone(),
                 old: l.old.clone(),
-                severity: l.severity.clone() as usize,
+                severity: l.severity as usize,
             })
             .collect::<_>(),
         error: result.error,
@@ -114,12 +131,21 @@ pub fn lint_for(input: String, filename_or_ext: String) -> magnus::RHash {
     .unwrap()
 }
 
+pub fn load_config(config_str: String) {
+    autocorrect::config::load(&config_str).unwrap();
+}
+
 #[magnus::init(name = "autocorrect")]
 fn init() -> Result<(), Error> {
     let class = define_class("AutoCorrect", Default::default())?;
     class.define_singleton_method("format", function!(format, 1))?;
     class.define_singleton_method("format_for", function!(format_for, 2))?;
     class.define_singleton_method("lint_for", function!(lint_for, 2))?;
+    class.define_singleton_method("load_config", function!(load_config, 1))?;
+
+    let ignorer_class = class.define_class("Ignorer", Default::default())?;
+    ignorer_class.define_singleton_method("new", function!(Ignorer::new, 1))?;
+    ignorer_class.define_method("ignored?", method!(Ignorer::is_ignored, 1))?;
 
     Ok(())
 }
