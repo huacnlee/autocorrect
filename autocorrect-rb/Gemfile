@@ -7,3 +7,4 @@ gem "benchmark-ips"
 
 gem "rake-compiler", "~> 1.2"
 gem "rb_sys"
+gem "memory_profiler"

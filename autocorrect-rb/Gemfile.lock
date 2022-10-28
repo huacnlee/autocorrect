@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.4.0)
+    autocorrect-rb (2.4.3)
       rb_sys (>= 0.9.18)
 
 GEM
@@ -16,6 +16,7 @@ GEM
     concurrent-ruby (1.1.10)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    memory_profiler (1.0.1)
     minitest (5.16.3)
     rake (13.0.6)
     rake-compiler (1.2.0)
@@ -33,6 +34,7 @@ DEPENDENCIES
   activesupport
   autocorrect-rb!
   benchmark-ips
+  memory_profiler
   minitest
   rake
   rake-compiler (~> 1.2)
