@@ -13,7 +13,6 @@
     </description>
     <url>https://github.com/huacnlee/autocorrect</url>
     <packaging>jar</packaging>
-
     <developers>
         <developer>
             <name>Jason Lee</name>
@@ -22,7 +21,6 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-
     <licenses>
         <license>
             <name>MIT License</name>
