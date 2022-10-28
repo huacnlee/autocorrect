@@ -1,5 +1,7 @@
 # AutoCorrect for Java
 
+<a href="https://repo1.maven.org/maven2/io/github/huacnlee/autocorrect-java/"><img alt="Maven Central" src="https://img.shields.io/maven-central/v/io.github.huacnlee/autocorrect-java?color=1&label=Maven"></a>
+
 The Java version of [AutoCorrect](https://github.com/huacnlee/autocorrect) built for Java.
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
@@ -19,7 +21,7 @@ Add `io.github.huacnlee:autocorrect-java` to your `pom.xml`:
     <dependency>
         <groupId>io.github.huacnlee</groupId>
         <artifactId>autocorrect-java</artifactId>
-        <version>2.3.2</version>
+        <version>2.4.3</version>
     </dependency>
     <!-- NativeLibrary need slf4j, so there need add -->
     <dependency>
@@ -34,7 +36,7 @@ With Gradle:
 
 ```groovy
 dependencies {
-    implementation 'io.github.huacnlee:autocorrect-java:2.3.2'
+    implementation 'io.github.huacnlee:autocorrect-java:2.4.3'
     // NativeLibrary need slf4j, so there need add
     implementation 'org.slf4j:slf4j-nop:1.7.36'
 }
