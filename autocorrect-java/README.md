@@ -40,6 +40,10 @@ dependencies {
 }
 ```
 
+## List on Maven Repo:
+
+https://repo1.maven.org/maven2/io/github/huacnlee/autocorrect-java/2.4.0/
+
 ## Usage
 
 ```js
