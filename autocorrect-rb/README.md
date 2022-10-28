@@ -1,5 +1,7 @@
 # AutoCorrect for Ruby
 
+<a href="https://rubygems.org/gems/autocorrect-rb"><img src="https://img.shields.io/gem/v/autocorrect-rb?color=1&label=Gem" alt="Gem Version"></a>
+
 The Native Ruby version of [AutoCorrect](https://github.com/huacnlee/autocorrect).
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
@@ -101,6 +103,10 @@ Calculating -------------------------------------
 | Format 100  | 0.017ms         | 0.062ms              | ~3.6x   |
 | Format 400  | 0.052ms         | 0.2ms                | ~3.8x   |
 | Format HTML | 0.183ms         | 0.67ms               | ~3.6x   |
+
+> 🎈 Rust version about 3.5 ~ 3.8x fast then Ruby (pure version).
+> 
+> By this result, we can see the Ruby version is also fast, but the Rust version is more better.
 
 ## Know issues
 
