@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "autocorrect-java"
-version = "2.4.3"
+version = "2.4.3.beta"
 
 [dependencies]
 autocorrect = {path = "../autocorrect"}
