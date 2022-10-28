@@ -102,6 +102,7 @@ $ autocorrect update
 - [Use in CLI](#use-in-cli)
 - [Configuration](#configuration)
 - [VS Code Extension](#vs-code-extension)
+- [Intellij Platform Plugin](#intellij-platform-plugin)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
 - [Use for programming](#use-for-programming)
@@ -305,7 +306,13 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 如下图：
 
-<img width="901" alt="huacnlee.autocorrect" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
+<img width="900" alt="AutoCorrect for VS Code Extension" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
+
+### Intellij Platform Plugin
+
+<img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198583436-0b7d11d6-0bbd-4c45-90bd-69ef9f15db3e.png">
+
+Sourcecode: https://github.com/huacnlee/autocorrect-idea-plugin
 
 ### GitHub Action
 
