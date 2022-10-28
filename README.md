@@ -308,13 +308,13 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 <img width="900" alt="AutoCorrect for VS Code Extension" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
 
-### Intellij Platform Plugin
+### Intellij Platform Plugin 
 
-[Download Plugin](https://plugins.jetbrains.com/plugin/20244-autocorrect)
+[![](https://img.shields.io/badge/Plugin-Intellij%20Platform-brightgreen)](https://plugins.jetbrains.com/plugin/20244-autocorrect)
 
 <img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198666665-c4bc9a81-8bad-4b77-88e4-194c7b99c75d.png">
 
-Sourcecode: https://github.com/huacnlee/autocorrect-idea-plugin
+https://github.com/huacnlee/autocorrect-idea-plugin
 
 ### GitHub Action
 
