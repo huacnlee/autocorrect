@@ -55,7 +55,7 @@ ignorer.ignored?("README.md")
 
 ## Benchmarks
 
-🎊 Rust version is 3x faster than the Ruby (pure) version.
+🎊 Rust version is ~3.5x faster than the Ruby (pure) version.
 
 > NOTE: In this case Rust version has more complex rules.
 
@@ -74,6 +74,10 @@ Calculating -------------------------------------
          format_html      5.448k (± 1.5%) i/s -     27.250k in   5.002853s
 ```
 
+```
+1000 ms / 111904 i/s = 0.008 ms
+```
+
 ### Pure [Ruby version](https://rubygems.org/gems/auto-correct/versions/1.0.0) result:
 
 ```bash
@@ -88,6 +92,15 @@ Calculating -------------------------------------
     format 400 chars      4.946k (± 2.6%) i/s -     24.800k in   5.017711s
          format_html      1.659k (± 1.7%) i/s -      8.300k in   5.003164s
 ```
+
+### Rust version VS Purge Ruby Version
+
+| Test Case   | Duration (Rust) | Duration (Pure Ruby) | Speedup |
+| ----------- | --------------- | -------------------- | ------- |
+| Foramt 50   | 0.008ms         | 0.031ms              | ~3.8x   |
+| Format 100  | 0.017ms         | 0.062ms              | ~3.6x   |
+| Format 400  | 0.052ms         | 0.2ms                | ~3.8x   |
+| Format HTML | 0.183ms         | 0.67ms               | ~3.6x   |
 
 ## Know issues
 
