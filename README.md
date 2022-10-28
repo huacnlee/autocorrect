@@ -310,7 +310,9 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 ### Intellij Platform Plugin
 
-<img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198583436-0b7d11d6-0bbd-4c45-90bd-69ef9f15db3e.png">
+[Download Plugin](https://plugins.jetbrains.com/plugin/20244-autocorrect)
+
+<img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198666665-c4bc9a81-8bad-4b77-88e4-194c7b99c75d.png">
 
 Sourcecode: https://github.com/huacnlee/autocorrect-idea-plugin
 
