@@ -163,7 +163,7 @@ fn bench_format_json_with_2k_lines(b: &mut Bencher) {
 
 fn bench_halfwidth_full_english_100(b: &mut Bencher) {
     let raw = "Internal interface for communicating between a `proc_macro` client (a proc macro crate) and a `proc_macro` server (a compiler front-end).";
-    b.iter(|| halfwidth::format(raw));
+    b.iter(|| halfwidth::format_punctuation(raw));
 }
 
 fn bench_spellcheck_50(b: &mut Bencher) {
