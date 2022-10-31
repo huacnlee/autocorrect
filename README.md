@@ -312,7 +312,7 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 [![](https://img.shields.io/badge/Plugin-Intellij%20Platform-brightgreen)](https://plugins.jetbrains.com/plugin/20244-autocorrect)
 
-<img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198666665-c4bc9a81-8bad-4b77-88e4-194c7b99c75d.png">
+<img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198998494-82d017f1-40c1-4622-b13f-f67cfecd284a.png">
 
 https://github.com/huacnlee/autocorrect-idea-plugin
 
