@@ -41,7 +41,7 @@ export default {
 <p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
 `,
   },
-  js: {
+  javascript: {
     title: 'JavaScript',
     raw: `/**
 * Hello你好
@@ -77,7 +77,7 @@ function application() {
 }
 `,
   },
-  md: {
+  markdown: {
     title: 'Markdown',
     raw: `# 这是Heading 1大标题
 
@@ -156,7 +156,7 @@ func (d *Dao) WithContext(ctx context.Context) (db *gorm.DB) {
   return
 }`,
   },
-  rb: {
+  ruby: {
     title: 'Ruby',
     raw: `# 第1行注释
 # 第2行注释
@@ -170,7 +170,7 @@ def hello(a, b: "第1个参数")
   b = '你好hello世界'
 end`,
   },
-  py: {
+  python: {
     title: 'Python',
     raw: `'''
 这是多行1注释
@@ -242,7 +242,7 @@ func helloWorld(name: String) -> String {
   let re = try! NSRegularExpression(pattern:    "re正则")
 }`,
   },
-  kt: {
+  kotlin: {
     title: 'Kotlin',
     raw: `/** 
 * 第1行注释
@@ -282,7 +282,7 @@ fun helloWorld(name: String) {
 ?>
 </div>`,
   },
-  cs: {
+  csharp: {
     title: 'C#',
     raw: `/**
 * 第1行注释
@@ -301,7 +301,7 @@ public String helloWorld(stirng name) {
   Regex rx = new Regex( @"re正则", RegexOptions.Compiled  | RegexOptions.IgnoreCase);
 }`,
   },
-  ex: {
+  elixir: {
     title: 'Elixir',
     raw: `defmodule Test do
 @moduledoc """
@@ -363,7 +363,7 @@ COMMENT ON COLUMN "topics"."status" IS '3屏蔽 1审核中 2已发布';
 */
 COMMENT ON COLUMN "topics"."kind" IS '0普通 1转发';`,
   },
-  yml: {
+  yaml: {
     title: 'YAML',
     raw: `# this is comment line
 foo: 'hello世界'
@@ -409,7 +409,7 @@ region:
 // 单行comment
 "中文key测试" = "开启定位权限";`,
   },
-  txt: {
+  text: {
     title: 'Plain Text',
     raw: `苹果「最强促销」开启,最高可省4446元!但这些细节值得注意
 

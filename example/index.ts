@@ -17,12 +17,16 @@ let config = `{
   }
 }`;
 
-const editorOptions: any = {
+const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
   lineNumbers: 'on',
+  tabSize: 2,
+  useTabStops: true,
   scrollbar: {
     verticalScrollbarSize: 5,
     horizontalScrollbarSize: 5,
+    useShadows: true,
   },
+  renderLineHighlight: 'none',
   minimap: {
     enabled: false,
   },
@@ -44,15 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLint = document.querySelector('#btn-lint') as HTMLElement;
   const message = document.querySelector('.message') as HTMLElement;
   const select = document.querySelector('#filetype') as any;
-  const output = document.querySelector('#output') as HTMLElement;
   const filename = document.querySelector('#filename') as HTMLElement;
 
   const selectFileType = (fileType) => {
     currentFileType = fileType;
 
     const example = examples[fileType];
-    editor.setValue(example.raw);
     filename.innerHTML = `FileType: ${fileType}`;
+
+    editor.setValue(example.raw);
+    // @ts-ignore
+    monaco.editor.setModelLanguage(editor.getModel(), fileType);
   };
 
   const editor = monaco.editor.create(input, {
@@ -86,8 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const duration = new Date() - start;
     message.innerHTML = `Speed time: ${duration}ms`;
     console.log(result);
-    previewEditor.setValue(result.out);
 
+    previewEditor.setValue(result.out);
+    // @ts-ignore
+    monaco.editor.setModelLanguage(previewEditor.getModel(), currentFileType);
     return false;
   };
 
@@ -100,6 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const duration = new Date() - start;
     message.innerHTML = `Speed time: ${duration}ms`;
     previewEditor.setValue(JSON.stringify(result, null, 2));
+    // @ts-ignore
+    monaco.editor.setModelLanguage(previewEditor.getModel(), 'json');
 
     return false;
   };
