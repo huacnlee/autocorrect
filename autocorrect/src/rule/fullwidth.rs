@@ -74,6 +74,7 @@ fn fullwidth_replace_part(part: &str) -> String {
 mod tests {
     use super::*;
 
+    #[track_caller]
     fn assert_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {
             let actual = format(source);
