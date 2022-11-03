@@ -1,29 +1,30 @@
 // autocorrect: false
-{
-  /* <option selected value="html">HTML</option>
-<option value="js">JavaScript</option>
-<option value="ts">TypeScript</option>
-<option value="css">CSS / SCSS</option>
-<option value="json">JSON</option>
-<option value="yml">YAML</option>
-<option value="go">Go</option>
-<option value="rs">Rust</option>
-<option value="rb">Ruby</option>
-<option value="py">Python</option>
-<option value="java">Java</option>
-<option value="php">PHP</option>
-<option value="sql">SQL</option>
-<option value="objective_c">Objective-C</option>
-<option value="swift">Swift</option>
-<option value="scala">Scala</option>
-<option value="kt">Kotlin</option>
-<option value="dart">Dart</option>
-<option value="ex">Elixir</option>
-<option value="csharp">C#</option>
-<option value="md">Markdown</option>
-<option value="plain">Plain Text</option> */
-}
 export default {
+  javascript: {
+    title: 'JavaScript',
+    raw: `/**
+* Hello你好
+* 这是第 2 行,标点符号演示.
+* 这是 spellcheck 演示，这里 rust 应该会提示为 Rust，webassembly 应该会提示为 WebAssembly。
+*/
+function application() {
+  let example = "这是single line单行注释";
+  console.log(\`这是string第1行
+  这是string第2行
+  \`)
+
+  // autocorrect-disable
+  const disable_1 = "这行将会disable掉";
+  const disable_2 = "这行将也会disable掉";
+  // autocorrect-enable
+
+  // autocorrect-disable fullwidth
+  const a1 = "这里,暂时允许半角."
+  // autocorrect-enable
+  const a = "这一行,不允许半角.";
+}
+    `,
+  },
   html: {
     title: 'HTML',
     raw: `<h1>编译rust为WebAssembly</h1>
@@ -41,28 +42,7 @@ export default {
 <p>在本教程中，我们将使用Rust的npm包构建工具<code>wasm-pack</code>来构建一个npm包。这个包只包含WebAssembly和JavaScript代码，以便包的用户无需安装Rust就能使用。他们甚至不需要知道这里包含WebAssembly！</p></div>
 `,
   },
-  javascript: {
-    title: 'JavaScript',
-    raw: `/**
-* Hello你好
-* 这是第2行
-*/
-function application() {
-  let example = "这是single line单行注释";
-  console.log(\`这是string第1行
-  这是string第2行
-  \`)
-
-  // autocorrect-disable
-  const disable_1 = "这行将会disable掉";
-  const disable_2 = "这行将也会disable掉";
-  // autocorrect-enable
-
-  const c = "这是string第3行";
-}
-    `,
-  },
-  css: {
+  scss: {
     title: 'CSS / SCSS',
     raw: `
 /* 
