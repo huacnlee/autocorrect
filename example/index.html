@@ -35,17 +35,15 @@
       justify-content: space-between;
     }
 
-    .preview,
-    textarea {
-      width: 100%;
-      border: 1px solid #e0e0e0;
-      border-radius: 7px;
-      padding: 1em;
-      margin-bottom: 1em;
-      line-height: 1.5;
-      font-family: monospace;
-      font-size: 1em;
-      outline: none;
+    .editor-wraper {
+      width: 600px;
+      height: 600px;
+      margin-bottom: 10px;
+      border: 1px solid #c0c0c0;
+    }
+
+    .editor-wraper+.editor-wraper {
+      margin-left: 10px;
     }
 
     textarea[readonly] {
@@ -91,11 +89,10 @@
       <select id="filetype"> </select>
       <span id="filename"></span>
     </div>
-    <div class="flex">
-      <textarea id="input" width="600" rows="30">
-        </textarea>
-      <textarea style="margin-left: 10px;" readonly placeholder="AutoCorrect HTML result preview"
-        class="preview"></textarea>
+    <div class="flex items-center space-x-4">
+      <div id="input" class="editor-wraper">
+      </div>
+      <div class="editor-wraper preview"></div>
     </div>
     <div>
       <button id="btn">Format</button> or
