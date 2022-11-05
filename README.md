@@ -404,6 +404,13 @@ With [MDN Translated Content](https://github.com/mdn/translated-content) project
 AutoCorrect spend time: 8402.538ms
 ```
 
+## Other Extensions
+
+The other implemations from the community.
+
+- [prettier-plugin-autocorrect](https://github.com/un-ts/prettier/tree/master/packages/autocorrect)
+- [autocorrect-popclip](https://github.com/TomBener/autocorrect-popclip)
+
 ## License
 
 This project under MIT license.
