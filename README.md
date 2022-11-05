@@ -28,6 +28,8 @@ AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或�
 
 > 此方案最早于 [2013 年](https://github.com/huacnlee/auto-correct/commit/47d7b7836f3e5f97dd31b5dc477eb0dbf8176e6b) 出现于 Ruby China 的项目，并逐步完善规则细节，当前准确率较高（极少数异常情况），你可以放心用来辅助你完成自动纠正动作。
 
+<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png">
+
 ## Features
 
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
@@ -48,8 +50,6 @@ AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或�
 - 作为 VS Code、Intellij Platform IDE（已支持）、Vim、Emacs (待实现) 插件，需要对文案进行检查（Linter & Formatter），依靠 LintResult 给出的（Annotator、Diagnostic）提示。
 - 基于 [WebAssembly](https://www.npmjs.com/package/@huacnlee/autocorrect) 实现，作为 Chrome、Safari 等浏览器插件，应用于任何网站（待实现）
 - 也可以集成到 WYSIWYG Editor 里面，例如（ProseMirror、CKEditor、Slate、Draft.js、Tiptap、Monaco Editor、CodeMirror 等）。
-
-<img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png">
 
 ## Installation
 
