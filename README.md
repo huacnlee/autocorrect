@@ -20,7 +20,7 @@ AutoCorrect is a linter and formatter to help you to improve copywriting, correc
 
 Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and output as colorized diff with corrected suggest. You can integrate to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
 
-基于 Rust 编写的 CLI 工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，纠正单词，同时尝试以安全的方式自动纠正标点符号等等。
+AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，纠正单词，同时尝试以安全的方式自动纠正标点符号等等。
 
 类似 ESlint、Rubocop、Gofmt 等工具，AutoCorrect 可以用于 CI 环境，它提供 Lint 功能，能便捷的检测出项目中有问题的文案，起到统一规范的作用。
 
@@ -31,13 +31,23 @@ Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and
 ## Features
 
 - Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
-- Support more than 27 programming languages (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
 - Correct punctuations into full-width near the CJK.
 - Correct punctuations into half-width in english contents.
 - (Experimental) Spellcheck and correct words by your own dictionary.
 - Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
-- [Desktop app](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-tauri) for macOS, (Windows, Linux WIP).
+- Support more than [28 file types](https://github.com/huacnlee/autocorrect/tree/main/autocorrect/grammar) (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
+- Cross platform for Linux, macOS, Windows, and WebAssembly, and as Native SDK for programming (Node.js, JavaScript Browser, Ruby, Python, Java).
+
+## 典型应用场景
+
+- 撰写书籍、文档、内容发布，应用于 Markdown、AsciiDoc、HTML 等文档场景，确保文案的标准化、专业化（案例：[MDN 项目](https://github.com/mdn/translated-content/pulls?q=is%3Apr+is%3Aclosed+author%3Ahuacnlee)）。
+- 集成 GitLab CI、GitHub Action、Travis CI 等 CI 环境，需要对项目进行自动化检查。
+- 集成到 Docusaurus、Hexo、Hugo、Jekyll、Gatsby 等静态网站生成器，在生成的时候自动格式化。
+- 利用语言支持的 SDK 集成到应用程序，在存储或输出网站内容的时候格式化，提升网站品质（如：[Ruby China](https://ruby-china.org)、[V2EX](https://www.v2ex.com)）。
+- 作为 VS Code、Intellij Platform IDE（已支持）、Vim、Emacs (待实现) 插件，需要对文案进行检查（Linter & Formatter），依靠 LintResult 给出的（Annotator、Diagnostic）提示。
+- 基于 [WebAssembly](https://www.npmjs.com/package/@huacnlee/autocorrect) 实现，作为 Chrome、Safari 等浏览器插件，应用于任何网站（待实现）
+- 也可以集成到 WYSIWYG Editor 里面，例如（ProseMirror、CKEditor、Slate、Draft.js、Tiptap、Monaco Editor、CodeMirror 等）。
 
 <img width="920" alt="autocorrect lint output" src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png">
 
@@ -308,7 +318,7 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
 
 <img width="900" alt="AutoCorrect for VS Code Extension" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
 
-### Intellij Platform Plugin 
+### Intellij Platform Plugin
 
 [![](https://img.shields.io/badge/Plugin-Intellij%20Platform-brightgreen)](https://plugins.jetbrains.com/plugin/20244-autocorrect)
 
