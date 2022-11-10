@@ -66,33 +66,8 @@ $ curl -sSL https://git.io/JcGER | bash
 After that, you will get `autocorrect` command.
 
 ```bash
-AutoCorrect 1.11.0
-Jason Lee <huacnlee@gmail.com
-A linter and formatter to help you to improve copywriting, correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
-
-USAGE:
-    autocorrect [FLAGS] [OPTIONS] [file]... [SUBCOMMAND]
-
-FLAGS:
-        --debug      Print debug message.
-        --type       Directly use set file type.
-        --fix        Automatically fix problems and rewrite file.
-    -h, --help       Prints help information
-        --lint       Lint and output problems.
-    -V, --version    Prints version information
-
-OPTIONS:
-    -c, --config <config>       Special config file. [default: .autocorrectrc]
-        --format <formatter>    Choose an output formatter. [default: diff]  [possible values: json, diff]
-        --threads <threads>     Number of threads, 0 - use number of CPU. [default: 0]
-
-ARGS:
-    <file>...    Target filepath or dir for format. [default: .]
-
-SUBCOMMANDS:
-    help       Prints this message or the help of the given subcommand(s)
-    init       Init AutoCorrect config file.
-    update     Update AutoCorrect to latest version.
+$ autocorrect -V
+AutoCorrect 2.4.0
 ```
 
 ## Upgrade
