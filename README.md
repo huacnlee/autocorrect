@@ -395,6 +395,7 @@ The other implemations from the community.
 
 - [prettier-plugin-autocorrect](https://github.com/un-ts/prettier/tree/master/packages/autocorrect)
 - [autocorrect-popclip](https://github.com/TomBener/autocorrect-popclip)
+- [autocorrect-markdown.vim](https://github.com/aisensiy/dotfiles/blob/master/nvim/after/ftplugin/markdown.vim)
 
 ## License
 
