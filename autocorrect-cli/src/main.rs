@@ -234,16 +234,16 @@ pub fn main() {
             let _err_count = *lint_errors_count.lock().unwrap();
             let _warn_count = *lint_warnings_count.lock().unwrap();
 
+            if !lint_results.is_empty() {
+                // diff will use stderr output
+                tracing::info!("{}", lint_results.join("\n"));
+            }
+
             tracing::info!(
                 "{}, {}\n",
                 format!("Error: {}", _err_count).red(),
                 format!("Warning: {}", _warn_count).yellow(),
             );
-
-            if !lint_results.is_empty() {
-                // diff will use stderr output
-                tracing::info!("{}", lint_results.join("\n"));
-            }
 
             // print time spend from start_t to now
             tracing::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
