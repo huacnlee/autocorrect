@@ -38,6 +38,7 @@ fn init_logger(level: tracing::Level) {
         .with_line_number(false)
         .without_time()
         .with_max_level(level)
+        .compact()
         .init();
 }
 
@@ -200,7 +201,7 @@ pub fn main() {
                                 format_and_output(&filepath, &filetype, &raw, &cli);
                             }
 
-                            tracing::debug!("Done {} {}ms\n", filepath, t.elapsed_millis());
+                            tracing::debug!("Done {} {}ms", filepath, t.elapsed_millis());
                         }
                     });
                 }
@@ -210,7 +211,6 @@ pub fn main() {
             }
         }
         // wait all threads complete
-        // println!("\n---- threads {}", threads.len());
         pool.join();
 
         // wait all threads send result
@@ -219,7 +219,7 @@ pub fn main() {
         }
     }
 
-    tracing::debug!("\n\nLint result found: {} issues.", lint_results.len());
+    tracing::debug!("Lint result found: {} issues.", lint_results.len());
 
     if cli.lint {
         if cli.formatter == "json" {
@@ -236,7 +236,7 @@ pub fn main() {
 
             if !lint_results.is_empty() {
                 // diff will use stderr output
-                tracing::info!("{}", lint_results.join("\n"));
+                lint_results.iter().for_each(|r| tracing::info!("{}", r))
             }
 
             tracing::info!(
