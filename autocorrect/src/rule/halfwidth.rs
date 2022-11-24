@@ -115,8 +115,19 @@ impl CharMatching for char {
 
 pub fn format_punctuation(text: &str) -> String {
     let mut out = String::from("");
+
+    // Get quote char in start and end or the text
+    let mut wrap_quote = ' ';
+    // Get first non space char as quote
+    for char in text.chars() {
+        if !char.is_whitespace() {
+            wrap_quote = char;
+            break;
+        }
+    }
+
     for line in text.split_inclusive('\n') {
-        out.push_str(&format_line(line));
+        out.push_str(&format_line(line, wrap_quote));
     }
 
     out
@@ -167,7 +178,7 @@ fn is_may_only_english(text: &str) -> bool {
     false
 }
 
-fn format_line(text: &str) -> String {
+fn format_line(text: &str, wrap_quote: char) -> String {
     if !is_may_only_english(text) {
         return String::from(text);
     }
@@ -188,6 +199,8 @@ fn format_line(text: &str) -> String {
 
         // Fix punctuation without CJK contents
         if let Some(rule) = PUNCTUATION_MAP.get(part) {
+            let to = escape_quote(wrap_quote, rule.to);
+
             // Do not change left quote when is last char.
             if rule.char_type == CharType::LeftQuote && next_part.is_empty() {
                 out.push_str(part);
@@ -196,7 +209,7 @@ fn format_line(text: &str) -> String {
 
             match rule.mode {
                 ReplaceMode::SuffixSpace => {
-                    out.push_str(rule.to);
+                    out.push_str(&to);
                     if next_part.starts_with(|s: char| s.is_alphanumeric()) {
                         out.push(' ');
                     }
@@ -205,10 +218,10 @@ fn format_line(text: &str) -> String {
                     if last_part.is_alphanumeric() {
                         out.push(' ');
                     }
-                    out.push_str(rule.to);
+                    out.push_str(&to);
                 }
                 ReplaceMode::Replace => {
-                    out.push_str(rule.to);
+                    out.push_str(&to);
                 }
             }
             continue;
@@ -218,6 +231,20 @@ fn format_line(text: &str) -> String {
     }
 
     out
+}
+
+fn escape_quote(wrap_quote: char, quote: &str) -> String {
+    if quote != "\"" && quote != "'" {
+        return String::from(quote);
+    }
+
+    let mut output = String::new();
+    if wrap_quote.to_string().as_str() == quote {
+        output.push('\\');
+    }
+
+    output.push_str(quote);
+    output
 }
 
 #[cfg(test)]
@@ -319,6 +346,10 @@ mod tests {
             r#""a。""# => r#""a。""#,
             r#""Hi！""# => r#""Hi!""#,
             r#""hello-world。""# => r#""hello-world.""#,
+            r#"'hello “world”。'"# => r#"'hello "world".'"#,
+            r#""hello “world”。""# => r#""hello \"world\".""#,
+            r#""hello ‘world’。""# => r#""hello 'world'.""#,
+            r#"'hello ‘world’。'"# => r#"'hello \'world\'.'"#,
             r#""Only the first time break。""# => r#""Only the first time break.""#,
             r#"'Only the first time break？'"# => r#"'Only the first time break?'"#,
             r#"`Only the first time break！`"# => r#"`Only the first time break!`"#,
