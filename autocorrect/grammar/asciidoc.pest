@@ -41,8 +41,12 @@ mark_tag = @{
   | "~"
   | "^"
   | "`"
+  | "."
+  | "_"
 }
-mark = ${ PUSH(mark_tag) ~ string ~ POP }
+mark = ${ mark_start ~ string ~ mark_end }
+mark_start = @{ PUSH(mark_tag) }
+mark_end = @{ POP }
 
 heading_tag = @{ ("======" | "=====" | "====" | "===" | "==" | "=") ~ " "* }
 heading = ${ PUSH(heading_tag) ~ string }
