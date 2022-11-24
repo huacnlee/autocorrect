@@ -8,7 +8,7 @@ pub(crate) fn diff_line_result(line: &LineResult) -> String {
         err_color = "yellow"
     }
 
-    diff_lines_with_err_color(&line.old, &line.new, err_color)
+    diff_lines_with_err_color(line.old.trim(), line.new.trim(), err_color)
 }
 
 #[allow(dead_code)]
