@@ -283,9 +283,9 @@ function hello() {
 
 ### VS Code Extension
 
-[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct)
+[![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](https://marketplace.visualstudio.com/items?itemName=huacnlee.autocorrect)
 
-https://marketplace.visualstudio.com/items?itemName=huacnlee.auto-correct
+https://marketplace.visualstudio.com/items?itemName=huacnlee.autocorrect
 
 内置 Visual Studio Code 插件，安装后会将 AutoCorrect 和 Visual Studio Code 完整集成，可以达到「保存自动格式化」或「纠正提示」。
 
