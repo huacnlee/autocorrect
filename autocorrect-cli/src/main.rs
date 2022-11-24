@@ -6,16 +6,17 @@ use std::io;
 use std::io::BufRead;
 use std::path::Path;
 use std::time::SystemTime;
-use time::SystemTimeDuration;
 
 mod cli;
 mod initializer;
+mod logger;
 mod progress;
-mod time;
 mod update;
 
 use cli::Cli;
 use colored::*;
+use logger::Logger;
+use logger::SystemTimeDuration;
 use threadpool::ThreadPool;
 
 extern crate autocorrect;
@@ -30,33 +31,21 @@ pub fn load_config(config_file: &str) -> Result<(), autocorrect::config::Error> 
     Ok(())
 }
 
-fn init_logger(level: tracing::Level) {
-    tracing_subscriber::fmt()
-        .with_target(false)
-        .with_file(false)
-        .with_level(false)
-        .with_line_number(false)
-        .without_time()
-        .with_max_level(level)
-        .compact()
-        .init();
-}
-
 pub fn main() {
     let mut cli = Cli::parse();
 
     // Set log level
     let log_level = if cli.debug {
-        tracing::Level::DEBUG
+        log::LevelFilter::Debug
     } else {
-        tracing::Level::INFO
+        log::LevelFilter::Info
     };
-    init_logger(log_level);
+    Logger::init(log_level).expect("Init logger error");
 
     if cli.threads == 0 {
         cli.threads = num_cpus::get();
     }
-    tracing::debug!("Threads: {}", cli.threads);
+    log::debug!("Threads: {}", cli.threads);
 
     match cli.command {
         Some(cli::Commands::Init { local, force }) => {
@@ -67,7 +56,7 @@ pub fn main() {
             match update::run() {
                 Ok(_) => {}
                 Err(e) => {
-                    tracing::error!("{}", e);
+                    log::error!("{}", e);
                     std::process::exit(1);
                 }
             }
@@ -76,7 +65,7 @@ pub fn main() {
         _ => {}
     }
 
-    tracing::debug!("Load config: {}", cli.config_file);
+    log::debug!("Load config: {}", cli.config_file);
     load_config(&cli.config_file).unwrap_or_else(|e| {
         panic!("Load config error: {}", e);
     });
@@ -175,7 +164,7 @@ pub fn main() {
                     pool.execute(move || {
                         if let Ok(raw) = read_file(&filepath) {
                             let t = SystemTime::now();
-                            tracing::debug!("Process {}", filepath);
+                            log::debug!("Process {}", filepath);
                             if cli.lint {
                                 let mut lint_results: Vec<String> = Vec::new();
 
@@ -201,12 +190,12 @@ pub fn main() {
                                 format_and_output(&filepath, &filetype, &raw, &cli);
                             }
 
-                            tracing::debug!("Done {} {}ms", filepath, t.elapsed_millis());
+                            log::debug!("Done {} {}ms", filepath, t.elapsed_millis());
                         }
                     });
                 }
                 Err(_err) => {
-                    tracing::error!("ERROR: {}", _err);
+                    log::error!("ERROR: {}", _err);
                 }
             }
         }
@@ -219,34 +208,34 @@ pub fn main() {
         }
     }
 
-    tracing::debug!("Lint result found: {} issues.", lint_results.len());
+    log::debug!("Lint result found: {} issues.", lint_results.len());
 
     if cli.lint {
         if cli.formatter == "json" {
-            tracing::info!(
+            log::info!(
                 r#"{{"count": {},"messages": [{}]}}"#,
                 lint_results.len(),
                 lint_results.join(",")
             );
         } else {
-            tracing::info!("\n");
+            log::info!("\n");
 
             let _err_count = *lint_errors_count.lock().unwrap();
             let _warn_count = *lint_warnings_count.lock().unwrap();
 
             if !lint_results.is_empty() {
                 // diff will use stderr output
-                lint_results.iter().for_each(|r| tracing::info!("{}", r))
+                lint_results.iter().for_each(|r| log::info!("{}", r))
             }
 
-            tracing::info!(
+            log::info!(
                 "{}, {}\n",
                 format!("Error: {}", _err_count).red(),
                 format!("Warning: {}", _warn_count).yellow(),
             );
 
             // print time spend from start_t to now
-            tracing::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
+            log::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
 
             if _err_count > 0 {
                 // Exit with code = 1
@@ -254,20 +243,20 @@ pub fn main() {
             }
         }
     } else if cli.fix {
-        tracing::info!("\n");
+        log::info!("\n");
 
         // print time spend from start_t to now
-        tracing::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
+        log::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
     }
 }
 
 fn read_file(filepath: &str) -> io::Result<String> {
     let t = SystemTime::now();
-    tracing::debug!("Loading {} ...", filepath);
+    log::debug!("Loading {} ...", filepath);
 
     let out = fs::read_to_string(filepath);
 
-    tracing::debug!("Loaded {} {}ms", filepath, t.elapsed_millis());
+    log::debug!("Loaded {} {}ms", filepath, t.elapsed_millis());
 
     out
 }
@@ -277,7 +266,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
 
     if cli.fix && !filepath.is_empty() {
         if result.has_error() {
-            tracing::debug!("{}\n{}", filepath, result.error);
+            log::debug!("{}\n{}", filepath, result.error);
             return;
         }
 
@@ -293,7 +282,7 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
         }
     } else {
         if result.has_error() {
-            tracing::error!("{}", raw);
+            log::error!("{}", raw);
             return;
         }
 
@@ -334,7 +323,7 @@ fn lint_and_output(
 
     if diff_mode {
         if result.has_error() {
-            tracing::debug!("{}\n{}", filepath, result.error);
+            log::debug!("{}\n{}", filepath, result.error);
             return;
         }
 
