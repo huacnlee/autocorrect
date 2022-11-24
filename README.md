@@ -130,9 +130,10 @@ $ autocorrect --lint
 
 ### Configuration
 
+> Default config: [.autocorrect.default](https://github.com/huacnlee/autocorrect/raw/main/autocorrect/.autocorrectrc.default)
+
 ```bash
 $ autocorrect init
-Fetching https://github.com/huacnlee/autocorrect/raw/main/.autocorrectrc.template
 AutoCorrect init config: .autocorrectrc
 ```
 

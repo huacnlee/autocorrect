@@ -33,6 +33,8 @@ lazy_static! {
         Rule::new("halfwidth-punctuation", halfwidth::format_punctuation),
         // Rule: no-space-fullwidth
         Rule::new("no-space-fullwidth", word::format_no_space_fullwidth),
+        // Rule: no-space-fullwidth-quote
+        Rule::new("no-space-fullwidth-quote", word::format_no_space_fullwidth_quote),
         Rule::new("spellcheck", spellcheck::format),
     ];
 }
@@ -179,6 +181,7 @@ mod tests {
             "halfwidth-word",
             "halfwidth-punctuation",
             "no-space-fullwidth",
+            "no-space-fullwidth-quote",
             "spellcheck",
         ];
         assert_eq!(expect, rule_names);
@@ -237,5 +240,30 @@ mod tests {
         let result = format_or_lint("测试 iOS 应用，与技术", true);
         assert_eq!("测试 iOS 应用，与技术", result.out);
         assert_eq!(Severity::Pass, result.severity);
+    }
+
+    #[test]
+    fn test_rules() {
+        crate::config::setup_test();
+
+        let cases = map! {
+            "hello你好" => (map!{}, "hello 你好"),
+            "hello你好 “Quote” 和 ‘Single Quote’ 测试0" => (map!{
+                "no-space-fullwidth-quote" => true,
+            }, "hello 你好 “Quote” 和 ‘Single Quote’ 测试 0"),
+            "hello你好 “Quote” 和 ‘Single Quote’ 测试1" => (map!{}, "hello 你好“Quote”和‘Single Quote’测试 1"),
+        };
+
+        for (input, (disable_rules, expect)) in cases {
+            let out = format_or_lint_with_disable_rules(
+                input,
+                false,
+                &disable_rules
+                    .into_iter()
+                    .map(|(k, v)| (k.to_string(), v))
+                    .collect(),
+            );
+            assert_eq!(expect, out.out);
+        }
     }
 }

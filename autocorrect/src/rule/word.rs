@@ -31,7 +31,12 @@ lazy_static! {
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】“”‘’]").with_remove_space().with_reverse(),
+        Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】]").with_remove_space().with_reverse(),
+    ];
+
+    static ref NO_SPACE_FULLWIDTH_QUOTE_STRATEGIES : Vec<Strategery> = vec![
+        // Remove space around fullwidth quotes
+        Strategery::new(r"\w|\p{CJK}", r"[“”‘’]").with_remove_space().with_reverse(),
     ];
 
 
@@ -67,6 +72,19 @@ pub fn format_no_space_fullwidth(input: &str) -> String {
     }
 
     NO_SPACE_FULLWIDTH_STRATEGIES
+        .iter()
+        .for_each(|s| out = s.format(&out));
+    out
+}
+
+pub fn format_no_space_fullwidth_quote(input: &str) -> String {
+    let mut out = String::from(input);
+
+    if !CJK_RE.is_match(input) {
+        return out;
+    }
+
+    NO_SPACE_FULLWIDTH_QUOTE_STRATEGIES
         .iter()
         .for_each(|s| out = s.format(&out));
     out

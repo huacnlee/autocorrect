@@ -8,8 +8,10 @@ rules:
   space-bracket: 1
   # Convert to fullwidth.
   fullwidth: 1
-  # To remove space near the fullwidth.
+  # To remove space near the fullwidth punctuations.
   no-space-fullwidth: 1
+  # To remove space arouned the fullwidth quotes “”, ''.
+  no-space-fullwidth-quote: 1
   # Fullwidth alphanumeric characters to halfwidth.
   halfwidth-word: 1
   # Fullwidth punctuations to halfwidth in english.

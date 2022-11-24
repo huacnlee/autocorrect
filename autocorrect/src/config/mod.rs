@@ -161,7 +161,7 @@ impl Config {
             self.rules.insert(k, v);
         }
 
-        // DEPRECATED: since 2.0.0, remove this in 2.5.0
+        // DEPRECATED: since 2.0.0, remove this in 3.0.0
         if let Some(mode) = config.spellcheck.mode.clone() {
             println!("DEPRECATED: `spellcheck.mode` use `rules.spellcheck` instead since 2.0.0");
             self.spellcheck.mode = Some(mode.clone());
