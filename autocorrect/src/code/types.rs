@@ -81,6 +81,7 @@ lazy_static! {
     // AsciiDoc
     "asciidoc" => "asciidoc",
     "adoc" => "asciidoc",
+    "asc" => "asciidoc",
     // gettext
     "po" => "gettext",
     "pot" => "gettext",
@@ -188,5 +189,8 @@ mod tests {
         assert_eq!("kotlin", match_filename("app.kt"));
 
         assert_eq!("xml", match_filename("zh-CN.xml"));
+
+        assert_eq!("asciidoc", match_filename("zh-CN.asc"));
+        assert_eq!("asciidoc", match_filename("zh-CN.adoc"));
     }
 }
