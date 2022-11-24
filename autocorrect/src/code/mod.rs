@@ -80,7 +80,7 @@ pub use yaml::*;
 /// autocorrect::lint_for(raw, "index.html");
 /// ```
 pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
-    let mut result = match types::match_filename(filename_or_ext) {
+    let mut result = match types::match_filename(filename_or_ext).as_str() {
         "html" => lint_html(raw),
         "yaml" => lint_yaml(raw),
         "sql" => lint_sql(raw),
@@ -137,7 +137,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
 /// autocorrect::format_for(raw, "index.html");
 /// ```
 pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
-    let result = match types::match_filename(filename_or_ext) {
+    let result = match types::match_filename(filename_or_ext).as_str() {
         "html" => format_html(raw),
         "yaml" => format_yaml(raw),
         "sql" => format_sql(raw),

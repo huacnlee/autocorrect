@@ -30,6 +30,7 @@ serde_yaml = "0.9.9"
 
 [dev-dependencies]
 bencher = "0.1.5"
+indoc = "1.0"
 pretty_assertions = "1.0.0"
 
 [build-dependencies]

@@ -1,122 +1,20 @@
-use std::collections::HashMap;
-
-lazy_static! {
-  pub static ref FILE_TYPES: HashMap<&'static str, &'static str> = map!(
-    "html" => "html",
-    "htm" => "html",
-    "vue" => "html",
-    "ejs" => "html",
-    "html.erb" => "html",
-    // yaml
-    "yaml" => "yaml",
-    "yml" => "yaml",
-    // rust
-    "rust" => "rust",
-    "rs" => "rust",
-    // sql
-    "sql" => "sql",
-    // ruby
-    "ruby" => "ruby",
-    "rb" => "ruby",
-    "Gemfile" => "ruby",
-    // crystal
-    "crystal" => "ruby",
-    "cr" => "ruby",
-    // elixir
-    "elixir" => "elixir",
-    "ex" => "elixir",
-    "exs" => "elixir",
-    // javascript
-    "js" => "javascript",
-    "jsx" => "javascript",
-    "javascript" => "javascript",
-    "ts" => "javascript",
-    "tsx" => "javascript",
-    "typescript" => "javascript",
-    "js.erb" => "javascript",
-    // css
-    "css" => "css",
-    "scss" => "css",
-    "sass" => "css",
-    "less" => "css",
-    // json
-    "json" => "json",
-    "json5" => "json",
-    // go
-    "go" => "go",
-    // python
-    "python" => "python",
-    "py" => "python",
-    // objective-c
-    "objective_c" => "objective_c",
-    "objective-c" => "objective_c",
-    "m" => "objective_c",
-    "h" => "objective_c",
-    // strings for Cocoa
-    "strings" => "strings",
-    // csharp
-    "csharp" => "csharp",
-    "cs" => "csharp",
-    // java
-    "java" => "java",
-    "proto" => "java",
-    // scala
-    "scala" => "scala",
-    // swift
-    "swift" => "swift",
-    // kotlin
-    "kotlin" => "kotlin",
-    "kt" => "kotlin",
-    "gradle" => "kotlin",
-    // php
-    "php" => "php",
-    // dart
-    "dart" => "dart",
-    // markdown
-    "markdown" => "markdown",
-    "md" => "markdown",
-    // LaTeX
-    "latex" => "latex",
-    "tex" => "latex",
-    // AsciiDoc
-    "asciidoc" => "asciidoc",
-    "adoc" => "asciidoc",
-    "asc" => "asciidoc",
-    // gettext
-    "po" => "gettext",
-    "pot" => "gettext",
-    // conf
-    "properties" => "conf",
-    "conf" => "conf",
-    "ini" => "conf",
-    "cfg" => "conf",
-    "toml" => "conf",
-    // C or C++
-    "cc" => "c",
-    "cpp" => "c",
-    "c" => "c",
-    // XML
-    "xml" => "xml",
-    // plain
-    "text" => "text",
-    "plain" => "text",
-    "txt" => "text"
-  );
-}
+use crate::config::Config;
 
 // dectermines file_type is support
-pub fn match_filename(filename_or_ext: &str) -> &str {
+pub fn match_filename(filename_or_ext: &str) -> String {
     let ext = get_file_extension(filename_or_ext);
-    if !is_support_type(ext.as_str()) {
-        return filename_or_ext;
+
+    // Return file type by config
+    if let Some(file_type) = Config::current().get_file_type(&ext) {
+        return file_type.into();
     }
 
-    return FILE_TYPES[ext.as_str()];
+    filename_or_ext.into()
 }
 
 // dectermines file_type is support
 pub fn is_support_type(filename_or_ext: &str) -> bool {
-    FILE_TYPES.contains_key(filename_or_ext)
+    Config::current().get_file_type(filename_or_ext).is_some()
 }
 
 // get file extension from filepath, return filename if not has exit
@@ -146,6 +44,8 @@ pub fn get_file_extension(filename: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    use crate::config::setup_test;
+
     use super::*;
     use pretty_assertions::assert_eq;
 
@@ -179,18 +79,48 @@ mod tests {
 
     #[test]
     fn test_match_filename() {
-        assert_eq!("conf", match_filename("app.properties"));
-        assert_eq!("conf", match_filename("app.ini"));
-        assert_eq!("conf", match_filename("app.toml"));
+        setup_test();
+        assert_eq!("markdown".to_owned(), match_filename("app.md"));
+        assert_eq!("markdown".to_owned(), match_filename("app.mdx"));
 
-        assert_eq!("java", match_filename("main.proto"));
+        assert_eq!("html".to_owned(), match_filename("app.htm"));
+        assert_eq!("html".to_owned(), match_filename("app.html"));
+        assert_eq!("html".to_owned(), match_filename("app.html.erb"));
 
-        assert_eq!("kotlin", match_filename("app.gradle"));
-        assert_eq!("kotlin", match_filename("app.kt"));
+        assert_eq!("javascript".to_owned(), match_filename("app.js"));
+        assert_eq!("javascript".to_owned(), match_filename("app.ts"));
+        assert_eq!("javascript".to_owned(), match_filename("app.js.erb"));
 
-        assert_eq!("xml", match_filename("zh-CN.xml"));
+        assert_eq!("conf".to_owned(), match_filename("app.properties"));
+        assert_eq!("conf".to_owned(), match_filename("app.ini"));
+        assert_eq!("conf".to_owned(), match_filename("app.toml"));
+        assert_eq!("conf".to_owned(), match_filename("app.cfg"));
 
-        assert_eq!("asciidoc", match_filename("zh-CN.asc"));
-        assert_eq!("asciidoc", match_filename("zh-CN.adoc"));
+        assert_eq!("strings".to_owned(), match_filename("app.strings"));
+
+        assert_eq!("python".to_owned(), match_filename("app.py"));
+
+        assert_eq!("java".to_owned(), match_filename("main.proto"));
+
+        assert_eq!("kotlin".to_owned(), match_filename("app.gradle"));
+        assert_eq!("kotlin".to_owned(), match_filename("app.kt"));
+
+        assert_eq!("xml".to_owned(), match_filename("zh-CN.xml"));
+
+        assert_eq!("asciidoc".to_owned(), match_filename("bar.adoc"));
+        assert_eq!("asciidoc".to_owned(), match_filename("bar.asc"));
+
+        assert_eq!("java".to_owned(), match_filename("bar.proto"));
+
+        assert_eq!("latex".to_owned(), match_filename("bar.tex"));
+
+        assert_eq!("gettext".to_owned(), match_filename("bar.pot"));
+        assert_eq!("gettext".to_owned(), match_filename("bar.po"));
+
+        // Follow file type in .autocorrecrrc.default
+        assert_eq!("ruby".to_owned(), match_filename("Gemfile"));
+        assert_eq!("ruby".to_owned(), match_filename("Rakefile"));
+        assert_eq!("ruby".to_owned(), match_filename("Profile"));
+        assert_eq!("ruby".to_owned(), match_filename("foo.gemspec"));
     }
 }

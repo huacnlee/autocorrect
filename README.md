@@ -169,6 +169,12 @@ textRules:
   # For example, if we wants to let "Hello你好" just warning, and "Hi你好" to ignore
   # "Hello你好": 2
   # "Hi你好": 0
+fileTypes:
+  # Config the files associations, you config is higher priority than default.
+  # "rb": ruby
+  # "Rakefile": ruby
+  # "*.js": javascript
+  # ".mdx": markdown
 spellcheck:
   # Correct Words (Case insensitive) for by Spellcheck
   words:

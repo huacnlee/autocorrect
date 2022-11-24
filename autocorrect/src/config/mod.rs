@@ -18,6 +18,28 @@ use crate::serde_any;
 
 include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
 
+pub trait ConfigFileTypes {
+    fn get_ext(&self, ext: &str) -> Option<&str>;
+}
+
+impl ConfigFileTypes for HashMap<String, String> {
+    fn get_ext(&self, ext: &str) -> Option<&str> {
+        if let Some(value) = self.get(ext) {
+            return Some(value);
+        }
+
+        if let Some(value) = self.get(&format!("*.{}", ext)) {
+            return Some(value);
+        }
+
+        if let Some(value) = self.get(&format!(".{}", ext)) {
+            return Some(value);
+        }
+
+        None
+    }
+}
+
 #[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Config {
@@ -28,6 +50,9 @@ pub struct Config {
     // Speical text to ignore
     #[serde(default)]
     pub text_rules: HashMap<String, SeverityMode>,
+    // Addition file types map, high priority than default
+    #[serde(default)]
+    pub file_types: HashMap<String, String>,
 }
 
 impl Default for Config {
@@ -41,6 +66,7 @@ impl Default for Config {
                 dict: HashMap::new(),
                 dict_re: HashMap::new(),
             },
+            file_types: HashMap::new(),
         }
     }
 }
@@ -110,6 +136,10 @@ impl Config {
         Arc::new(CURRENT_CONFIG.read().unwrap())
     }
 
+    pub fn get_file_type(&self, ext: &str) -> Option<&str> {
+        self.file_types.get_ext(ext)
+    }
+
     #[allow(clippy::should_implement_trait)]
     pub fn from_str(s: &str) -> Result<Self, Error> {
         let mut config: Config = match serde_any::from_str_any(s) {
@@ -131,14 +161,18 @@ impl Config {
             self.rules.insert(k, v);
         }
 
-        // DEPRECATED: since 2.0.0, remove this in 2.1.0
+        // DEPRECATED: since 2.0.0, remove this in 2.5.0
         if let Some(mode) = config.spellcheck.mode.clone() {
             println!("DEPRECATED: `spellcheck.mode` use `rules.spellcheck` instead since 2.0.0");
             self.spellcheck.mode = Some(mode.clone());
             self.rules.insert("spellcheck".to_string(), mode);
         }
-        config.text_rules.clone().into_iter().for_each(|(k, v)| {
-            self.text_rules.insert(k, v);
+        config.text_rules.iter().for_each(|(k, v)| {
+            self.text_rules.insert(k.to_owned(), v.to_owned());
+        });
+
+        config.file_types.iter().for_each(|(k, v)| {
+            self.file_types.insert(k.to_owned(), v.to_owned());
         });
 
         self.spellcheck.words = self
@@ -169,12 +203,37 @@ pub(crate) fn setup_test() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
 
     #[test]
     fn test_parse_json() {
-        let mut config =
-            Config::from_str(r#"{ "rules": { "foo": 1, "bar": "off", "dar": "2" }, "textRules": { "hello": 1, "word": 2 }, "spellcheck": { "mode": 0, "words": ["Foo", "Bar"] } }"#)
-                .unwrap();
+        let json_str = indoc! {r#"
+        {
+            "rules": {
+                "foo": 1,
+                "bar": "off",
+                "dar": "2"
+            },
+            "textRules": {
+                "hello": 1,
+                "word": 2
+            },
+            "spellcheck": {
+                "mode": 0,
+                "words": [
+                "Foo",
+                "Bar"
+                ]
+            },
+            "fileTypes": {
+                "md": "markdown",
+                "md1": "markdown",
+                "*.ascii": "asciidoc",
+                "Gemfile": "ruby"
+            }
+        }
+        "#};
+        let mut config = Config::from_str(json_str).unwrap();
 
         assert_eq!(Some(&SeverityMode::Error), config.rules.get("foo"));
         assert_eq!(Some(&SeverityMode::Off), config.rules.get("bar"));
@@ -188,6 +247,12 @@ mod tests {
 
         assert_eq!(Some(&SeverityMode::Error), config.text_rules.get("hello"));
         assert_eq!(Some(&SeverityMode::Warning), config.text_rules.get("word"));
+
+        assert_eq!(Some(&"ruby".into()), config.file_types.get("Gemfile"));
+        assert_eq!(Some(&"markdown".into()), config.file_types.get("md"));
+        assert_eq!(Some(&"markdown".into()), config.file_types.get("md1"));
+        assert_eq!(Some(&"asciidoc".into()), config.file_types.get("*.ascii"));
+        assert_eq!(None, config.file_types.get("foo"));
 
         config = Config::from_str(r#"{ "spellcheck": { } }"#).unwrap();
         assert_eq!(None, config.spellcheck.mode);
@@ -220,8 +285,24 @@ mod tests {
         let mut config = Config::from_str("spellcheck:\n  mode: 0").unwrap();
         assert_eq!(Some(SeverityMode::Off), config.spellcheck.mode);
 
-        config =
-            Config::from_str("rules:\n  foo: '1'\n  bar: off\n  dar: warning\ntextRules:\n  hello: error\n  word: '0'\nspellcheck:\n  mode: 1\n  words:\n    - Foo\n    - Bar").unwrap();
+        let yaml_str = indoc! {r#"
+        rules:
+          foo: '1'
+          bar: off
+          dar: warning
+        textRules:
+          hello: error
+          word: '0'
+        spellcheck:
+          mode: 1
+          words:
+            - Foo
+            - Bar
+        fileTypes:
+          Foo: foo
+        "#};
+
+        config = Config::from_str(yaml_str).unwrap();
 
         assert_eq!(Some(&SeverityMode::Error), config.rules.get("foo"));
         assert_eq!(Some(&SeverityMode::Off), config.rules.get("bar"));
@@ -232,6 +313,8 @@ mod tests {
 
         assert_eq!(Some(SeverityMode::Error), config.spellcheck.mode);
         assert_eq!(vec!["Foo", "Bar"], config.spellcheck.words);
+
+        assert_eq!(Some(&"foo".to_owned()), config.file_types.get("Foo"));
 
         config = Config::from_str("").unwrap();
         assert_eq!(None, config.spellcheck.mode);
@@ -257,31 +340,49 @@ mod tests {
         }
 
         assert_eq!(None, config.spellcheck.mode);
-        assert_eq!(false, config.spellcheck.words.is_empty());
-        assert_eq!(false, config.spellcheck.dict.is_empty());
+        assert!(!config.spellcheck.words.is_empty());
+        assert!(!config.spellcheck.dict.is_empty());
     }
 
     #[test]
     fn test_merge_config() {
-        let mut config = Config::default();
-        config.rules = map! {
-            "foo".to_owned() => SeverityMode::Error
+        let mut config = Config {
+            rules: map! {
+                "foo".to_owned() => SeverityMode::Error,
+            },
+            text_rules: map! {
+                "a".to_owned() => SeverityMode::Off,
+                "hello".to_owned() => SeverityMode::Error
+            },
+            file_types: map! {
+                "a".to_owned() => "A".to_owned(),
+                "foo".to_owned() => "Foo".to_owned()
+            },
+            spellcheck: SpellcheckConfig {
+                mode: Some(SeverityMode::Warning),
+                words: vec!["foo".to_string(), "bar".to_string(), "baz".to_string()],
+                ..Default::default()
+            },
         };
-        config.text_rules = map! {
-            "hello".to_owned() => SeverityMode::Error
-        };
-        config.spellcheck.mode = Some(SeverityMode::Warning);
-        config.spellcheck.words = vec!["foo".to_string(), "bar".to_string(), "baz".to_string()];
 
-        let mut config1 = Config::default();
-        config1.rules = map! {
-            "bar".to_owned() => SeverityMode::Warning
+        let config1 = Config {
+            rules: map! {
+                "bar".to_owned() => SeverityMode::Warning,
+            },
+            text_rules: map! {
+                "world".to_owned() => SeverityMode::Off
+            },
+            file_types: map! {
+                "foo".to_owned() => "Foo New".to_owned(),
+                "bar".to_owned() => "Bar".to_owned()
+            },
+            spellcheck: SpellcheckConfig {
+                mode: Some(SeverityMode::Off),
+                words: vec!["foo1".to_string(), "bar1".to_string()],
+                ..Default::default()
+            },
         };
-        config1.text_rules = map! {
-            "world".to_owned() => SeverityMode::Off
-        };
-        config1.spellcheck.mode = Some(SeverityMode::Off);
-        config1.spellcheck.words = vec!["foo1".to_string(), "bar1".to_string()];
+
         config.merge(&config1).unwrap();
 
         let new_rules = map! {
@@ -292,10 +393,19 @@ mod tests {
         assert_eq!(new_rules, config.rules);
 
         let new_text_rules = map! {
+            "a".to_owned() => SeverityMode::Off,
             "hello".to_owned() => SeverityMode::Error,
             "world".to_owned() => SeverityMode::Off
         };
         assert_eq!(new_text_rules, config.text_rules);
+
+        let new_file_types = map! {
+            "a".to_owned() => "A".to_owned(),
+            "foo".to_owned() => "Foo New".to_owned(),
+            "bar".to_owned() => "Bar".to_owned(),
+        };
+        assert_eq!(new_file_types, config.file_types);
+
         assert_eq!(config.spellcheck.mode, Some(SeverityMode::Off));
         assert_eq!(
             config.spellcheck.words,
@@ -307,5 +417,24 @@ mod tests {
                 "bar1".to_string()
             ]
         );
+    }
+
+    #[test]
+    fn test_file_types_get_ext() {
+        let config = Config {
+            file_types: map! {
+                "*.rs".to_owned() => "rust".to_owned(),
+                ".asc".to_owned() => "asciidoc".to_owned(),
+                "rb".to_owned() => "ruby".to_owned(),
+                "Gemfile".to_owned() => "ruby".to_owned(),
+            },
+            ..Default::default()
+        };
+
+        assert_eq!(Some("rust"), config.file_types.get_ext("rs"));
+        assert_eq!(Some("asciidoc"), config.file_types.get_ext("asc"));
+        assert_eq!(Some("ruby"), config.file_types.get_ext("rb"));
+        assert_eq!(Some("ruby"), config.file_types.get_ext("Gemfile"));
+        assert_eq!(None, config.file_types.get_ext("foo"));
     }
 }

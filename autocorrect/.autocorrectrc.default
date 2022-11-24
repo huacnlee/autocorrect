@@ -16,7 +16,114 @@ rules:
   halfwidth-punctuation: 1
   # Spellcheck
   spellcheck: 0
+textRules:
+  # No default text rules.
 spellcheck:
   words:
     # Please do not add a general English word (eg. apple, python) here.
     # Users can add their special words to their .autocorrectrc file by their need.
+fileTypes:
+  # HTML
+  html: html
+  htm: html
+  vue: html
+  ejs: html
+  html.erb: html
+  # YAML
+  yaml: yaml
+  yml: yaml
+  # Rust
+  rust: rust
+  rs: rust
+  # SQL
+  sql: sql
+  # Ruby
+  ruby: ruby
+  rb: ruby
+  Gemfile: ruby
+  Rakefile: ruby
+  Profile: ruby
+  gemspec: ruby
+  # Crystal
+  crystal: ruby
+  cr: ruby
+  # Elixir
+  elixir: elixir
+  ex: elixir
+  exs: elixir
+  # JavaScript
+  js: javascript
+  jsx: javascript
+  javascript: javascript
+  ts: javascript
+  tsx: javascript
+  typescript: javascript
+  js.erb: javascript
+  # CSS
+  css: css
+  scss: css
+  sass: css
+  less: css
+  # JSON
+  json: json
+  json5: json
+  # Go
+  go: go
+  # Python
+  python: python
+  py: python
+  # Objective-C
+  objective_c: objective_c
+  objective-c: objective_c
+  m: objective_c
+  h: objective_c
+  # Strings for Cocoa
+  strings: strings
+  # C#
+  csharp: csharp
+  cs: csharp
+  # Java
+  java: java
+  proto: java
+  # Scala
+  scala: scala
+  # Swift
+  swift: swift
+  # Kotlin
+  kotlin: kotlin
+  kt: kotlin
+  gradle: kotlin
+  # PHP
+  php: php
+  # Dart
+  dart: dart
+  # Markdown
+  markdown: markdown
+  md: markdown
+  mdx: markdown
+  # LaTeX
+  latex: latex
+  tex: latex
+  # AsciiDoc
+  asciidoc: asciidoc
+  adoc: asciidoc
+  asc: asciidoc
+  # Gettext
+  po: gettext
+  pot: gettext
+  # Conf
+  properties: conf
+  conf: conf
+  ini: conf
+  cfg: conf
+  toml: conf
+  # C / C++
+  cc: c
+  cpp: c
+  c: c
+  # XML
+  xml: xml
+  # Text
+  text: text
+  plain: text
+  txt: text
