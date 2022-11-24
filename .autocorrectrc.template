@@ -1,4 +1,5 @@
 rules:
+  # Default rules: https://github.com/huacnlee/autocorrect/raw/main/autocorrect/.autocorrectrc.default
   spellcheck: 2
 textRules:
   # Config some special rule for some texts
