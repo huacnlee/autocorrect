@@ -67,8 +67,14 @@ jobs:
         run: make test:ruby
 
   test_java:
-    name: Test for Java
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        settings:
+          - host: ubuntu-latest
+          - host: macos-latest
+    runs-on: ${{ matrix.settings.host }}
+    name: Test for Java on ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
 
