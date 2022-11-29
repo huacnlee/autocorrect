@@ -37,6 +37,8 @@ mod tests {
 
         我们使用 GitHub Issues 来对问题进行**跟踪**和**改进**。如果您要报告问题，或者有新的建议或意见，请在 https://github.com/huacnlee/autocorrect/issues[Github Issues] 上汇报问题。
 
+        Jetbrains请访问：https://www.jetbrains.com/help_idea_path/using-git-integration.html。
+
         [NOTE]
         ====
         AutoCorrect需要提前安装。
@@ -83,6 +85,8 @@ mod tests {
         == 使用 GitHub Issues
 
         我们使用 GitHub Issues 来对问题进行**跟踪**和**改进**。如果您要报告问题，或者有新的建议或意见，请在 https://github.com/huacnlee/autocorrect/issues[Github Issues] 上汇报问题。
+
+        Jetbrains 请访问：https://www.jetbrains.com/help_idea_path/using-git-integration.html。
 
         [NOTE]
         ====

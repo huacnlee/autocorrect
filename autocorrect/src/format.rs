@@ -305,10 +305,11 @@ mod tests {
 
     #[test]
     fn test_format_halfwidth() {
-        let raw = "你好\nWelcome all say hello，world。\n你好world";
-        assert_eq!(
-            "你好\nWelcome all say hello, world.\n你好 world",
-            format(raw)
-        );
+        let cases = map! {
+            "你好\nWelcome all say hello，world。\n你好world" => "你好\nWelcome all say hello, world.\n你好 world",
+            "Jetbrains请访问：https://www.jetbrains.com/help/idea/using-git-integration.html。" => "Jetbrains 请访问：https://www.jetbrains.com/help/idea/using-git-integration.html。",
+        };
+
+        assert_cases(cases);
     }
 }
