@@ -11,6 +11,7 @@ jobs:
   build:
     name: Test
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - uses: actions/checkout@master
       - name: Install Rust
@@ -25,6 +26,7 @@ jobs:
   test_node:
     name: Test for Node.js
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
@@ -39,6 +41,7 @@ jobs:
   test_python:
     name: Test for Python
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@v4
@@ -54,6 +57,7 @@ jobs:
   test_ruby:
     name: Test for Ruby
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - uses: actions/checkout@v3
 
@@ -75,6 +79,7 @@ jobs:
           - host: macos-latest
     runs-on: ${{ matrix.settings.host }}
     name: Test for Java on ${{ matrix.settings.host }}
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - uses: actions/checkout@v3
 
@@ -90,6 +95,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     steps:
       - uses: actions/checkout@master
       - name: Install Rust

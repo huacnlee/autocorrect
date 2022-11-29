@@ -27,7 +27,7 @@ public class AutoCorrect {
      *
      * @param text JSON | YAML format config text.
      */
-    public static native String loadConfig(String configStr);
+    public static native void loadConfig(String configStr);
 
     /**
      * AutoCorrect lint text by type
