@@ -92,3 +92,37 @@ pub(crate) fn diff_lines_with_err_color(
 
     out
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use owo_colors::AnsiColors::{Red, Yellow};
+    use owo_colors::OwoColorize;
+
+    #[test]
+    fn test_color_on_ci() {
+        println!("{}", "RED".red());
+        println!("{}", "GREEN".green());
+        println!("{}", "YELLOW".yellow());
+
+        println!("{}", "RED bright".bright_red());
+        println!("{}", "GREEN bright".bright_green());
+        println!("{}", "YELLOW bright".bright_yellow());
+
+        println!("{}", "RED BG".on_red());
+        println!("{}", "GREEN BG".on_green());
+        println!("{}", "YELLOW BG".on_yellow());
+
+        println!("{}", "RED BG, BLACK".on_red().black());
+        println!("{}", "GREEN BG, BLACK".on_green().black());
+        println!("{}", "YELLOW BG, BLACK".on_yellow().black());
+
+        println!("{}", "RED BG (Ansi)".on_color(Red));
+        println!("{}", "GREEN BG (Ansi)".on_color(Yellow));
+
+        println!("{}", "RED BG (Ansi), Black FG".on_color(Red).black());
+        println!("{}", "GREEN BG (Ansi), Black FG".on_color(Yellow).black());
+
+        assert!(false)
+    }
+}
