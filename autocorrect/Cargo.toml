@@ -16,10 +16,10 @@ path = "src/lib.rs"
 
 [dependencies]
 autocorrect-derive = {path = "../autocorrect-derive", version = ">=0.2.0"}
-colored = "2"
 diff = "0.1.13"
 ignore = "0.4"
 lazy_static = "1.4.0"
+owo-colors = "3"
 pest = "2.4.0"
 pest_derive = "2.4.0"
 regex = "1"

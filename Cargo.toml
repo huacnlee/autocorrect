@@ -1,4 +1,10 @@
 [workspace]
+default-members = [
+  "autocorrect",
+  "autocorrect-derive",
+  "autocorrect-wasm",
+  "autocorrect-cli",
+]
 exclude = [
   "autocorrect-tauri",
 ]

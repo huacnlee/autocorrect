@@ -14,9 +14,9 @@ mod progress;
 mod update;
 
 use cli::Cli;
-use colored::*;
 use logger::Logger;
 use logger::SystemTimeDuration;
+use owo_colors::OwoColorize;
 use threadpool::ThreadPool;
 
 extern crate autocorrect;

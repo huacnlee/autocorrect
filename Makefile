@@ -6,7 +6,7 @@ VERSION_FILES=autocorrect/Cargo.toml autocorrect-cli/Cargo.toml autocorrect-node
 bench:
 	cargo bench
 run1:
-	cargo run -- --lint --config /Users/jason/work/translated-content/.autocorrectrc  /Users/jason/work/translated-content/files/zh-tw/learn/
+	cargo run -- --lint --config ~/github/translated-content/.autocorrectrc  ~/github/translated-content/files/zh-tw/learn/
 run:
 	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template
 run\:json:

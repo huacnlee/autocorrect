@@ -1,4 +1,4 @@
-use colored::*;
+use owo_colors::OwoColorize;
 use std::io::{self, Write};
 
 pub fn ok(show: bool) {
