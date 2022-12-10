@@ -21,6 +21,7 @@ mod tests {
 function helloWorld(a) {
   const a = '第1个';
   const b = "第2个" + "第3个";
+  const raw = `Hello你好`;
   const re = /包含#regexp测试/;
   const re1 = new RegExp("RegExp不处理");
   const re2 = new RegExp('不处理RegExp');
@@ -67,6 +68,7 @@ const map = {
 function helloWorld(a) {
   const a = '第 1 个';
   const b = "第 2 个" + "第 3 个";
+  const raw = `Hello 你好`;
   const re = /包含#regexp测试/;
   const re1 = new RegExp("RegExp不处理");
   const re2 = new RegExp('不处理RegExp');
