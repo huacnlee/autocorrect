@@ -1,4 +1,4 @@
-const autocorrectLib = import('../pkg/autocorrect');
+const autocorrectLib = import('../../pkg/autocorrect');
 import * as monaco from 'monaco-editor';
 import examples from './examples';
 
@@ -60,9 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadExampleByFileType(currentFileType);
   };
 
-  const loadExampleByFileType = (fileType) => {
+  const loadExampleByFileType = (fileType: string) => {
     currentFileType = fileType;
 
+    // @ts-ignore
     const example = examples[fileType];
     filename.innerHTML = `FileType: ${fileType}`;
 
@@ -72,7 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const options = Object.keys(examples).map((key) => {
-    return "<option value='" + key + "'>" + examples[key].title + '</option>';
+    // @ts-ignore
+    const example = examples[key];
+    return "<option value='" + key + "'>" + example.title + '</option>';
   });
 
   autocorrectLib.then((ac) => {
@@ -88,11 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
   select.innerHTML = options.join('');
   select.value = 'javascript';
 
-  select.addEventListener('change', (e) => {
+  select.addEventListener('change', (e: any) => {
     loadExampleByFileType(e.target.value);
   });
 
-  const formatText = (e) => {
+  const formatText = (e: any) => {
     e.preventDefault();
 
     const start = new Date();
@@ -138,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const createMarkers = (result: any) => {
   const markers: monaco.editor.IMarkerData[] = result.lines.map(
-    (lineResult) => {
+    (lineResult: any) => {
       return {
         severity:
           lineResult.severity === 1
