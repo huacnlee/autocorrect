@@ -4,5 +4,9 @@ import wasm from 'vite-plugin-wasm';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    target: 'esnext',
+  },
+  base: '/autocorrect/',
   plugins: [react(), wasm()],
 });

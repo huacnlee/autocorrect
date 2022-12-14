@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply text-sm px-6 lg:px-0 text-center pb-20;
+}
+
+.container {
+  @apply max-w-5xl w-full my-8 mx-auto text-left;
+}
+
+.navbar {
+  @apply text-lg text-gray-300;
+
+  a {
+    @apply text-blue-600 px-2;
+  }
+}
+
+.sub-navbar {
+  @apply flex items-center justify-center space-x-2;
+}
+
+.intro {
+  @apply text-base text-left;
+
+  p {
+    @apply mb-5 text-justify;
+  }
+}
+
+.editor-wraper {
+  width: 100%;
+  height: 480px;
+  @apply rounded-sm border border-gray-300 shadow mb-4;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  -webkit-print-color-adjust: exact;
+  color-adjust: exact;
+  appearance: none;
+}
+
+select {
+  @apply block pl-3 pr-10 py-2 text-base shadow-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md;
+}
+
+button {
+  @apply border-0 shadow bg-gray-900 text-white rounded-md leading-4 py-3 px-10;
+
+  &:active {
+    @apply bg-black;
+  }
+}
+
+.btn {
+  @apply border-0 text-lg shadow bg-gray-700 text-white rounded-md leading-none py-2 px-6 lg:py-3 lg:px-12 block whitespace-nowrap;
+}
+.btn-install {
+  @apply bg-blue-600;
+}
+.btn-install2 {
+  @apply bg-gray-800;
+}
+.btn-download {
+  @apply bg-green-600;
+}
+.btn-github {
+}
+
+.message {
+  @apply ml-3 text-green-600;
+}
+
+.codeblock-wrap {
+  @apply space-y-2;
+}
+
+.codeblock {
+  @apply p-4 text-gray-800 bg-gray-100 rounded hover:select-all;
+}

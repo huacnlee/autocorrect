@@ -1,6 +1,8 @@
-const autocorrectLib = import('../../pkg/autocorrect');
+const autocorrectLib = import('@huacnlee/autocorrect');
 import * as monaco from 'monaco-editor';
 import examples from './examples';
+
+import './style.scss';
 
 let autocorrect: any;
 let currentFileType = 'text';
@@ -35,13 +37,16 @@ const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
   },
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('input') as HTMLElement;
+let editor: monaco.editor.IStandaloneCodeEditor;
 
-  const editor = monaco.editor.create(input, {
-    value: '',
-    ...editorOptions,
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.querySelector('.editor-wraper') as HTMLElement;
+  if (!editor) {
+    editor = monaco.editor.create(input, {
+      value: '',
+      ...editorOptions,
+    });
+  }
   editor.onDidChangeModelContent(() => {
     lintText();
   });
@@ -54,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnReset = document.querySelector('#btnReset') as HTMLElement;
   const message = document.querySelector('.message') as HTMLElement;
   const select = document.querySelector('#filetype') as any;
-  const filename = document.querySelector('#filename') as HTMLElement;
 
   const reloadExample = () => {
     loadExampleByFileType(currentFileType);
@@ -65,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // @ts-ignore
     const example = examples[fileType];
-    filename.innerHTML = `FileType: ${fileType}`;
 
     editor.setValue(example.raw);
     // @ts-ignore
