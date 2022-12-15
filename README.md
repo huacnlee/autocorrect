@@ -317,7 +317,7 @@ Add to your `.github/workflows/ci.yml`
 ```yml
 steps:
   - name: Check source code
-    uses: actions/checkout@main
+    uses: actions/checkout@v3
 
   - name: AutoCorrect
     uses: huacnlee/autocorrect-action@main

@@ -15,12 +15,14 @@ jobs:
 
       # Cache files between builds
       - name: Setup | Cache Cargo
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.11
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: npm-build-cargo-${{ hashFiles('**/Cargo.lock') }}
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: wasm-build-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Setup | Rust
         uses: actions-rs/toolchain@v1.0.7

@@ -48,7 +48,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
 
       - uses: olegtarasov/get-tag@v2.1
         id: tagName
@@ -57,11 +57,13 @@ jobs:
 
       # Cache files between builds
       - name: Setup | Cache Cargo
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.11
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Setup | Rust
@@ -123,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 

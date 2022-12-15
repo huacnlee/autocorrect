@@ -6,28 +6,53 @@ on:
       - "*"
     tags:
       - "*"
+
 jobs:
   build:
     name: Test
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Install Rust
-        run: rustup update stable && rustup default stable
-
-      - name: Checkout
-        uses: actions/checkout@v1
-
+      - uses: actions/checkout@v3
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v3.0.11
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ubuntu-test-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Test
         run: cargo test
+      - name: Lint output
+        run: make test:lint
+      - name: Init test
+        run: make test:init
+      - name: Lint output JSON
+        run: make test:lint-json
 
   test_node:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Test for Node.js
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v3.0.11
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            target/
+          key: ubuntu-test-cargo-yarn-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
@@ -42,14 +67,23 @@ jobs:
     name: Test for Python
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v3.0.11
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.cache/pip
+            target/
+          key: ubuntu-test-cargo-python-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-
       - name: Install pytest
         run: python3 -m pip install pytest
-
       - name: Test Python
         run: make test:python
 
@@ -59,13 +93,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v3.0.11
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ubuntu-test-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
           bundler-cache: true
-          cargo-cache: true
-
       - name: Test Ruby
         run: make test:ruby
 
@@ -81,33 +122,21 @@ jobs:
     name: Test for Java on ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
-
+      - name: Setup | Cache Cargo
+        uses: actions/cache@v3.0.11
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ~/.m2/repository
+            target/
+          key: ${{ matrix.settings.host }}-cargo-maven-${{ hashFiles('**/Cargo.lock') }}
       - name: Install JDK
         uses: actions/setup-java@v3
         with:
           java-version: "11"
           distribution: "temurin"
-
       - name: Test Java
         run: make test:java
-
-  lint:
-    name: Lint
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Install Rust
-        run: rustup update nightly && rustup default nightly
-
-      - name: Checkout
-        uses: actions/checkout@v1
-
-      - name: Lint output
-        run: make test:lint
-
-      - name: Init test
-        run: make test:init
-
-      - name: Lint output JSON
-        run: make test:lint-json

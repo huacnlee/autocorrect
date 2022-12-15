@@ -59,11 +59,13 @@ jobs:
 
       # Cache files between builds
       - name: Setup | Cache Cargo
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.11
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
           key: tauri-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: install Rust stable
