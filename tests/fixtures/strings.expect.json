@@ -27,7 +27,7 @@
         },
         {
           "l": 6,
-          "c": 33,
+          "c": 34,
           "new": "//app 中文名称",
           "old": "//app中文名称",
           "severity": 1
@@ -44,13 +44,6 @@
           "c": 1,
           "new": "// 单行 comment",
           "old": "// 单行comment",
-          "severity": 1
-        },
-        {
-          "l": 11,
-          "c": 1,
-          "new": "\"中文 key 测试\"",
-          "old": "\"中文key测试\"",
           "severity": 1
         }
       ],

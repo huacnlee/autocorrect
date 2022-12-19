@@ -14,6 +14,8 @@ diff_lint_json "html" "html"
 diff_lint_json "gettext" "po"
 diff_lint_json "conf" "toml"
 diff_lint_json "latex" "tex"
+diff_lint_json "strings" "strings"
+diff_lint_json "svelte" "svelte"
 
 # this ignore work with direct file
 cargo run -q -- --lint tests/fixtures/this-file-will-ignore.rs

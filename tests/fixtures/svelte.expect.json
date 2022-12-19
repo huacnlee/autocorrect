@@ -1,0 +1,39 @@
+{
+  "count": 1,
+  "messages": [
+    {
+      "filepath": "tests/fixtures/svelte.raw.svelte",
+      "lines": [
+        {
+          "l": 2,
+          "c": 1,
+          "new": "// 这里是 comment",
+          "old": "// 这里是comment",
+          "severity": 1
+        },
+        {
+          "l": 3,
+          "c": 13,
+          "new": "'这里是 string'",
+          "old": "'这里是string'",
+          "severity": 1
+        },
+        {
+          "l": 6,
+          "c": 5,
+          "new": "Hello 你好",
+          "old": "Hello你好",
+          "severity": 1
+        },
+        {
+          "l": 9,
+          "c": 1,
+          "new": "/* 这里是 CSS 的注释 */",
+          "old": "/* 这里是CSS的注释 */",
+          "severity": 1
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

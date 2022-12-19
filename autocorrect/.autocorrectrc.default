@@ -31,6 +31,7 @@ fileTypes:
   vue: html
   ejs: html
   html.erb: html
+  svelte: html
   # YAML
   yaml: yaml
   yml: yaml

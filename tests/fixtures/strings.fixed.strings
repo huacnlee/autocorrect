@@ -3,7 +3,7 @@
     Created by 某某
 */
 
-"CFBundleDisplayName" = "App 名称";//app 中文名称
+"CFBundleDisplayName" = "App 名称"; //app 中文名称
 "CFBundleIdentifier" = "huacnlee.autocorrect";
 
 "NSCameraUsageDescription" = "开启 Wi-Fi 后继续使用";
