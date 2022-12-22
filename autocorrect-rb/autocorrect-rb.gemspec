@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*.rb", "ext/**/*.{rs,toml,lock,rb}"] + %w[README.md Rakefile]
   s.require_paths = ["lib"]
   s.license = "MIT"
-  s.required_ruby_version = ">= 2.7.0"
   s.extensions = ["ext/autocorrect/extconf.rb"]
 
   # needed until rubygems supports Rust support is out of beta
