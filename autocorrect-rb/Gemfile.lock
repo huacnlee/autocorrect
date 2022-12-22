@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.5.4)
+    autocorrect-rb (2.4.3)
       rb_sys (>= 0.9.18)
 
 GEM
@@ -19,16 +19,15 @@ GEM
     memory_profiler (1.0.1)
     minitest (5.16.3)
     rake (13.0.6)
-    rake-compiler (1.2.1)
+    rake-compiler (1.2.0)
       rake
-    rb_sys (0.9.52)
+    rb_sys (0.9.44)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
 
 PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
-  arm64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
@@ -42,4 +41,4 @@ DEPENDENCIES
   rb_sys
 
 BUNDLED WITH
-   2.4.0.dev
+   2.3.18
