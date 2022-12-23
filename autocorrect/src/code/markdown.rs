@@ -21,12 +21,15 @@ mod tests {
         let example = r###"
 ---
 title: iPad 和 iOS 接入的不同点
-id: h
-slug: /appstore/ipad_and_ios
+post-id: h
+Slug: /appstore/ipad_and_ios
+user.name: Jason
 original_slug: Web/CSS/网格-模板-列
 ---
 
-page-tags: 美国, 中国,德国 , 法国
+This_Page-Tags: 美国, 中国,德国 , France
+
+Example: Hello你好,世界.
 
 # 这是Heading 1大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 
@@ -139,17 +142,22 @@ let a = "你好hello";
 - [link链接](https://google.com/a/b/url不处理)
 - Escher puzzle（[链接](https://google.com)）
 - 一个[[Wikilinks测试]]示例
+
+请记住:对该仓库的贡献,应遵循我们的GitHub社区准则。
 "###;
 
         let expected = r###"
 ---
 title: iPad 和 iOS 接入的不同点
-id: h
-slug: /appstore/ipad_and_ios
+post-id: h
+Slug: /appstore/ipad_and_ios
+user.name: Jason
 original_slug: Web/CSS/网格-模板-列
 ---
 
-page-tags: 美国, 中国,德国 , 法国
+This_Page-Tags: 美国, 中国,德国 , France
+
+Example: Hello 你好，世界。
 
 # 这是 Heading 1 大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 
@@ -262,6 +270,8 @@ let a = "你好 hello";
 - [link 链接](https://google.com/a/b/url不处理)
 - Escher puzzle（[链接](https://google.com)）
 - 一个[[Wikilinks测试]]示例
+
+请记住：对该仓库的贡献，应遵循我们的 GitHub 社区准则。
 "###;
 
         assert_eq!(expected, format_for(example, "markdown").to_string());
