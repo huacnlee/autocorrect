@@ -48,12 +48,12 @@ macro_rules! regexp {
 
         let mut rule_str = String::from(reg_str).replace(
             r"\p{CJK}",
-            r"\p{Han}|\p{Hangul}|\p{Hanunoo}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}",
+            r"\p{Han}|\p{Hangul}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}",
         );
 
          rule_str = String::from(rule_str).replace(
             r"\p{CJK_N}",
-            r"\p{Han}\p{Hangul}\p{Hanunoo}\p{Katakana}\p{Hiragana}\p{Bopomofo}",
+            r"\p{Han}\p{Hangul}\p{Katakana}\p{Hiragana}\p{Bopomofo}",
         );
 
         rule_str = String::from(rule_str).replace(

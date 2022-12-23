@@ -5,7 +5,12 @@ expr = _{
   comment | html_tag | meta_info | block | inline | td_tag
 }
 
-CJK = { HAN | HANGUL | KATAKANA | HIRAGANA }
+CJK = { 
+  HAN
+  | HANGUL 
+  | KATAKANA | HIRAGANA
+  | BOPOMOFO
+}
 
 block = ${ 
   meta_tags
