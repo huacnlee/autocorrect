@@ -77,7 +77,7 @@ meta_key = @{ (!(":" | newline) ~ IDENT)* ~ ":" ~ " "* }
 // tags: 美国, 中国
 meta_tags = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ NEWLINE }
 meta_tags_val = @{ meta_tags_item ~ meta_tags_divider }
-meta_tags_item = { (!(newline | ",")  ~ (CJK | ASCII_ALPHANUMERIC))* }
+meta_tags_item = { (!(newline | ",")  ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
 meta_tags_divider = { " "* ~ "," ~ " "* }
 
 image_prefix = @{ "!" }

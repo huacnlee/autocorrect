@@ -27,7 +27,7 @@ user.name: Jason
 original_slug: Web/CSS/网格-模板-列
 ---
 
-This_Page-Tags: 美国, 中国,德国 , France
+This_Page-Tags: 美国, 中国,德国 , France 法国
 
 Example: Hello你好,世界.
 
@@ -155,7 +155,7 @@ user.name: Jason
 original_slug: Web/CSS/网格-模板-列
 ---
 
-This_Page-Tags: 美国, 中国,德国 , France
+This_Page-Tags: 美国, 中国,德国 , France 法国
 
 Example: Hello 你好，世界。
 
