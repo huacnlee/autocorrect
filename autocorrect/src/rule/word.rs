@@ -31,7 +31,7 @@ lazy_static! {
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
-        Strategery::new(r"\w|\p{CJK}", r"[，。、！？：；（）「」《》【】]").with_remove_space().with_reverse(),
+        Strategery::new(r"\w|\p{CJK}|`", r"[，。、！？：；（）「」《》【】]").with_remove_space().with_reverse(),
     ];
 
     static ref NO_SPACE_FULLWIDTH_QUOTE_STRATEGIES : Vec<Strategery> = vec![
