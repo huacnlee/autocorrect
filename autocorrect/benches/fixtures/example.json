@@ -1,0 +1,15 @@
+{
+  "name": "你好hello世界",
+  "displayName": "JSON格式测试",
+  "publisher": "huacnlee",
+  "meta": {
+  // 第1行注释
+  "title": "第1个meta", 
+  /** 
+   * 第2行注释
+   * 第3行注释
+   */
+  "description": "第2个meta", 
+  "测试key不格式化": false
+  }
+  }

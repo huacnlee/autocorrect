@@ -1,0 +1,2002 @@
+[
+  {
+      "source": "generate the definition of `HandleStore` in `server.rs`.",
+      "suggest": "在 `server.rs` 中生成 `HandleStore` 的定义。",
+      "translate": ""
+  },
+  {
+      "source": "Forward `Drop::drop` to the inherent `drop` method.",
+      "suggest": "将 `Drop::drop` 转发到固有的 `drop` 方法。",
+      "translate": ""
+  },
+  {
+      "source": "generate these impls by pattern-matching on the names of methods - also could use the presence of `fn drop` to distinguish between 'owned and 'interned, above.",
+      "suggest": "通过对方法名称进行模式匹配来生成这些 impls - 也可以使用 `fn drop` 的存在来区分上面的 'owned' 和 'interned'。",
+      "translate": ""
+  },
+  {
+      "source": "Alternatively, special 'modes\" could be listed of types in with_api instead of pattern matching on methods, here and in server decl.",
+      "suggest": "或者，可以在 with_api 中列出特殊的 `modes` 类型，而不是在此以及在服务器 decl 中对方法进行模式匹配。",
+      "translate": ""
+  },
+  {
+      "source": "format the kind without quotes, as in `kind: Float`",
+      "suggest": "格式化不带引号的种类，例如 `kind: Float`",
+      "translate": ""
+  },
+  {
+      "source": "format `Some(\"...\")` on one line even in {:#?} mode",
+      "suggest": "即使在 {:#?} 模式下，也可以在一行上格式化 `Some(\"...\")`",
+      "translate": ""
+  },
+  {
+      "source": "No server is currently connected to this client.",
+      "suggest": "当前没有服务器连接到该客户端。",
+      "translate": ""
+  },
+  {
+      "source": "A server is connected and available for requests.",
+      "suggest": "服务器已连接并且可用于请求。",
+      "translate": ""
+  },
+  {
+      "source": "Access to the bridge is being exclusively acquired (e.g., during `BridgeState::with`).",
+      "suggest": "专门获取对网桥的访问权限 (例如，在 `BridgeState::with` 期间)。",
+      "translate": ""
+  },
+  {
+      "source": "Take exclusive control of the thread-local `BridgeState`, and pass it to `f`, mutably.",
+      "suggest": "独占控制线程本地的 `BridgeState`，并将其可变地传递给 `f`。",
+      "translate": ""
+  },
+  {
+      "source": "The state will be restored after `f` exits, even by panic, including modifications made to it by `f`.",
+      "suggest": "`f` 退出后，甚至 panic 都将恢复状态，包括 `f` 对它的修改。",
+      "translate": ""
+  },
+  {
+      "source": "N.B., while `f` is running, the thread-local state is `BridgeState::InUse`.",
+      "suggest": "注意，在运行 `f` 时，线程本地状态为 `BridgeState::InUse`。",
+      "translate": ""
+  },
+  {
+      "source": "pass `f` directly to `replace` when `RefMutL` is gone",
+      "suggest": "`RefMutL` 消失后，将 `f` 直接传递给 `replace`",
+      "translate": ""
+  },
+  {
+      "source": "Hide the default panic output within `proc_macro` expansions.",
+      "suggest": "隐藏 `proc_macro` 扩展中的默认 panic 输出。",
+      "translate": ""
+  },
+  {
+      "source": "NB. the server can't do this because it may use a different libstd.",
+      "suggest": "注意服务器无法执行此操作，因为它可能使用了不同的 libstd。",
+      "translate": ""
+  },
+  {
+      "source": "A client-side \"global object\" (usually a function pointer), which may be using a different `proc_macro` from the one used by the server, but can be interacted with compatibly.",
+      "suggest": "客户端 \"全局对象\" (通常是函数指针)，可以使用与服务器使用的 `proc_macro` 不同的 `proc_macro`，但可以兼容地进行交互。",
+      "translate": ""
+  },
+  {
+      "source": "N.B., `F` must have FFI-friendly memory layout (e.g., a pointer).",
+      "suggest": "注意，`F` 必须具有 FFI 友好的内存布局 (例如，指针)。",
+      "translate": ""
+  },
+  {
+      "source": "The call ABI of function pointers used for `F` doesn't need to match between server and client, since it's only passed between them and (eventually) called by the client.",
+      "suggest": "用于 `F` 的函数指针的调用 ABI 不需要在服务器和客户端之间匹配，因为它仅在它们与客户端调用的 (eventually) 之间传递。",
+      "translate": ""
+  },
+  {
+      "source": "Client-side helper for handling client panics, entering the bridge, deserializing input and serializing output.",
+      "suggest": "客户端帮助程序，用于处理客户端 panics，进入网桥，反序列化输入和序列化输出。",
+      "translate": ""
+  },
+  {
+      "source": "maybe replace `Bridge::enter` with this?",
+      "suggest": "也许用这个代替 `Bridge::enter`?",
+      "translate": ""
+  },
+  {
+      "source": "The initial `cached_buffer` contains the input.",
+      "suggest": "初始 `cached_buffer` 包含输入。",
+      "translate": ""
+  },
+  {
+      "source": "Put the `cached_buffer` back in the `Bridge`, for requests.",
+      "suggest": "将 `cached_buffer` 放回 `Bridge`，以进行请求。",
+      "translate": ""
+  },
+  {
+      "source": "Take the `cached_buffer` back out, for the output value.",
+      "suggest": "取出 `cached_buffer` 作为输出值。",
+      "translate": ""
+  },
+  {
+      "source": "Separate encoding a success value (`Ok(output)`) from encoding a panic (`Err(e: PanicMessage)`) to avoid having handles outside the `bridge.enter(|| ...)` scope, and to catch panics that could happen while encoding the success.",
+      "suggest": "将成功值 (`Ok(output)`) 与对 panic (`Err(e: PanicMessage)`) 进行编码分开，以避免在 `bridge.enter(|| ...)` 作用域之外使用句柄，并捕获对成功编码时可能发生的 panics。",
+      "translate": ""
+  },
+  {
+      "source": "Note that panics should be impossible beyond this point, but this is defensively trying to avoid any accidental panicking reaching the `extern \"C\"` (which should `abort` but may not at the moment, so this is also potentially preventing UB).",
+      "suggest": "请注意，panics 超出此范围应该是不可能的，但这是为了避免任何意外的恐慌而到达 `extern \"C\"` (`extern \"C\"` 应该是 `abort`，但目前可能不会，所以这也有可能阻止 UB)。",
+      "translate": ""
+  },
+  {
+      "source": "Closure type (equivalent to `&mut dyn FnMut(A) -> R`) that's `repr(C)`.",
+      "suggest": "闭包类型 (等同于 `&mut dyn FnMut(A) -> R`) 为 `repr(C)`。",
+      "translate": ""
+  },
+  {
+      "source": "Server-side handles and storage for per-handle data.",
+      "suggest": "服务器端句柄和每个句柄数据的存储。",
+      "translate": ""
+  },
+  {
+      "source": "Ensure the handle counter isn't 0, which would panic later, when `NonZeroU32::new` (aka `Handle::new`) is called in `alloc`.",
+      "suggest": "确保在 `alloc` 中调用 `NonZeroU32::new` (也称为 `Handle::new`) 时，句柄计数器不为 0，之后为 panic。",
+      "translate": ""
+  },
+  {
+      "source": "Internal interface for communicating between a `proc_macro` client (a proc macro crate) and a `proc_macro` server (a compiler front-end).",
+      "suggest": "`proc_macro` 客户端 (proc 宏 crate) 和 `proc_macro` 服务器 (编译器前端) 之间进行通信的内部接口。",
+      "translate": ""
+  },
+  {
+      "source": "Serialization (with C ABI buffers) and unique integer handles are employed to allow safely interfacing between two copies of `proc_macro` built (from the same source) by different compilers with potentially mismatching Rust ABIs (e.g., stage0/bin/rustc vs stage1/bin/rustc during bootstrap).",
+      "suggest": "采用序列化 (带有 C ABI 缓冲区) 和唯一的整数句柄，以允许由不同编译器 (可能具有不匹配的 Rust ABI) (例如，引导过程中的 stage0/bin/rustc 与 stage1/bin/rustc) 安全地连接由不同编译器构建的 `proc_macro` 的两个副本 (来自同一源)。",
+      "translate": ""
+  },
+  {
+      "source": "Higher-order macro describing the server RPC API, allowing automatic generation of type-safe Rust APIs, both client-side and server-side.",
+      "suggest": "描述服务器 RPC API 的高阶宏，允许在客户端和服务器端自动生成类型安全的 Rust API。",
+      "translate": ""
+  },
+  {
+      "source": "expands to:",
+      "suggest": "扩展为:",
+      "translate": ""
+  },
+  {
+      "source": "The first two arguments serve to customize the arguments names and argument/return types, to enable several different usecases:",
+      "suggest": "前两个参数用于自定义参数名称和 argument/return 类型，以启用几种不同的用例:",
+      "translate": ""
+  },
+  {
+      "source": "If `my_self` is just `self`, then each `fn` signature can be used as-is for a method.",
+      "suggest": "如果 `my_self` 只是 `self`，则每个 `fn` 签名都可以按原样用作方法。",
+      "translate": ""
+  },
+  {
+      "source": "If it's anything else (`self_` in practice), then the signatures don't have a special `self` argument, and can, therefore, have a different one introduced.",
+      "suggest": "如果还有其他问题 (实际上是 `self_`)，则签名没有特殊的 `self` 参数，因此可以引入其他签名。",
+      "translate": ""
+  },
+  {
+      "source": "If `MySelf` is just `Self`, then the types are only valid inside a trait or a trait impl, where the trait has associated types for each of the API types.",
+      "suggest": "如果 `MySelf` 只是 `Self`，则这些类型仅在 trait 或 trait impl 中有效，其中 trait 具有每种 API 类型的关联类型。",
+      "translate": ""
+  },
+  {
+      "source": "If non-associated types are desired, a module name (`self` in practice) can be used instead of `Self`.",
+      "suggest": "如果需要非关联类型，则可以使用模块名称 (实际上是 `self`) 代替 `Self`。",
+      "translate": ""
+  },
+  {
+      "source": "this calls `encode` for each argument, but in reverse, to avoid borrow conflicts from borrows started by `&mut` arguments.",
+      "suggest": "这会为每个参数调用 `encode`，但相反，是为了避免 `&mut` 参数开始的借用与借用发生冲突。",
+      "translate": ""
+  },
+  {
+      "source": "this calls `decode` for each argument, but in reverse, to avoid borrow conflicts from borrows started by `&mut` arguments.",
+      "suggest": "这会为每个参数调用 `decode`，但相反，是为了避免 `&mut` 参数开始的借用与借用发生冲突。",
+      "translate": ""
+  },
+  {
+      "source": "An active connection between a server and a client.",
+      "suggest": "服务器和客户端之间的活动连接。",
+      "translate": ""
+  },
+  {
+      "source": "The server creates the bridge (`Bridge::run_server` in `server.rs`), then passes it to the client through the function pointer in the `run` field of `client::Client`.",
+      "suggest": "服务器创建网桥 (`server.rs` 中的 `Bridge::run_server`)，然后通过 `client::Client` 的 `run` 字段中的函数指针将其传递给客户端。",
+      "translate": ""
+  },
+  {
+      "source": "The client holds its copy of the `Bridge` in TLS during its execution (`Bridge::{enter, with}` in `client.rs`).",
+      "suggest": "客户端在执行期间将其 `Bridge` 的副本保存在 TLS 中 (`client.rs` 中的 `Bridge::{enter, with}`)。",
+      "translate": ""
+  },
+  {
+      "source": "Reusable buffer (only `clear`-ed, never shrunk), primarily used for making requests, but also for passing input to client.",
+      "suggest": "可重复使用的缓冲区 (仅 `clear`，从不缩小)，主要用于发出请求，也用于将输入传递给客户端。",
+      "translate": ""
+  },
+  {
+      "source": "Server-side function that the client uses to make requests.",
+      "suggest": "客户端用来发出请求的服务器端函数。",
+      "translate": ""
+  },
+  {
+      "source": "If 'true', always invoke the default panic hook",
+      "suggest": "如果为 'true'，请始终调用默认的 panic hook",
+      "translate": ""
+  },
+  {
+      "source": "Helper to wrap associated types to allow trait impl dispatch.",
+      "suggest": "帮助程序包装关联类型以允许 trait impl 调度。",
+      "translate": ""
+  },
+  {
+      "source": "That is, normally a pair of impls for `T::Foo` and `T::Bar` can overlap, but if the impls are, instead, on types like `Marked<T::Foo, Foo>` and `Marked<T::Bar, Bar>`, they can't.",
+      "suggest": "也就是说，通常 `T::Foo` 和 `T::Bar` 的一对 impl 可以重叠，但是如果这些 impls 在 `Marked<T::Foo, Foo>` 和 `Marked<T::Bar, Bar>` 之类的类型上则不能重叠。",
+      "translate": ""
+  },
+  {
+      "source": "Unwrap types wrapped by `Mark::mark` (see `Mark` for details).",
+      "suggest": "解开由 `Mark::mark` 包装的类型 (有关详细信息，请参见 `Mark`)。",
+      "translate": ""
+  },
+  {
+      "source": "Serialization for client-server communication.",
+      "suggest": "客户端 - 服务器通信的序列化。",
+      "translate": ""
+  },
+  {
+      "source": "`Tag` enum duplicated between the two impls as there's no other place to stash it.",
+      "suggest": "`Tag` 枚举在两个 impls 之间重复，因为没有其他地方可以隐藏它。",
+      "translate": ""
+  },
+  {
+      "source": "Simplied version of panic payloads, ignoring types other than `&'static str` and `String`.",
+      "suggest": "panic payload 的简化版本，忽略除了 `&'static str` 和 `String` 以外的类型。",
+      "translate": ""
+  },
+  {
+      "source": "variant for (scoped) existential lifetimes.",
+      "suggest": "(scoped) 存在的生命周期成员。",
+      "translate": ""
+  },
+  {
+      "source": "Type lambda application, with a lifetime.",
+      "suggest": "输入具有生命周期的 lambda 应用程序。",
+      "translate": ""
+  },
+  {
+      "source": "Type lambda taking a lifetime, i.e.,",
+      "suggest": "输入生命周期的 lambda 类型，即",
+      "translate": ""
+  },
+  {
+      "source": "work around projection limitations with a newtype FIXME(#52812) replace with `&'a mut <T as ApplyL<'b>>::Out`",
+      "suggest": "使用 newtype FIXME(#52812) 来解决投影限制，用 `&'a mut <T as ApplyL<'b>>::Out` 代替",
+      "translate": ""
+  },
+  {
+      "source": "Sets the value in `self` to `replacement` while running `f`, which gets the old value, mutably.",
+      "suggest": "在运行 `f` 时将 `self` 中的值设置为 `replacement`，该值可变地获取旧值。",
+      "translate": ""
+  },
+  {
+      "source": "The old value will be restored after `f` exits, even by panic, including modifications made to it by `f`.",
+      "suggest": "`f` 退出后，即使是 panic 也将恢复旧值，包括 `f` 对其所做的修改。",
+      "translate": ""
+  },
+  {
+      "source": "Wrapper that ensures that the cell always gets filled (with the original state, optionally changed by `f`), even if `f` had panicked.",
+      "suggest": "即使 `f` 发生了 panic，也可以确保始终填充 cell  (具有原始状态，可以通过 `f` 进行更改) 的包装器。",
+      "translate": ""
+  },
+  {
+      "source": "Sets the value in `self` to `value` while running `f`.",
+      "suggest": "运行 `f` 时，将 `self` 中的值设置为 `value`。",
+      "translate": ""
+  },
+  {
+      "source": "Server-side traits.",
+      "suggest": "服务器端 traits。",
+      "translate": ""
+  },
+  {
+      "source": "Declare an associated item of one of the traits below, optionally adjusting it (i.e., adding bounds to types and default bodies to methods).",
+      "suggest": "声明以下 traits 之一的关联项，可以选择对其进行调整 (即，为类型添加边界，为方法添加默认主体)。",
+      "translate": ""
+  },
+  {
+      "source": "`pub` only for `ExecutionStrategy` below.",
+      "suggest": "`pub` 仅适用于下面的 `ExecutionStrategy`。",
+      "translate": ""
+  },
+  {
+      "source": "these are here to allow `Self::$name` to work below.",
+      "suggest": "这些是为了允许 `Self::$name` 在下面工作。",
+      "translate": ""
+  },
+  {
+      "source": "don't use `panic::catch_unwind` in a panic.",
+      "suggest": "不要在 panic 中使用 `panic::catch_unwind`。",
+      "translate": ""
+  },
+  {
+      "source": "If client and server happen to use the same `libstd`, `catch_unwind` asserts that the panic counter was 0, even when the closure passed to it didn't panic.",
+      "suggest": "如果客户机和服务器恰好使用相同的 `libstd`，则 `catch_unwind` 断言 panic 计数器为 0，即使传递给它的闭包不是 panic。",
+      "translate": ""
+  },
+  {
+      "source": "Two implementations are provided, the second one is a bit faster but neither is anywhere near as fast as same-thread execution.",
+      "suggest": "提供了两种实现，第二种实现更快一些，但都没有同一线程执行那么快。",
+      "translate": ""
+  },
+  {
+      "source": "Wake up the server so it can exit the dispatch loop.",
+      "suggest": "唤醒服务器，使其可以退出调度循环。",
+      "translate": ""
+  },
+  {
+      "source": "Check whether `state2` was dropped, to know when to stop.",
+      "suggest": "检查 `state2` 是否被丢弃，以了解何时停止。",
+      "translate": ""
+  },
+  {
+      "source": "An enum representing a diagnostic level.",
+      "suggest": "代表诊断级别的枚举。",
+      "translate": ""
+  },
+  {
+      "source": "An error.",
+      "suggest": "一个错误。",
+      "translate": ""
+  },
+  {
+      "source": "A warning.",
+      "suggest": "一个警告。",
+      "translate": ""
+  },
+  {
+      "source": "A note.",
+      "suggest": "一条消息。",
+      "translate": ""
+  },
+  {
+      "source": "A help message.",
+      "suggest": "一条帮助消息。",
+      "translate": ""
+  },
+  {
+      "source": "Trait implemented by types that can be converted into a set of `Span`s.",
+      "suggest": "Trait 由可以转换为一组 `Span` 的类型实现。",
+      "translate": ""
+  },
+  {
+      "source": "Converts `self` into a `Vec<Span>`.",
+      "suggest": "将 `self` 转换为 `Vec<Span>`。",
+      "translate": ""
+  },
+  {
+      "source": "A structure representing a diagnostic message and associated children messages.",
+      "suggest": "表示诊断消息和关联的子消息的结构体。",
+      "translate": ""
+  },
+  {
+      "source": "Adds a new child diagnostic message to `self` with the level identified by this method's name with the given `spans` and `message`.",
+      "suggest": "将新的子诊断消息添加到 `self`，其级别由此方法的名称以及给定的 `spans` 和 `message` 标识。",
+      "translate": ""
+  },
+  {
+      "source": "Adds a new child diagnostic message to `self` with the level identified by this method's name with the given `message`.",
+      "suggest": "将新的子诊断消息添加到 `self`，其级别由该方法的名称和给定的 `message` 标识。",
+      "translate": ""
+  },
+  {
+      "source": "Iterator over the children diagnostics of a `Diagnostic`.",
+      "suggest": "迭代 `Diagnostic` 的子级诊断。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new diagnostic with the given `level` and `message`.",
+      "suggest": "使用给定的 `level` 和 `message` 创建新的诊断。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new diagnostic with the given `level` and `message` pointing to the given set of `spans`.",
+      "suggest": "使用给定的 `level` 和 `message` 指向给定的 `spans` 集创建新的诊断。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the diagnostic `level` for `self`.",
+      "suggest": "返回 `self` 的诊断 `level`。",
+      "translate": ""
+  },
+  {
+      "source": "Sets the level in `self` to `level`.",
+      "suggest": "将 `self` 中的级别设置为 `level`。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the message in `self`.",
+      "suggest": "以 `self` 返回消息。",
+      "translate": ""
+  },
+  {
+      "source": "Sets the message in `self` to `message`.",
+      "suggest": "将 `self` 中的消息设置为 `message`。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the `Span`s in `self`.",
+      "suggest": "返回 `self` 中的 `Span`。",
+      "translate": ""
+  },
+  {
+      "source": "Sets the `Span`s in `self` to `spans`.",
+      "suggest": "将 `self` 中的 `Span` 设置为 `spans`。",
+      "translate": ""
+  },
+  {
+      "source": "Returns an iterator over the children diagnostics of `self`.",
+      "suggest": "返回 `self` 子诊断的迭代器。",
+      "translate": ""
+  },
+  {
+      "source": "Emit the diagnostic.",
+      "suggest": "发出诊断信息。",
+      "translate": ""
+  },
+  {
+      "source": "A support library for macro authors when defining new macros.",
+      "suggest": "定义新宏时为宏作者提供的支持库。",
+      "translate": ""
+  },
+  {
+      "source": "This library, provided by the standard distribution, provides the types consumed in the interfaces of procedurally defined macro definitions such as function-like macros `#[proc_macro]`, macro attributes `#[proc_macro_attribute]` and custom derive attributes`#[proc_macro_derive]`.",
+      "suggest": "由标准发行版提供的该库提供了在过程定义的宏定义的接口中使用的类型，例如，类似函数的宏 `#[proc_macro]`，宏属性 `#[proc_macro_attribute]` 和自定义派生属性 `#[proc_macro_derive]`。",
+      "translate": ""
+  },
+  {
+      "source": "See [the book] for more.",
+      "suggest": "有关更多信息，请参见 [这本书][the book]。",
+      "translate": ""
+  },
+  {
+      "source": "Determines whether proc_macro has been made accessible to the currently running program.",
+      "suggest": "确定是否已使 proc_macro 可被当前正在运行的程序访问。",
+      "translate": ""
+  },
+  {
+      "source": "The proc_macro crate is only intended for use inside the implementation of procedural macros.",
+      "suggest": "proc_macro crate 仅用于在过程宏的实现内部使用。",
+      "translate": ""
+  },
+  {
+      "source": "All the functions in this crate panic if invoked from outside of a procedural macro, such as from a build script or unit test or ordinary Rust binary.",
+      "suggest": "crate panic 中的所有函数 (如果从程序宏外部调用，例如从构建脚本或单元测试或常规 Rust 二进制文件调用)。",
+      "translate": ""
+  },
+  {
+      "source": "With consideration for Rust libraries that are designed to support both macro and non-macro use cases, `proc_macro::is_available()` provides a non-panicking way to detect whether the infrastructure required to use the API of proc_macro is presently available.",
+      "suggest": "考虑到旨在支持宏和非宏用例的 Rust 库，`proc_macro::is_available()` 提供了一种非 panic 的方式来检测使用 proc_macro API 所需的基础结构是否当前可用。",
+      "translate": ""
+  },
+  {
+      "source": "Returns true if invoked from inside of a procedural macro, false if invoked from any other binary.",
+      "suggest": "如果从程序宏内部调用，则返回 true; 如果从任何其他二进制文件中调用，则返回 false。",
+      "translate": ""
+  },
+  {
+      "source": "The main type provided by this crate, representing an abstract stream of tokens, or, more specifically, a sequence of token trees.",
+      "suggest": "此 crate 提供的主要类型，表示 tokens 的抽象流，或更具体地说，表示 token 树的序列。",
+      "translate": ""
+  },
+  {
+      "source": "The type provide interfaces for iterating over those token trees and, conversely, collecting a number of token trees into one stream.",
+      "suggest": "该类型提供用于迭代这些 token 树的接口，并且相反，将大量 token 树收集到一个流中。",
+      "translate": ""
+  },
+  {
+      "source": "This is both the input and output of `#[proc_macro]`, `#[proc_macro_attribute]` and `#[proc_macro_derive]` definitions.",
+      "suggest": "这是 `#[proc_macro]`，`#[proc_macro_attribute]` 和 `#[proc_macro_derive]` 定义的输入和输出。",
+      "translate": ""
+  },
+  {
+      "source": "Error returned from `TokenStream::from_str`.",
+      "suggest": "`TokenStream::from_str` 返回错误。",
+      "translate": ""
+  },
+  {
+      "source": "Returns an empty `TokenStream` containing no token trees.",
+      "suggest": "返回不包含 token 树的空 `TokenStream`。",
+      "translate": ""
+  },
+  {
+      "source": "Checks if this `TokenStream` is empty.",
+      "suggest": "检查此 `TokenStream` 是否为空。",
+      "translate": ""
+  },
+  {
+      "source": "Attempts to break the string into tokens and parse those tokens into a token stream.",
+      "suggest": "尝试将字符串拆分为 tokens 并将那些 tokens 解析为 token 流。",
+      "translate": ""
+  },
+  {
+      "source": "May fail for a number of reasons, for example, if the string contains unbalanced delimiters or characters not existing in the language.",
+      "suggest": "可能由于多种原因而失败，例如，如果字符串包含不平衡的定界符或该语言中不存在的字符。",
+      "translate": ""
+  },
+  {
+      "source": "All tokens in the parsed stream get `Span::call_site()` spans.",
+      "suggest": "解析的流中的所有 tokens 都获得 `Span::call_site()` 跨度。",
+      "translate": ""
+  },
+  {
+      "source": "some errors may cause panics instead of returning `LexError`.",
+      "suggest": "某些错误可能导致 panics 而不是返回 `LexError`。",
+      "translate": ""
+  },
+  {
+      "source": "We reserve the right to change these errors into `LexError`s later.",
+      "suggest": "我们保留稍后将这些错误更改为 LexError 的权利。",
+      "translate": ""
+  },
+  {
+      "source": "N.B., the bridge only provides `to_string`, implement `fmt::Display` based on it (the reverse of the usual relationship between the two).",
+      "suggest": "注意，网桥仅提供 `to_string`，基于它实现 `fmt::Display` (两者之间通常的关系相反)。",
+      "translate": ""
+  },
+  {
+      "source": "Prints the token stream as a string that is supposed to be losslessly convertible back into the same token stream (modulo spans), except for possibly `TokenTree::Group`s with `Delimiter::None` delimiters and negative numeric literals.",
+      "suggest": "将 token 流打印为应该无损转换为相同 token 流 (模数跨度) 的字符串，但可能带有 `Delimiter::None` 分隔符和负数字字面量的 `TokenTree::Group` 除外。",
+      "translate": ""
+  },
+  {
+      "source": "Prints token in a form convenient for debugging.",
+      "suggest": "以方便调试的形式打印 token。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a token stream containing a single token tree.",
+      "suggest": "创建包含单个 token 树的 token 流。",
+      "translate": ""
+  },
+  {
+      "source": "Collects a number of token trees into a single stream.",
+      "suggest": "将多个 token 树收集到单个流中。",
+      "translate": ""
+  },
+  {
+      "source": "A \"flattening\" operation on token streams, collects token trees from multiple token streams into a single stream.",
+      "suggest": "对 token 流的 \"flattening\" 操作将来自多个 token 流的 token 树收集到单个流中。",
+      "translate": ""
+  },
+  {
+      "source": "Use an optimized implementation if/when possible.",
+      "suggest": "可能使用优化的实现 if/when。",
+      "translate": ""
+  },
+  {
+      "source": "Public implementation details for the `TokenStream` type, such as iterators.",
+      "suggest": "`TokenStream` 类型的公共实现详细信息，例如迭代器。",
+      "translate": ""
+  },
+  {
+      "source": "An iterator over `TokenStream`'s `TokenTree`s.",
+      "suggest": "遍历 TokenStream 的 TokenTree 的迭代器。",
+      "translate": ""
+  },
+  {
+      "source": "The iteration is \"shallow\", e.g., the iterator doesn't recurse into delimited groups, and returns whole groups as token trees.",
+      "suggest": "迭代是 \"shallow\"，例如，迭代器不会递归到定界的组中，而是将整个组作为 token 树返回。",
+      "translate": ""
+  },
+  {
+      "source": "accepts arbitrary tokens and expands into a `TokenStream` describing the input.",
+      "suggest": "接受任意的 tokens 并扩展为描述输入的 `TokenStream`。",
+      "translate": ""
+  },
+  {
+      "source": "For example, `quote!(a + b)` will produce a expression, that, when evaluated, constructs the `TokenStream` `[Ident(\"a\"), Punct('+', Alone), Ident(\"b\")]`.",
+      "suggest": "例如，`quote!(a + b)` 将产生一个表达式，该表达式在被求值时将构造 `TokenStream` `[Ident(\"a\"), Punct('+', Alone), Ident(\"b\")]`。",
+      "translate": ""
+  },
+  {
+      "source": "Unquoting is done with `$`, and works by taking the single next ident as the unquoted term.",
+      "suggest": "用 `$` 解引用，并通过将单个下一个标识符作为未引用的术语来工作。",
+      "translate": ""
+  },
+  {
+      "source": "To quote `$` itself, use `$$`.",
+      "suggest": "要引用 `$` 本身，请使用 `$$`。",
+      "translate": ""
+  },
+  {
+      "source": "A region of source code, along with macro expansion information.",
+      "suggest": "源代码区域以及宏展开信息。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new `Diagnostic` with the given `message` at the span `self`.",
+      "suggest": "使用跨度为 `self` 的给定 `message` 创建一个新的 `Diagnostic`。",
+      "translate": ""
+  },
+  {
+      "source": "A span that resolves at the macro definition site.",
+      "suggest": "在宏定义站点解析的跨度。",
+      "translate": ""
+  },
+  {
+      "source": "The span of the invocation of the current procedural macro.",
+      "suggest": "当前过程宏的调用范围。",
+      "translate": ""
+  },
+  {
+      "source": "Identifiers created with this span will be resolved as if they were written directly at the macro call location (call-site hygiene) and other code at the macro call site will be able to refer to them as well.",
+      "suggest": "以此范围创建的标识符将被解析，就像它们是直接在宏调用位置 (调用站点卫生) 上编写的一样，宏调用站点上的其他代码也将能够引用它们。",
+      "translate": ""
+  },
+  {
+      "source": "A span that represents `macro_rules` hygiene, and sometimes resolves at the macro definition site (local variables, labels, `$crate`) and sometimes at the macro call site (everything else).",
+      "suggest": "代表 `macro_rules` 卫生状况的跨度，有时在宏定义站点 (本地变量，标签，`$crate`) 解析，有时在宏调用站点 (其他所有解析) 解析。",
+      "translate": ""
+  },
+  {
+      "source": "The span location is taken from the call-site.",
+      "suggest": "跨度位置取自调用站点。",
+      "translate": ""
+  },
+  {
+      "source": "The original source file into which this span points.",
+      "suggest": "此跨度指向的原始源文件。",
+      "translate": ""
+  },
+  {
+      "source": "The `Span` for the tokens in the previous macro expansion from which `self` was generated from, if any.",
+      "suggest": "上一个宏的 tokens 的 `Span` (如果有的话) 是从中生成 `self` 的。",
+      "translate": ""
+  },
+  {
+      "source": "The span for the origin source code that `self` was generated from.",
+      "suggest": "生成 `self` 的原始源代码的范围。",
+      "translate": ""
+  },
+  {
+      "source": "If this `Span` wasn't generated from other macro expansions then the return value is the same as `*self`.",
+      "suggest": "如果此 `Span` 不是由其他宏扩展生成的，则返回值与 `*self` 相同。",
+      "translate": ""
+  },
+  {
+      "source": "Gets the starting line/column in the source file for this span.",
+      "suggest": "在源文件中获取此范围的起始 line/column。",
+      "translate": ""
+  },
+  {
+      "source": "Gets the ending line/column in the source file for this span.",
+      "suggest": "在源文件中获取此跨度的结尾 line/column。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new span encompassing `self` and `other`.",
+      "suggest": "创建一个包含 `self` 和 `other` 的新跨度。",
+      "translate": ""
+  },
+  {
+      "source": "Returns `None` if `self` and `other` are from different files.",
+      "suggest": "如果 `self` 和 `other` 来自不同的文件，则返回 `None`。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new span with the same line/column information as `self` but that resolves symbols as though it were at `other`.",
+      "suggest": "创建一个具有与 `self` 相同的 line/column 信息的新跨度，但是可以像在 `other` 一样解析符号。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new span with the same name resolution behavior as `self` but with the line/column information of `other`.",
+      "suggest": "创建一个具有与 `self` 相同的名称解析行为但具有 `other` 的 line/column 信息的新跨度。",
+      "translate": ""
+  },
+  {
+      "source": "Compares to spans to see if they're equal.",
+      "suggest": "比较跨度以查看它们是否相等。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the source text behind a span.",
+      "suggest": "返回跨度后面的源文本。",
+      "translate": ""
+  },
+  {
+      "source": "This preserves the original source code, including spaces and comments.",
+      "suggest": "这将保留原始源代码，包括空格和注释。",
+      "translate": ""
+  },
+  {
+      "source": "It only returns a result if the span corresponds to real source code.",
+      "suggest": "仅当范围与实际源代码相对应时，它才返回结果。",
+      "translate": ""
+  },
+  {
+      "source": "The observable result of a macro should only rely on the tokens and not on this source text.",
+      "suggest": "宏的可观察结果应仅依赖于 tokens，而不依赖于此源文本。",
+      "translate": ""
+  },
+  {
+      "source": "The result of this function is a best effort to be used for diagnostics only.",
+      "suggest": "该函数的结果是尽力而为，仅用于诊断。",
+      "translate": ""
+  },
+  {
+      "source": "Prints a span in a form convenient for debugging.",
+      "suggest": "以便于调试的形式打印跨度。",
+      "translate": ""
+  },
+  {
+      "source": "A line-column pair representing the start or end of a `Span`.",
+      "suggest": "代表 `Span` 开头或结尾的行 - 列对。",
+      "translate": ""
+  },
+  {
+      "source": "The 1-indexed line in the source file on which the span starts or ends (inclusive).",
+      "suggest": "源文件中跨度开始或结束 (inclusive) 的 1 索引行。",
+      "translate": ""
+  },
+  {
+      "source": "The 0-indexed column (in UTF-8 characters) in the source file on which the span starts or ends (inclusive).",
+      "suggest": "跨度开始或结束 (inclusive) 的源文件中的 0 索引列 (以 UTF-8 字符表示)。",
+      "translate": ""
+  },
+  {
+      "source": "The source file of a given `Span`.",
+      "suggest": "给定 `Span` 的源文件。",
+      "translate": ""
+  },
+  {
+      "source": "Gets the path to this source file.",
+      "suggest": "获取此源文件的路径。",
+      "translate": ""
+  },
+  {
+      "source": "If the code span associated with this `SourceFile` was generated by an external macro, this macro, this may not be an actual path on the filesystem.",
+      "suggest": "如果与此 `SourceFile` 关联的代码范围是由外部宏 (此宏) 生成的，则这可能不是文件系统上的实际路径。",
+      "translate": ""
+  },
+  {
+      "source": "Use [`is_real`] to check.",
+      "suggest": "使用 [`is_real`] 进行检查。",
+      "translate": ""
+  },
+  {
+      "source": "Also note that even if `is_real` returns `true`, if `--remap-path-prefix` was passed on the command line, the path as given may not actually be valid.",
+      "suggest": "还要注意，即使 `is_real` 返回 `true`，如果在命令行上传递了 `--remap-path-prefix`，则给定的路径实际上也可能无效。",
+      "translate": ""
+  },
+  {
+      "source": "Returns `true` if this source file is a real source file, and not generated by an external macro's expansion.",
+      "suggest": "如果此源文件是真实的源文件，并且不是由外部宏的扩展生成的，则返回 `true`。",
+      "translate": ""
+  },
+  {
+      "source": "This is a hack until intercrate spans are implemented and we can have real source files for spans generated in external macros.",
+      "suggest": "在实现跨度跨度之前，这是一个技巧，我们可以为外部宏中生成的跨度提供真实的源文件。",
+      "translate": ""
+  },
+  {
+      "source": "A single token or a delimited sequence of token trees (e.g., `[1, (), ..]`).",
+      "suggest": "单个 token 或 token 树的定界序列 (例如 `[1, (), ..]`)。",
+      "translate": ""
+  },
+  {
+      "source": "A token stream surrounded by bracket delimiters.",
+      "suggest": "由括号定界符包围的 token 流。",
+      "translate": ""
+  },
+  {
+      "source": "An identifier.",
+      "suggest": "标识符。",
+      "translate": ""
+  },
+  {
+      "source": "A single punctuation character (`+`, `,`, `$`, etc.).",
+      "suggest": "单个标点符号 (`+`，`,`，`$` 等)。",
+      "translate": ""
+  },
+  {
+      "source": "A literal character (`'a'`), string (`\"hello\"`), number (`2.3`), etc.",
+      "suggest": "字面量字符 (`'a'`)，字符串 (`\"hello\"`)，数字 (`2.3`) 等。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span of this tree, delegating to the `span` method of the contained token or a delimited stream.",
+      "suggest": "返回此树的范围，委托给包含的 token 或分隔流的 `span` 方法。",
+      "translate": ""
+  },
+  {
+      "source": "Configures the span for *only this token*.",
+      "suggest": "为 *only this token* 配置范围。",
+      "translate": ""
+  },
+  {
+      "source": "Note that if this token is a `Group` then this method will not configure the span of each of the internal tokens, this will simply delegate to the `set_span` method of each variant.",
+      "suggest": "请注意，如果此 token 是 `Group`，则此方法将不会配置每个内部 tokens 的跨度，这将仅委托给每个成员的 `set_span` 方法。",
+      "translate": ""
+  },
+  {
+      "source": "Prints token tree in a form convenient for debugging.",
+      "suggest": "以方便调试的形式打印 token 树。",
+      "translate": ""
+  },
+  {
+      "source": "Each of these has the name in the struct type in the derived debug, so don't bother with an extra layer of indirection",
+      "suggest": "它们中的每一个在派生调试中的结构体类型中都具有名称，因此不必担心额外的间接层",
+      "translate": ""
+  },
+  {
+      "source": "Prints the token tree as a string that is supposed to be losslessly convertible back into the same token tree (modulo spans), except for possibly `TokenTree::Group`s with `Delimiter::None` delimiters and negative numeric literals.",
+      "suggest": "将 token 树打印为应该无损转换为同一 token 树 (取模跨度) 的字符串，但可能带有 `Delimiter::None` 定界符和负数字字面量的 `TokenTree::Group` 除外。",
+      "translate": ""
+  },
+  {
+      "source": "A delimited token stream.",
+      "suggest": "分隔的 token 流。",
+      "translate": ""
+  },
+  {
+      "source": "A `Group` internally contains a `TokenStream` which is surrounded by `Delimiter`s.",
+      "suggest": "`Group` 内部包含一个 `TokenStream`，该 `TokenStream` 被 `Delimiter` 包围。",
+      "translate": ""
+  },
+  {
+      "source": "Describes how a sequence of token trees is delimited.",
+      "suggest": "描述如何分隔 token 树的序列。",
+      "translate": ""
+  },
+  {
+      "source": "An implicit delimiter, that may, for example, appear around tokens coming from a \"macro variable\" `$var`.",
+      "suggest": "一个隐式定界符，例如，可能出现在来自 \"宏变量\" `$var` 的 tokens 周围。",
+      "translate": ""
+  },
+  {
+      "source": "It is important to preserve operator priorities in cases like `$var * 3` where `$var` is `1 + 2`.",
+      "suggest": "在诸如 `$var` 为 `1 + 2` 的 `$var * 3` 之类的情况下，保留操作员的优先级很重要。",
+      "translate": ""
+  },
+  {
+      "source": "Implicit delimiters may not survive roundtrip of a token stream through a string.",
+      "suggest": "隐式定界符可能无法在 token 流通过字符串的往返过程中幸免。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new `Group` with the given delimiter and token stream.",
+      "suggest": "使用给定的定界符和 token 流创建一个新的 `Group`。",
+      "translate": ""
+  },
+  {
+      "source": "This constructor will set the span for this group to `Span::call_site()`.",
+      "suggest": "此构造函数将将此组的跨度设置为 `Span::call_site()`。",
+      "translate": ""
+  },
+  {
+      "source": "To change the span you can use the `set_span` method below.",
+      "suggest": "要更改跨度，可以使用下面的 `set_span` 方法。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the delimiter of this `Group`",
+      "suggest": "返回此 `Group` 的定界符",
+      "translate": ""
+  },
+  {
+      "source": "Returns the `TokenStream` of tokens that are delimited in this `Group`.",
+      "suggest": "返回在此 `Group` 中定界的 tokens 的 `TokenStream`。",
+      "translate": ""
+  },
+  {
+      "source": "Note that the returned token stream does not include the delimiter returned above.",
+      "suggest": "请注意，返回的 token 流不包括上面返回的定界符。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span for the delimiters of this token stream, spanning the entire `Group`.",
+      "suggest": "返回此 token 流的定界符的范围，该范围跨越整个 `Group`。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span pointing to the opening delimiter of this group.",
+      "suggest": "返回指向该组的开始定界符的跨度。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span pointing to the closing delimiter of this group.",
+      "suggest": "返回指向该组的结束定界符的跨度。",
+      "translate": ""
+  },
+  {
+      "source": "Configures the span for this `Group`'s delimiters, but not its internal tokens.",
+      "suggest": "配置此 `Group` 定界符的范围，但不配置其内部 tokens 的范围。",
+      "translate": ""
+  },
+  {
+      "source": "This method will **not** set the span of all the internal tokens spanned by this group, but rather it will only set the span of the delimiter tokens at the level of the `Group`.",
+      "suggest": "此方法将不设置该组所跨越的所有内部 tokens 的跨度，而只会将定界符 tokens 的跨度设置为 `Group` 的水平。",
+      "translate": ""
+  },
+  {
+      "source": "Prints the group as a string that should be losslessly convertible back into the same group (modulo spans), except for possibly `TokenTree::Group`s with `Delimiter::None` delimiters.",
+      "suggest": "将组打印为字符串，该字符串应无损地转换回同一组 (模跨度)，但可能带有 `Delimiter::None` 分隔符的 'TokenTree::Group' 除外。",
+      "translate": ""
+  },
+  {
+      "source": "An `Punct` is an single punctuation character like `+`, `-` or `#`.",
+      "suggest": "`Punct` 是单个标点字符，例如 `+`，`-` 或 `#`。",
+      "translate": ""
+  },
+  {
+      "source": "Multi-character operators like `+=` are represented as two instances of `Punct` with different forms of `Spacing` returned.",
+      "suggest": "像 `+=` 这样的多字符运算符表示为 `Punct` 的两个实例，它们返回了不同形式的 `Spacing`。",
+      "translate": ""
+  },
+  {
+      "source": "Whether an `Punct` is followed immediately by another `Punct` or followed by another token or whitespace.",
+      "suggest": "`Punct` 后面紧跟另一个 `Punct` 还是紧随另一个 token 或空格。",
+      "translate": ""
+  },
+  {
+      "source": "e.g., `+` is `Alone` in `+ =`, `+ident` or `+()`.",
+      "suggest": "例如，`+` 是 `+ =`，`+ident` 或 `+()` 中的 `Alone`。",
+      "translate": ""
+  },
+  {
+      "source": "e.g., `+` is `Joint` in `+=` or `'#`.",
+      "suggest": "例如，`+` 是 `+=` 或 `'#` 中的 `Joint`。",
+      "translate": ""
+  },
+  {
+      "source": "Additionally, single quote `'` can join with identifiers to form lifetimes `'ident`.",
+      "suggest": "此外，单引号 `'` 可以与标识符结合起来形成生命周期 `'ident`。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new `Punct` from the given character and spacing.",
+      "suggest": "根据给定的字符和间距创建一个新的 `Punct`。",
+      "translate": ""
+  },
+  {
+      "source": "The `ch` argument must be a valid punctuation character permitted by the language, otherwise the function will panic.",
+      "suggest": "`ch` 参数必须是语言允许的有效标点符号，否则函数将为 panic。",
+      "translate": ""
+  },
+  {
+      "source": "The returned `Punct` will have the default span of `Span::call_site()` which can be further configured with the `set_span` method below.",
+      "suggest": "返回的 `Punct` 将具有默认范围 `Span::call_site()`，可以使用下面的 `set_span` 方法对其进行进一步配置。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the value of this punctuation character as `char`.",
+      "suggest": "将此标点符号的值返回为 `char`。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the spacing of this punctuation character, indicating whether it's immediately followed by another `Punct` in the token stream, so they can potentially be combined into a multi-character operator (`Joint`), or it's followed by some other token or whitespace (`Alone`) so the operator has certainly ended.",
+      "suggest": "返回此标点符号的间距，指示其是否紧随 token 流中的另一个 `Punct`，以便可以将它们组合为多字符运算符 (`Joint`)，也可以将其与其他 token 或空格 (`Alone`) 组合在一起，因此该运算符肯定具有结束了。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span for this punctuation character.",
+      "suggest": "返回此标点符号字符的跨度。",
+      "translate": ""
+  },
+  {
+      "source": "Configure the span for this punctuation character.",
+      "suggest": "配置该标点字符的跨度。",
+      "translate": ""
+  },
+  {
+      "source": "Prints the punctuation character as a string that should be losslessly convertible back into the same character.",
+      "suggest": "将标点符号打印为字符串，该字符串应可以无损地转换回相同的字符。",
+      "translate": ""
+  },
+  {
+      "source": "An identifier (`ident`).",
+      "suggest": "标识符 (`ident`)。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new `Ident` with the given `string` as well as the specified `span`.",
+      "suggest": "使用给定的 `string` 和指定的 `span` 创建新的 `Ident`。",
+      "translate": ""
+  },
+  {
+      "source": "The `string` argument must be a valid identifier permitted by the language (including keywords, e.g. `self` or `fn`).",
+      "suggest": "`string` 参数必须是该语言允许的有效标识符 (包括关键字，例如 `self` 或 `fn`)。",
+      "translate": ""
+  },
+  {
+      "source": "Otherwise, the function will panic.",
+      "suggest": "否则，函数将为 panic。",
+      "translate": ""
+  },
+  {
+      "source": "Note that `span`, currently in rustc, configures the hygiene information for this identifier.",
+      "suggest": "请注意，当前位于 rustc 中的 `span` 为此标识符配置了卫生信息。",
+      "translate": ""
+  },
+  {
+      "source": "As of this time `Span::call_site()` explicitly opts-in to \"call-site\" hygiene meaning that identifiers created with this span will be resolved as if they were written directly at the location of the macro call, and other code at the macro call site will be able to refer to them as well.",
+      "suggest": "截止到目前，`Span::call_site()` 明确选择采用 \"call-site\" 卫生标准，这意味着使用该跨度创建的标识符将被解析，就好像它们直接写在宏调用的位置一样，并且宏调用站点上的其他代码将能够引用他们也是。",
+      "translate": ""
+  },
+  {
+      "source": "Later spans like `Span::def_site()` will allow to opt-in to \"definition-site\" hygiene meaning that identifiers created with this span will be resolved at the location of the macro definition and other code at the macro call site will not be able to refer to them.",
+      "suggest": "以后的跨度 (例如 `Span::def_site()`) 将允许选择使用 \"definition-site\" 卫生，这意味着用该跨度创建的标识符将在宏定义的位置解析，而宏调用站点上的其他代码将无法引用它们。",
+      "translate": ""
+  },
+  {
+      "source": "Due to the current importance of hygiene this constructor, unlike other tokens, requires a `Span` to be specified at construction.",
+      "suggest": "由于当前对卫生的重要性，与其他 tokens 不同，该构造函数需要在构造时指定 `Span`。",
+      "translate": ""
+  },
+  {
+      "source": "Same as `Ident::new`, but creates a raw identifier (`r#ident`).",
+      "suggest": "与 `Ident::new` 相同，但创建原始标识符 (`r#ident`)。",
+      "translate": ""
+  },
+  {
+      "source": "The `string` argument be a valid identifier permitted by the language (including keywords, e.g. `fn`).",
+      "suggest": "`string` 参数是该语言允许的有效标识符 (包括关键字，例如 `fn`)。",
+      "translate": ""
+  },
+  {
+      "source": "Keywords which are usable in path segments (e.g.",
+      "suggest": "在路径段中可用的关键字 (例如，",
+      "translate": ""
+  },
+  {
+      "source": "`super`) are not supported, and will cause a panic.",
+      "suggest": "不支持 `super`)，这会导致 panic。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span of this `Ident`, encompassing the entire string returned by [`to_string`](Self::to_string).",
+      "suggest": "返回此 `Ident` 的范围，包括 [`to_string`](Self::to_string) 返回的整个字符串。",
+      "translate": ""
+  },
+  {
+      "source": "Configures the span of this `Ident`, possibly changing its hygiene context.",
+      "suggest": "配置此 `Ident` 的跨度，可能会更改其卫生状况。",
+      "translate": ""
+  },
+  {
+      "source": "Prints the identifier as a string that should be losslessly convertible back into the same identifier.",
+      "suggest": "将标识符打印为字符串，该字符串应可以无损地转换回相同的标识符。",
+      "translate": ""
+  },
+  {
+      "source": "A literal string (`\"hello\"`), byte string (`b\"hello\"`), character (`'a'`), byte character (`b'a'`), an integer or floating point number with or without a suffix (`1`, `1u8`, `2.3`, `2.3f32`).",
+      "suggest": "字面量字符串 (`\"hello\"`)，字节字符串 (`b\"hello\"`)，字符 (`'a'`)，字节字符 (`b'a'`)，带或不带后缀 ('1'，`1u8`，`2.3`，`2.3f32`) 的整数或浮点数。",
+      "translate": ""
+  },
+  {
+      "source": "Boolean literals like `true` and `false` do not belong here, they are `Ident`s.",
+      "suggest": "`true` 和 `false` 之类的布尔字面量在这里不属于它们，它们是 `Ident`。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new suffixed integer literal with the specified value.",
+      "suggest": "用指定的值创建一个新的后缀整数字面量。",
+      "translate": ""
+  },
+  {
+      "source": "This function will create an integer like `1u32` where the integer value specified is the first part of the token and the integral is also suffixed at the end.",
+      "suggest": "此函数将创建一个类似于 `1u32` 的整数，其中指定的整数值是 token 的第一部分，并且整数也以结尾加后缀。",
+      "translate": ""
+  },
+  {
+      "source": "Literals created from negative numbers may not survive round-trips through `TokenStream` or strings and may be broken into two tokens (`-` and positive literal).",
+      "suggest": "由负数创建的字面量可能无法通过 `TokenStream` 或字符串往返，并且可能会分成两个 tokens (`-` 和正字面量)。",
+      "translate": ""
+  },
+  {
+      "source": "Literals created through this method have the `Span::call_site()` span by default, which can be configured with the `set_span` method below.",
+      "suggest": "通过此方法创建的字面量默认情况下具有 `Span::call_site()` 跨度，可以使用以下 `set_span` 方法进行配置。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new unsuffixed integer literal with the specified value.",
+      "suggest": "用指定的值创建一个新的无后缀的整数字面量。",
+      "translate": ""
+  },
+  {
+      "source": "This function will create an integer like `1` where the integer value specified is the first part of the token.",
+      "suggest": "此函数将创建一个类似于 `1` 的整数，其中指定的整数值是 token 的第一部分。",
+      "translate": ""
+  },
+  {
+      "source": "No suffix is specified on this token, meaning that invocations like `Literal::i8_unsuffixed(1)` are equivalent to `Literal::u32_unsuffixed(1)`.",
+      "suggest": "在此 token 上未指定后缀，这意味着像 `Literal::i8_unsuffixed(1)` 这样的调用等效于 `Literal::u32_unsuffixed(1)`。",
+      "translate": ""
+  },
+  {
+      "source": "Literals created from negative numbers may not survive rountrips through `TokenStream` or strings and may be broken into two tokens (`-` and positive literal).",
+      "suggest": "由负数创建的字面量可能无法在 `TokenStream` 或字符串的往返旅行中幸存下来，并且可能会分成两个 tokens (`-` 和正字面量)。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new unsuffixed floating-point literal.",
+      "suggest": "创建一个新的不带后缀的浮点字面量。",
+      "translate": ""
+  },
+  {
+      "source": "This constructor is similar to those like `Literal::i8_unsuffixed` where the float's value is emitted directly into the token but no suffix is used, so it may be inferred to be a `f64` later in the compiler.",
+      "suggest": "此构造函数类似于 `Literal::i8_unsuffixed`，后者将 float 的值直接发出到 token 中，但不使用后缀，因此可以在以后的编译器中推断出它是 `f64`。",
+      "translate": ""
+  },
+  {
+      "source": "This function requires that the specified float is finite, for example if it is infinity or NaN this function will panic.",
+      "suggest": "此函数要求指定的浮点数是有限的，例如，如果它是无穷大或 NaN，则此函数将为 panic。",
+      "translate": ""
+  },
+  {
+      "source": "Creates a new suffixed floating-point literal.",
+      "suggest": "创建一个新的后缀浮点字面量。",
+      "translate": ""
+  },
+  {
+      "source": "This constructor will create a literal like `1.0f32` where the value specified is the preceding part of the token and `f32` is the suffix of the token.",
+      "suggest": "该构造函数将创建一个像 `1.0f32` 这样的字面量，其中指定的值是 token 的前一部分，而 `f32` 是 token 的后缀。",
+      "translate": ""
+  },
+  {
+      "source": "This token will always be inferred to be an `f32` in the compiler.",
+      "suggest": "token 在编译器中将始终被推断为 `f32`。",
+      "translate": ""
+  },
+  {
+      "source": "This constructor will create a literal like `1.0f64` where the value specified is the preceding part of the token and `f64` is the suffix of the token.",
+      "suggest": "该构造函数将创建一个像 `1.0f64` 这样的字面量，其中指定的值是 token 的前一部分，而 `f64` 是 token 的后缀。",
+      "translate": ""
+  },
+  {
+      "source": "This token will always be inferred to be an `f64` in the compiler.",
+      "suggest": "token 在编译器中将始终被推断为 `f64`。",
+      "translate": ""
+  },
+  {
+      "source": "String literal.",
+      "suggest": "字符串字面量。",
+      "translate": ""
+  },
+  {
+      "source": "Character literal.",
+      "suggest": "字符字面量。",
+      "translate": ""
+  },
+  {
+      "source": "Byte string literal.",
+      "suggest": "字节字符串字面量。",
+      "translate": ""
+  },
+  {
+      "source": "Returns the span encompassing this literal.",
+      "suggest": "返回包含此字面量的范围。",
+      "translate": ""
+  },
+  {
+      "source": "Configures the span associated for this literal.",
+      "suggest": "配置与此字面量关联的范围。",
+      "translate": ""
+  },
+  {
+      "source": "Returns a `Span` that is a subset of `self.span()` containing only the source bytes in range `range`.",
+      "suggest": "返回 `Span`，它是 `self.span()` 的子集，仅包含范围 `range` 中的源字节。",
+      "translate": ""
+  },
+  {
+      "source": "Returns `None` if the would-be trimmed span is outside the bounds of `self`.",
+      "suggest": "如果要修剪的跨度超出 `self` 的边界，则返回 `None`。",
+      "translate": ""
+  },
+  {
+      "source": "check that the byte range starts and ends at a UTF-8 boundary of the source.",
+      "suggest": "检查字节范围在源的 UTF-8 边界处开始和结束。",
+      "translate": ""
+  },
+  {
+      "source": "otherwise, it's likely that a panic will occur elsewhere when the source text is printed.",
+      "suggest": "否则，在打印源文本时，panic 可能会出现在其他位置。",
+      "translate": ""
+  },
+  {
+      "source": "there is no way for the user to know what `self.span()` actually maps to, so this method can currently only be called blindly.",
+      "suggest": "用户无法知道 `self.span()` 实际上是 maps，因此当前只能盲目调用此方法。",
+      "translate": ""
+  },
+  {
+      "source": "For example, `to_string()` for the character 'c' returns \"'\\u{63}'\";",
+      "suggest": "例如，字符 'c' 的 `to_string()` 返回 \"'\\u{63}'\";",
+      "translate": ""
+  },
+  {
+      "source": "there is no way for the user to know whether the source text was 'c' or whether it was '\\u{63}'.",
+      "suggest": "用户无法知道源文本是 'c' 还是 '\\u{63}'。",
+      "translate": ""
+  },
+  {
+      "source": "something akin to `Option::cloned`, but for `Bound<&T>`.",
+      "suggest": "类似于 `Option::cloned`，但适用于 `Bound<&T>`。",
+      "translate": ""
+  },
+  {
+      "source": "Prints the literal as a string that should be losslessly convertible back into the same literal (except for possible rounding for floating point literals).",
+      "suggest": "将字面量打印为一个字符串，该字符串应可以无损地转换回相同的字面量 (但浮点型字面量的可能取整除外)。",
+      "translate": ""
+  },
+  {
+      "source": "Tracked access to environment variables.",
+      "suggest": "跟踪对环境变量的访问。",
+      "translate": ""
+  },
+  {
+      "source": "Retrieve an environment variable and add it to build dependency info.",
+      "suggest": "检索环境变量并将其添加以构建依赖项信息。",
+      "translate": ""
+  },
+  {
+      "source": "Build system executing the compiler will know that the variable was accessed during compilation, and will be able to rerun the build when the value of that variable changes.",
+      "suggest": "执行编译器的构建系统将知道在编译期间访问了该变量，并且能够在该变量的值发生变化时重新运行构建。",
+      "translate": ""
+  },
+  {
+      "source": "Besides the dependency tracking this function should be equivalent to `env::var` from the standard library, except that the argument must be UTF-8.",
+      "suggest": "除了依赖项跟踪之外，此函数应与标准库中的 `env::var` 等效，除了参数必须为 UTF-8。",
+      "translate": ""
+  },
+  {
+      "source": "This file contains the implementation internals of the quasiquoter provided by `quote!`.",
+      "suggest": "该文件包含 `quote!` 提供的拟报价器的实现内部。",
+      "translate": ""
+  },
+  {
+      "source": "This quasiquoter uses macros 2.0 hygiene to reliably access items from `proc_macro`, to build a `proc_macro::TokenStream`.",
+      "suggest": "该准报价器使用宏 2.0 卫生来可靠地访问 `proc_macro` 的项，从而构建 `proc_macro::TokenStream`。",
+      "translate": ""
+  },
+  {
+      "source": "Simpler version of the real `quote!` macro, implemented solely through `macro_rules`, for bootstrapping the real implementation (see the `quote` function), which does not have access to the real `quote!` macro due to the `proc_macro` crate not being able to depend on itself.",
+      "suggest": "真正的 `quote!` 宏的简化版本，仅通过 `macro_rules` 实现，用于引导实际的实现 (请参见 `quote` 函数)，由于 `proc_macro` crate 无法依靠自身，因此无法访问真正的 `quote!` 宏。",
+      "translate": ""
+  },
+  {
+      "source": "supported tokens are a subset of the real `quote!`, but unquoting is different: instead of `$x`, this uses `(@ expr)`.",
+      "suggest": "支持的 tokens 是实际 `quote!` 的子集，但解引用是不同的：它使用 `(@ expr)` 代替 `$x`。",
+      "translate": ""
+  },
+  {
+      "source": "Quote a `TokenStream` into a `TokenStream`.",
+      "suggest": "将 `TokenStream` 引用到 `TokenStream` 中。",
+      "translate": ""
+  },
+  {
+      "source": "This is the actual implementation of the `quote!()` proc macro.",
+      "suggest": "这是 `quote!()` proc 宏的实际实现。",
+      "translate": ""
+  },
+  {
+      "source": "It is loaded by the compiler in `register_builtin_macros`.",
+      "suggest": "它由 `register_builtin_macros` 中的编译器加载。",
+      "translate": ""
+  },
+  {
+      "source": "Quote a `Span` into a `TokenStream`.",
+      "suggest": "将 `Span` 引用到 `TokenStream` 中。",
+      "translate": ""
+  },
+  {
+      "source": "This is needed to implement a custom quoter.",
+      "suggest": "这是实现自定义引号所需的。",
+      "translate": ""
+  },
+  {
+      "source": "Good enough if it typechecks, since proc_macro::Punct can't exist in a test.",
+      "suggest": "如果进行类型检查就足够了，因为 proc_macro::Punct 在测试中不存在。",
+      "translate": ""
+  },
+  {
+      "source": "Compiles the profiler part of the `compiler-rt` library.",
+      "suggest": "编译 `compiler-rt` 库的探查器部分。",
+      "translate": ""
+  },
+  {
+      "source": "See the build.rs for libcompiler_builtins crate for details.",
+      "suggest": "有关详细信息，请参见 libcompiler_builtins crate 的 build.rs。",
+      "translate": ""
+  },
+  {
+      "source": "`rerun-if-changed` directives are not currently emitted and the build script will not rerun on changes in these source files or headers included into them.",
+      "suggest": "当前不发出 `rerun-if-changed` 指令，并且在这些源文件或其中包含的标头中进行更改时，构建脚本将不会重新运行。",
+      "translate": ""
+  },
+  {
+      "source": "This file was renamed in LLVM 10.",
+      "suggest": "该文件在 LLVM 10 中被重命名。",
+      "translate": ""
+  },
+  {
+      "source": "These files were added in LLVM 11.",
+      "suggest": "这些文件已添加到 LLVM 11 中。",
+      "translate": ""
+  },
+  {
+      "source": "Don't pull in extra libraries on MSVC",
+      "suggest": "不要在 MSVC 上引入额外的库",
+      "translate": ""
+  },
+  {
+      "source": "Turn off various features of gcc and such, mostly copying compiler-rt's build system already",
+      "suggest": "关闭 gcc 的各种功能，例如，大多数已经复制了编译器 - rt 的构建系统",
+      "translate": ""
+  },
+  {
+      "source": "Assume that the Unixes we are building this for have fnctl() available",
+      "suggest": "假设我们为此构建的 Unix 具有 fnctl()",
+      "translate": ""
+  },
+  {
+      "source": "This should be a pretty good heuristic for when to set COMPILER_RT_HAS_ATOMICS",
+      "suggest": "这对于何时设置 COMPILER_RT_HAS_ATOMICS 应该是一个很好的启发",
+      "translate": ""
+  },
+  {
+      "source": "Note that this should exist if we're going to run (otherwise we just don't build profiler builtins at all).",
+      "suggest": "请注意，如果我们要运行该文件，则该文件应该存在 (否则，我们根本就不会构建探查器内建文件)。",
+      "translate": ""
+  },
+  {
+      "source": "See rustc-std-workspace-core for why this crate is needed.",
+      "suggest": "有关为何需要此 crate 的信息，请参见 rustc-std-workspace-core。",
+      "translate": ""
+  },
+  {
+      "source": "Rename the crate to avoid conflicting with the alloc module in liballoc.",
+      "suggest": "重命名 crate 以避免与 liballoc 中的 alloc 模块冲突。",
+      "translate": ""
+  },
+  {
+      "source": "The `rustc-std-workspace-core` crate",
+      "suggest": "`rustc-std-workspace-core` crate",
+      "translate": ""
+  },
+  {
+      "source": "This crate is a shim and empty crate which simply depends on `libcore` and reexports all of its contents.",
+      "suggest": "crate 是一个填充码，空的 crate 仅依赖于 `libcore` 并重导出其所有内容。",
+      "translate": ""
+  },
+  {
+      "source": "The crate is the crux of empowering the standard library to depend on crates from crates.io",
+      "suggest": "crate 是授权标准库依赖 crates.io 的 crates 的关键",
+      "translate": ""
+  },
+  {
+      "source": "Crates on crates.io that the standard library depend on need to depend on the `rustc-std-workspace-core` crate from crates.io, which is empty.",
+      "suggest": "标准库所依赖的 crates.io 上的 Crates 需要依赖于 crates.io 上的 `rustc-std-workspace-core` crate，它为空。",
+      "translate": ""
+  },
+  {
+      "source": "We use `[patch]` to override it to this crate in this repository.",
+      "suggest": "我们使用 `[patch]` 将其覆盖到此仓库中的 crate。",
+      "translate": ""
+  },
+  {
+      "source": "As a result, crates on crates.io will draw a dependency edge to `libcore`, the version defined in this repository.",
+      "suggest": "结果，crates.io 上的 crates 将向该仓库中定义的版本 `libcore` 绘制一个依赖项 edge。",
+      "translate": ""
+  },
+  {
+      "source": "That should draw all the dependency edges to ensure Cargo builds crates successfully!",
+      "suggest": "那应该绘制所有依赖项 edges，以确保 Cargo 成功构建 crates!",
+      "translate": ""
+  },
+  {
+      "source": "Note that crates on crates.io need to depend on this crate with the name `core` for everything to work correctly.",
+      "suggest": "请注意，crates.io 上的 crates 必须依赖于名称为 `core` 的 crate 才能正常工作。",
+      "translate": ""
+  },
+  {
+      "source": "To do that they can use:",
+      "suggest": "为此，他们可以使用:",
+      "translate": ""
+  },
+  {
+      "source": "Through the use of the `package` key the crate is renamed to `core`, meaning it'll look like",
+      "suggest": "通过使用 `package` 键，crate 重命名为 `core`，这意味着它看起来像",
+      "translate": ""
+  },
+  {
+      "source": "when Cargo invokes the compiler, satisfying the implicit `extern crate core` directive injected by the compiler.",
+      "suggest": "当 Cargo 调用编译器时，满足了编译器注入的隐式 `extern crate core` 指令。",
+      "translate": ""
+  },
+  {
+      "source": "The `rustc-std-workspace-std` crate",
+      "suggest": "`rustc-std-workspace-std` crate",
+      "translate": ""
+  },
+  {
+      "source": "See documentation for the `rustc-std-workspace-core` crate.",
+      "suggest": "请参见 `rustc-std-workspace-core` crate 的文档。",
+      "translate": ""
+  },
+  {
+      "source": "These platforms don't have any special requirements.",
+      "suggest": "这些平台没有任何特殊要求。",
+      "translate": ""
+  },
+  {
+      "source": "This is for Cargo's build-std support, to mark std as unstable for typically no_std platforms.",
+      "suggest": "这是为了 Cargo 的 build-std 支持，以将 std 标记为对于典型的 no_std 平台不稳定。",
+      "translate": ""
+  },
+  {
+      "source": "This covers:",
+      "suggest": "这包括:",
+      "translate": ""
+  },
+  {
+      "source": "JSON targets",
+      "suggest": "JSON 目标",
+      "translate": ""
+  },
+  {
+      "source": "Any new targets that have not been explicitly added above.",
+      "suggest": "上面未明确添加的所有新目标。",
+      "translate": ""
+  },
+  {
+      "source": "Dependencies of the `backtrace` crate",
+      "suggest": "`backtrace` crate 的依赖项",
+      "translate": ""
+  },
+  {
+      "source": "Enable std_detect default features for stdarch/crates/std_detect:",
+      "suggest": "为 stdarch/crates/std_detect 启用 std_detect 默认功能:",
+      "translate": ""
+  },
+  {
+      "source": "Maximum possible number of threads when testing",
+      "suggest": "测试时最大可能的线程数",
+      "translate": ""
+  },
+  {
+      "source": "Maximum heap size",
+      "suggest": "最大堆大小",
+      "translate": ""
+  },
+  {
+      "source": "This `Vec` will allocate memory through `GLOBAL` above",
+      "suggest": "该 `Vec` 将通过上面的 `GLOBAL` 分配内存",
+      "translate": ""
+  },
+  {
+      "source": "Allocates from the system allocator.",
+      "suggest": "从系统分配器分配。",
+      "translate": ""
+  },
+  {
+      "source": "Memory allocation APIs.",
+      "suggest": "内存分配 API。",
+      "translate": ""
+  },
+  {
+      "source": "In a given program, the standard library has one “global” memory allocator that is used for example by `Box<T>` and `Vec<T>`.",
+      "suggest": "在给定程序中，标准库具有一个 `global` 内存分配器，例如 `Box<T>` 和 `Vec<T>` 就会使用它。",
+      "translate": ""
+  },
+  {
+      "source": "Currently the default global allocator is unspecified.",
+      "suggest": "当前未指定默认的分配器。",
+      "translate": ""
+  },
+  {
+      "source": "Libraries, however, like `cdylib`s and `staticlib`s are guaranteed to use the [`System`] by default.",
+      "suggest": "但是，默认情况下，保证像 cdylib 和 staticlib 这样的库都使用 [`System`]。",
+      "translate": ""
+  },
+  {
+      "source": "The `#[global_allocator]` attribute",
+      "suggest": "`#[global_allocator]` 属性",
+      "translate": ""
+  },
+  {
+      "source": "This attribute allows configuring the choice of global allocator.",
+      "suggest": "此属性允许配置分配器的选择。",
+      "translate": ""
+  },
+  {
+      "source": "You can use this to implement a completely custom global allocator to route all default allocation requests to a custom object.",
+      "suggest": "您可以使用它来实现一个完全自定义的 alloc 分配器，以将所有默认分配请求路由到自定义 object。",
+      "translate": ""
+  },
+  {
+      "source": "The attribute is used on a `static` item whose type implements the [`GlobalAlloc`] trait.",
+      "suggest": "该属性用于其类型实现 [`GlobalAlloc`] trait 的 `static` 项。",
+      "translate": ""
+  },
+  {
+      "source": "This type can be provided by an external library:",
+      "suggest": "可以由外部库提供此类型:",
+      "translate": ""
+  },
+  {
+      "source": "The `#[global_allocator]` can only be used once in a crate or its recursive dependencies.",
+      "suggest": "`#[global_allocator]` 只能在 crate 或其递归依赖性中使用一次。",
+      "translate": ""
+  },
+  {
+      "source": "The default memory allocator provided by the operating system.",
+      "suggest": "操作系统提供的默认内存分配器。",
+      "translate": ""
+  },
+  {
+      "source": "This is based on `malloc` on Unix platforms and `HeapAlloc` on Windows, plus related functions.",
+      "suggest": "它基于 Unix 平台上的 `malloc` 和 Windows 上的 `HeapAlloc`，以及相关的函数。",
+      "translate": ""
+  },
+  {
+      "source": "This type implements the `GlobalAlloc` trait and Rust programs by default work as if they had this definition:",
+      "suggest": "此类型默认情况下实现 `GlobalAlloc` trait 和 Rust 程序，就像它们具有以下定义一样:",
+      "translate": ""
+  },
+  {
+      "source": "You can also define your own wrapper around `System` if you'd like, such as keeping track of the number of all bytes allocated:",
+      "suggest": "如果愿意，还可以围绕 `System` 定义自己的包装器，例如跟踪分配的所有字节数:",
+      "translate": ""
+  },
+  {
+      "source": "It can also be used directly to allocate memory independently of whatever global allocator has been selected for a Rust program.",
+      "suggest": "它也可以直接用于独立于 Rust 程序选择的分配器来分配内存。",
+      "translate": ""
+  },
+  {
+      "source": "For example if a Rust program opts in to using jemalloc as the global allocator, `System` will still allocate memory using `malloc` and `HeapAlloc`.",
+      "suggest": "例如，如果 Rust 程序选择使用 jemalloc 作为分配器，则 `System` 仍将使用 `malloc` 和 `HeapAlloc` 分配内存。",
+      "translate": ""
+  },
+  {
+      "source": "`new_size` is non-zero as `new_size` is greater than or equal to `old_size` as required by safety conditions and the `old_size == 0` case was handled in the previous match arm.",
+      "suggest": "`new_size` 为非零值，因为 `new_size` 大于或等于安全条件所要求的 `old_size`，并且 `old_size == 0` 的情况在先前的匹配项 arm 中进行了处理。",
+      "translate": ""
+  },
+  {
+      "source": "The Allocator impl checks the layout size to be non-zero and forwards to the GlobalAlloc impl, which is in `std::sys::*::alloc`.",
+      "suggest": "Allocator impl 检查布局大小是否为非零，并将其转发到 `std::sys::*::alloc` 中的 GlobalAlloc impl。",
+      "translate": ""
+  },
+  {
+      "source": "Registers a custom allocation error hook, replacing any that was previously registered.",
+      "suggest": "注册一个自定义分配错误 hook，替换以前注册的任何错误。",
+      "translate": ""
+  },
+  {
+      "source": "The allocation error hook is invoked when an infallible memory allocation fails, before the runtime aborts.",
+      "suggest": "当可靠的内存分配失败时 (在运行时中止之前)，将调用分配错误 hook。",
+      "translate": ""
+  },
+  {
+      "source": "The default hook prints a message to standard error, but this behavior can be customized with the [`set_alloc_error_hook`] and [`take_alloc_error_hook`] functions.",
+      "suggest": "默认的 hook 将消息显示为标准错误，但是可以使用 [`set_alloc_error_hook`] 和 [`take_alloc_error_hook`] 函数自定义此行为。",
+      "translate": ""
+  },
+  {
+      "source": "The hook is provided with a `Layout` struct which contains information about the allocation that failed.",
+      "suggest": "hook 带有 `Layout` 结构体，该结构体包含有关失败分配的信息。",
+      "translate": ""
+  },
+  {
+      "source": "The allocation error hook is a global resource.",
+      "suggest": "分配错误 hook 是一个资源。",
+      "translate": ""
+  },
+  {
+      "source": "Unregisters the current allocation error hook, returning it.",
+      "suggest": "注销当前分配错误 hook，将其返回。",
+      "translate": ""
+  },
+  {
+      "source": "See also the function [`set_alloc_error_hook`].",
+      "suggest": "另请参见函数 [`set_alloc_error_hook`]。",
+      "translate": ""
+  },
+  {
+      "source": "If no custom hook is registered, the default hook will be returned.",
+      "suggest": "如果未注册自定义 hook，则将返回默认的 hook。",
+      "translate": ""
+  },
+  {
+      "source": "These magic symbol names are used as a fallback for implementing the `__rust_alloc` etc symbols (see `src/liballoc/alloc.rs`) when there is no `#[global_allocator]` attribute.",
+      "suggest": "当没有 `#[global_allocator]` 属性时，这些魔术符号名称将用作实现 `__rust_alloc` etc 符号 (请参见 `src/liballoc/alloc.rs`) 的后备。",
+      "translate": ""
+  },
+  {
+      "source": "for symbol names src/librustc_ast/expand/allocator.rs for signatures src/librustc_allocator/lib.rs",
+      "suggest": "用于符号名称 src/librustc_ast/expand/allocator.rs 用于签名 src/librustc_allocator/lib.rs",
+      "translate": ""
+  },
+  {
+      "source": "linkage directives are provided as part of the current compiler allocator ABI",
+      "suggest": "链接指令作为当前编译器分配器 ABI 的一部分提供",
+      "translate": ""
+  },
+  {
+      "source": "see the guarantees expected by `Layout::from_size_align` and `GlobalAlloc::alloc`.",
+      "suggest": "请参见 `Layout::from_size_align` 和 `GlobalAlloc::alloc` 的预期保证。",
+      "translate": ""
+  },
+  {
+      "source": "see the guarantees expected by `Layout::from_size_align` and `GlobalAlloc::dealloc`.",
+      "suggest": "请参见 `Layout::from_size_align` 和 `GlobalAlloc::dealloc` 的预期保证。",
+      "translate": ""
+  },
+  {
+      "source": "see the guarantees expected by `Layout::from_size_align` and `GlobalAlloc::realloc`.",
+      "suggest": "请参见 `Layout::from_size_align` 和 `GlobalAlloc::realloc` 的预期保证。",
+      "translate": ""
+  },
+  {
+      "source": "see the guarantees expected by `Layout::from_size_align` and `GlobalAlloc::alloc_zeroed`.",
+      "suggest": "请参见 `Layout::from_size_align` 和 `GlobalAlloc::alloc_zeroed` 的预期保证。",
+      "translate": ""
+  },
+  {
+      "source": "The [`AsciiExt`] trait provides methods that allow for character operations that only act on the ASCII subset and leave non-ASCII characters alone.",
+      "suggest": "[`AsciiExt`] trait 提供了允许仅对 ASCII 子集起作用而仅使非 ASCII 字符不起作用的字符操作的方法。",
+      "translate": ""
+  },
+  {
+      "source": "Extension methods for ASCII-subset only operations.",
+      "suggest": "仅 ASCII 子集操作的扩展方法。",
+      "translate": ""
+  },
+  {
+      "source": "Be aware that operations on seemingly non-ASCII characters can sometimes have unexpected results.",
+      "suggest": "请注意，对看似非 ASCII 字符的操作有时会产生意外结果。",
+      "translate": ""
+  },
+  {
+      "source": "Consider this example:",
+      "suggest": "考虑以下示例:",
+      "translate": ""
+  },
+  {
+      "source": "In the first example, the lowercased string is represented `\"cafe\\u{301}\"` (the last character is an acute accent [combining character]).",
+      "suggest": "在第一个示例中，小写的字符串表示为 `\"cafe\\u{301}\"` (最后一个字符为重音符 [组合字符][combining character])。",
+      "translate": ""
+  },
+  {
+      "source": "Unlike the other characters in the string, the combining character will not get mapped to an uppercase variant, resulting in `\"CAFE\\u{301}\"`.",
+      "suggest": "与字符串中的其他字符不同，合并字符不会映射到大写成员，从而导致 `\"CAFE\\u{301}\"`。",
+      "translate": ""
+  },
+  {
+      "source": "In the second example, the lowercased string is represented `\"caf\\u{e9}\"` (the last character is a single Unicode character representing an 'e' with an acute accent).",
+      "suggest": "在第二个示例中，小写的字符串表示为 `\"caf\\u{e9}\"` (最后一个字符是单个 Unicode 字符，表示带有尖音的 'e')。",
+      "translate": ""
+  },
+  {
+      "source": "Since the last character is defined outside the scope of ASCII, it will not get mapped to an uppercase variant, resulting in `\"CAF\\u{e9}\"`.",
+      "suggest": "由于最后一个字符是在 ASCII 的作用域之外定义的，因此不会将其映射到大写成员，从而导致 `\"CAF\\u{e9}\"`。",
+      "translate": ""
+  },
+  {
+      "source": "Container type for copied ASCII characters.",
+      "suggest": "复制的 ASCII 字符的容器类型。",
+      "translate": ""
+  },
+  {
+      "source": "This method is deprecated in favor of the identically-named inherent methods on `u8`, `char`, `[u8]` and `str`.",
+      "suggest": "不推荐使用此方法，而推荐使用 `u8`，`char`，`[u8]` 和 `str` 上相同名称的固有方法。",
+      "translate": ""
+  },
+  {
+      "source": "To uppercase ASCII characters in addition to non-ASCII characters, use [`str::to_uppercase`].",
+      "suggest": "要除非 ASCII 字符外还使用大写 ASCII 字符，请使用 [`str::to_uppercase`]。",
+      "translate": ""
+  },
+  {
+      "source": "To lowercase ASCII characters in addition to non-ASCII characters, use [`str::to_lowercase`].",
+      "suggest": "要除非 ASCII 字符外还使用小写 ASCII 字符，请使用 [`str::to_lowercase`]。",
+      "translate": ""
+  },
+  {
+      "source": "Format the backtrace a second time, just to make sure lazily resolved state is stable",
+      "suggest": "再次格式化回溯，只是为了确保延迟解析的状态是稳定的",
+      "translate": ""
+  },
+  {
+      "source": "Support for capturing a stack backtrace of an OS thread",
+      "suggest": "支持捕获 OS 线程的栈回溯",
+      "translate": ""
+  },
+  {
+      "source": "This module contains the support necessary to capture a stack backtrace of a running OS thread from the OS thread itself.",
+      "suggest": "该模块包含从 OS 线程本身捕获正在运行的 OS 线程的栈回溯所必需的支持。",
+      "translate": ""
+  },
+  {
+      "source": "The `Backtrace` type supports capturing a stack trace via the `Backtrace::capture` and `Backtrace::force_capture` functions.",
+      "suggest": "`Backtrace` 类型支持通过 `Backtrace::capture` 和 `Backtrace::force_capture` 函数捕获栈跟踪。",
+      "translate": ""
+  },
+  {
+      "source": "A backtrace is typically quite handy to attach to errors (e.g. types implementing `std::error::Error`) to get a causal chain of where an error was generated.",
+      "suggest": "回溯通常很容易附加到错误 (例如，实现 `std::error::Error` 的类型) 上，以获取产生错误的因果关系。",
+      "translate": ""
+  },
+  {
+      "source": "this module is unstable and is designed in [RFC 2504], and you",
+      "suggest": "该模块是不稳定的，并且是在 [RFC 2504] 中设计的，因此您",
+      "translate": ""
+  },
+  {
+      "source": "can learn more about its status in the [tracking issue].",
+      "suggest": "可以在 [跟踪问题][tracking issue] 中了解有关其状态的更多信息。",
+      "translate": ""
+  },
+  {
+      "source": "Backtraces are attempted to be as accurate as possible, but no guarantees are provided about the exact accuracy of a backtrace.",
+      "suggest": "回溯试图尽可能地准确，但不保证回溯的准确度。",
+      "translate": ""
+  },
+  {
+      "source": "Instruction pointers, symbol names, filenames, line numbers, etc, may all be incorrect when reported.",
+      "suggest": "报告时，指令指针，符号名称，文件名，行号等可能都不正确。",
+      "translate": ""
+  },
+  {
+      "source": "Accuracy is attempted on a best-effort basis, however, and bugs are always welcome to indicate areas of improvement!",
+      "suggest": "尽力而为，力求做到准确，但是，始终欢迎欢迎带错误的地方指出改进的地方！",
+      "translate": ""
+  },
+  {
+      "source": "For most platforms a backtrace with a filename/line number requires that programs be compiled with debug information.",
+      "suggest": "对于大多数平台，带有 filename/line 编号的回溯要求使用调试信息编译程序。",
+      "translate": ""
+  },
+  {
+      "source": "Without debug information filenames/line numbers will not be reported.",
+      "suggest": "没有调试信息，将不会报告 filenames/line 号。",
+      "translate": ""
+  },
+  {
+      "source": "Platform support",
+      "suggest": "平台支持",
+      "translate": ""
+  },
+  {
+      "source": "Not all platforms that libstd compiles for support capturing backtraces.",
+      "suggest": "并非所有 libstd 编译的平台都支持捕获回溯。",
+      "translate": ""
+  },
+  {
+      "source": "Some platforms simply do nothing when capturing a backtrace.",
+      "suggest": "一些平台在捕获回溯时根本不执行任何操作。",
+      "translate": ""
+  },
+  {
+      "source": "To check whether the platform supports capturing backtraces you can consult the `BacktraceStatus` enum as a result of `Backtrace::status`.",
+      "suggest": "要检查平台是否支持捕获回溯，您可以参考 `Backtrace::status` 作为 `Backtrace::status` 的枚举。",
+      "translate": ""
+  },
+  {
+      "source": "Like above with accuracy platform support is done on a best effort basis.",
+      "suggest": "像上面一样，准确性平台的支持是尽力而为的。",
+      "translate": ""
+  },
+  {
+      "source": "Sometimes libraries may not be available at runtime or something may go wrong which would cause a backtrace to not be captured.",
+      "suggest": "有时，库可能在运行时不可用，或者某些地方可能出错，这将导致无法捕获回溯。",
+      "translate": ""
+  },
+  {
+      "source": "Please feel free to report issues with platforms where a backtrace cannot be captured though!",
+      "suggest": "请随时报告平台无法捕获回溯的问题！",
+      "translate": ""
+  },
+  {
+      "source": "Environment Variables",
+      "suggest": "环境变量",
+      "translate": ""
+  },
+  {
+      "source": "The `Backtrace::capture` function may not actually capture a backtrace by default.",
+      "suggest": "默认情况下，`Backtrace::capture` 函数可能实际上未捕获回溯。",
+      "translate": ""
+  },
+  {
+      "source": "Its behavior is governed by two environment variables:",
+      "suggest": "它的行为受两个环境变量控制:",
+      "translate": ""
+  },
+  {
+      "source": "if this is set to `0` then `Backtrace::capture` will never capture a backtrace.",
+      "suggest": "如果将其设置为 `0`，则 `Backtrace::capture` 将永远不会捕获回溯。",
+      "translate": ""
+  },
+  {
+      "source": "Any other value this is set to will enable `Backtrace::capture`.",
+      "suggest": "设置为该值的任何其他值将启用 `Backtrace::capture`。",
+      "translate": ""
+  },
+  {
+      "source": "if `RUST_LIB_BACKTRACE` is not set, then this variable is consulted with the same rules of `RUST_LIB_BACKTRACE`.",
+      "suggest": "如果未设置 `RUST_LIB_BACKTRACE`，则使用与 `RUST_LIB_BACKTRACE` 相同的规则查询该变量。",
+      "translate": ""
+  },
+  {
+      "source": "If neither of the above env vars are set, then `Backtrace::capture` will be disabled.",
+      "suggest": "如果以上两个环境变量均未设置，则 `Backtrace::capture` 将被禁用。",
+      "translate": ""
+  },
+  {
+      "source": "Capturing a backtrace can be a quite expensive runtime operation, so the environment variables allow either forcibly disabling this runtime performance hit or allow selectively enabling it in some programs.",
+      "suggest": "捕获回溯可能是相当昂贵的运行时操作，因此环境变量允许强制禁用此运行时性能命中值，或者允许在某些程序中有选择地启用它。",
+      "translate": ""
+  },
+  {
+      "source": "Note that the `Backtrace::force_capture` function can be used to ignore these environment variables.",
+      "suggest": "注意，可以使用 `Backtrace::force_capture` 函数来忽略这些环境变量。",
+      "translate": ""
+  },
+  {
+      "source": "Also note that the state of environment variables is cached once the first backtrace is created, so altering `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` at runtime may not actually change how backtraces are captured.",
+      "suggest": "还要注意，一旦创建了第一个回溯，环境变量的状态就会被缓存，因此在运行时更改 `RUST_LIB_BACKTRACE` 或 `RUST_BACKTRACE` 可能实际上并不会改变捕获回溯的方式。",
+      "translate": ""
+  },
+  {
+      "source": "A note on resolution of a backtrace:",
+      "suggest": "关于解决回溯的说明:",
+      "translate": ""
+  },
+  {
+      "source": "Backtraces primarily happen in two steps, one is where we actually capture the stack backtrace, giving us a list of instruction pointers corresponding to stack frames.",
+      "suggest": "回溯主要发生在两个步骤中，一个是我们实际捕获栈回溯的位置，从而为我们提供了与栈帧相对应的指令指针列表。",
+      "translate": ""
+  },
+  {
+      "source": "Next we take these instruction pointers and, one-by-one, turn them into a human readable name (like `main`).",
+      "suggest": "接下来，我们使用这些指令指针，并将它们逐个转换为人类可读的名称 (例如 `main`)。",
+      "translate": ""
+  },
+  {
+      "source": "The first phase can be somewhat expensive (walking the stack), especially on MSVC where debug information is consulted to return inline frames each as their own frame.",
+      "suggest": "第一阶段可能会有些昂贵 (遍历栈)，尤其是在 MSVC 上，在该 MSVC 上，将参考调试信息以将内联帧返回为各自的帧。",
+      "translate": ""
+  },
+  {
+      "source": "The second phase, however, is almost always extremely expensive (on the order of milliseconds sometimes) when it's consulting debug information.",
+      "suggest": "但是，在咨询调试信息时，第二阶段几乎总是非常昂贵 (有时约数毫秒)。",
+      "translate": ""
+  },
+  {
+      "source": "We attempt to amortize this cost as much as possible by delaying resolution of an address to a human readable name for as long as possible.",
+      "suggest": "我们试图通过尽可能长时间地将地址解析为人类可读的名称来尽可能摊销此费用。",
+      "translate": ""
+  },
+  {
+      "source": "When `Backtrace::create` is called to capture a backtrace it doesn't actually perform any symbol resolution, but rather we lazily resolve symbols only just before they're needed for printing.",
+      "suggest": "当调用 `Backtrace::create` 捕获回溯时，它实际上并不执行任何符号解析，而是仅在需要打印符号之前才对它们进行延迟解析。",
+      "translate": ""
+  },
+  {
+      "source": "This way we can make capturing a backtrace and throwing it away much cheaper, but actually printing a backtrace is still basically the same cost.",
+      "suggest": "这样，我们可以使捕获回溯并将其扔掉便宜得多，但实际上打印回溯仍基本上是相同的成本。",
+      "translate": ""
+  },
+  {
+      "source": "This strategy comes at the cost of some synchronization required inside of a `Backtrace`, but that's a relatively small price to pay relative to capturing a backtrace or actually symbolizing it.",
+      "suggest": "这种策略是以 `Backtrace` 内部需要进行一些同步为代价的，但是相对于捕获回溯或实际对其进行符号化而言，这是一个相对较低的代价。",
+      "translate": ""
+  },
+  {
+      "source": "A captured OS thread stack backtrace.",
+      "suggest": "捕获的 OS 线程栈回溯。",
+      "translate": ""
+  },
+  {
+      "source": "This type represents a stack backtrace for an OS thread captured at a previous point in time.",
+      "suggest": "此类型表示在先前时间点捕获的 OS 线程的栈回溯。",
+      "translate": ""
+  },
+  {
+      "source": "In some instances the `Backtrace` type may internally be empty due to configuration.",
+      "suggest": "在某些情况下，由于配置，`Backtrace` 类型在内部可能为空。",
+      "translate": ""
+  },
+  {
+      "source": "For more information see `Backtrace::capture`.",
+      "suggest": "有关更多信息，请参见 `Backtrace::capture`。",
+      "translate": ""
+  },
+  {
+      "source": "The current status of a backtrace, indicating whether it was captured or whether it is empty for some other reason.",
+      "suggest": "回溯的当前状态，指示它是否已捕获或由于其他原因而为空。",
+      "translate": ""
+  },
+  {
+      "source": "Capturing a backtrace is not supported, likely because it's not implemented for the current platform.",
+      "suggest": "不支持捕获回溯，这可能是因为当前平台尚未实现。",
+      "translate": ""
+  },
+  {
+      "source": "Capturing a backtrace has been disabled through either the `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` environment variables.",
+      "suggest": "通过 `RUST_LIB_BACKTRACE` 或 `RUST_BACKTRACE` 环境变量已禁用捕获回溯。",
+      "translate": ""
+  },
+  {
+      "source": "A backtrace has been captured and the `Backtrace` should print reasonable information when rendered.",
+      "suggest": "回溯已被捕获，并且 `Backtrace` 在呈现时应打印合理的信息。",
+      "translate": ""
+  },
+  {
+      "source": "A single frame of a backtrace.",
+      "suggest": "回溯的单个帧。",
+      "translate": ""
+  },
+  {
+      "source": "improve formatting:",
+      "suggest": "改善格式:",
+      "translate": ""
+  },
+  {
+      "source": "Also, include column numbers into the debug format as Display already has them.",
+      "suggest": "另外，将列号包括在调试格式中，因为 Display 已经拥有了它们。",
+      "translate": ""
+  },
+  {
+      "source": "Until there are stable per-frame accessors, the format shouldn't be changed:",
+      "suggest": "在存在稳定的每帧访问器之前，不应更改格式:",
+      "translate": ""
+  },
+  {
+      "source": "Returns whether backtrace captures are enabled through environment variables.",
+      "suggest": "返回是否通过环境变量启用回溯捕获。",
+      "translate": ""
+  },
+  {
+      "source": "Cache the result of reading the environment variables to make backtrace captures speedy, because otherwise reading environment variables every time can be somewhat slow.",
+      "suggest": "高速缓存读取环境变量的结果以快速捕获回溯，因为否则每次读取环境变量都可能有些慢。",
+      "translate": ""
+  },
+  {
+      "source": "Capture a stack backtrace of the current thread.",
+      "suggest": "捕获当前线程的栈回溯。",
+      "translate": ""
+  },
+  {
+      "source": "This function will capture a stack backtrace of the current OS thread of execution, returning a `Backtrace` type which can be later used to print the entire stack trace or render it to a string.",
+      "suggest": "此函数将捕获当前 OS 执行线程的栈回溯，并返回 `Backtrace` 类型，该类型以后可用于打印整个栈跟踪或将其呈现为字符串。",
+      "translate": ""
+  },
+  {
+      "source": "This function will be a noop if the `RUST_BACKTRACE` or `RUST_LIB_BACKTRACE` backtrace variables are both not set.",
+      "suggest": "如果没有同时设置 `RUST_BACKTRACE` 或 `RUST_LIB_BACKTRACE` backtrace 变量，则此函数将为 noop。",
+      "translate": ""
+  },
+  {
+      "source": "If either environment variable is set and enabled then this function will actually capture a backtrace.",
+      "suggest": "如果设置并启用了任何一个环境变量，则此函数实际上将捕获回溯。",
+      "translate": ""
+  },
+  {
+      "source": "Capturing a backtrace can be both memory intensive and slow, so these environment variables allow liberally using `Backtrace::capture` and only incurring a slowdown when the environment variables are set.",
+      "suggest": "捕获回溯可能会占用大量内存并且速度很慢，因此这些环境变量允许自由使用 `Backtrace::capture`，并且仅在设置环境变量时才会导致速度降低。",
+      "translate": ""
+  },
+  {
+      "source": "To forcibly capture a backtrace regardless of environment variables, use the `Backtrace::force_capture` function.",
+      "suggest": "要强制捕获回溯，而不管环境变量如何，请使用 `Backtrace::force_capture` 函数。",
+      "translate": ""
+  },
+  {
+      "source": "Forcibly captures a full backtrace, regardless of environment variable configuration.",
+      "suggest": "无论环境变量配置如何，都将强制捕获完整的回溯。",
+      "translate": ""
+  }
+]

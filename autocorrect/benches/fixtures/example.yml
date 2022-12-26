@@ -1,0 +1,118 @@
+"zh-CN":
+  contents: 目录
+  omniauth:
+    github: GitHub
+    twitter: Twitter
+  device_platform:
+    ios: iOS
+    android: Android
+  sso:
+    timeout_expired: "SSO Token 已过期，请重新发起请求。"
+    unknown_error: "抱歉 SSO 登录的过程遇到了未处理的异常，登录失败。"
+    not_found: "抱歉 SSO 登录的过程遇到了未处理的异常，登录失败。"
+  recaptcha:
+    errors:
+      verification_failed: "reCaptcha 验证不通过，请重试"
+  errors:
+    messages:
+      extension_whitelist_error: "仅允许图片文件上传 [jpg, jpeg, gif, png]"
+  activerecord:
+    enums:
+      user:
+        state:
+          deleted: 已注销
+          newbie: 新手
+          member: 会员
+          blocked: 禁言用户
+          vip: 高级会员
+          hr: HR
+          maintainer: 版主
+          admin: 管理员
+        state_color:
+          deleted: "#777777"
+          newbie: "#564cf5"
+          member: "#564cf5"
+          blocked: "#505050"
+          vip: "#12ce0f"
+          hr: "#12ce0f"
+          maintainer: "#c800cc"
+          admin: "#f54821"
+    models:
+      user: "用户"
+      topic: "话题"
+      post: 文章
+      page: Wiki
+      device: "设备"
+    attributes:
+      user:
+        name: "名字"
+        login: "用户名"
+        email: "Email"
+        email_public: "公开 Email"
+        avatar: "头像"
+        theme: "主题偏好"
+        location: "城市"
+        bio: "个人介绍"
+        password: "密码"
+        password_confirmation: "确认密码"
+        website: "个人主页"
+        last_logined_at: "上次登录时间"
+        tagline: "签名"
+        state: "等级"
+        company: "公司"
+        github: "GitHub"
+        remember_me: 记住登录状态
+        current_password: 旧密码
+      profile:
+        contacts:
+          qq: QQ
+          alipay: 支付宝
+          paypal: PayPal
+          douban: 豆瓣
+          weibo: 微博
+          wechat: 微信
+          dingding: 钉钉
+          aliwangwang: 旺旺
+          facebook: Facebook
+          instagram: Instragram
+          dribbble: Dribbble
+          battle_tag: BattleTag
+          psn_id: PSN ID
+          steam_id: Stream ID
+      team:
+        name: "公司／组织名称"
+        login: "访问路径"
+        bio: "公司／组织介绍"
+        website: "公司 / 项目网址"
+      team_user:
+        login: "用户名"
+        role: "权限"
+        user_id: "用户"
+      topic:
+        title: "标题"
+        user_id: "用户"
+        node_id: "节点"
+        team_id: "关联到组织"
+        body: "正文"
+      reply:
+        body: "回复内容"
+      page:
+        slug: Slug
+        title: 页面标题
+        body: 内容
+        locked: 锁定开关
+        change_desc: 变更描述
+      device:
+        platform: 类型
+        token: Token
+        alive: 是否有效
+      node:
+        name: 名称
+        sort: 排序
+        summary: 简介
+    errors:
+      models:
+        user:
+          attributes:
+            reset_password_token:
+              expired: 重置密码操作已过期
