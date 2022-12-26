@@ -359,33 +359,24 @@ See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect
 
 ```bash
 format_050              time:   [10.003 µs 10.013 µs 10.024 µs]
-format_100              time:   [18.656 µs 18.802 µs 19.034 µs]
+format_100              time:   [18.511 µs 18.550 µs 18.597 µs]
 format_400              time:   [60.089 µs 60.216 µs 60.461 µs]
-format_html             time:   [222.10 µs 224.14 µs 226.67 µs]
-halfwidth_english       time:   [2.5398 µs 2.5502 µs 2.5646 µs]
-format_json             time:   [47.961 µs 48.249 µs 48.767 µs]
-format_javascript       time:   [96.528 µs 98.821 µs 102.17 µs]
-format_json_2k          time:   [9.5694 ms 9.6994 ms 9.8620 ms]
-markdown                time:   [988.37 µs 995.09 µs 1.0046 ms]
-spellcheck_50           time:   [1.9227 µs 1.9237 µs 1.9249 µs]
+format_html             time:   [220.68 µs 220.91 µs 221.18 µs]
+halfwidth_english       time:   [3.2353 µs 3.2452 µs 3.2545 µs]
+format_json             time:   [55.620 µs 55.658 µs 55.695 µs]
+format_javascript       time:   [108.63 µs 108.70 µs 108.79 µs]
+format_json_2k          time:   [9.3879 ms 9.4871 ms 9.6541 ms]
+format_markdown         time:   [1.0007 ms 1.0123 ms 1.0285 ms]
+spellcheck_50           time:   [1.9177 µs 1.9422 µs 1.9766 µs]
 spellcheck_100          time:   [3.5868 µs 3.5909 µs 3.5950 µs]
-spellcheck_400          time:   [14.973 µs 15.231 µs 15.568 µs]
+spellcheck_400          time:   [14.873 µs 14.974 µs 15.110 µs]
+format_markdown         time:   [1.0010 ms 1.0187 ms 1.0484 ms]
+lint_markdown           time:   [1.1195 ms 1.1205 ms 1.1215 ms]
+lint_json               time:   [67.764 µs 68.341 µs 69.137 µs]
+lint_html               time:   [280.87 µs 281.44 µs 282.20 µs]
+lint_javascript         time:   [123.99 µs 125.50 µs 128.38 µs]
+lint_yaml               time:   [433.41 µs 441.09 µs 452.74 µs]
 ```
-
-| Type       | Total chars | Duration |
-| ---------- | ----------- | -------- |
-| format     | 50          | 0.010 ms |
-| format     | 100         | 0.017 ms |
-| format     | 400         | 0.057 ms |
-| format     | HTML        | 0.174 ms |
-| format     | JavaScript  | 0.086 ms |
-| format     | JSON        | 0.034 ms |
-| format     | Large JSON  | 9.629 ms |
-| halfwidth  | 100         | 0.012 ms |
-| format     | Markdown    | 0.998 ms |
-| spellcheck | 50          | 0.037 ms |
-| spellcheck | 100         | 0.057 ms |
-| spellcheck | 400         | 0.195 ms |
 
 ### Real world benchmark
 

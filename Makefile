@@ -4,7 +4,7 @@ BIN_PATH=$(shell which autocorrect)
 VERSION_FILES=autocorrect/Cargo.toml autocorrect-cli/Cargo.toml autocorrect-node/Cargo.toml autocorrect-node/package.json autocorrect-rb/ext/autocorrect/Cargo.toml autocorrect-rb/autocorrect-rb.gemspec autocorrect-py/Cargo.toml autocorrect-wasm/Cargo.toml autocorrect-java/Cargo.toml autocorrect-java/javasrc/pom.xml
 
 bench:
-	cargo bench
+	cargo criterion
 run1:
 	cargo run -- --lint --config ~/github/translated-content/.autocorrectrc  ~/github/translated-content/files/zh-tw/learn/
 run:
