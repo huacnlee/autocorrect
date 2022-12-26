@@ -29,7 +29,7 @@ serde_repr = "0.1"
 serde_yaml = "0.9.9"
 
 [dev-dependencies]
-bencher = "0.1.5"
+criterion = "0.3"
 indoc = "1.0"
 pretty_assertions = "1.0.0"
 

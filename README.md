@@ -358,18 +358,18 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
 
 ```bash
-test bench_format_050                 ... bench:       9,132 ns/iter (+/- 88)
-test bench_format_100                 ... bench:      16,892 ns/iter (+/- 319)
-test bench_format_400                 ... bench:      55,126 ns/iter (+/- 1,086)
-test bench_format_html                ... bench:     198,822 ns/iter (+/- 2,228)
-test bench_format_javascript          ... bench:      88,774 ns/iter (+/- 1,333)
-test bench_format_json                ... bench:      42,868 ns/iter (+/- 325)
-test bench_format_json_with_2k_lines  ... bench:   9,664,245 ns/iter (+/- 494,651)
-test bench_halfwidth_full_english_100 ... bench:      11,242 ns/iter (+/- 550)
-test bench_markdown                   ... bench:     998,470 ns/iter (+/- 18,294)
-test bench_spellcheck_100             ... bench:      54,168 ns/iter (+/- 451)
-test bench_spellcheck_400             ... bench:     189,885 ns/iter (+/- 4,172)
-test bench_spellcheck_50              ... bench:      34,920 ns/iter (+/- 2,111)
+format_050              time:   [10.003 µs 10.013 µs 10.024 µs]
+format_100              time:   [18.656 µs 18.802 µs 19.034 µs]
+format_400              time:   [60.089 µs 60.216 µs 60.461 µs]
+format_html             time:   [222.10 µs 224.14 µs 226.67 µs]
+halfwidth_english       time:   [2.5398 µs 2.5502 µs 2.5646 µs]
+format_json             time:   [47.961 µs 48.249 µs 48.767 µs]
+format_javascript       time:   [96.528 µs 98.821 µs 102.17 µs]
+format_json_2k          time:   [9.5694 ms 9.6994 ms 9.8620 ms]
+markdown                time:   [988.37 µs 995.09 µs 1.0046 ms]
+spellcheck_50           time:   [1.9227 µs 1.9237 µs 1.9249 µs]
+spellcheck_100          time:   [3.5868 µs 3.5909 µs 3.5950 µs]
+spellcheck_400          time:   [14.973 µs 15.231 µs 15.568 µs]
 ```
 
 | Type       | Total chars | Duration |
