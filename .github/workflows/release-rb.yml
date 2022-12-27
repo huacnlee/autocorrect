@@ -16,11 +16,12 @@ jobs:
           - "arm64-darwin"
           - "x86_64-darwin"
           - "x86_64-linux"
+          - "aarch64-linux"
     steps:
       - uses: actions/checkout@v3
       - uses: oxidize-rb/actions/setup-ruby-and-rust@main
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.2"
           bundler-cache: true
           cargo-cache: "sccache"
           cargo-vendor: true
