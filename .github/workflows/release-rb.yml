@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: cross-gem
-          path: pkg/
+          path: autocorrect-rb/pkg/
 
   publish:
     name: Publish cross gems
@@ -94,7 +94,7 @@ jobs:
 
       - name: Display structure of built gems
         run: ls -R
-        working-directory: autocorrect-rb/pkg/
+        working-directory: pkg/
 
       - name: Publish to RubyGem
         env:
@@ -104,7 +104,8 @@ jobs:
           touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
           printf -- "---\n:rubygems_api_key: ${RUBYGEM_TOKEN}\n" > $HOME/.gem/credentials
-          for filename in autocorrect-rb/pkg/*.gem; do
+          gem push pkg/*.gem
+          for filename in pkg/**/*.gem; do
             gem push $filename
           done
 
