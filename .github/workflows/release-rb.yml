@@ -6,7 +6,19 @@ on:
     branches:
       - release-gem
 jobs:
+  publish_crate:
+    name: Publish Crate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # - uses: actions-rs/cargo@v1
+      #   with:
+      #     command: publish
+      #     args: --manifest-path autocorrect/Cargo.toml --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
   build:
+    needs:
+      - publish_crate
     name: Build compile gems
     runs-on: ubuntu-latest
     strategy:
@@ -16,26 +28,65 @@ jobs:
           - "arm64-darwin"
           - "x86_64-darwin"
           - "x86_64-linux"
+          - "aarch64-linux"
     steps:
       - uses: actions/checkout@v3
       - uses: oxidize-rb/actions/setup-ruby-and-rust@main
         with:
-          ruby-version: "3.1"
+          ruby-version: "3.2"
           bundler-cache: true
-          cargo-cache: "sccache"
+          cargo-cache: true
           cargo-vendor: true
 
       - name: Touch Rakefile
         run: |
           touch Rakefile
 
-      - uses: oxidize-rb/cross-gem-action@v7
+      - uses: oxidize-rb/cross-gem-action@main
         with:
           platform: ${{ matrix.ruby-platform }}
           directory: ./
           ruby-versions: "3.2, 3.1, 3.0, 2.7" # optional
-          setup: cd autocorrect-rb/ && bundle install || gem install rb_sys
+          setup: cd autocorrect-rb/ && bundle install
 
+  build_source:
+    name: Build source gem
+    needs:
+      - publish_crate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@main
+        with:
+          ruby-version: "3.2"
+          bundler-cache: false
+          cargo-cache: true
+          cargo-vendor: true
+
+      - name: Build gem
+        run: |
+          cd autocorrect-rb/
+          gem build autocorrect-rb.gemspec
+          mkdir -p pkg/
+          mv *.gem pkg/
+
+      - name: Upload Gem
+        uses: actions/upload-artifact@v3
+        with:
+          name: cross-gem
+          path: pkg/
+
+  publish:
+    name: Publish cross gems
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - build_source
+    steps:
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
       - uses: actions/download-artifact@v3
         with:
           name: cross-gem
