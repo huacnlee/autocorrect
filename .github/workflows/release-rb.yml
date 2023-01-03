@@ -36,7 +36,7 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: true
           cargo-cache: true
-          cargo-vendor: true
+          cargo-vendor: false
 
       - name: Touch Rakefile
         run: |
