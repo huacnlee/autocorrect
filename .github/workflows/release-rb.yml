@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions-rs/cargo@v1
-      #   with:
-      #     command: publish
-      #     args: --manifest-path autocorrect/Cargo.toml --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: --manifest-path autocorrect/Cargo.toml --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   build:
     needs:
@@ -99,13 +99,18 @@ jobs:
       - name: Publish to RubyGem
         env:
           RUBYGEM_TOKEN: "${{secrets.RUBYGEM_TOKEN}}"
+        working-directory: pkg/
         run: |
           mkdir -p $HOME/.gem
           touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
           printf -- "---\n:rubygems_api_key: ${RUBYGEM_TOKEN}\n" > $HOME/.gem/credentials
-          gem push pkg/*.gem
-          for filename in pkg/**/*.gem; do
+          for filename in autocorrect-rb/**/*.gem; do
+            echo $filename
+            gem push $filename
+          done
+          for filename in *.gem; do
+            echo $filename
             gem push $filename
           done
 
