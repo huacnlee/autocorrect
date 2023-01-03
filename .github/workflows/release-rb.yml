@@ -1,4 +1,4 @@
-name: "Release RubyGem"
+name: "Release Crate & RubyGem"
 on:
   push:
     tags:

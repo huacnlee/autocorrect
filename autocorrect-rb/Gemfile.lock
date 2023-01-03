@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.4.3)
+    autocorrect-rb (2.5.6.pre1)
       rb_sys (>= 0.9.18)
 
 GEM
@@ -28,6 +28,7 @@ GEM
 PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
+  arm64-darwin-22
   x86_64-linux
 
 DEPENDENCIES

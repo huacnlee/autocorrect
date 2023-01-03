@@ -16,7 +16,10 @@ use std::{
 
 use crate::serde_any;
 
-include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
+lazy_static! {
+    static ref CONFIG_STR: &'static str = include_str!("../../.autocorrectrc.default");
+    static ref CURRENT_CONFIG: RwLock<Config> = RwLock::new(Config::from_str(&CONFIG_STR).unwrap());
+}
 
 pub trait ConfigFileTypes {
     fn get_ext(&self, ext: &str) -> Option<&str>;
