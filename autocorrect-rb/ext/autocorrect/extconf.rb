@@ -1,4 +1,4 @@
 require "mkmf"
 require "rb_sys/mkmf"
 
-create_rust_makefile("autocorrect")
+create_rust_makefile("autocorrect/autocorrect")

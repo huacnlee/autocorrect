@@ -16,7 +16,13 @@ use std::{
 
 use crate::serde_any;
 
-include!(concat!(env!("OUT_DIR"), "/default_config.rs"));
+lazy_static! {
+    static ref CONFIG_STR: &'static str = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/.autocorrectrc.default"
+    ));
+    static ref CURRENT_CONFIG: RwLock<Config> = RwLock::new(Config::from_str(&CONFIG_STR).unwrap());
+}
 
 pub trait ConfigFileTypes {
     fn get_ext(&self, ext: &str) -> Option<&str>;
@@ -195,7 +201,10 @@ static STEUP_ONCE: std::sync::Once = std::sync::Once::new();
 #[allow(unused)]
 pub(crate) fn setup_test() {
     STEUP_ONCE.call_once(|| {
-        let config_str = include_str!("../../tests/.autocorrectrc.test").to_owned();
+        let config_str = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/.autocorrectrc.test"
+        ));
         crate::config::load(&config_str).unwrap();
     })
 }

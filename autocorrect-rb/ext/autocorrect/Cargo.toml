@@ -9,5 +9,5 @@ crate-type = ["cdylib"]
 name = "autocorrect"
 
 [dependencies]
-autocorrect = {path = "../../../autocorrect", version = ">=1.0.0"}
+autocorrect = "2"
 magnus = "0.4"
