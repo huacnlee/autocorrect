@@ -30,8 +30,8 @@ end
 spec = Bundler.load_gemspec("autocorrect-rb.gemspec")
 
 # Make a autocorrect-rb-0.0.0.gem
-# Disable release gem for platform: ruby, because autocorrect rust source build is complex.
-# Gem::PackageTask.new(spec).define
+# Release gem for platform: ruby
+Gem::PackageTask.new(spec).define
 
 # Make a native gem, eg. autocorrect-rb-0.0.0-x86_64-linux.gem
 Rake::ExtensionTask.new("autocorrect", spec) do |ext|

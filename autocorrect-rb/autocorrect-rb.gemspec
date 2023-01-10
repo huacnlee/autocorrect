@@ -2,7 +2,7 @@ $:.push File.expand_path("lib", __dir__)
 
 Gem::Specification.new do |s|
   s.name = "autocorrect-rb"
-  s.version = "2.5.6"
+  s.version = "2.5.7"
   s.platform = Gem::Platform::RUBY
   s.authors = ["Jason Lee"]
   s.email = ["huacnlee@gmail.com"]
@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   s.extensions = ["ext/autocorrect/extconf.rb"]
 
   # needed until rubygems supports Rust support is out of beta
-  s.add_dependency "rb_sys", ">= 0.9.18"
+  s.add_dependency "rb_sys", ">= 0.9.54"
 end

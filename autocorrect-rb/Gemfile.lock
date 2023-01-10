@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.5.6)
-      rb_sys (>= 0.9.18)
+    autocorrect-rb (2.5.7)
+      rb_sys (>= 0.9.54)
 
 GEM
   remote: https://rubygems.org/
@@ -19,9 +19,9 @@ GEM
     memory_profiler (1.0.1)
     minitest (5.16.3)
     rake (13.0.6)
-    rake-compiler (1.2.0)
+    rake-compiler (1.2.1)
       rake
-    rb_sys (0.9.44)
+    rb_sys (0.9.54)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
 
