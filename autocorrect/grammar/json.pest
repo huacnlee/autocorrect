@@ -1,17 +1,25 @@
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
-
-other = ${ !(pair) ~ ANY }
-comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
-
-string_type = _{ 
-  ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
-}
-key = ${ string_type ~ (" ")* ~ ":" ~ (" ")* }
-string = ${ string_type  }
-pair = _{ key ~ string }
-
-line = _{ pair | comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 
+line = _{ pair | other }
+other = ${ !(pair) ~ ANY }
+
+pair    = _{ key ~ string }
+key     = { string_val ~ colon }
+colon   = @{ ":" }
+string  = ${ string_val }
+string_val = @{ "\"" ~ inner ~ "\"" }
+inner   = @{ (!("\"" | "\\") ~ ANY)* ~ (escape ~ inner)? }
+escape  = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
+unicode = @{ "u" ~ ASCII_HEX_DIGIT{4} }
+
+newline = ${ "\n" | "\r" | "\r\n" }
+space   = ${ " " | "\t" }
+WHITESPACE = _{ space | newline }
+
+line_comment  = @{ "//" ~ (!(newline) ~ ANY)* }
+block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+COMMENT       = { line_comment | block_comment }
+
+
+
+
+

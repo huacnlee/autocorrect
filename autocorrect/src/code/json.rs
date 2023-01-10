@@ -17,7 +17,7 @@ mod tests {
     fn it_format_json() {
         let example = r###"
 {
-  "name": "你好hello世界",
+  "name": "你好hello世界 \"World\"",
   "displayName": "JSON格式测试",
   "publisher": "huacnlee",
   "meta": {
@@ -27,15 +27,16 @@ mod tests {
      * 第2行注释
      * 第3行注释
      */
-    "description": "第2个meta", 
-    "测试key不格式化": "Value要格式化"
+    "description" : "第2个meta", 
+    "测试key不格式化": 
+          "Value要格式化",
   }
 }
 "###;
 
         let expect = r###"
 {
-  "name": "你好 hello 世界",
+  "name": "你好 hello 世界 \"World\"",
   "displayName": "JSON 格式测试",
   "publisher": "huacnlee",
   "meta": {
@@ -45,8 +46,9 @@ mod tests {
      * 第 2 行注释
      * 第 3 行注释
      */
-    "description": "第 2 个 meta", 
-    "测试key不格式化": "Value 要格式化"
+    "description" : "第 2 个 meta", 
+    "测试key不格式化": 
+          "Value 要格式化",
   }
 }
 "###;
