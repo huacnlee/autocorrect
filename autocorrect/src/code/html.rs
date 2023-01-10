@@ -12,6 +12,7 @@ struct HTMLParser;
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
     use pretty_assertions::assert_eq;
     use regex::Regex;
 
@@ -31,7 +32,7 @@ mod tests {
 
     #[test]
     fn test_format_html() {
-        let html = r###"
+        let html = indoc! {r###"
         bad HTML
         <% a = 1 %>
         {% hello = a %}
@@ -75,9 +76,9 @@ mod tests {
         </div>
         </article>
         </html>
-        "###;
+        "###};
 
-        let expected = r###"
+        let expected = indoc! {r###"
         bad HTML
         <% a = 1 %>
         {% hello = a %}
@@ -121,14 +122,14 @@ mod tests {
         </div>
         </article>
         </html>
-        "###;
+        "###};
 
         assert_html_eq!(expected, format_for(html, "html").to_string())
     }
 
     #[test]
     fn test_format_html_with_fullpage() {
-        let html = r#"
+        let html = indoc! {r#"
         <html><head><title>Hello</title></head>
         <body>
         <article>
@@ -139,9 +140,9 @@ mod tests {
         </div>
         </article>
         </body>
-        </html>"#;
+        </html>"#};
 
-        let expected = r#"
+        let expected = indoc! {r#"
         <html><head><title>Hello</title></head>
         <body>
         <article>
@@ -152,14 +153,14 @@ mod tests {
         </div>
         </article>
         </body>
-        </html>"#;
+        </html>"#};
 
         assert_html_eq!(expected, format_for(html, "html").to_string())
     }
 
     #[test]
     fn test_lint_html() {
-        let html = r#"
+        let html = indoc! {r#"
         <html><head><title>Hello</title></head>
         <body>
         <article>
@@ -177,7 +178,7 @@ mod tests {
         const a = "hello你好";
         </script>
         </body>
-        </html>"#;
+        </html>"#};
 
         let lint_result = lint_for(html, "html");
         assert_eq!("", lint_result.error);
@@ -187,8 +188,8 @@ mod tests {
     }
 
     #[test]
-    fn test_bar_html() {
-        let raw = r#"
+    fn test_bad_html() {
+        let raw = indoc! {r#"
         <table>
             <thead>
                 <tr>
@@ -241,7 +242,7 @@ mod tests {
                 <td>row 5: 216
                 <td>row 5: 343
             </table>
-        "#;
+        "#};
 
         // Bad HTML will return raw text
         let out = format_for(raw, "html");
