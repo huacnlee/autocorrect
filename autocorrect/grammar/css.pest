@@ -1,11 +1,11 @@
 
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
-
-other = ${ !(comment) ~ ANY }
-comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
-
-line = _{ comment | space | other | newline }
 item = _{ SOI ~ line* ~ EOI } 
+line = _{ other }
+
+other = ${ !(COMMENT) ~ ANY }
+
+WHITESPACE = { " " | "\t" | NEWLINE }
+
+line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+COMMENT       = ${ line_comment | block_comment }

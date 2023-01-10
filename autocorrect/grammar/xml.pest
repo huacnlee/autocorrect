@@ -1,10 +1,11 @@
 item = { SOI ~ line* ~ EOI }
 line = _{ self_close_tag | tag | other }
-other = { ANY } 
+
+other = { ANY }
+
 tag = { open_tag ~ tag* ~ (cdata | text) ~ close_tag? }
 
-
-self_close_tag = { 
+self_close_tag = {
 	"<?" ~ (!"?>" ~ ANY)* ~ "?>"
     | "<" ~ (!"/>" ~ ANY)* ~ "/>"
 }

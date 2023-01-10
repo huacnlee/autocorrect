@@ -1,25 +1,23 @@
 item = _{ SOI ~ line* ~ EOI } 
 line = _{ pair | other }
+
 other = ${ !(pair) ~ ANY }
 
-pair    = _{ key ~ string }
-key     = { string_val ~ colon }
-colon   = @{ ":" }
-string  = ${ string_val }
-string_val = @{ "\"" ~ inner ~ "\"" }
-inner   = @{ (!("\"" | "\\") ~ ANY)* ~ (escape ~ inner)? }
-escape  = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
-unicode = @{ "u" ~ ASCII_HEX_DIGIT{4} }
+WHITESPACE = { " " | "\t" | NEWLINE }
 
-newline = ${ "\n" | "\r" | "\r\n" }
-space   = ${ " " | "\t" }
-WHITESPACE = _{ space | newline }
-
-line_comment  = @{ "//" ~ (!(newline) ~ ANY)* }
+line_comment  = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 COMMENT       = { line_comment | block_comment }
 
+string       = ${ inner_string }
+inner_string = @{ "\"" ~ inner ~ "\"" }
 
+pair    = _{ key ~ string }
+key     = { inner_string ~ colon }
+colon   = @{ ":" }
 
+inner   = @{ (!("\"" | "\\") ~ ANY)* ~ (escape ~ inner)? }
+escape  = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
+unicode = @{ "u" ~ ASCII_HEX_DIGIT{4} }
 
 

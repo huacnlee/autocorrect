@@ -1,40 +1,42 @@
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ expr | html }
 
-other = ${ !(string | html_start) ~ ANY }
-comment = ${ 
-  "//" ~ (!(newline) ~ ANY)*
-  | "/*" ~ (!("*/") ~ ANY)* ~ "*/"
-}
+html = _{  html_node | html_void | text }
+expr = _{ pair | string | regexp | other }
+
+other = ${ !(string | open_html) ~ ANY }
+
+WHITESPACE = { " " | "\t" | NEWLINE }
+
+line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
+COMMENT       = ${ line_comment | block_comment }
 
 text = ${ (!("<") ~ ANY)+ }
-html_void = _{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
-html_node = _{ html_start ~ (!(html_end) ~ (html_node | text))+  ~ html_end }
-html_tag_inner = _{ (!(">") ~ ANY)* }
-html_start = { "<" ~ PUSH(html_tag_inner) ~ chevron_right }
-html_end = { "</" ~ PUSH(html_tag_inner) ~ ">"}
 
-chevron_right = _{
-    ">"
-    | "/>"
-    | "?>"
+html_void  = @{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
+html_node  = ${ open_html ~ (!(close_html) ~ (html_node | text))+  ~ close_html }
+inner_html = @{ (!(">") ~ ANY)* }
+open_html  = @{ "<" ~ PUSH(inner_html) ~ chevron_right }
+close_html = @{ "</" ~ PUSH(inner_html) ~ ">"}
+
+chevron_right = @{
+  ">"
+  | "/>"
+  | "?>"
 }
 
-string = ${ string_val }
-string_val = _{
+string = ${ inner_string }
+inner_string = _{
     ("'" ~ (!("'") ~ ANY)* ~ "'") 
-  | ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
   | ("`" ~ (!("`") ~ ANY)* ~ "`"+) 
 }
-key = ${ string_val ~ (" ")* ~ ":" ~ (" ")* }
+key = ${ inner_string ~ (" ")* ~ ":" ~ (" ")* }
 pair = _{ key ~ string }
 
 regexp = ${
-  ( "/" ~ (!(newline | "/") ~ ANY)* ~ "/" )
-  | ("RegExp" ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  ( "/" ~ (!(NEWLINE | "/") ~ ANY)* ~ "/" )
+  | ("RegExp" ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
 
-node = {  html_node | html_void | text }
-js = _{ comment | pair | string | regexp | space | other}
-line = _{  js | node | newline }
-item = _{ SOI ~ line* ~ EOI } 

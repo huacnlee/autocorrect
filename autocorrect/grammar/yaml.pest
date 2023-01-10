@@ -1,3 +1,5 @@
+item = _{ (pair | comment | newline | other)+ }
+
 indent = ${ (^" "+)? }
 newline = ${ "\n" | "\r" }
 
@@ -12,10 +14,8 @@ string_value = _{ ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") | ("'" ~ (!(newline
 value_str = _{ !(newline | "\"" | "'") ~ ANY }
 key_part = _{ indent ~ key }
 
-comment = ${ "#" ~ (!(newline) ~ ANY)* }
+comment = ${ "#" ~ (!(NEWLINE) ~ ANY)* }
 
-
+pair = _{ key_part ~ string }
 key = ${ (string_key | simple_key) ~ (":" ~ " "?) }
 string = ${ string_value | simple_value }
-pair = _{ key_part ~ string }
-item = _{ (pair | comment | newline | other)+  }

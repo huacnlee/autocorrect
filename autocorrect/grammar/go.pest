@@ -1,27 +1,24 @@
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ regexp | timeparse | string | other }
 
 other = ${ !(string) ~ ANY }
-comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
-string = ${ 
-  string_val
-}
+WHITESPACE = { " " | "\t" | NEWLINE }
 
-string_val = _{
+line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+COMMENT       = ${ line_comment | block_comment }
+
+string       = ${ inner_string }
+inner_string = _{
   ("`" ~ (!("`" | string_verb) ~ ANY)* ~ "`") 
-  | ("\"" ~ (!(newline | "\"" | string_verb) ~ ANY)* ~ "\"") 
+  | ("\"" ~ (!(NEWLINE | "\"" | string_verb) ~ ANY)* ~ "\"") 
 }
+string_verb  = { "%" ~ ("s" | "q" | "v") }
 
 regexp = ${
-  ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
 timeparse = ${
-  ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
-
-string_verb = { "%" ~ ("s" | "q" | "v") }
-line = _{ regexp | timeparse | string | comment | space | other | newline }
-item = _{ SOI ~ line* ~ EOI } 

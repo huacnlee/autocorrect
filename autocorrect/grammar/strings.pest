@@ -1,19 +1,19 @@
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ pair | other }
 
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
+WHITESPACE = { " " | "\t" | NEWLINE }
 
 other = ${ !(pair) ~ ANY }
-comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 
-string_type = _{ 
-  ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
-}
+line_comment  = _{ "//" ~ (!NEWLINE ~ ANY)* }
+block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/"}
+COMMENT       = ${ line_comment | block_comment }
+
+pair = _{ key ~ assignment_operator ~ string }
 key = @{ string }
-key_assigment = ${ (" ")* ~ "=" ~ (" ")* }
-string = @{ string_type  }
-pair = _{ key ~ key_assigment  ~ string }
+assignment_operator = @{ "=" }
 
-line = _{ pair | comment | space | other | newline }
-item = _{ SOI ~ line* ~ EOI } 
+string       = @{ inner_string }
+inner_string = _{ 
+  "\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\""
+}

@@ -1,23 +1,27 @@
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ php | other }
 
 other = ${ !(php) ~ ANY }
-comment = ${ 
-  ("//" | "#") ~ (!(newline) ~ ANY)* 
-  | "/*" ~ (!("*/") ~ ANY)* ~ "*/" 
-}
-string = ${ string_val }
-string_val = _{
+
+php       = _{ open_php ~ (!close_php ~ expr)* ~ close_php }
+open_php  = ${ "<?php" }
+close_php = ${ "?>" }
+
+expr = { regexp | string | other }
+
+WHITESPACE = { " " | "\t" | NEWLINE }
+
+line_comment  = _{ ("//" | "#") ~ (!(NEWLINE) ~ ANY)*  }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
+COMMENT = ${ line_comment | block_comment }
+
+string = ${ inner_string }
+inner_string = _{
   ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
   | ("\"" ~ (!("\"") ~ ANY)* ~ "\"") 
 }
 
 regexp = ${
-  (("preg_match_all" | "preg_match") ~ "(" ~ " "* ~ string_val ~ (!")" ~ ANY)* ~ ")")
+  (("preg_match_all" | "preg_match") ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
 
-php_script_start = ${ "<?php" }
-php_script_end = ${ "?>" }
-php = _{ php_script_start ~ (!(php_script_end) ~ (regexp | string | comment | space | other | newline))* ~ php_script_end }
-line = _{ php | other }
-item = _{ SOI ~ line* ~ EOI } 

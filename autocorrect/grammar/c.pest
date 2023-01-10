@@ -1,16 +1,17 @@
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ include | string | other }
 
 other = ${ !(string) ~ ANY }
-comment = ${ single_line_comment | multiline_comment }
-single_line_comment = _{ "//" ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
-include = ${ "#include" ~ " "+ ~  string_val }
 
-string = ${ string_val }
-string_val = _{ 
-  ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") 
+WHITESPACE = { " " | "\t" | NEWLINE }
+
+line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+COMMENT       = ${ line_comment | block_comment }
+
+include = ${ "#include" ~ " "+ ~  inner_string }
+
+string = ${ inner_string }
+inner_string = _{ 
+  ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
 }
-
-line = _{ include | string | comment | space | other | newline }
-item = _{ SOI ~ line* ~ EOI } 

@@ -1,22 +1,20 @@
-newline = ${ "\n" | "\r" }
-space = ${ " "+ }
-
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ regexp | string | other }
 other = ${ !(string) ~ ANY }
-comment = ${ multiline_comment | single_line_comment }
-single_line_comment = _{ "/" ~ ("!" | "/")* ~ (!(newline) ~ ANY)* }
-multiline_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+
+WHITESPACE = { " " | "\t" | NEWLINE }
+
+line_comment  = _{ "//" ~ ("!" | "/")* ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+COMMENT = { line_comment | block_comment }
 
 string = ${ 
-  PUSH("\"") ~ string_value ~ POP
-  | "r" ~ PUSH("#"*) ~ "\"" ~ string_value ~ "\"" ~ POP
+  PUSH("\"") ~ inner_string ~ POP
+  | "r" ~ PUSH("#"*) ~ "\"" ~ inner_string ~ "\"" ~ POP
 }
-
-string_value = @{ (!(PEEK) ~ ANY)* }
-
+inner_string = @{ (!(PEEK) ~ ANY)* }
 
 regexp = ${
-  ( "r\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"" )
+  ( "r\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"" )
 }
 
-line = _{ regexp | string | comment | space | other | newline }
-item = _{ SOI ~ line* ~ EOI } 
