@@ -39,7 +39,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
     // println!("rule: {}, {}", rule_name, item.as_str());
 
     match rule_name.as_str() {
-        "string" | "link_string" | "mark_string" | "text" | "comment" => {
+        "string" | "link_string" | "mark_string" | "text" | "comment" | "COMMENT" => {
             format_or_lint(results, &rule_name, item);
         }
         "inline_style" | "inline_javascript" | "codeblock" => {
@@ -84,7 +84,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
     // Check AutoCorrect enable/disable toggle marker
     // If disable results.is_enabled() will be false
-    if rule_name == "comment" {
+    if rule_name == "comment" || rule_name == "COMMENT" {
         results.toggle(toggle::parse(part));
     }
 

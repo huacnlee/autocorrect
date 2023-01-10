@@ -2,7 +2,7 @@ item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | newline }
 
 expr = _{ 
-  comment | html_tag | meta_info | block | inline | td_tag
+  html_tag | meta_info | block | inline | td_tag
 }
 
 CJK = { 
@@ -101,7 +101,7 @@ inner_code = @{ (!(newline | PEEK) ~ ANY)*  }
 
 string = @{ (!(newline | inline) ~ ANY)+ }
 
-comment = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
+COMMENT = { open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
 open_comment = @{  "<!--" }
 close_comment = @{ "-->" }
 
