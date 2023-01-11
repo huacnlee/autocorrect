@@ -16,12 +16,19 @@ if [[ `uname` == 'Darwin' ]]; then
 else
 	platform='linux'
 fi
+
 if [[ `arch` == 'arm64' ]]; then
 	arch='arm64'
 else
 	arch='amd64'
 fi
-curl -Lo $bin_name.tar.gz https://github.com/$repo/releases/download/$version/$bin_name-$platform-$arch.tar.gz
+
+libc=''
+if ldd --version 2>&1 | grep -q 'musl'; then
+	libc='-musl'
+fi
+
+curl -Lo $bin_name.tar.gz https://github.com/$repo/releases/download/$version/$bin_name-$platform$libc-$arch.tar.gz
 tar zxf $bin_name.tar.gz
 
 if [[ `whoami` == 'root' ]]; then

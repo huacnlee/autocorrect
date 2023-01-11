@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches:
-      - "build-test"
+      - build-test
     tags:
       - "v*"
 
@@ -18,26 +18,43 @@ jobs:
             os: ubuntu-latest
             name: autocorrect-linux-amd64.tar.gz
             arch: x86_64
+            cross: false
 
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
             name: autocorrect-linux-arm64.tar.gz
             arch: aarch64
+            cross: true
 
           - target: x86_64-apple-darwin
             os: macOS-latest
             name: autocorrect-darwin-amd64.tar.gz
             arch: x86_64
+            cross: false
 
           - target: aarch64-apple-darwin
             os: macOS-latest
             name: autocorrect-darwin-arm64.tar.gz
             arch: aarch64
+            cross: true
 
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             name: autocorrect-windows-amd64.zip
             arch: x86_64
+            cross: false
+
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-22.04
+            name: autocorrect-linux-musl-amd64.tar.gz
+            arch: x86_64
+            cross: false
+
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-22.04
+            name: autocorrect-linux-musl-arm64.tar.gz
+            arch: aarch64
+            cross: true
 
           # - target: aarch64-pc-windows-msvc
           #   os: windows-latest
@@ -79,7 +96,7 @@ jobs:
         with:
           command: build
           args: --manifest-path autocorrect-cli/Cargo.toml --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
-          use-cross: ${{ matrix.os == 'ubuntu-latest' }}
+          use-cross: ${{ matrix.cross }}
 
       - name: Prepare artifacts [Windows]
         if: matrix.os == 'windows-latest'

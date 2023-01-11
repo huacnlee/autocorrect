@@ -5,6 +5,7 @@ on:
       - "v*"
     branches:
       - release-gem
+      - build-test
 jobs:
   publish_crate:
     name: Publish Crate
@@ -27,10 +28,11 @@ jobs:
       fail-fast: false
       matrix:
         ruby-platform:
-          - "arm64-darwin"
-          - "x86_64-darwin"
-          - "x86_64-linux"
-          - "aarch64-linux"
+          - arm64-darwin
+          - x86_64-darwin
+          - x86_64-linux
+          - aarch64-linux
+          - x86_64-linux-musl
     steps:
       - uses: actions/checkout@v3
       - uses: oxidize-rb/actions/setup-ruby-and-rust@main
