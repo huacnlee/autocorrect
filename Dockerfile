@@ -1,8 +1,6 @@
-FROM debian:buster-slim
+FROM alpine:latest
 
-RUN apt update && apt install -y --no-install-recommends curl ca-certificates git
+RUN apk add --update curl ca-certificates
 
 ADD install /install 
-RUN ./install
-
-RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN sh ./install
