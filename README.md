@@ -60,7 +60,7 @@ $ brew install autocorrect
 Or you can just install via this:
 
 ```bash
-$ curl -sSL https://git.io/JcGER | bash
+$ curl -sSL https://git.io/JcGER | sh
 ```
 
 After that, you will get `autocorrect` command.
