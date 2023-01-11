@@ -83,6 +83,11 @@ jobs:
             ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Install Musl Tool
+        if: matrix.target == 'x86_64-unknown-linux-musl' || matrix.target == 'aarch64-unknown-linux-musl'
+        run: |
+          sudo apt-get install musl-tools
+
       - name: Setup | Rust
         uses: actions-rs/toolchain@v1.0.7
         with:
