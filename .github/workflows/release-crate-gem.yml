@@ -5,7 +5,6 @@ on:
       - "v*"
     branches:
       - release-gem
-      - build-test
 jobs:
   publish_crate:
     name: Publish Crate
