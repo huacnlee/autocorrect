@@ -1,27 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env sh
+set -u
+type curl > /dev/null || { echo "curl: not found"; exit 1; }
+
 get_latest_release() {
 	curl --silent "https://api.github.com/repos/$repo/releases/latest" | # Get latest release from GitHub api
-		grep '"tag_name":' |                                            # Get tag line
-		sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
-	}
+		grep '"tag_name":' |                                               # Get tag line
+		sed -E 's/.*"([^"]+)".*/\1/'                                       # Pluck JSON value
+}
 
 repo='huacnlee/autocorrect'
 bin_name='autocorrect'
 version=`get_latest_release`
+platform="$(uname | tr "[A-Z]" "[a-z]")"  # Linux => linux
+arch="$(uname -m | sed 's/x86_64/amd64/')"  # x86_64 => amd64
 
 echo "Downloading $bin_name@$version ..."
-
-if [[ `uname` == 'Darwin' ]]; then
-	platform='darwin'
-else
-	platform='linux'
-fi
-
-if [[ `arch` == 'arm64' ]]; then
-	arch='arm64'
-else
-	arch='amd64'
-fi
 
 libc=''
 if ldd --version 2>&1 | grep -q 'musl'; then
@@ -31,10 +24,11 @@ fi
 curl -Lo $bin_name.tar.gz https://github.com/$repo/releases/download/$version/$bin_name-$platform$libc-$arch.tar.gz
 tar zxf $bin_name.tar.gz
 
-if [[ `whoami` == 'root' ]]; then
+if test $(id -u) -eq 0; then
 	mv $bin_name /usr/local/bin/$bin_name
 else
 	sudo mv $bin_name /usr/local/bin/$bin_name
 fi
+
 rm $bin_name.tar.gz
 echo "AutoCorrect $version has installed successfully."
