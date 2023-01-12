@@ -19,35 +19,35 @@ jobs:
             name: autocorrect-linux-amd64.tar.gz
             arch: x86_64
 
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-latest
-            name: autocorrect-linux-arm64.tar.gz
-            arch: aarch64
+          # - target: aarch64-unknown-linux-gnu
+          #   os: ubuntu-latest
+          #   name: autocorrect-linux-arm64.tar.gz
+          #   arch: aarch64
 
-          - target: x86_64-apple-darwin
-            os: macOS-latest
-            name: autocorrect-darwin-amd64.tar.gz
-            arch: x86_64
+          # - target: x86_64-apple-darwin
+          #   os: macOS-latest
+          #   name: autocorrect-darwin-amd64.tar.gz
+          #   arch: x86_64
 
-          - target: aarch64-apple-darwin
-            os: macOS-latest
-            name: autocorrect-darwin-arm64.tar.gz
-            arch: aarch64
+          # - target: aarch64-apple-darwin
+          #   os: macOS-latest
+          #   name: autocorrect-darwin-arm64.tar.gz
+          #   arch: aarch64
 
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-            name: autocorrect-windows-amd64.zip
-            arch: x86_64
+          # - target: x86_64-pc-windows-msvc
+          #   os: windows-latest
+          #   name: autocorrect-windows-amd64.zip
+          #   arch: x86_64
 
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-latest
-            name: autocorrect-linux-musl-amd64.tar.gz
-            arch: x86_64
+          # - target: x86_64-unknown-linux-musl
+          #   os: ubuntu-latest
+          #   name: autocorrect-linux-musl-amd64.tar.gz
+          #   arch: x86_64
 
-          - target: aarch64-unknown-linux-musl
-            os: ubuntu-latest
-            name: autocorrect-linux-musl-arm64.tar.gz
-            arch: aarch64
+          # - target: aarch64-unknown-linux-musl
+          #   os: ubuntu-latest
+          #   name: autocorrect-linux-musl-arm64.tar.gz
+          #   arch: aarch64
 
           # - target: aarch64-pc-windows-msvc
           #   os: windows-latest
