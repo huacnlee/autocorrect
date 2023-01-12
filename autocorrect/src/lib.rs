@@ -87,6 +87,7 @@ macro_rules! map {
 }
 
 mod code;
+
 mod diff;
 mod format;
 mod result;

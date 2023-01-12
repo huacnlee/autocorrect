@@ -327,7 +327,7 @@ fn lint_and_output(
             return;
         }
 
-        results.push(result.to_diff());
+        results.push(result.to_diff(cli.no_diff_bg_color));
     } else {
         results.push(result.to_json());
     }

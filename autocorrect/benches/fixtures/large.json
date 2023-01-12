@@ -11,7 +11,7 @@
   },
   {
       "source": "generate these impls by pattern-matching on the names of methods - also could use the presence of `fn drop` to distinguish between 'owned and 'interned, above.",
-      "suggest": "通过对方法名称进行模式匹配来生成这些 impls - 也可以使用 `fn drop` 的存在来区分上面的 'owned' 和 'interned'。",
+      "suggest": "通过对方法名称进行模式匹配来生成这些impls - 也可以使用 `fn drop` 的存在来区分上面的 'owned' 和 'interned'。",
       "translate": ""
   },
   {
@@ -66,12 +66,12 @@
   },
   {
       "source": "Hide the default panic output within `proc_macro` expansions.",
-      "suggest": "隐藏 `proc_macro` 扩展中的默认 panic 输出。",
+      "suggest": "隐藏 `proc_macro` 扩展中的默认 panic输出。",
       "translate": ""
   },
   {
       "source": "NB. the server can't do this because it may use a different libstd.",
-      "suggest": "注意服务器无法执行此操作，因为它可能使用了不同的 libstd。",
+      "suggest": "注意服务器无法执行此操作，因为它可能使用了不同的libstd。",
       "translate": ""
   },
   {
@@ -116,12 +116,12 @@
   },
   {
       "source": "Separate encoding a success value (`Ok(output)`) from encoding a panic (`Err(e: PanicMessage)`) to avoid having handles outside the `bridge.enter(|| ...)` scope, and to catch panics that could happen while encoding the success.",
-      "suggest": "将成功值 (`Ok(output)`) 与对 panic (`Err(e: PanicMessage)`) 进行编码分开，以避免在 `bridge.enter(|| ...)` 作用域之外使用句柄，并捕获对成功编码时可能发生的 panics。",
+      "suggest": "将成功值 (`Ok(output)`) 与对panic (`Err(e: PanicMessage)`) 进行编码分开，以避免在 `bridge.enter(|| ...)` 作用域之外使用句柄，并捕获对成功编码时可能发生的 panics。",
       "translate": ""
   },
   {
       "source": "Note that panics should be impossible beyond this point, but this is defensively trying to avoid any accidental panicking reaching the `extern \"C\"` (which should `abort` but may not at the moment, so this is also potentially preventing UB).",
-      "suggest": "请注意，panics 超出此范围应该是不可能的，但这是为了避免任何意外的恐慌而到达 `extern \"C\"` (`extern \"C\"` 应该是 `abort`，但目前可能不会，所以这也有可能阻止 UB)。",
+      "suggest": "请注意，panics超出此范围应该是不可能的，但这是为了避免任何意外的恐慌而到达 `extern \"C\"` (`extern \"C\"` 应该是 `abort`，但目前可能不会，所以这也有可能阻止 UB)。",
       "translate": ""
   },
   {
@@ -146,7 +146,7 @@
   },
   {
       "source": "Serialization (with C ABI buffers) and unique integer handles are employed to allow safely interfacing between two copies of `proc_macro` built (from the same source) by different compilers with potentially mismatching Rust ABIs (e.g., stage0/bin/rustc vs stage1/bin/rustc during bootstrap).",
-      "suggest": "采用序列化 (带有 C ABI 缓冲区) 和唯一的整数句柄，以允许由不同编译器 (可能具有不匹配的 Rust ABI) (例如，引导过程中的 stage0/bin/rustc 与 stage1/bin/rustc) 安全地连接由不同编译器构建的 `proc_macro` 的两个副本 (来自同一源)。",
+      "suggest": "采用序列化 (带有C ABI缓冲区) 和唯一的整数句柄，以允许由不同编译器 (可能具有不匹配的 Rust ABI) (例如，引导过程中的 stage0/bin/rustc 与 stage1/bin/rustc) 安全地连接由不同编译器构建的 `proc_macro` 的两个副本 (来自同一源)。",
       "translate": ""
   },
   {
@@ -281,12 +281,12 @@
   },
   {
       "source": "The old value will be restored after `f` exits, even by panic, including modifications made to it by `f`.",
-      "suggest": "`f` 退出后，即使是 panic 也将恢复旧值，包括 `f` 对其所做的修改。",
+      "suggest": "`f` 退出后，即使是panic也将恢复旧值，包括 `f` 对其所做的修改。",
       "translate": ""
   },
   {
       "source": "Wrapper that ensures that the cell always gets filled (with the original state, optionally changed by `f`), even if `f` had panicked.",
-      "suggest": "即使 `f` 发生了 panic，也可以确保始终填充 cell  (具有原始状态，可以通过 `f` 进行更改) 的包装器。",
+      "suggest": "即使 `f` 发生了 panic，也可以确保始终填充cell  (具有原始状态，可以通过 `f` 进行更改) 的包装器。",
       "translate": ""
   },
   {
@@ -911,12 +911,12 @@
   },
   {
       "source": "Configures the span for this `Group`'s delimiters, but not its internal tokens.",
-      "suggest": "配置此 `Group` 定界符的范围，但不配置其内部 tokens 的范围。",
+      "suggest": "配置此 `Group` 定界符的范围，但不配置其内部tokens 的范围。",
       "translate": ""
   },
   {
       "source": "This method will **not** set the span of all the internal tokens spanned by this group, but rather it will only set the span of the delimiter tokens at the level of the `Group`.",
-      "suggest": "此方法将不设置该组所跨越的所有内部 tokens 的跨度，而只会将定界符 tokens 的跨度设置为 `Group` 的水平。",
+      "suggest": "此方法将不设置该组所跨越的所有内部tokens 的跨度，而只会将定界符 tokens 的跨度设置为 `Group` 的水平。",
       "translate": ""
   },
   {
@@ -961,7 +961,7 @@
   },
   {
       "source": "The `ch` argument must be a valid punctuation character permitted by the language, otherwise the function will panic.",
-      "suggest": "`ch` 参数必须是语言允许的有效标点符号，否则函数将为 panic。",
+      "suggest": "`ch` 参数必须是语言允许的有效标点符号，否则函数将为panic。",
       "translate": ""
   },
   {
@@ -1386,7 +1386,7 @@
   },
   {
       "source": "As a result, crates on crates.io will draw a dependency edge to `libcore`, the version defined in this repository.",
-      "suggest": "结果，crates.io 上的 crates 将向该仓库中定义的版本 `libcore` 绘制一个依赖项 edge。",
+      "suggest": "结果，crates.io 上的crates 将向该仓库中定义的版本 `libcore` 绘制一个依赖项 edge。",
       "translate": ""
   },
   {
