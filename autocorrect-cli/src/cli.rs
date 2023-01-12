@@ -59,6 +59,13 @@ pub struct Cli {
 
     #[clap(long = "stdin", help = "Input text from <STDIN>")]
     pub stdin: bool,
+
+    #[clap(
+        long = "no-diff-bg-color",
+        alias = "ndbc",
+        help = "Disable diff background color for diff output."
+    )]
+    pub no_diff_bg_color: bool,
 }
 
 #[derive(Debug, Subcommand, Clone)]

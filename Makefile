@@ -8,7 +8,7 @@ bench:
 run1:
 	cargo run -- --lint --config ~/github/translated-content/.autocorrectrc  ~/github/translated-content/files/zh-tw/learn/
 run:
-	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template
+	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template --no-diff-bg-color
 run\:json:
 	cargo run -- --lint --format json
 build:
