@@ -25,12 +25,6 @@ include!(concat!(env!("OUT_DIR"), "/config_template.rs"));
 
 static DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
 
-pub fn load_config(config_file: &str) -> Result<(), autocorrect::config::Error> {
-    autocorrect::config::load_file(config_file)?;
-
-    Ok(())
-}
-
 macro_rules! bench {
     ($name: expr, $block: block) => {
         let start = SystemTime::now();
@@ -70,10 +64,7 @@ pub fn main() {
         _ => {}
     }
 
-    log::debug!("Load config: {}", cli.config_file);
-    load_config(&cli.config_file).unwrap_or_else(|e| {
-        panic!("Load config file: {}\nerror: {}", cli.config_file, e);
-    });
+    load_config(&cli.config_file);
 
     let mut arg_files = cli.files.iter();
 
@@ -88,12 +79,7 @@ pub fn main() {
         let mut _err_count = 0;
         let mut _warn_count = 0;
 
-        let raw = io::stdin()
-            .lock()
-            .lines()
-            .collect::<Result<Vec<_>, _>>()
-            .unwrap()
-            .join("\n");
+        let raw = read_stdin();
 
         if cli.lint {
             lint_and_output(
@@ -134,77 +120,73 @@ pub fn main() {
         let ignorer = autocorrect::ignorer::Ignorer::new("./");
 
         for result in walker.build() {
-            match result {
-                Ok(entry) => {
-                    let path = entry.path();
-                    let path_str = path.to_str().unwrap_or("");
+            if let Err(err) = result {
+                log::error!("ERROR: {}", err);
+                continue;
+            }
 
-                    if ignorer.is_ignored(path_str) {
-                        // skip ignore file
-                        continue;
-                    }
+            let entry = result.unwrap();
+            let path = entry.path();
+            let filepath = path.to_str().unwrap_or("");
 
-                    // ignore unless file
-                    if !path.is_file() {
-                        continue;
-                    }
+            if ignorer.is_ignored(filepath) {
+                // skip ignore file
+                continue;
+            }
 
-                    // println!("{}", path.display());
+            // ignore unless file
+            if !path.is_file() {
+                continue;
+            }
 
-                    let filepath = String::from(path_str);
-                    let mut filetype = autocorrect::get_file_extension(&filepath);
-                    if let Some(ref ftype) = cli.filetype {
-                        filetype = ftype.clone();
-                    }
-                    if !autocorrect::is_support_type(&filetype) {
-                        continue;
-                    }
+            let mut filetype = autocorrect::get_file_extension(filepath);
+            if let Some(ref ftype) = cli.filetype {
+                filetype = ftype.to_owned();
+            }
+            if !autocorrect::is_support_type(&filetype) {
+                continue;
+            }
 
-                    let cli = cli.clone();
-                    let tx = tx.clone();
-                    let lint_errors_count = lint_errors_count.clone();
-                    let lint_warnings_count = lint_warnings_count.clone();
-                    let filepath = filepath.clone();
-                    let filetype = filetype.clone();
+            let cli = cli.clone();
+            let tx = tx.clone();
+            let lint_errors_count = lint_errors_count.clone();
+            let lint_warnings_count = lint_warnings_count.clone();
+            let filepath = filepath.to_owned();
+            let filetype = filetype.clone();
 
-                    pool.execute(move || match read_file(&filepath) {
-                        Ok(raw) => {
-                            bench!(format!("Done {}", filepath), {
-                                if cli.lint {
-                                    let mut lint_results: Vec<String> = Vec::new();
+            pool.execute(move || match read_file(&filepath) {
+                Ok(raw) => {
+                    bench!(format!("Done {}", filepath), {
+                        if cli.lint {
+                            let mut lint_results: Vec<String> = Vec::new();
 
-                                    let mut _err_count = 0;
-                                    let mut _warn_count = 0;
-                                    lint_and_output(
-                                        &filepath,
-                                        &filetype,
-                                        &raw,
-                                        &cli,
-                                        &mut lint_results,
-                                        &mut _err_count,
-                                        &mut _warn_count,
-                                    );
+                            let mut _err_count = 0;
+                            let mut _warn_count = 0;
+                            lint_and_output(
+                                &filepath,
+                                &filetype,
+                                &raw,
+                                &cli,
+                                &mut lint_results,
+                                &mut _err_count,
+                                &mut _warn_count,
+                            );
 
-                                    *lint_errors_count.lock().unwrap() += _err_count;
-                                    *lint_warnings_count.lock().unwrap() += _warn_count;
+                            *lint_errors_count.lock().unwrap() += _err_count;
+                            *lint_warnings_count.lock().unwrap() += _warn_count;
 
-                                    for lint_result in lint_results {
-                                        tx.send(lint_result).unwrap();
-                                    }
-                                } else {
-                                    format_and_output(&filepath, &filetype, &raw, &cli);
-                                }
-                            });
-                        }
-                        Err(err) => {
-                            log::error!("Failed to read: {} error: {}", filepath, err);
+                            for lint_result in lint_results {
+                                tx.send(lint_result).unwrap();
+                            }
+                        } else {
+                            format_and_output(&filepath, &filetype, &raw, &cli);
                         }
                     });
                 }
-                Err(_err) => {
-                    log::error!("ERROR: {}", _err);
+                Err(err) => {
+                    log::error!("Failed to read: {} error: {}", filepath, err);
                 }
-            }
+            });
         }
         // wait all threads complete
         pool.join();
@@ -262,6 +244,26 @@ fn read_file(filepath: &str) -> io::Result<String> {
     });
 
     out
+}
+
+/// Read stdin into a string
+#[inline]
+fn read_stdin() -> String {
+    io::stdin()
+        .lock()
+        .lines()
+        .collect::<Result<Vec<_>, _>>()
+        .unwrap()
+        .join("\n")
+}
+
+#[inline]
+pub fn load_config(filename: &str) {
+    log::debug!("Load config: {}", filename);
+
+    autocorrect::config::load_file(filename).unwrap_or_else(|e| {
+        panic!("Load config file: {}\nerror: {}", filename, e);
+    });
 }
 
 fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
