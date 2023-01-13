@@ -80,7 +80,7 @@ pub fn lint_jupyter(input: &str) -> LintResult {
                     for line in sub_result.lines {
                         result.lines.push(LineResult {
                             line: source.line_col.0 + line.line - 1,
-                            col: source.line_col.1 + line.col,
+                            col: source.line_col.1 + line.col - 1,
                             new: line.new,
                             old: line.old,
                             severity: line.severity,
@@ -210,13 +210,13 @@ mod tests {
                     "input": "# CHAPTER 1时间序列\\n",
                     "start": 101,
                     "end": 126,
-                    "line_col": [7,9]
+                    "line_col": [7,10]
                 },
                 {
                     "input": "python有标准包用来表示时间和日期数据datetime, time, calendar这些模块经常被使用。",
                     "start": 138,
                     "end": 243,
-                    "line_col": [8,9]
+                    "line_col": [8,10]
                 }
                 ]
             },
@@ -227,13 +227,13 @@ mod tests {
                     "input": "# 这里是comment注释",
                     "start": 425,
                     "end": 449,
-                    "line_col": [19,9]
+                    "line_col": [19,10]
                 },
                 {
                     "input": "import pandas as pd",
                     "start": 461,
                     "end": 480,
-                    "line_col": [20,9]
+                    "line_col": [20,10]
                 }
                 ]
             },
@@ -244,13 +244,13 @@ mod tests {
                     "input": "## Hello世界\\n",
                     "start": 530,
                     "end": 546,
-                    "line_col": [25,9]
+                    "line_col": [25,10]
                 },
                 {
                     "input": "Fixed periods固定的时期,比如2007年的一月，或者2010年整整一年",
                     "start": 558,
                     "end": 637,
-                    "line_col": [26,9]
+                    "line_col": [26,10]
                 }
                 ]
             },
@@ -261,13 +261,13 @@ mod tests {
                   "input": "## Hello世界1\\n",
                   "start": 739,
                   "end": 756,
-                  "line_col": [33,9]
+                  "line_col": [33,10]
               },
               {
                   "input": "比如2007年的一月，或者2010年整整一年",
                   "start": 770,
                   "end": 820,
-                  "line_col": [34,11]
+                  "line_col": [34,12]
               }
               ]
           }
