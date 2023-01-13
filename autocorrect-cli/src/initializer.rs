@@ -7,12 +7,12 @@ static CONFIG_TEMPLATE_URL: &str =
     "https://github.com/huacnlee/autocorrect/raw/main/.autocorrectrc.template";
 
 #[derive(Default)]
-pub struct InitOption {
+pub(crate) struct InitOption {
     pub force: bool,
     pub local: bool,
 }
 
-pub fn run(cli: &Cli, option: &InitOption) {
+pub(crate) fn run(cli: &Cli, option: &InitOption) {
     if Path::exists(Path::new(&cli.config_file)) && !option.force {
         log::warn!("{} already exists.", cli.config_file);
         return;

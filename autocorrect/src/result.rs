@@ -194,7 +194,7 @@ impl LintResult {
 
     #[allow(dead_code)]
     pub fn to_diff(&self, no_diff_bg_color: bool) -> String {
-        let mut out = String::from("");
+        let mut out = String::new();
         let filepath = self.filepath.replace("./", "");
 
         for line in self.lines.iter() {
