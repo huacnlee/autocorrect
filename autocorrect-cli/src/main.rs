@@ -31,15 +31,20 @@ pub fn load_config(config_file: &str) -> Result<(), autocorrect::config::Error> 
     Ok(())
 }
 
+macro_rules! bench {
+    ($name: expr, $block: block) => {
+        let start = SystemTime::now();
+        $block;
+        log::debug!("{} {}ms", $name, start.elapsed_millis());
+    };
+    () => {};
+}
+
 pub fn main() {
     let mut cli = Cli::parse();
 
     // Set log level
-    let log_level = if cli.debug {
-        log::LevelFilter::Debug
-    } else {
-        log::LevelFilter::Info
-    };
+    let log_level = cli.log_level();
     Logger::init(log_level).expect("Init logger error");
 
     if cli.threads == 0 {
@@ -67,13 +72,14 @@ pub fn main() {
 
     log::debug!("Load config: {}", cli.config_file);
     load_config(&cli.config_file).unwrap_or_else(|e| {
-        panic!("Load config error: {}", e);
+        panic!("Load config file: {}\nerror: {}", cli.config_file, e);
     });
 
-    let mut arg_files = cli.files.clone().into_iter();
+    let mut arg_files = cli.files.iter();
 
     // calc run time
     let start_t = SystemTime::now();
+
     let mut lint_results: Vec<String> = Vec::new();
     let lint_errors_count = std::sync::Arc::new(std::sync::Mutex::new(0));
     let lint_warnings_count = std::sync::Arc::new(std::sync::Mutex::new(0));
@@ -163,34 +169,32 @@ pub fn main() {
 
                     pool.execute(move || {
                         if let Ok(raw) = read_file(&filepath) {
-                            let t = SystemTime::now();
-                            log::debug!("Process {}", filepath);
-                            if cli.lint {
-                                let mut lint_results: Vec<String> = Vec::new();
+                            bench!(format!("Done {}", filepath), {
+                                if cli.lint {
+                                    let mut lint_results: Vec<String> = Vec::new();
 
-                                let mut _err_count = 0;
-                                let mut _warn_count = 0;
-                                lint_and_output(
-                                    &filepath,
-                                    &filetype,
-                                    &raw,
-                                    &cli,
-                                    &mut lint_results,
-                                    &mut _err_count,
-                                    &mut _warn_count,
-                                );
+                                    let mut _err_count = 0;
+                                    let mut _warn_count = 0;
+                                    lint_and_output(
+                                        &filepath,
+                                        &filetype,
+                                        &raw,
+                                        &cli,
+                                        &mut lint_results,
+                                        &mut _err_count,
+                                        &mut _warn_count,
+                                    );
 
-                                *lint_errors_count.lock().unwrap() += _err_count;
-                                *lint_warnings_count.lock().unwrap() += _warn_count;
+                                    *lint_errors_count.lock().unwrap() += _err_count;
+                                    *lint_warnings_count.lock().unwrap() += _warn_count;
 
-                                for lint_result in lint_results {
-                                    tx.send(lint_result).unwrap();
+                                    for lint_result in lint_results {
+                                        tx.send(lint_result).unwrap();
+                                    }
+                                } else {
+                                    format_and_output(&filepath, &filetype, &raw, &cli);
                                 }
-                            } else {
-                                format_and_output(&filepath, &filetype, &raw, &cli);
-                            }
-
-                            log::debug!("Done {} {}ms", filepath, t.elapsed_millis());
+                            });
                         }
                     });
                 }
@@ -211,7 +215,7 @@ pub fn main() {
     log::debug!("Lint result found: {} issues.", lint_results.len());
 
     if cli.lint {
-        if cli.formatter == "json" {
+        if cli.formatter.is_json() {
             log::info!(
                 r#"{{"count": {},"messages": [{}]}}"#,
                 lint_results.len(),
@@ -251,12 +255,11 @@ pub fn main() {
 }
 
 fn read_file(filepath: &str) -> io::Result<String> {
-    let t = SystemTime::now();
-    log::debug!("Loading {} ...", filepath);
+    let out;
 
-    let out = fs::read_to_string(filepath);
-
-    log::debug!("Loaded {} {}ms", filepath, t.elapsed_millis());
+    bench!(format!("Loaded {}", filepath), {
+        out = fs::read_to_string(filepath);
+    });
 
     out
 }
@@ -300,7 +303,7 @@ fn lint_and_output(
     errors_count: &mut usize,
     warings_count: &mut usize,
 ) {
-    let diff_mode = cli.formatter != "json";
+    let diff_mode = cli.formatter.is_diff();
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
 
