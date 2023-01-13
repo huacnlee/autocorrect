@@ -55,7 +55,9 @@ pub(crate) fn diff_lines_with_err_color(
     for i in 0..diffs.len() {
         match diffs[i] {
             diff::Result::Both(x, _) => {
-                writeln!(out, " {}", x);
+                out.push(' ');
+                out.push_str(x);
+                out.push('\n');
             }
             // -
             diff::Result::Left(x) => {
@@ -74,7 +76,7 @@ pub(crate) fn diff_lines_with_err_color(
                                 _ => (),
                             }
                         }
-                        writeln!(out);
+                        out.push('\n');
                     }
                     _ => {
                         writeln!(out, "{}", format!("-{}", x).color(err_color));
@@ -99,7 +101,7 @@ pub(crate) fn diff_lines_with_err_color(
                                 _ => (),
                             }
                         }
-                        writeln!(out);
+                        out.push('\n');
                     }
                     _ => {
                         writeln!(out, "{}", format!("+{}", x).color(Green));
@@ -110,7 +112,7 @@ pub(crate) fn diff_lines_with_err_color(
     }
 
     // leave a blank line between each diff
-    writeln!(out);
+    out.push('\n');
 
     out
 }
