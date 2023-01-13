@@ -15,9 +15,9 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     let mut out = out;
 
     match pairs {
-        Ok(items) => {
-            for item in items {
-                format_pair(&mut out, item);
+        Ok(pairs) => {
+            for pair in pairs {
+                format_pair(&mut out, pair);
             }
         }
         Err(_err) => {
@@ -33,34 +33,34 @@ fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
     format!("{rule:?}")
 }
 
-fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
-    let rule_name = get_rule_name(&item);
+fn format_pair<R: RuleType, O: Results>(results: &mut O, pair: Pair<R>) {
+    let rule_name = get_rule_name(&pair);
 
     // println!("rule: {}, {}", rule_name, item.as_str());
 
     match rule_name.as_str() {
         "string" | "link_string" | "mark_string" | "text" | "comment" | "COMMENT" => {
-            format_or_lint(results, &rule_name, item);
+            format_or_lint(results, &rule_name, pair);
         }
         "inline_style" | "inline_javascript" | "codeblock" => {
-            format_or_lint_for_inline_scripts(results, item, &rule_name);
+            format_or_lint_for_inline_scripts(results, pair, &rule_name);
         }
         _ => {
             let mut has_child = false;
-            let item_text = item.as_str();
-            let sub_items = item.into_inner();
+            let pair_str = pair.as_str();
+            let sub_pairs = pair.into_inner();
 
             // Special hotfix for Markdown block / paragraph / blockquote
             // If they has CJK chars, disable `halfwidth-punctuation` rule temporary.
             let mut last_toggle = None;
-            if rule_name == "block" && CJK_RE.is_match(item_text) {
+            if rule_name == "block" && CJK_RE.is_match(pair_str) {
                 last_toggle = Some(results.get_toggle());
                 results.toggle_merge(toggle::Toggle::Disable(vec![
                     "halfwidth-punctuation".to_owned()
                 ]));
             }
 
-            for child in sub_items {
+            for child in sub_pairs {
                 format_pair(results, child);
                 has_child = true;
             }
@@ -71,16 +71,16 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {
             }
 
             if !has_child {
-                results.ignore(item_text);
+                results.ignore(pair_str);
             }
         }
     };
 }
 
 /// Format or Lint a matched item
-pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str, item: Pair<R>) {
-    let part = item.as_str();
-    let (line, col) = results.move_cursor(part);
+pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str, pair: Pair<R>) {
+    let part = pair.as_str();
+    let (line, col) = pair.line_col();
 
     // Check AutoCorrect enable/disable toggle marker
     // If disable results.is_enabled() will be false
@@ -168,12 +168,11 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 /// For example, The script / style in HTML or Codeblock in Markdown.
 fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     results: &mut O,
-    item: Pair<R>,
+    pair: Pair<R>,
     rule_name: &str,
 ) {
-    let part = item.as_str();
-
-    let (base_line, _) = results.move_cursor(part);
+    let part = pair.as_str();
+    let (base_line, _) = pair.line_col();
 
     if results.is_lint() {
         // Skip lint if AutoCorrect disabled
@@ -185,7 +184,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
             "inline_style" => Some(lint_for(part, "css")),
             "inline_javascript" => Some(lint_for(part, "js")),
             "codeblock" => {
-                let codeblock = Codeblock::from_pair(item);
+                let codeblock = Codeblock::from_pair(pair);
                 Some(lint_for(&codeblock.code, &codeblock.lang))
             }
             _ => None,
@@ -213,7 +212,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
                 "codeblock" => {
                     // WARNING: nested codeblock, when call format_for again.
                     // Because codeblock.data has wrap chars, this make overflowed its stack.
-                    let mut codeblock = Codeblock::from_pair(item);
+                    let mut codeblock = Codeblock::from_pair(pair);
                     let mut result = format_for(&codeblock.code, &codeblock.lang);
                     codeblock.update_data(&result.out);
                     result.out = codeblock.data;
@@ -232,8 +231,8 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
         }
 
         results.push(LineResult {
-            line: 0,
-            col: 0,
+            line: 1,
+            col: 1,
             old: String::from(part),
             new: new_part,
             severity: Severity::Pass,
@@ -336,10 +335,12 @@ mod tests {
 
     #[test]
     fn test_inline_script_line_number() {
-        let raw = indoc! { r#"
+        let raw = indoc! { r###"
         Hello world
-        ```js
+
+        ```ts
         // hello世界
+        const a = "string字符串";
         ```
 
         ### 外部test
@@ -353,19 +354,47 @@ mod tests {
             end
         end
         ```
-        "#};
+        "###};
 
-        let result = lint_for(raw, "markdown");
-        assert_eq!(result.lines.len(), 3);
-        assert_eq!(result.lines[0].line, 3);
-        assert_eq!(result.lines[0].col, 1);
-        assert_eq!(result.lines[0].new, "// hello 世界");
-        assert_eq!(result.lines[1].line, 6);
-        assert_eq!(result.lines[1].col, 5);
-        assert_eq!(result.lines[1].new, "外部 test");
-        assert_eq!(result.lines[2].line, 12);
-        assert_eq!(result.lines[2].col, 5);
-        assert_eq!(result.lines[2].new, "# 查找 user");
+        let expected = indoc! { r###"
+        {
+          "filepath": "md",
+          "lines": [
+              {
+              "l": 4,
+              "c": 1,
+              "new": "// hello 世界",
+              "old": "// hello世界",
+              "severity": 1
+              },
+              {
+              "l": 5,
+              "c": 11,
+              "new": "\"string 字符串\"",
+              "old": "\"string字符串\"",
+              "severity": 1
+              },
+              {
+              "l": 8,
+              "c": 5,
+              "new": "外部 test",
+              "old": "外部test",
+              "severity": 1
+              },
+              {
+              "l": 14,
+              "c": 5,
+              "new": "# 查找 user",
+              "old": "# 查找user",
+              "severity": 1
+              }
+          ],
+          "error": ""
+        }
+        "###};
+
+        let result = lint_for(raw, "md");
+        assert_json_eq!(expected, result.to_json_pretty());
     }
 
     #[test]

@@ -42,6 +42,10 @@ fn main() {
 #[macro_use]
 extern crate lazy_static;
 
+/// Create a regex for supports:
+///
+/// - `\p{CJK}`: `\p{Han}|\p{Hangul}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}`
+/// - `\p{CJ}`: `\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}`
 macro_rules! regexp {
     ($($arg:tt)*) => {{
         let reg_str = format!($($arg)*);
@@ -72,7 +76,17 @@ macro_rules! regexp {
     }};
 }
 
-#[macro_export]
+/// Creates a `HashMap` containing the given arguments.
+///
+/// ## Example
+///
+/// ```ignore
+/// let items = map! {
+///    "a" => "hello",
+///    "b" => "world",
+/// };
+/// ```
+#[allow(unused)]
 macro_rules! map {
     {$($key:expr => $value:expr),+ $(,)?} => {{
         let mut m = HashMap::new();
@@ -86,7 +100,16 @@ macro_rules! map {
     );
 }
 
-#[allow(unused_macros)]
+/// Asserts that two JSON values are equal by use `serde_json` parse.
+/// This will ignore the whitespaces and newlines.
+///
+/// ## Example
+///
+/// ```ignore
+/// assert_json_eq!(r#"{"a": 1}"#, r#"{ "a": 1 }"#);
+/// ```
+#[allow(unused)]
+#[track_caller]
 macro_rules! assert_json_eq {
     ($expected:expr, $actual:expr) => {{
         let expected = $expected;
