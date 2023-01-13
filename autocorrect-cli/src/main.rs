@@ -225,15 +225,11 @@ pub fn main() {
                 lint_results.join(",")
             );
         } else {
-            log::info!("\n");
-
             let _err_count = *lint_errors_count.lock().unwrap();
             let _warn_count = *lint_warnings_count.lock().unwrap();
 
-            if !lint_results.is_empty() {
-                // diff will use stderr output
-                lint_results.iter().for_each(|r| log::info!("{}", r))
-            }
+            log::info!("\n");
+            log::info!("{}", lint_results.join(""));
 
             log::info!(
                 "{}, {}\n",
