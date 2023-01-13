@@ -30,16 +30,16 @@ pub trait ConfigFileTypes {
 
 impl ConfigFileTypes for HashMap<String, String> {
     fn get_ext(&self, ext: &str) -> Option<&str> {
-        if let Some(value) = self.get(ext) {
-            return Some(value);
+        if let Some(val) = self.get(ext) {
+            return Some(val);
         }
 
-        if let Some(value) = self.get(&format!("*.{}", ext)) {
-            return Some(value);
+        if let Some(val) = self.get(&format!("*.{}", ext)) {
+            return Some(val);
         }
 
-        if let Some(value) = self.get(&format!(".{}", ext)) {
-            return Some(value);
+        if let Some(val) = self.get(&format!(".{}", ext)) {
+            return Some(val);
         }
 
         None

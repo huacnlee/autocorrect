@@ -284,6 +284,7 @@ impl Codeblock {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -335,23 +336,24 @@ mod tests {
 
     #[test]
     fn test_inline_script_line_number() {
-        let raw = r#""Hello world
-```js
-// hello世界
-```
+        let raw = indoc! { r#"
+        Hello world
+        ```js
+        // hello世界
+        ```
 
-### 外部test
+        ### 外部test
 
-Second line
+        Second line
 
-```rb
-class User
-    # 查找user
-    def find
-    end
-end
-```
-""#;
+        ```rb
+        class User
+            # 查找user
+            def find
+            end
+        end
+        ```
+        "#};
 
         let result = lint_for(raw, "markdown");
         assert_eq!(result.lines.len(), 3);

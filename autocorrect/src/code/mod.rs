@@ -64,9 +64,7 @@ pub use yaml::*;
 ///
 /// Example:
 ///
-/// ```
-//  extern crate autocorrect;
-//
+/// ```ignore
 /// let raw = r#"
 /// <article>
 ///   <h1>这是 Heading 标题</h1>
@@ -76,6 +74,7 @@ pub use yaml::*;
 ///   </div>
 /// </article>
 /// "#;
+///
 /// autocorrect::lint_for(raw, "html");
 /// autocorrect::lint_for(raw, "index.html");
 /// ```
@@ -121,9 +120,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
 ///
 /// Example:
 ///
-/// ```
-//  extern crate autocorrect;
-//
+/// ```ignore
 /// let raw = r#"
 /// <article>
 ///   <h1>这是 Heading 标题</h1>
@@ -133,6 +130,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
 ///   </div>
 /// </article>
 /// "#;
+///
 /// autocorrect::format_for(raw, "html");
 /// autocorrect::format_for(raw, "index.html");
 /// ```
