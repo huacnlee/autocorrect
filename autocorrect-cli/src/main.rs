@@ -167,8 +167,8 @@ pub fn main() {
                     let filepath = filepath.clone();
                     let filetype = filetype.clone();
 
-                    pool.execute(move || {
-                        if let Ok(raw) = read_file(&filepath) {
+                    pool.execute(move || match read_file(&filepath) {
+                        Ok(raw) => {
                             bench!(format!("Done {}", filepath), {
                                 if cli.lint {
                                     let mut lint_results: Vec<String> = Vec::new();
@@ -195,6 +195,9 @@ pub fn main() {
                                     format_and_output(&filepath, &filetype, &raw, &cli);
                                 }
                             });
+                        }
+                        Err(err) => {
+                            log::error!("Failed to read: {} error: {}", filepath, err);
                         }
                     });
                 }
@@ -254,6 +257,7 @@ pub fn main() {
     }
 }
 
+#[inline]
 fn read_file(filepath: &str) -> io::Result<String> {
     let out;
 
