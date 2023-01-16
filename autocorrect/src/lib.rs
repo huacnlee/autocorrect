@@ -1,11 +1,7 @@
 // autocorrect: false
+
 /*!
-Automatically add whitespace between CJK (Chinese, Japanese, Korean) and half-width characters (alphabetical letters, numerical digits and symbols).
-
-## Features
-
-- Auto add spacings between CJK (Chinese, Japanese, Korean) and English words.
-- HTML content support.
+AutoCorrect is a linter and formatter to help you to improve copywriting, correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
 
 ## Example
 
@@ -38,9 +34,12 @@ fn main() {
 }
 ```
 */
+#![feature(test)]
 
 #[macro_use]
 extern crate lazy_static;
+
+extern crate test;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{
@@ -88,6 +87,7 @@ macro_rules! map {
 
 mod code;
 
+mod bench;
 mod diff;
 mod format;
 mod result;

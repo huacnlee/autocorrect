@@ -355,7 +355,7 @@ AutoCorrect make for supports use in many programming languages.
 
 Use `make bench` to run benchmark tests.
 
-See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
+See [autocorrect/src/bench.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/bench.rs) for details.
 
 ```bash
 format_050              time:   [10.003 µs 10.013 µs 10.024 µs]
