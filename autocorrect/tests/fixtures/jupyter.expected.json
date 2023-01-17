@@ -1,0 +1,132 @@
+{
+  "filepath": "jupyter.ipynb",
+  "lines": [
+    {
+      "l": 9,
+      "c": 10,
+      "new": "时间序列指能在任何能在时间上观测到的数据。很多时间序列是有固定频率（fixed frequency）的，意思是数据点会遵照某种规律定期出现，比如每 15 秒，每 5 分钟，或每个月。时间序列也可能是不规律的（irregular），没有一个固定的时间规律。如何参照时间序列数据取决于我们要做什么样的应用，我们可能会遇到下面这些：\\n",
+      "old": "时间序列指能在任何能在时间上观测到的数据。很多时间序列是有固定频率（fixed frequency）的，意思是数据点会遵照某种规律定期出现，比如每15秒，每5分钟，或每个月。时间序列也可能是不规律的（irregular），没有一个固定的时间规律。如何参照时间序列数据取决于我们要做什么样的应用，我们可能会遇到下面这些：\\n",
+      "severity": 1
+    },
+    {
+      "l": 12,
+      "c": 10,
+      "new": "- Fixed periods（固定的时期），比如 2007 年的一月，或者 2010 年整整一年\\n",
+      "old": "- Fixed periods（固定的时期），比如2007年的一月，或者2010年整整一年\\n",
+      "severity": 1
+    },
+    {
+      "l": 13,
+      "c": 10,
+      "new": "- Intervals of time（时间间隔），通常有一个开始和结束的时间戳。Periods（时期）可能被看做是 Intervals（间隔）的一种特殊形式。\\n",
+      "old": "- Intervals of time（时间间隔），通常有一个开始和结束的时间戳。Periods（时期）可能被看做是Intervals（间隔）的一种特殊形式。\\n",
+      "severity": 1
+    },
+    {
+      "l": 18,
+      "c": 12,
+      "new": "pandas 也支持基于 timedeltas 的 index，本书不会对 timedelta index 做介绍，感兴趣的可以查看 pandas 的文档。\\n",
+      "old": "pandas也支持基于timedeltas的index，本书不会对timedelta index做介绍，感兴趣的可以查看pandas的文档。\\n",
+      "severity": 1
+    },
+    {
+      "l": 23,
+      "c": 10,
+      "new": "python 有标准包用来表示时间和日期数据。datetime, time, calendar，这些模块经常被使用。datetime.datetime 类型，或简单写为 datetime，被广泛使用：\\n",
+      "old": "python有标准包用来表示时间和日期数据。datetime, time, calendar，这些模块经常被使用。datetime.datetime类型，或简单写为datetime，被广泛使用：\\n",
+      "severity": 1
+    },
+    {
+      "l": 107,
+      "c": 10,
+      "new": "datetime 能保存日期和时间到微妙级别。timedelta 表示两个不同的 datetime 对象之间的时间上的不同：",
+      "old": "datetime能保存日期和时间到微妙级别。timedelta表示两个不同的datetime对象之间的时间上的不同：",
+      "severity": 1
+    },
+    {
+      "l": 181,
+      "c": 10,
+      "new": "我们可以在一个 datetime 对象上，添加或减少一个或多个 timedelta，这样可以产生新的变化后的对象：",
+      "old": "我们可以在一个datetime对象上，添加或减少一个或多个timedelta，这样可以产生新的变化后的对象：",
+      "severity": 1
+    },
+    {
+      "l": 254,
+      "c": 10,
+      "new": "下表汇总了一些 datetime 模块中的数据类型：\\n",
+      "old": "下表汇总了一些datetime模块中的数据类型：\\n",
+      "severity": 1
+    },
+    {
+      "l": 260,
+      "c": 10,
+      "new": "我们可以对 datetime 对象，以及 pandas 的 Timestamp 对象进行格式化，这部分之后会介绍，使用 str 或 strftime 方法，传入一个特定的时间格式就能进行转换：",
+      "old": "我们可以对datetime对象，以及pandas的Timestamp对象进行格式化，这部分之后会介绍，使用str或strftime方法，传入一个特定的时间格式就能进行转换：",
+      "severity": 1
+    },
+    {
+      "l": 328,
+      "c": 10,
+      "new": "我们可以利用上面的 format codes（格式码；时间日期格式）把字符串转换为日期，这要用到 datetime.strptime:",
+      "old": "我们可以利用上面的format codes（格式码；时间日期格式）把字符串转换为日期，这要用到datetime.strptime:",
+      "severity": 1
+    },
+    {
+      "l": 401,
+      "c": 10,
+      "new": "对于一个一直的时间格式，使用 datetime.strptime 来解析日期是很好的方法。但是，如果每次都要写格式的话很烦人，尤其是对于一些比较常见的格式。在这种情况下，我们可以使用第三方库 dateutil 中的 parser.parse 方法（这个库会在安装 pandas 的时候自动安装）：",
+      "old": "对于一个一直的时间格式，使用datetime.strptime来解析日期是很好的方法。但是，如果每次都要写格式的话很烦人，尤其是对于一些比较常见的格式。在这种情况下，我们可以使用第三方库dateutil中的parser.parse方法（这个库会在安装pandas的时候自动安装）：",
+      "severity": 1
+    },
+    {
+      "l": 441,
+      "c": 10,
+      "new": "dateutil 能够解析很多常见的时间表示格式：",
+      "old": "dateutil能够解析很多常见的时间表示格式：",
+      "severity": 1
+    },
+    {
+      "l": 470,
+      "c": 10,
+      "new": "在国际上，日在月之前是很常见的（译者：美国是把月放在日前面的），所以我们可以设置 dayfirst=True 来指明最前面的是否是日：",
+      "old": "在国际上，日在月之前是很常见的（译者：美国是把月放在日前面的），所以我们可以设置dayfirst=True来指明最前面的是否是日：",
+      "severity": 1
+    },
+    {
+      "l": 499,
+      "c": 10,
+      "new": "pandas 通常可以用于处理由日期组成的数组，不论是否是 DataFrame 中的行索引或列。to_datetime 方法能解析很多不同种类的日期表示。标准的日期格式，比如 ISO 8601，能被快速解析：",
+      "old": "pandas通常可以用于处理由日期组成的数组，不论是否是DataFrame中的行索引或列。to_datetime方法能解析很多不同种类的日期表示。标准的日期格式，比如ISO 8601，能被快速解析：",
+      "severity": 1
+    },
+    {
+      "l": 539,
+      "c": 10,
+      "new": "还能处理一些应该被判断为缺失的值（比如 None, 空字符串之类的）：",
+      "old": "还能处理一些应该被判断为缺失的值（比如None, 空字符串之类的）：",
+      "severity": 1
+    },
+    {
+      "l": 613,
+      "c": 10,
+      "new": "Nat(Not a Time) 在 pandas 中，用于表示时间戳为空值（null value）。\\n",
+      "old": "Nat(Not a Time)在pandas中，用于表示时间戳为空值（null value）。\\n",
+      "severity": 1
+    },
+    {
+      "l": 615,
+      "c": 12,
+      "new": "dateutil.parse 是一个很有用但不完美的工具。它可能会把一些字符串识别为日期，例如，'42'就会被解析为 2042 年加上今天的日期。\\n",
+      "old": "dateutil.parse是一个很有用但不完美的工具。它可能会把一些字符串识别为日期，例如，'42'就会被解析为2042年加上今天的日期。\\n",
+      "severity": 1
+    },
+    {
+      "l": 617,
+      "c": 10,
+      "new": "datetime 对象还有一些关于地区格式（locale-specific formatting）的选项，用于处理不同国家或不同语言的问题。例如，月份的缩写在德国和法国，与英语是不同的。下表列出一些相关的选项：\\n",
+      "old": "datetime对象还有一些关于地区格式（locale-specific formatting）的选项，用于处理不同国家或不同语言的问题。例如，月份的缩写在德国和法国，与英语是不同的。下表列出一些相关的选项：\\n",
+      "severity": 1
+    }
+  ],
+  "error": ""
+}

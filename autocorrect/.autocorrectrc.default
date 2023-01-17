@@ -25,6 +25,7 @@ spellcheck:
     # Please do not add a general English word (eg. apple, python) here.
     # Users can add their special words to their .autocorrectrc file by their need.
 fileTypes:
+  # ext: grammar_name
   # HTML
   html: html
   htm: html
@@ -126,6 +127,9 @@ fileTypes:
   c: c
   # XML
   xml: xml
+  # Notebook
+  jupyter: jupyter
+  ipynb: jupyter
   # Text
   text: text
   plain: text

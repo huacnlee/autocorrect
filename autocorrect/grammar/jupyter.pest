@@ -1,0 +1,36 @@
+// The Jupyter Notebook Format
+// https://nbformat.readthedocs.io/en/latest/
+item = _{ SOI ~ line* ~ EOI } 
+line = _{ object | array | other }
+
+other = _{ ANY }
+
+WHITESPACE = _{ " " | "\t" | NEWLINE }
+
+
+value        = _{ quote ~ string ~ quote | number | object | array | bool | null }
+string       = { inner }
+number = @{ "-"? ~ int ~ ("." ~ ASCII_DIGIT+ ~ exp? | exp)? }
+int    = @{ "0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
+exp    = @{ ("E" | "e") ~ ("+" | "-")? ~ ASCII_DIGIT+ }
+bool = { "true" | "false" }
+null = { "null" }
+
+object = { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
+open_object = _{ "{" }
+close_object = _{ "}" }
+
+array = { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
+open_array = _{ "[" }
+close_array = _{ "]" }
+
+comma = _{ "," }
+
+pair    = _{ quote ~ key ~ quote ~ colon ~ value }
+key     = @{ string }
+quote   = _{ "\"" }
+colon   = _{ ":" }
+
+inner   = _{ (!(quote | "\\") ~ ANY)* ~ (escape ~ inner)? }
+escape  = _{ "\\" ~ (quote | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
+unicode = _{ "u" ~ ASCII_HEX_DIGIT{4} }
