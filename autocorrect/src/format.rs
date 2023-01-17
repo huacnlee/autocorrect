@@ -247,10 +247,19 @@ mod tests {
             "请打开URL地址 https://google.com/这是URL文件名.html 访问" => "请打开 URL 地址 https://google.com/这是URL文件名.html 访问",
             "https://google.com/这是URL文件名.html" => "https://google.com/这是URL文件名.html",
             "https://zh.wikipedia.org/wiki/网页浏览器列表#基於WebKit排版引擎" => "https://zh.wikipedia.org/wiki/网页浏览器列表#基於WebKit排版引擎",
+            "foo-bar_01.htm#测试copy" => "foo-bar_01.htm#测试copy",
+            "foo-bar_01#copy测试" => "foo-bar_01#copy测试",
+            "ch04-01-what-is-ownership.html#只在堆疊上的資料拷貝copy" => "ch04-01-what-is-ownership.html#只在堆疊上的資料拷貝copy",
+        ];
+        assert_cases(cases);
+
+        let ignore_caches = map! [
             "//this is注释" => "//this is 注释",
+            "记事本,记事本1显示阅读次数#149号" => "记事本，记事本 1 显示阅读次数#149 号",
+            "HashTag的演示#标签1" => "HashTag 的演示#标签 1",
         ];
 
-        assert_cases(cases);
+        assert_cases(ignore_caches);
     }
 
     #[test]
