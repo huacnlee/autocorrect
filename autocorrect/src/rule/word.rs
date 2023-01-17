@@ -89,3 +89,46 @@ pub fn format_no_space_fullwidth_quote(input: &str) -> String {
         .for_each(|s| out = s.format(&out));
     out
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[bench]
+    /// 1,868 ns/iter (+/- 53)
+    fn bench_format_space_word(b: &mut test::Bencher) {
+        b.iter(|| format_space_word("适用于“无声音”问题的iPhone 12和iPhone 12 Pro服务计划。"))
+    }
+
+    #[bench]
+    /// 1,382 ns/iter (+/- 54)
+    fn bench_format_no_space_fullwidth_quote(b: &mut test::Bencher) {
+        b.iter(|| format_no_space_fullwidth_quote("hello你好 “Quote” 和 ‘Single Quote’ 测试1"))
+    }
+
+    #[bench]
+    /// 569 ns/iter (+/- 75)
+    fn bench_format_format_no_space_fullwidth(b: &mut test::Bencher) {
+        b.iter(|| {
+            format_no_space_fullwidth(
+                "（美股）市场：发布「最新」100消息【BABA.US】“大涨”50%；同比上涨20%！",
+            )
+        })
+    }
+
+    #[bench]
+    /// 1,095 ns/iter (+/- 80)
+    fn bench_format_space_bracket(b: &mut test::Bencher) {
+        b.iter(|| format_space_bracket("公告:(美股)阿里巴巴[BABA.US]发布2019下半年财报!"))
+    }
+
+    #[bench]
+    /// 529 ns/iter (+/- 63)
+    fn bench_format_space_punctuation(b: &mut test::Bencher) {
+        b.iter(|| {
+            format_space_punctuation(
+                "快速、 跨平台 、 低资源目的 。 例如 Firefox 、 Dropbox都在使用",
+            )
+        })
+    }
+}

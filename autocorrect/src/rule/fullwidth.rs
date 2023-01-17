@@ -113,4 +113,10 @@ mod tests {
 
         assert_cases(cases);
     }
+
+    #[bench]
+    /// 2,784 ns/iter
+    fn bench_format(b: &mut test::Bencher) {
+        b.iter(|| format("我们需要一位熟悉 JavaScript、HTML5,至少理解一种框架 (如 Backbone.js、AngularJS、React 等) 的前端开发者.") )
+    }
 }

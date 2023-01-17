@@ -120,4 +120,14 @@ mod tests {
             assert_eq!(right, format(&left.to_lowercase()));
         }
     }
+
+    #[bench]
+    /// 2,901 ns/iter (+/- 90)
+    fn bench_format(b: &mut test::Bencher) {
+        crate::config::setup_test();
+
+        let text = "this is ipad ios website, and the IOS download url";
+
+        b.iter(|| format(text));
+    }
 }

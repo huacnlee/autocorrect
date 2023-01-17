@@ -360,4 +360,28 @@ mod tests {
 
         assert_cases(cases);
     }
+
+    #[bench]
+    /// 5,663 ns/iter (+/- 230)
+    fn bench_format_punctuation(b: &mut test::Bencher) {
+        let raw = indoc::indoc! { r#"
+        The microphone or camera is occupied，Please check and re-record the video。
+        The「Convertible Amount」case：
+        'Only the first time break？'
+        Revenue conditions among the suppliers’ customers。
+        "# };
+        b.iter(|| format_punctuation(raw));
+    }
+
+    #[bench]
+    /// 2,647 ns/iter (+/- 90)
+    fn bench_format_line(b: &mut test::Bencher) {
+        b.iter(|| format_line("The microphone or camera is occupied，Please check and re-record the video，revenue conditions among the suppliers’ customers。", '"'))
+    }
+
+    #[bench]
+    /// 1,787 ns/iter (+/- 45)
+    fn bench_format_word(b: &mut test::Bencher) {
+        b.iter(|| format_word("测试:ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ１２３４５６７８９０"))
+    }
 }

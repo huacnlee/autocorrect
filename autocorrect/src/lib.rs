@@ -35,11 +35,10 @@ fn main() {
 ```
 */
 #![feature(test)]
+extern crate test;
 
 #[macro_use]
 extern crate lazy_static;
-
-extern crate test;
 
 macro_rules! regexp {
     ($($arg:tt)*) => {{

@@ -358,26 +358,25 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/bench.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/bench.rs) for details.
 
 ```bash
-format_050              time:   [10.003 µs 10.013 µs 10.024 µs]
-format_100              time:   [18.511 µs 18.550 µs 18.597 µs]
-format_400              time:   [60.089 µs 60.216 µs 60.461 µs]
-format_html             time:   [220.68 µs 220.91 µs 221.18 µs]
-halfwidth_english       time:   [3.2353 µs 3.2452 µs 3.2545 µs]
-format_json             time:   [55.620 µs 55.658 µs 55.695 µs]
-format_javascript       time:   [108.63 µs 108.70 µs 108.79 µs]
-format_json_2k          time:   [9.3879 ms 9.4871 ms 9.6541 ms]
-format_markdown         time:   [1.0007 ms 1.0123 ms 1.0285 ms]
-spellcheck_50           time:   [1.9177 µs 1.9422 µs 1.9766 µs]
-spellcheck_100          time:   [3.5868 µs 3.5909 µs 3.5950 µs]
-spellcheck_400          time:   [14.873 µs 14.974 µs 15.110 µs]
-format_markdown         time:   [1.0010 ms 1.0187 ms 1.0484 ms]
-lint_markdown           time:   [1.1195 ms 1.1205 ms 1.1215 ms]
-lint_json               time:   [67.764 µs 68.341 µs 69.137 µs]
-lint_html               time:   [280.87 µs 281.44 µs 282.20 µs]
-lint_javascript         time:   [123.99 µs 125.50 µs 128.38 µs]
-lint_yaml               time:   [433.41 µs 441.09 µs 452.74 µs]
-lint_to_json            time:   [1.8391 ms 1.8428 ms 1.8476 ms]
-lint_to_diff            time:   [1.8632 ms 1.8801 ms 1.9030 ms]
+test bench::tests::bench_format_050                            ... bench:       9,955 ns/iter (+/- 128)
+test bench::tests::bench_format_100                            ... bench:      18,419 ns/iter (+/- 198)
+test bench::tests::bench_format_400                            ... bench:      60,545 ns/iter (+/- 380)
+test bench::tests::bench_format_html                           ... bench:     275,737 ns/iter (+/- 2,341)
+test bench::tests::bench_format_javascript                     ... bench:     115,341 ns/iter (+/- 1,116)
+test bench::tests::bench_format_json                           ... bench:      56,736 ns/iter (+/- 470)
+test bench::tests::bench_format_json_with_2k_lines             ... bench:  93,006,941 ns/iter (+/- 3,009,815)
+test bench::tests::bench_halfwidth_full_english_100            ... bench:       2,936 ns/iter (+/- 87)
+test bench::tests::bench_lint_html                             ... bench:     338,365 ns/iter (+/- 3,304)
+test bench::tests::bench_lint_javascript                       ... bench:     130,682 ns/iter (+/- 811)
+test bench::tests::bench_lint_json                             ... bench:      69,125 ns/iter (+/- 6,233)
+test bench::tests::bench_lint_markdown                         ... bench:   1,754,125 ns/iter (+/- 43,454)
+test bench::tests::bench_lint_to_diff                          ... bench:   1,887,845 ns/iter (+/- 21,269)
+test bench::tests::bench_lint_to_json                          ... bench:   1,757,410 ns/iter (+/- 7,046)
+test bench::tests::bench_lint_yaml                             ... bench:     428,883 ns/iter (+/- 54,004)
+test bench::tests::bench_markdown                              ... bench:   1,647,297 ns/iter (+/- 9,254)
+test bench::tests::bench_spellcheck_050                        ... bench:       1,872 ns/iter (+/- 54)
+test bench::tests::bench_spellcheck_100                        ... bench:       3,473 ns/iter (+/- 52)
+test bench::tests::bench_spellcheck_400                        ... bench:      14,647 ns/iter (+/- 276)
 ```
 
 ### Real world benchmark

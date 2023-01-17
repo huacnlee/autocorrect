@@ -272,4 +272,17 @@ mod tests {
         toggle.merge(Toggle::None);
         assert_eq!(Toggle::None, toggle);
     }
+
+    #[bench]
+    /// 352 ns/iter
+    fn bench_parse(b: &mut test::Bencher) {
+        b.iter(|| parse("// autocorrect: false"));
+    }
+
+    #[bench]
+    /// 19 ns/iter
+    fn bench_match_rule(b: &mut test::Bencher) {
+        let toggle = Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]);
+        b.iter(|| toggle.match_rule("foo"));
+    }
 }
