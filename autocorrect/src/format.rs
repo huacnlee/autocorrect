@@ -90,7 +90,7 @@ mod tests {
             "升级了macOS 10.9 附遇到的Bug概率有0.1%或更少" => "升级了 macOS 10.9 附遇到的 Bug 概率有 0.1% 或更少",
             "在做Rails 3.2 Tutorial第Chapter 9.4.2遇到一个问题求助！" => "在做 Rails 3.2 Tutorial 第 Chapter 9.4.2 遇到一个问题求助！",
             "发现macOS安装软件新方法：Homebrew" => "发现 macOS 安装软件新方法：Homebrew",
-            "without looking like it’s been marked up with tags or formatting instructions." => "without looking like it's been marked up with tags or formatting instructions.",
+            "Without looking like it’s ‘been’ marked up with tags or “formatting instructions”." => "Without looking like it’s ‘been’ marked up with tags or “formatting instructions”.",
             "隔夜SHIBOR报1.5530%，上涨33.80%个基点。7天SHIBOR报2.3200%，上涨6.10个基点。3个月SHIBOR报2.8810%，下降1.80个" => "隔夜 SHIBOR 报 1.5530%，上涨 33.80% 个基点。7 天 SHIBOR 报 2.3200%，上涨 6.10 个基点。3 个月 SHIBOR 报 2.8810%，下降 1.80 个",
             // https://support.apple.com/zh-cn/iphone-12-and-iphone-12-pro-service-program-for-no-sound-issues
             "适用于“无声音”问题的iPhone 12和iPhone 12 Pro服务计划" => "适用于“无声音”问题的 iPhone 12 和 iPhone 12 Pro 服务计划",
