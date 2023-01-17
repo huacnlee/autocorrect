@@ -31,7 +31,11 @@ mod tests {
             "description" : "第2个meta", 
             "测试key不格式化": 
                   "Value要格式化",
-          }
+          },
+          "array": [
+            "hello你好",
+            "你好hello",
+          ],
         }
         "###};
 
@@ -50,7 +54,11 @@ mod tests {
             "description" : "第 2 个 meta", 
             "测试key不格式化": 
                   "Value 要格式化",
-          }
+          },
+          "array": [
+            "hello 你好",
+            "你好 hello",
+          ],
         }
         "###};
 
