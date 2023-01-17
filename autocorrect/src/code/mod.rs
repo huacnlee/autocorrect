@@ -14,6 +14,7 @@ mod html;
 mod java;
 mod javascript;
 mod json;
+mod jupyter;
 mod kotlin;
 mod latex;
 mod markdown;
@@ -45,6 +46,7 @@ pub use html::*;
 pub use java::*;
 pub use javascript::*;
 pub use json::*;
+pub use jupyter::*;
 pub use kotlin::*;
 pub use latex::*;
 pub use markdown::*;
@@ -107,6 +109,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "conf" => lint_conf(raw),
         "c" => lint_c(raw),
         "xml" => lint_xml(raw),
+        "jupyter" => lint_jupyter(raw),
         "text" => lint_markdown(raw),
         _ => LintResult::new(raw),
     };
@@ -163,6 +166,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "conf" => format_conf(raw),
         "c" => format_c(raw),
         "xml" => format_xml(raw),
+        "jupyter" => format_jupyter(raw),
         "text" => format_markdown(raw),
         _ => {
             let mut result = FormatResult::new(raw);

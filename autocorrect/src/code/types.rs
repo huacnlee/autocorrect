@@ -56,6 +56,8 @@ mod tests {
         assert!(is_support_type("html.erb"));
         assert!(is_support_type("rust"));
         assert!(is_support_type("rs"));
+        assert!(is_support_type("jupyter"));
+        assert!(is_support_type("ipynb"));
 
         assert!(!is_support_type("foo"));
         assert!(!is_support_type("index.html"));
@@ -122,5 +124,8 @@ mod tests {
         assert_eq!("ruby".to_owned(), match_filename("Rakefile"));
         assert_eq!("ruby".to_owned(), match_filename("Profile"));
         assert_eq!("ruby".to_owned(), match_filename("foo.gemspec"));
+
+        assert_eq!("jupyter".to_owned(), match_filename("./foo/bar.jupyter"));
+        assert_eq!("jupyter".to_owned(), match_filename("./foo/bar.ipynb"));
     }
 }

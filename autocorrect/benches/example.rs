@@ -60,6 +60,15 @@ fn bench_format_json_with_2k_lines(c: &mut Criterion) {
     });
 }
 
+/// 38 lines Jupyter file, 89.629 µs/iter
+fn bench_format_jupyter(c: &mut Criterion) {
+    let raw = include_str!("../tests/fixtures/jupyter.sm.ipynb");
+
+    c.bench_function("format_jupyter", |b| {
+        b.iter(|| format_for(raw, "jupyter"));
+    });
+}
+
 fn bench_halfwidth_full_english_100(c: &mut Criterion) {
     let raw = "Internal interface for communicating between a `proc_macro` client (a proc macro crate) and a `proc_macro` server (a compiler front-end).";
 
@@ -137,6 +146,7 @@ criterion_group!(
     bench_format_json,
     bench_format_javascript,
     bench_format_json_with_2k_lines,
+    bench_format_jupyter,
     bench_markdown,
     bench_spellcheck,
     bench_lint,

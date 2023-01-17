@@ -1,5 +1,7 @@
 {
   "autocorrect.formatOnSave": false,
-  "rust-analyzer.updates.channel": "nightly",
-  "rust-analyzer.checkOnSave.command": "clippy"
+  "files.associations": {
+    ".autocorrectrc.default": "yaml",
+    ".autocorrectrc.test": "yaml"
+  }
 }

@@ -113,19 +113,6 @@ mod tests {
         assert_eq!(expect, format_for(example, "javascript").to_string());
     }
 
-    macro_rules! assert_json_eq {
-        ($expected:expr, $actual:expr) => {{
-            let expected = $expected;
-            let actual = $actual;
-
-            let expect_json =
-                serde_json::from_str(expected).unwrap_or(serde_json::Value::default());
-            let result =
-                serde_json::from_str(actual.as_str()).unwrap_or(serde_json::Value::default());
-            assert_eq!(expect_json, result);
-        }};
-    }
-
     #[test]
     fn it_format_javascript_without_any_string() {
         let example = indoc! {r###"
