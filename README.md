@@ -310,7 +310,7 @@ https://github.com/huacnlee/autocorrect-idea-plugin
 
 ### GitHub Action
 
-https://github.com/marketplace/actions/huacnlee-autocorrect
+https://github.com/huacnlee/autocorrect-action
 
 Add to your `.github/workflows/ci.yml`
 
