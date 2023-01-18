@@ -35,9 +35,9 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          profile: minimal
           override: true
-          components: rustfmt, clippy
+          toolchain: stable
           target: ${{ matrix.settings.target }}
 
       - name: Build
