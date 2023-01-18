@@ -398,6 +398,14 @@ The other implementations from the community.
 - [autocorrect-popclip](https://github.com/TomBener/autocorrect-popclip)
 - [autocorrect-markdown.vim](https://github.com/aisensiy/dotfiles/blob/master/nvim/after/ftplugin/markdown.vim)
 
+## User cases
+
+- [MDN Web Docs](https://developer.mozilla.org/zh-CN)
+- [Apache APISIX](https://apisix.apache.org/zh)
+- [Rust Book CN](https://kaisery.github.io/trpl-zh-cn)
+- [Ruby China](https://ruby-china.org)
+- [JuiceFS](https://juicefs.com)
+
 ## License
 
 This project under MIT license.
