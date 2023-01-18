@@ -122,10 +122,10 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.16.5.tgz#9398d079a83b309b44021634ae6b4f7bc6a0cad0"
   integrity sha512-q00Jasz6/wCOD2XxRj4GEwj27u1zfpiBniL1ip3/YGGcYtvOoGKCNSS47sufO/8ixEgrSYDlkglSd6CxcS7m0g==
 
-"@huacnlee/autocorrect@^2.5.4":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@huacnlee/autocorrect/-/autocorrect-2.5.4.tgz#6f2b5fcbab5b7ee7ec75a97dcb09506267d0605a"
-  integrity sha512-I0vNFSxIBGlPepNGt8zBRsv9DIGcdT5YqzjIAJSbZzsIlklfrpTIzP7OPeksFsmBTeHgXLFu8UjFwq5Z0IuSkg==
+"@huacnlee/autocorrect@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@huacnlee/autocorrect/-/autocorrect-2.6.1.tgz#f152ddceabb4aad771f35a2c838f6b84c13b5e95"
+  integrity sha512-nflO7Lv/eYkUyr113tYnYhbXDzWOppMmnn64NXQlvbzsBDHHSKouminubnWlEiaDZ3ZDNH74a9Lxphma67Aiqg==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

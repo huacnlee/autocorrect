@@ -18,6 +18,7 @@
     "vite-plugin-wasm": "^3.1.0"
   },
   "dependencies": {
-    "@huacnlee/autocorrect": "^2.5.4"
-  }
+    "@huacnlee/autocorrect": "^2.6.1"
+  },
+  "license": "MIT"
 }
