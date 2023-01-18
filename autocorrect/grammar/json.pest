@@ -1,7 +1,7 @@
 item = _{ SOI ~ line* ~ EOI } 
-line = _{ pair | other }
+line = _{ object | array | other }
 
-other = ${ !(pair) ~ ANY }
+other = ${ ANY }
 
 WHITESPACE = { " " | "\t" | NEWLINE }
 
@@ -9,15 +9,29 @@ line_comment  = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 COMMENT       = { line_comment | block_comment }
 
+value        = { string | number | object | array | bool | null }
 string       = ${ inner_string }
 inner_string = @{ "\"" ~ inner ~ "\"" }
+number = @{ "-"? ~ int ~ ("." ~ ASCII_DIGIT+ ~ exp? | exp)? }
+int    = @{ "0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
+exp    = @{ ("E" | "e") ~ ("+" | "-")? ~ ASCII_DIGIT+ }
+bool = { "true" | "false" }
+null = { "null" }
 
-pair    = _{ key ~ string }
+object = { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
+open_object = @{ "{" }
+close_object = @{ "}" }
+
+array = { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
+open_array = @{ "[" }
+close_array = @{ "]" }
+
+comma = @{ "," }
+
+pair    = _{ key ~ value }
 key     = { inner_string ~ colon }
 colon   = @{ ":" }
 
 inner   = @{ (!("\"" | "\\") ~ ANY)* ~ (escape ~ inner)? }
 escape  = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
 unicode = @{ "u" ~ ASCII_HEX_DIGIT{4} }
-
-

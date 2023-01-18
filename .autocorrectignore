@@ -1,4 +1,5 @@
 this-file-will-ignore.rs
 tests/fixtures/*.json
+**/*/tests/fixtures/*
 src/**/*.rs
 README.md

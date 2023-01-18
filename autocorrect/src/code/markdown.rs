@@ -207,7 +207,7 @@ mod tests {
 
         - list 中，忽略 [halfwidth](#halfwidth) World Wide Web。
 
-        This line is all in english, to test convert "full-width" into 'half-width'!
+        This line is all in english, to test convert “full-width” into ‘half-width’!
 
         https://google.com/foo/__ios__
 

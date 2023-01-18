@@ -1,17 +1,30 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
+
+#[non_exhaustive]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+pub(crate) enum OutputFormatter {
+    Diff,
+    Json,
+}
+
+impl OutputFormatter {
+    pub fn is_json(&self) -> bool {
+        *self == OutputFormatter::Json
+    }
+
+    pub fn is_diff(&self) -> bool {
+        *self == OutputFormatter::Diff
+    }
+}
 
 #[derive(Debug, Parser, Clone)]
-#[clap(
-    name = "AutoCorrect",
-    author = "Jason Lee <huacnlee@gmail.com>",
-    version
-)]
-#[clap(about = "A linter and formatter for help you improve copywriting, to correct spaces, punctuations between CJK (Chinese, Japanese, Korean).", long_about = None)]
-pub struct Cli {
+#[command(name = "AutoCorrect")]
+#[command(author, version, about, long_about = None)]
+pub(crate) struct Cli {
     #[clap(subcommand)]
     pub command: Option<Commands>,
 
-    #[clap(long, parse(from_flag), help = "Lint and output problems.")]
+    #[clap(long, action = clap::ArgAction::SetTrue, help = "Lint and output problems.")]
     pub lint: bool,
 
     #[clap(long, help = "Automatically fix problems and rewrite file.")]
@@ -24,10 +37,10 @@ pub struct Cli {
         name = "FORMAT",
         long = "format",
         help = "Output format.",
-        default_value = "diff",
-        possible_values = &["diff", "json"]
+        default_value = "diff"
     )]
-    pub formatter: String,
+    #[arg(value_enum)]
+    pub formatter: OutputFormatter,
 
     #[clap(
         long = "threads",
@@ -52,17 +65,23 @@ pub struct Cli {
         name = "FILE",
         help = "Target filepath or dir for format.",
         default_value = ".",
-        value_parser,
-        multiple = true
+        value_parser
     )]
     pub files: Vec<String>,
 
     #[clap(long = "stdin", help = "Input text from <STDIN>")]
     pub stdin: bool,
+
+    #[clap(
+        long = "no-diff-bg-color",
+        alias = "ndbc",
+        help = "Disable diff background color for diff output."
+    )]
+    pub no_diff_bg_color: bool,
 }
 
 #[derive(Debug, Subcommand, Clone)]
-pub enum Commands {
+pub(crate) enum Commands {
     #[clap(name = "init", about = "Initialize AutoCorrect config file.")]
     Init {
         #[clap(
@@ -84,4 +103,14 @@ pub enum Commands {
         about = "Update AutoCorrect to latest version."
     )]
     Update {},
+}
+
+impl Cli {
+    pub fn log_level(&self) -> log::LevelFilter {
+        if self.debug {
+            log::LevelFilter::Debug
+        } else {
+            log::LevelFilter::Info
+        }
+    }
 }

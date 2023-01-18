@@ -310,7 +310,7 @@ https://github.com/huacnlee/autocorrect-idea-plugin
 
 ### GitHub Action
 
-https://github.com/marketplace/actions/huacnlee-autocorrect
+https://github.com/huacnlee/autocorrect-action
 
 Add to your `.github/workflows/ci.yml`
 
@@ -367,6 +367,7 @@ format_json             time:   [55.620 µs 55.658 µs 55.695 µs]
 format_javascript       time:   [108.63 µs 108.70 µs 108.79 µs]
 format_json_2k          time:   [9.3879 ms 9.4871 ms 9.6541 ms]
 format_markdown         time:   [1.0007 ms 1.0123 ms 1.0285 ms]
+format_jupyter          time:   [86.660 µs 86.743 µs 86.830 µs]
 spellcheck_50           time:   [1.9177 µs 1.9422 µs 1.9766 µs]
 spellcheck_100          time:   [3.5868 µs 3.5909 µs 3.5950 µs]
 spellcheck_400          time:   [14.873 µs 14.974 µs 15.110 µs]
@@ -376,6 +377,8 @@ lint_json               time:   [67.764 µs 68.341 µs 69.137 µs]
 lint_html               time:   [280.87 µs 281.44 µs 282.20 µs]
 lint_javascript         time:   [123.99 µs 125.50 µs 128.38 µs]
 lint_yaml               time:   [433.41 µs 441.09 µs 452.74 µs]
+lint_to_json            time:   [1.8391 ms 1.8428 ms 1.8476 ms]
+lint_to_diff            time:   [1.8632 ms 1.8801 ms 1.9030 ms]
 ```
 
 ### Real world benchmark

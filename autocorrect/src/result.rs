@@ -193,21 +193,14 @@ impl LintResult {
     }
 
     #[allow(dead_code)]
-    pub fn to_diff(&self) -> String {
-        let mut out = String::from("");
+    pub fn to_diff(&self, no_diff_bg_color: bool) -> String {
+        let mut out = String::new();
+        let filepath = self.filepath.replace("./", "");
 
         for line in self.lines.iter() {
-            out.push_str(
-                format!(
-                    "{}:{}:{}\n",
-                    self.filepath.replace("./", ""),
-                    line.line,
-                    line.col
-                )
-                .as_str(),
-            );
+            out.push_str(&format!("{}:{}:{}\n", filepath, line.line, line.col));
 
-            let out_str = crate::diff::diff_line_result(line);
+            let out_str = crate::diff::diff_line_result(&line, no_diff_bg_color);
             out.push_str(&out_str);
         }
 

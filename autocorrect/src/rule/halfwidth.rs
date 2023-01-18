@@ -70,8 +70,10 @@ lazy_static! {
     static ref CODE_STRING_RE: Regex = regexp!("{}", r#"([#%$]\{.+\})|([\w]+\.[\w]+\()"#);
 
     static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
-        "‘" => ReplaceRule::new("'").left_quote(),
-        "’" => ReplaceRule::new("'").right_quote(),
+        // The single (‘...’) and double (“...”) char is used in english typographic.
+        // Option + [ and Shift + Option + [ to get “”
+        // Option + ] and Shift + Option + ] to get ‘’
+        // https://en.wikipedia.org/wiki/Quotation_marks_in_English
 
         "，" => ReplaceRule::new(",").with_suffix_space(),
         "、" => ReplaceRule::new(",").with_suffix_space(),
@@ -81,19 +83,15 @@ lazy_static! {
         "！" => ReplaceRule::new("!").with_suffix_space(),
         "？" => ReplaceRule::new("?").with_suffix_space(),
 
-        // Quotes prefix
-        "“" => ReplaceRule::new(r#"""#).left_quote().with_prefix_space(),
         "（" => ReplaceRule::new("(").left_quote().with_prefix_space(),
         "【" => ReplaceRule::new("[").left_quote().with_prefix_space(),
         "「" => ReplaceRule::new("[").left_quote().with_prefix_space(),
-        "《" => ReplaceRule::new(r#"""#).left_quote().with_prefix_space(),
+        "《" => ReplaceRule::new("“").left_quote().with_prefix_space(),
 
-        // Quotes suffix
-        "”" => ReplaceRule::new(r#"""#).right_quote().with_suffix_space(),
         "）" => ReplaceRule::new(")").right_quote().with_suffix_space(),
         "】" => ReplaceRule::new("]").right_quote().with_suffix_space(),
         "」" => ReplaceRule::new("]").right_quote().with_suffix_space(),
-        "》" => ReplaceRule::new(r#"""#).right_quote().with_suffix_space(),
+        "》" => ReplaceRule::new("”").right_quote().with_suffix_space(),
     );
 }
 
@@ -292,6 +290,8 @@ mod tests {
             "‘腾讯’ - 发布 - ‘新版’本微信" => "‘腾讯’ - 发布 - ‘新版’本微信",
             "${item.name}（ID ${item.id}）" => "${item.name}（ID ${item.id}）",
             "{{ t('name') }}：{{ item.extraKeys.join(' | ') }}" => "{{ t('name') }}：{{ item.extraKeys.join(' | ') }}",
+            "The Exchange’s" => "The Exchange’s",
+            "It's revenue \"conditions\" among the suppliers’ “customers”" => "It's revenue \"conditions\" among the suppliers’ “customers”",
         ];
         assert_cases(cases);
     }
@@ -310,15 +310,13 @@ mod tests {
             "：“Not start with word will not change”" => "：“Not start with word will not change”",
             "Come and， Join us！" => "Come and, Join us!",
             "The microphone or camera is occupied，Please check and re-record the video。" => "The microphone or camera is occupied, Please check and re-record the video.",
-            "The Exchange’s" => "The Exchange's",
-            "The “Convertible Amount” case。" => r#"The "Convertible Amount" case."#,
-            "The“Convertible Amount”case。" => r#"The "Convertible Amount" case."#,
+            "The “Convertible Amount” case。" => r#"The “Convertible Amount” case."#,
+            "The“Convertible Amount”case。" => r#"The“Convertible Amount”case."#,
             "The（Convertible Amount）case！" => r#"The (Convertible Amount) case!"#,
             "The【Convertible Amount】case？" => "The [Convertible Amount] case?",
             "The「Convertible Amount」case：" => "The [Convertible Amount] case:",
-            "The《Convertible Amount》case，" => r#"The "Convertible Amount" case,"#,
-            "revenue conditions among the suppliers’ customers" => "revenue conditions among the suppliers' customers",
-            "Reason: CORS header ‘Origin’ cannot be added" => "Reason: CORS header 'Origin' cannot be added",
+            "The《Convertible Amount》case，" => r#"The “Convertible Amount” case,"#,
+            "Reason: CORS header ‘Origin’ cannot be added" => "Reason: CORS header ‘Origin’ cannot be added",
         ];
 
         assert_cases(cases);
@@ -346,10 +344,10 @@ mod tests {
             r#""a。""# => r#""a。""#,
             r#""Hi！""# => r#""Hi!""#,
             r#""hello-world。""# => r#""hello-world.""#,
-            r#"'hello “world”。'"# => r#"'hello "world".'"#,
-            r#""hello “world”。""# => r#""hello \"world\".""#,
-            r#""hello ‘world’。""# => r#""hello 'world'.""#,
-            r#"'hello ‘world’。'"# => r#"'hello \'world\'.'"#,
+            r#"'hello “world”。'"# => r#"'hello “world”.'"#,
+            r#""hello “world”。""# => r#""hello “world”.""#,
+            r#""hello ‘world’。""# => r#""hello ‘world’.""#,
+            r#"'hello ‘world’。'"# => r#"'hello ‘world’.'"#,
             r#""Only the first time break。""# => r#""Only the first time break.""#,
             r#"'Only the first time break？'"# => r#"'Only the first time break?'"#,
             r#"`Only the first time break！`"# => r#"`Only the first time break!`"#,

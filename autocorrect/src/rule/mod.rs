@@ -46,8 +46,19 @@ lazy_static! {
     );
     pub static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
     static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
-    // start with Path or URL http://, https://, mailto://, app://, /foo/bar/dar, without //foo/bar/dar
+    /// Match string start with Path or URL:
+    ///
+    /// ```ignore
+    /// http://
+    /// https://
+    /// mailto://
+    /// app://
+    /// /foo/bar/dar
+    /// ignore //foo/bar/dar
+    /// ```
     static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
+    /// Match string is path with hash, e.g.: `foo-a_01.html#测试test`
+    static ref PATH_HASH_RE: Regex = regexp!("{}", r"[a-zA-Z0-9\-_.]+#[\w\-_.]*[\p{Han}]+[a-zA-Z0-9\-_.]*");
 }
 
 /// Get all rule names for default enable
@@ -111,7 +122,7 @@ pub(crate) fn format_or_lint_with_disable_rules(
 }
 
 fn format_part(result: &mut RuleResult, lint: bool, disable_rules: &HashMap<String, bool>) {
-    if PATH_RE.is_match(&result.out) {
+    if is_match_path(&result.out) || is_match_path_hash(&result.out) {
         return;
     }
 
@@ -164,6 +175,15 @@ fn format_after_rules(result: &mut RuleResult, lint: bool, disable_rules: &HashM
         }
     }
 }
+
+fn is_match_path_hash(text: &str) -> bool {
+    PATH_HASH_RE.is_match(text.trim())
+}
+
+fn is_match_path(text: &str) -> bool {
+    PATH_RE.is_match(text)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::result::Severity;
@@ -264,6 +284,48 @@ mod tests {
                     .collect(),
             );
             assert_eq!(expect, out.out);
+        }
+    }
+
+    #[test]
+    fn test_is_match_path() {
+        let cases = vec!["//foo/bar/foo_bar"];
+        for case in cases {
+            assert_eq!(false, is_match_path(case), "{}", case);
+        }
+
+        let cases = vec![
+            "http://google.com/foo-bar_01.htm",
+            "http://google.com/foo/bar_01?a=1&b=2#foo",
+            "app://foo.com/bar.1",
+            "/foo/bar/foo_bar",
+        ];
+        for case in cases {
+            assert_eq!(true, is_match_path(case), "{}", case);
+        }
+    }
+
+    #[test]
+    fn test_is_match_path_hash() {
+        let cases = vec![
+            "演示#标签",
+            "HashTag的演示#标签1",
+            "foo bar #符号",
+            "记事本,记事本1显示阅读次数#149号",
+        ];
+        for case in cases {
+            assert_eq!(false, is_match_path_hash(case), "{}", case);
+        }
+
+        let cases = vec![
+            "foo-bar_01.htm#测试copy",
+            "foo-bar_01#copy测试",
+            " foo-bar#测试 ",
+            "Foo_bar#a测试",
+            "foo.Bar#测A试1",
+        ];
+        for case in cases {
+            assert_eq!(true, is_match_path_hash(case), "{}", case);
         }
     }
 }

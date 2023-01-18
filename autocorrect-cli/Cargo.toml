@@ -7,7 +7,7 @@ license = "MIT"
 name = "autocorrect-cli"
 readme = "../README.md"
 repository = "https://github.com/huacnlee/autocorrect"
-version = "2.5.8"
+version = "2.6.1"
 
 [[bin]]
 name = "autocorrect"
@@ -15,7 +15,7 @@ path = "src/main.rs"
 
 [dependencies]
 autocorrect = {path = "../autocorrect", version = ">1.0.0"}
-clap = {version = "3", features = ['derive']}
+clap = {version = "4", features = ['derive']}
 ignore = "0.4"
 lazy_static = "1.4.0"
 log = "0.4"
