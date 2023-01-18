@@ -10,6 +10,6 @@ pub fn load(config_str: &str) -> Result<JsValue, wasm_bindgen::JsError> {
             let js_value = wasm_bindgen::JsValue::from_serde(&val).unwrap();
             Ok(js_value)
         }
-        Err(e) => Err(JsError::new(&format!("{}", e))),
+        Err(e) => Err(JsError::new(&format!("{e}"))),
     }
 }

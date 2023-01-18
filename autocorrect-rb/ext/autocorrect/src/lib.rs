@@ -31,7 +31,7 @@ impl LineResult {
     }
 
     pub fn inspect(&self) -> String {
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 
     pub fn to_hash(&self) -> Result<magnus::RHash, Error> {
@@ -66,7 +66,7 @@ impl LintResult {
     }
 
     pub fn inspect(&self) -> String {
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 
     pub fn to_hash(&self) -> Result<magnus::RHash, Error> {

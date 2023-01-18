@@ -3,5 +3,6 @@
   "files.associations": {
     ".autocorrectrc.default": "yaml",
     ".autocorrectrc.test": "yaml"
-  }
+  },
+  "rust-analyzer.check.command": "clippy"
 }

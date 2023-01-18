@@ -25,7 +25,9 @@ jobs:
             target/
           key: ubuntu-test-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Test
-        run: cargo test
+        run: |
+          cargo test
+          cargo clippy
       - name: Lint output
         run: make test:lint
       - name: Init test

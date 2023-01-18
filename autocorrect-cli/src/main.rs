@@ -156,7 +156,7 @@ pub fn main() {
 
             pool.execute(move || match read_file(&filepath) {
                 Ok(raw) => {
-                    bench!(format!("Done {}", filepath), {
+                    bench!(format!("Done {filepath}"), {
                         if cli.lint {
                             let mut lint_results: Vec<String> = Vec::new();
 
@@ -215,8 +215,8 @@ pub fn main() {
 
             log::info!(
                 "{}, {}\n",
-                format!("Error: {}", _err_count).red(),
-                format!("Warning: {}", _warn_count).yellow(),
+                format!("Error: {_err_count}").red(),
+                format!("Warning: {_warn_count}").yellow(),
             );
 
             // print time spend from start_t to now
@@ -239,7 +239,7 @@ pub fn main() {
 fn read_file(filepath: &str) -> io::Result<String> {
     let out;
 
-    bench!(format!("Loaded {}", filepath), {
+    bench!(format!("Loaded {filepath}"), {
         out = fs::read_to_string(filepath);
     });
 

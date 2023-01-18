@@ -138,7 +138,7 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
 
     match autocorrect::config::load(&config_str) {
         Ok(_config) => Ok(()),
-        Err(e) => Err(&format!("{}", e)),
+        Err(e) => Err(&format!("{e}")),
     };
 }
 

@@ -200,7 +200,7 @@ impl LintResult {
         for line in self.lines.iter() {
             out.push_str(&format!("{}:{}:{}\n", filepath, line.line, line.col));
 
-            let out_str = crate::diff::diff_line_result(&line, no_diff_bg_color);
+            let out_str = crate::diff::diff_line_result(line, no_diff_bg_color);
             out.push_str(&out_str);
         }
 
@@ -320,10 +320,10 @@ mod tests {
         assert_eq!(serde_json::to_string(&Severity::Error).unwrap(), "1");
         assert_eq!(serde_json::to_string(&Severity::Warning).unwrap(), "2");
 
-        assert_eq!(Severity::Error.is_error(), true);
-        assert_eq!(Severity::Error.is_warning(), false);
-        assert_eq!(Severity::Warning.is_warning(), true);
-        assert_eq!(Severity::Warning.is_error(), false);
+        assert!(Severity::Error.is_error());
+        assert!(!Severity::Error.is_warning());
+        assert!(Severity::Warning.is_warning());
+        assert!(!Severity::Warning.is_error());
     }
 
     #[test]

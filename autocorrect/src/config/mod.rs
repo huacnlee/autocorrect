@@ -34,11 +34,11 @@ impl ConfigFileTypes for HashMap<String, String> {
             return Some(val);
         }
 
-        if let Some(val) = self.get(&format!("*.{}", ext)) {
+        if let Some(val) = self.get(&format!("*.{ext}")) {
             return Some(val);
         }
 
-        if let Some(val) = self.get(&format!(".{}", ext)) {
+        if let Some(val) = self.get(&format!(".{ext}")) {
             return Some(val);
         }
 
@@ -118,7 +118,7 @@ impl From<std::fmt::Error> for Error {
 impl From<serde_any::Error> for Error {
     fn from(err: serde_any::Error) -> Error {
         Error {
-            message: format!("{:?}", err),
+            message: format!("{err:?}"),
         }
     }
 }
@@ -150,7 +150,7 @@ impl Config {
     pub fn from_str(s: &str) -> Result<Self, Error> {
         let mut config: Config = match serde_any::from_str_any(s) {
             Ok(config) => config,
-            Err(err) => return Err(format!("Config::from_str parse error: {:?}", err).into()),
+            Err(err) => return Err(format!("Config::from_str parse error: {err:?}").into()),
         };
 
         config.prepare();
@@ -205,7 +205,7 @@ pub(crate) fn setup_test() {
             env!("CARGO_MANIFEST_DIR"),
             "/tests/.autocorrectrc.test"
         ));
-        crate::config::load(&config_str).unwrap();
+        crate::config::load(config_str).unwrap();
     })
 }
 

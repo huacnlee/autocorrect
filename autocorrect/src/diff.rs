@@ -29,13 +29,13 @@ type OnColorFn = fn(s: char, color: owo_colors::AnsiColors) -> String;
 #[inline]
 fn on_color(s: char, color: owo_colors::AnsiColors) -> String {
     let t = s.on_color(color).color(Black);
-    format!("{}", t)
+    format!("{t}")
 }
 
 #[inline]
 fn on_color_transparent(s: char, color: owo_colors::AnsiColors) -> String {
     let t = s.color(color);
-    format!("{}", t)
+    format!("{t}")
 }
 
 // Screenshot:
@@ -79,7 +79,7 @@ pub(crate) fn diff_lines_with_err_color(
                         out.push('\n');
                     }
                     _ => {
-                        writeln!(out, "{}", format!("-{}", x).color(err_color));
+                        writeln!(out, "{}", format!("-{x}").color(err_color));
                     }
                 };
             }
@@ -104,7 +104,7 @@ pub(crate) fn diff_lines_with_err_color(
                         out.push('\n');
                     }
                     _ => {
-                        writeln!(out, "{}", format!("+{}", x).color(Green));
+                        writeln!(out, "{}", format!("+{x}").color(Green));
                     }
                 };
             }

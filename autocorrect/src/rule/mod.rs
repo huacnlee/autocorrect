@@ -1,5 +1,6 @@
 // autocorrect: false
 mod fullwidth;
+#[allow(clippy::module_inception)]
 mod rule;
 mod strategery;
 mod word;
@@ -291,7 +292,7 @@ mod tests {
     fn test_is_match_path() {
         let cases = vec!["//foo/bar/foo_bar"];
         for case in cases {
-            assert_eq!(false, is_match_path(case), "{}", case);
+            assert!(!is_match_path(case), "{}", case);
         }
 
         let cases = vec![
@@ -301,7 +302,7 @@ mod tests {
             "/foo/bar/foo_bar",
         ];
         for case in cases {
-            assert_eq!(true, is_match_path(case), "{}", case);
+            assert!(is_match_path(case), "{}", case);
         }
     }
 
@@ -314,7 +315,7 @@ mod tests {
             "记事本,记事本1显示阅读次数#149号",
         ];
         for case in cases {
-            assert_eq!(false, is_match_path_hash(case), "{}", case);
+            assert!(!is_match_path_hash(case), "{}", case);
         }
 
         let cases = vec![
@@ -325,7 +326,7 @@ mod tests {
             "foo.Bar#测A试1",
         ];
         for case in cases {
-            assert_eq!(true, is_match_path_hash(case), "{}", case);
+            assert!(is_match_path_hash(case), "{}", case);
         }
     }
 }

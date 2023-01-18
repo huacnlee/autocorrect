@@ -21,7 +21,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
             }
         }
         Err(_err) => {
-            out.error(format!("{}", _err).as_str());
+            out.error(&_err.to_string());
         }
     }
 
@@ -30,7 +30,7 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
 
 fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
     let rule = item.as_rule();
-    format!("{:?}", rule)
+    format!("{rule:?}")
 }
 
 fn format_pair<R: RuleType, O: Results>(results: &mut O, item: Pair<R>) {

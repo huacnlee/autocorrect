@@ -10,27 +10,18 @@ use crate::{FormatResult, LineResult, LintResult};
 #[grammar = "../grammar/jupyter.pest"]
 struct JupyterParser;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Default)]
 struct NotebookCell<'a> {
     cell_type: &'a str,
     sources: Option<Vec<Source<'a>>>,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Default, Clone, Serialize)]
 struct Source<'a> {
     input: &'a str,
     start: usize,
     end: usize,
     line_col: (usize, usize),
-}
-
-impl<'a> Default for NotebookCell<'a> {
-    fn default() -> Self {
-        NotebookCell {
-            cell_type: "",
-            sources: None,
-        }
-    }
 }
 
 impl<'a> NotebookCell<'a> {
@@ -118,48 +109,42 @@ fn parse_jupyter(input: &str) -> Result<Vec<NotebookCell>, String> {
     let mut cell = NotebookCell::default();
 
     while let Some(pair) = iter.next() {
-        match pair.as_rule() {
-            Rule::key => {
-                match pair.as_str() {
-                    "cell_type" => {
-                        // pair > key > string
-                        let text = iter.next().unwrap().as_str();
-                        cell.cell_type = text;
+        if let Rule::key = pair.as_rule() {
+            match pair.as_str() {
+                "cell_type" => {
+                    // pair > key > string
+                    let text = iter.next().unwrap().as_str();
+                    cell.cell_type = text;
 
-                        if !cell.cell_type.is_empty() && cell.sources.is_some() {
-                            cells.push(cell);
-                            cell = NotebookCell::default()
-                        }
+                    if !cell.cell_type.is_empty() && cell.sources.is_some() {
+                        cells.push(cell);
+                        cell = NotebookCell::default()
                     }
-                    "source" => {
-                        // pair > array > [value]
-                        let array_pair = iter.next().unwrap();
-                        match array_pair.as_rule() {
-                            Rule::array => {
-                                let sub_iter = array_pair.clone().into_inner().peekable();
-                                for sub_pair in sub_iter {
-                                    let span = sub_pair.as_span();
-                                    let source = Source {
-                                        input: span.as_str(),
-                                        start: span.start(),
-                                        end: span.end(),
-                                        line_col: sub_pair.line_col(),
-                                    };
-                                    cell.push_source(source);
-                                }
-                            }
-                            _ => {}
-                        }
-
-                        if !cell.cell_type.is_empty() && cell.sources.is_some() {
-                            cells.push(cell);
-                            cell = NotebookCell::default()
-                        }
-                    }
-                    _ => {}
                 }
+                "source" => {
+                    // pair > array > [value]
+                    let array_pair = iter.next().unwrap();
+                    if let Rule::array = array_pair.as_rule() {
+                        let sub_iter = array_pair.clone().into_inner().peekable();
+                        for sub_pair in sub_iter {
+                            let span = sub_pair.as_span();
+                            let source = Source {
+                                input: span.as_str(),
+                                start: span.start(),
+                                end: span.end(),
+                                line_col: sub_pair.line_col(),
+                            };
+                            cell.push_source(source);
+                        }
+                    }
+
+                    if !cell.cell_type.is_empty() && cell.sources.is_some() {
+                        cells.push(cell);
+                        cell = NotebookCell::default()
+                    }
+                }
+                _ => {}
             }
-            _ => {}
         }
     }
 

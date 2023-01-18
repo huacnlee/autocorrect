@@ -73,7 +73,7 @@ mod tests {
 
     #[test]
     fn test_rule_not_pass() {
-        let rule = Rule::new("space-word", |input| format!("{} - foo", input.to_string()));
+        let rule = Rule::new("space-word", |input| format!("{input} - foo"));
         assert_eq!(rule.severity(), SeverityMode::Error);
         assert_eq!(rule.name, "space-word");
 
