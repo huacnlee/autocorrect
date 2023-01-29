@@ -3,9 +3,9 @@ set -u
 type curl > /dev/null || { echo "curl: not found"; exit 1; }
 
 get_latest_release() {
-	curl --silent "https://api.github.com/repos/$repo/releases/latest" | # Get latest release from GitHub api
-		grep '"tag_name":' |                                               # Get tag line
-		sed -E 's/.*"([^"]+)".*/\1/'                                       # Pluck JSON value
+    curl --silent "https://api.github.com/repos/$repo/releases/latest" | # Get latest release from GitHub api
+        grep '"tag_name":' |                                               # Get tag line
+        sed -E 's/.*"([^"]+)".*/\1/'                                       # Pluck JSON value
 }
 
 repo='huacnlee/autocorrect'
@@ -18,16 +18,16 @@ echo "Downloading $bin_name@$version ..."
 
 libc=''
 if ldd --version 2>&1 | grep -q 'musl'; then
-	libc='-musl'
+    libc='-musl'
 fi
 
 curl -Lo $bin_name.tar.gz https://github.com/$repo/releases/download/$version/$bin_name-$platform$libc-$arch.tar.gz
 tar zxf $bin_name.tar.gz
 
 if test $(id -u) -eq 0; then
-	mv $bin_name /usr/local/bin/$bin_name
+    mv $bin_name /usr/local/bin/$bin_name
 else
-	sudo mv $bin_name /usr/local/bin/$bin_name
+    sudo mv $bin_name /usr/local/bin/$bin_name
 fi
 
 rm $bin_name.tar.gz
