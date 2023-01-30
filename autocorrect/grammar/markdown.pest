@@ -1,3 +1,4 @@
+//! Markdown grammar for supports CommonMark and GFM.
 item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | newline }
 
@@ -5,6 +6,7 @@ expr = _{
   comment | html_tag | meta_info | block | inline | td_tag
 }
 
+/// Matches a CJK character
 CJK = { 
   HAN
   | HANGUL 
@@ -12,6 +14,7 @@ CJK = {
   | BOPOMOFO
 }
 
+/// Block elements, e.g.: paragraphs, lists, code blocks, etc.
 block = ${ 
   meta_tags
   | list
@@ -19,26 +22,33 @@ block = ${
   | block_item
   | paragraph  
 }
+/// Inline elements, e.g.: links, images, bold, italic, code, etc.
 inline = ${ wikilinks | img | link | code | mark }
 paragraph = { (string | inline)+ }
 
+/// Matches HTML tags (In some Markdown implementations, HTML tags are allowed)
 html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
-IDENT = @{ ("_" | "-" | "." | ASCII_ALPHANUMERIC) }
+identifier = @{ ("_" | "-" | "." | ASCII_ALPHANUMERIC) }
 
 newline = ${ "\n" | "\r" }
 space = @{ " "* }
+
+/// 4 spaces or a tab
 indent = @{ " "{4,} | "\t" }
 
 codeblock = ${
   PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
   | indent_code+
 }
+/// Codeblock that used 4 spaces or a tab as indent
 indent_code = @{
   indent ~ (!"\n" ~ ANY)* ~ newline
 }
-codeblock_lang = { IDENT* }
+codeblock_lang = { identifier* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
+
+/// Matches table cell
 td_tag = @{ space ~ "|" ~ space }
 
 block_prefix = @{
@@ -68,13 +78,20 @@ list_prefix = @{
   )
 }
 
+/// Matches meta info for some special Markdown implementations, e.g.: YAML front matter
+/// For example:
+///
+/// ------------------
+/// title: Hello World
+/// author: Jason Lee
+/// tags: Rust, JavaScript
+/// ------------------
 meta_info = ${ meta_wrap ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }
 meta_wrap = @{ "-"{3,} }
 meta_pair = ${ meta_key ~ string ~ newline }
-meta_key = @{ (!(":" | newline) ~ IDENT)* ~ ":" ~ " "* }
+meta_key = @{ (!(":" | newline) ~ identifier)* ~ ":" ~ " "* }
 
-// Ignore tags in Markdown
-// tags: 美国, 中国
+/// Ignore tags in Markdown, e.g.: "tags: 美国, 中国"
 meta_tags = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ NEWLINE }
 meta_tags_val = @{ meta_tags_item ~ meta_tags_divider }
 meta_tags_item = { (!(newline | ",")  ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
@@ -101,6 +118,7 @@ inner_code = @{ (!(newline | PEEK) ~ ANY)*  }
 
 string = @{ (!(newline | inline) ~ ANY)+ }
 
+/// HTML comment, e.g.: <!-- This is a comment -->
 comment = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
 open_comment = @{  "<!--" }
 close_comment = @{ "-->" }
