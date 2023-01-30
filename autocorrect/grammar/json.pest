@@ -1,7 +1,5 @@
 item = _{ SOI ~ line* ~ EOI } 
-line = _{ object | array | other }
-
-other = ${ ANY }
+line = _{ object | array }
 
 WHITESPACE = { " " | "\t" | NEWLINE }
 
@@ -9,8 +7,8 @@ line_comment  = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 COMMENT       = { line_comment | block_comment }
 
-value        = { string | number | object | array | bool | null }
-string       = ${ inner_string }
+value        = _{ string | number | object | array | bool | null }
+string       = @{ inner_string }
 inner_string = @{ "\"" ~ inner ~ "\"" }
 number = @{ "-"? ~ int ~ ("." ~ ASCII_DIGIT+ ~ exp? | exp)? }
 int    = @{ "0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
@@ -28,7 +26,7 @@ close_array = @{ "]" }
 
 comma = @{ "," }
 
-pair    = _{ key ~ value }
+pair    = { key ~ value }
 key     = { inner_string ~ colon }
 colon   = @{ ":" }
 
