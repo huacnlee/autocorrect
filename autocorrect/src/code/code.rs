@@ -8,6 +8,16 @@ use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
 use std::result::Result;
 
+trait RuleTypeToString {
+    fn to_string(&self) -> String;
+}
+
+impl<R: RuleType> RuleTypeToString for R {
+    fn to_string(&self) -> String {
+        format!("{self:?}")
+    }
+}
+
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
     // Limit parse stack max depth for avoiding some complex parser will hangs indefinitely.
     pest::set_call_limit(Some(10_000_000usize.try_into().unwrap()));
@@ -28,22 +38,19 @@ pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Err
     out
 }
 
-fn get_rule_name<R: RuleType>(item: &Pair<R>) -> String {
-    let rule = item.as_rule();
-    format!("{rule:?}")
-}
-
 fn format_pair<R: RuleType, O: Results>(results: &mut O, pair: Pair<R>) {
-    let rule_name = get_rule_name(&pair);
+    let rule = pair.as_rule();
+    let rule_name = rule.to_string();
+    let rule_name = rule_name.as_str();
 
     // println!("rule: {}, {}", rule_name, item.as_str());
 
-    match rule_name.as_str() {
+    match rule_name {
         "string" | "link_string" | "mark_string" | "text" | "comment" | "COMMENT" => {
-            format_or_lint(results, &rule_name, pair);
+            format_or_lint(results, rule_name, pair);
         }
         "inline_style" | "inline_javascript" | "codeblock" => {
-            format_or_lint_for_inline_scripts(results, pair, &rule_name);
+            format_or_lint_for_inline_scripts(results, pair, rule_name);
         }
         _ => {
             let mut has_child = false;
@@ -265,7 +272,7 @@ impl Codeblock {
         codeblock.data = item.as_str().to_string();
 
         for child in item.into_inner() {
-            match get_rule_name(&child).as_str() {
+            match child.as_rule().to_string().as_str() {
                 "codeblock_lang" => {
                     codeblock.lang = child.as_str().to_string();
                 }
