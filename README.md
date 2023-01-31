@@ -16,9 +16,9 @@
 
 > 🎯 AutoCorrect 的愿景是提供一套标准化的文案较正方案。以便于在各类场景（例如：撰写书籍、文档、内容发布、项目源代码...）里面应用，让使用者轻松实现标准化、专业化的文案输出 / 校正。
 
-AutoCorrect is a linter and formatter to help you to improve copywriting, correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean).
+AutoCorrect is a linter and formatter to help you to improve copywriting, correct spaces, words, and punctuations between CJK (Chinese, Japanese, Korean).
 
-Like Eslint, Rubocop, Gofmt ..., AutoCorrect allows us to check source code, and output as colorized diff with corrected suggest. You can integrate to CI (GitLab CI, GitHub Action, Travis CI....) for use to checking the contents in source code. Recognize the file name, and find out the strings and the comment part.
+Like Eslint, Rubocop and Gofmt ..., AutoCorrect allows us to check source code, and output as colorized diff with corrected suggestions. You can integrate to CI (GitLab CI, GitHub Action, Travis CI....) for use to check the contents in source code. Recognize the file name, and find out the strings and the comment part.
 
 AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或「检查并建议」文案，给 CJK（中文、日语、韩语）与英文混写的场景，补充正确的空格，纠正单词，同时尝试以安全的方式自动纠正标点符号等等。
 
@@ -32,14 +32,14 @@ AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或�
 
 ## Features
 
-- Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
+- Add spacing between CJK (Chinese, Japanese, Korean) and English words.
 - Correct punctuations into full-width near the CJK.
-- Correct punctuations into half-width in english contents.
-- (Experimental) Spellcheck and correct words by your own dictionary.
-- Lint checking and output diff or JSON result, so you can integrate to everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
+- Correct punctuations into half-width in English content.
+- (Experimental) Spellcheck and correct words with your dictionary.
+- Lint checking and output diff or JSON result, so you can integrate everywhere (GitLab CI, GitHub Action, VS Code, Vim, Emacs...)
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
-- Support more than [28 file types](https://github.com/huacnlee/autocorrect/tree/main/autocorrect/grammar) (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, comments.
-- Cross platform for Linux, macOS, Windows, and WebAssembly, and as Native SDK for programming (Node.js, JavaScript Browser, Ruby, Python, Java).
+- Support more than [28 file types](https://github.com/huacnlee/autocorrect/tree/main/autocorrect/grammar) (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, and comments.
+- Cross-platform for Linux, macOS, Windows, and WebAssembly, and as Native SDK for programming (Node.js, JavaScript Browser, Ruby, Python, Java).
 
 ## 典型应用场景
 
@@ -57,7 +57,7 @@ AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或�
 $ brew install autocorrect
 ```
 
-Or you can just install via this:
+Or you can just install it via this:
 
 ```bash
 $ curl -sSL https://git.io/JcGER | sh
@@ -139,7 +139,7 @@ AutoCorrect init config: .autocorrectrc
 
 > NOTE: If you download fail, try to use `autocorrect init --local` command again.
 
-Now the `.autocorrectrc` file has created.
+Now the `.autocorrectrc` file has been created.
 
 > .autocorrectrc is allows use YAML, JSON format.
 
@@ -196,13 +196,13 @@ spellcheck:
 
 > Since: 2.2.0
 
-When you wants to config some special words or texts to ignore on format or lint.
+When you want to config some special words or texts to ignore on format or lint.
 
 The `textRules` config may help you.
 
-For example we wants:
+For example, we want:
 
-- `Hello世界` - To just give warning.
+- `Hello世界` - To just give a warning.
 - `Hi你好` - To ignore.
 
 Use can config:
@@ -213,22 +213,22 @@ textRules:
   Hi你好: 0
 ```
 
-After that, the AutoCorrect will follow your `textRules` to process.
+After that, AutoCorrect will follow your `textRules` to process.
 
 #### Ignore files
 
 **Use `.autocorrectignore` to ignore files**
 
-Sometimes, you may want to ignore some special files that not wants to check.
+Sometimes, you may want to ignore some special files that not want to check.
 
 By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
 
-#### Disable with inline comment
+#### Disable by inline comment
 
-If you just want to disable some special lines in file, you can write a comment `autocorrect-disable`,
-when AutoCorrect matched comment include that, it will disable temporary.
+If you just want to disable some special lines in a file, you can write a comment `autocorrect-disable`,
+when AutoCorrect matched the comment include that, it will disable temporarily.
 
 And then, you can use `autocorrect-enable` to reopen it again.
 
@@ -260,7 +260,7 @@ function hello() {
 
 > Since: 2.0
 
-You can use `autocorrect-disable <rule>` in comment to disable some rules.
+You can use `autocorrect-disable <rule>` in a comment to disable some rules.
 
 > Rule names please see: [Configuration](#configuration)
 
@@ -339,7 +339,7 @@ autocorrect:
 
 ### Use for programming
 
-AutoCorrect make for supports use in many programming languages.
+AutoCorrect makes for support use in many programming languages.
 
 - Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
 - Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-rb)
@@ -383,7 +383,7 @@ lint_to_diff            time:   [1.8632 ms 1.8801 ms 1.9030 ms]
 
 ### Real world benchmark
 
-With [MDN Translated Content](https://github.com/mdn/translated-content) project, it's has about 30K files.
+With [MDN Translated Content](https://github.com/mdn/translated-content) project, it has about 30K files.
 
 ```bash
 ~/work/translated-content $ autocorrect --fix
