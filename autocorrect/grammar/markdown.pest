@@ -29,7 +29,7 @@ paragraph = { (inline | text)+ }
 text   = @{ string ~ (newline ~ string)* } 
 
 /// Matches HTML tags (In some Markdown implementations, HTML tags are allowed)
-html = { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end? }
+html = { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end }
 inner_html = _{ html | inner_text }
 inner_text = { (!("<" | ">") ~ ANY)+ } 
 tag_start = @{ "<" ~ ws* ~ (!("/" | ">") ~ ANY)* ~ ws* ~ ">" }
