@@ -340,4 +340,12 @@ mod tests {
             lint_result.lines[1].new
         );
     }
+
+    #[test]
+    fn test_complex_markdown() {
+        let raw = include_str!("../../../tests/fixtures/markdown.raw.md");
+        let expected = include_str!("../../../tests/fixtures/markdown.fixed.md");
+
+        assert_eq!(expected, format_markdown(raw).out);
+    }
 }
