@@ -145,6 +145,8 @@ mod tests {
         - 一个[[Wikilinks测试]]示例
 
         请记住:对该仓库的贡献,应遵循我们的GitHub社区准则。
+
+        首先将数组排序（为二分查找做准备），然后对于数组中的每个 a[i]，使用BinarySearch的rank() 方法对-a[i]进行二分查找。如果结果为j且j＞i，我们就将计数器加1。
         "###};
 
         let expected = indoc! {r###"
@@ -273,6 +275,8 @@ mod tests {
         - 一个[[Wikilinks测试]]示例
 
         请记住：对该仓库的贡献，应遵循我们的 GitHub 社区准则。
+
+        首先将数组排序（为二分查找做准备），然后对于数组中的每个 a[i]，使用 BinarySearch 的 rank() 方法对-a[i]进行二分查找。如果结果为 j 且 j＞i，我们就将计数器加 1。
         "###};
 
         assert_eq!(expected, format_for(example, "markdown").to_string());

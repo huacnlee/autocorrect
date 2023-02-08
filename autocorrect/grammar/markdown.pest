@@ -24,15 +24,15 @@ block = ${
 }
 /// Inline elements, e.g.: links, images, bold, italic, code, etc.
 inline = ${ wikilinks | img | link | code | mark }
-paragraph = { (string | inline)+ }
+paragraph = { (inline | string)+ }
 
 /// Matches HTML tags (In some Markdown implementations, HTML tags are allowed)
 html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
 
 identifier = @{ ("_" | "-" | "." | ASCII_ALPHANUMERIC) }
 
-newline = ${ "\n" | "\r" }
-space = @{ " "* }
+newline = { "\n" | "\r\n" }
+space = @{ " " }
 
 /// 4 spaces or a tab
 indent = @{ " "{4,} | "\t" }
@@ -49,7 +49,7 @@ codeblock_lang = { identifier* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
 
 /// Matches table cell
-td_tag = @{ space ~ "|" ~ space }
+td_tag = @{ space* ~ "|" ~ space* }
 
 block_prefix = @{
    ("######" | "#####" | "####" | "###" | "##" | "#" | ">") ~ " "*
@@ -92,7 +92,7 @@ meta_pair = ${ meta_key ~ string ~ newline }
 meta_key = @{ (!(":" | newline) ~ identifier)* ~ ":" ~ " "* }
 
 /// Ignore tags in Markdown, e.g.: "tags: 美国, 中国"
-meta_tags = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ NEWLINE }
+meta_tags = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ newline }
 meta_tags_val = @{ meta_tags_item ~ meta_tags_divider }
 meta_tags_item = { (!(newline | ",")  ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
 meta_tags_divider = { " "* ~ "," ~ " "* }
@@ -100,9 +100,10 @@ meta_tags_divider = { " "* ~ "," ~ " "* }
 image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
 
-link = ${ link_string ~ href }
+/// Matches link, e.g.: `[Hello](/hello)` or `[Hello]`
+link = ${ link_string ~ href? }
 link_string = { "[" ~ (!("]" | newline) ~ ANY)* ~ "]" }
-href = { paren }
+href = @{ paren }
 
 wikilinks = ${"[[" ~ (!("]]" | newline) ~ ANY)* ~ "]]" }
 
@@ -120,10 +121,11 @@ string = @{ (!(newline | inline) ~ ANY)+ }
 
 /// HTML comment, e.g.: <!-- This is a comment -->
 comment = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
-open_comment = @{  "<!--" }
+open_comment  = @{  "<!--" }
 close_comment = @{ "-->" }
 
-paren = { open_paren ~ paren* ~ close_paren | inner_paren }
-inner_paren = { (!(newline | open_paren | close_paren) ~ ANY)+ } 
-open_paren = { "(" }
+/// Matches link href part, e.g.: `(hello (world))`
+paren = { open_paren ~ inner_paren ~ paren* ~ inner_paren* ~ close_paren | open_paren ~ close_paren }
+inner_paren = { (!(newline | open_paren | close_paren) ~ ANY)+ }
+open_paren  = { "(" }
 close_paren = { ")" }
