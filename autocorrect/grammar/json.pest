@@ -1,7 +1,7 @@
 item = _{ SOI ~ line* ~ EOI } 
 line = _{ object | array | other }
 
-other = ${ ANY }
+other = ${ !(pair) ~ ANY }
 
 WHITESPACE = { " " | "\t" | NEWLINE }
 
@@ -9,26 +9,27 @@ line_comment  = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
 COMMENT       = { line_comment | block_comment }
 
-value        = { string | number | object | array | bool | null }
-string       = ${ inner_string }
+value        = _{ string | number | object | array | bool | null }
+string       = @{ inner_string }
 inner_string = @{ "\"" ~ inner ~ "\"" }
+
 number = @{ "-"? ~ int ~ ("." ~ ASCII_DIGIT+ ~ exp? | exp)? }
 int    = @{ "0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
 exp    = @{ ("E" | "e") ~ ("+" | "-")? ~ ASCII_DIGIT+ }
-bool = { "true" | "false" }
-null = { "null" }
+bool   = @{ "true" | "false" }
+null   = @{ "null" }
 
-object = { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
-open_object = @{ "{" }
+object       = { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
+open_object  = @{ "{" }
 close_object = @{ "}" }
 
-array = { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
-open_array = @{ "[" }
+array       = { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
+open_array  = @{ "[" }
 close_array = @{ "]" }
 
 comma = @{ "," }
 
-pair    = _{ key ~ value }
+pair    = { key ~ value }
 key     = { inner_string ~ colon }
 colon   = @{ ":" }
 
