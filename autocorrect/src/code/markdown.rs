@@ -37,6 +37,8 @@ mod tests {
         [Link
         支持Soft换行](https://google.com)
 
+        [`code代码在Link里面`](/zh-CN/docs/Web/API/Blob)方法将每个.
+
         它指向一个[示例](#示例)
 
         ## This is list
@@ -172,6 +174,8 @@ mod tests {
 
         [Link
         支持 Soft 换行](https://google.com)
+
+        [`code代码在Link里面`](/zh-CN/docs/Web/API/Blob)方法将每个。
 
         它指向一个[示例](#示例)
 

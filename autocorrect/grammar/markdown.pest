@@ -112,14 +112,17 @@ image_prefix = @{ "!" }
 img = ${ image_prefix ~ link }
 
 /// Matches link, e.g.: `[Hello](/hello)` or `[Hello]`
-link = ${ link_string ~ href? }
-link_string = { "[" ~ (!("]") ~ ANY)* ~ "]" }
+link = ${ link_string_wrap ~ href? }
+link_string_wrap = { open_bracket ~ (mark* ~ link_string ~ mark*) ~ close_bracket }
+link_string = @{ (!(close_bracket) ~ ANY)* }
+open_bracket = @{ "[" }
+close_bracket = @{ "]" }
 href = @{ paren }
 
 wikilinks = ${"[[" ~ (!("]]") ~ ANY)* ~ "]]" }
 
-mark = ${ PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
-open_mark = @{ "***" | "**" | "*" | "~~" | "`" | "\"" }
+mark = ${ code | PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
+open_mark = @{ "***" | "**" | "*" | "~~" | "\"" }
 close_mark = @{ POP }
 mark_string = { (!(PEEK | inline) ~ ANY)* }
 
