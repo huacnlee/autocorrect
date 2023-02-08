@@ -124,7 +124,10 @@ mod tests {
 
         ## HTML标签里面的不处理，只处理文本
 
-        <div title="HTML标签里面都不处理"><h2>这是H2标题</h2><p>这里是p段落。</p></div>
+        <div title="HTML标签里面都不处理"> Foo
+          <h2> 这是H2标题</h2>
+              <p>这里是p段落。 </p>
+            </div>
         <a href="#NTSC制式" />
         <a href="https://zh.wikipedia.org/wiki/NTSC制式">NTSC制式</a>
 
@@ -254,7 +257,10 @@ mod tests {
 
         ## HTML 标签里面的不处理，只处理文本
 
-        <div title="HTML标签里面都不处理"><h2>这是 H2 标题</h2><p>这里是 p 段落。</p></div>
+        <div title="HTML标签里面都不处理"> Foo
+          <h2> 这是 H2 标题</h2>
+              <p>这里是 p 段落。 </p>
+            </div>
         <a href="#NTSC制式" />
         <a href="https://zh.wikipedia.org/wiki/NTSC制式">NTSC 制式</a>
 

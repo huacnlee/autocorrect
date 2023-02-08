@@ -3,7 +3,7 @@ item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | newline }
 
 expr = _{ 
-  comment | html_tag | meta_info | block | inline | td_tag
+  comment | html | meta_info | block | inline | td_tag
 }
 
 /// Matches a CJK character
@@ -17,6 +17,7 @@ CJK = {
 /// Block elements, e.g.: paragraphs, lists, code blocks, etc.
 block = ${ 
   meta_tags
+  | hr
   | list
   | codeblock
   | block_item
@@ -24,15 +25,25 @@ block = ${
 }
 /// Inline elements, e.g.: links, images, bold, italic, code, etc.
 inline = ${ wikilinks | img | link | code | mark }
-paragraph = { (inline | string)+ }
+paragraph = { (inline | text)+ }
+text   = @{ string ~ (newline ~ string)* } 
 
 /// Matches HTML tags (In some Markdown implementations, HTML tags are allowed)
-html_tag = @{ "<" ~ "/"? ~ (!(">") ~ ANY)* ~ ">"  }
+html = { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end? }
+inner_html = _{ html | inner_text }
+inner_text = { (!("<" | ">") ~ ANY)+ } 
+tag_start = @{ "<" ~ ws* ~ (!("/" | ">") ~ ANY)* ~ ws* ~ ">" }
+tag_end = @{ "</" ~ ws* ~ (!">" ~ ANY)* ~ ws* ~ ">" }
+tag_self = @{ "<" ~ ws* ~ (!(">" | "/>") ~ ANY)* ~ ws* ~ "/>" }
+
+hr = @{ "--" ~ "-"+ }
 
 identifier = @{ ("_" | "-" | "." | ASCII_ALPHANUMERIC) }
 
-newline = { "\n" | "\r\n" }
+newline = @{ "\n" | "\r\n" }
 space = @{ " " }
+blank_line = @{ space* ~ newline }
+ws = @{ space | newline }
 
 /// 4 spaces or a tab
 indent = @{ " "{4,} | "\t" }
@@ -52,9 +63,9 @@ codeblock_code = { (!(PEEK) ~ ANY)* }
 td_tag = @{ space* ~ "|" ~ space* }
 
 block_prefix = @{
-   ("######" | "#####" | "####" | "###" | "##" | "#" | ">") ~ " "*
+   ("######" | "#####" | "####" | "###" | "##" | "#" | ">")
 }
-block_item = { (block_prefix ~ (inline | string)+)  }
+block_item = { (block_prefix ~ space* ~ (inline | string)+)  }
 
 list = { list_item ~ (list_item | list_paragraph)*  }
 list_item = ${ list_prefix ~ (inline | string)+ ~ newline+ }
@@ -68,7 +79,7 @@ list_prefix = @{
     [x] Foo
   */
   (
-    " "* ~ 
+    space* ~ 
     (
       "*" 
       | "-" 

@@ -46,7 +46,8 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, pair: Pair<R>) {
     // println!("rule: {}, {}", rule_name, item.as_str());
 
     match rule_name {
-        "string" | "link_string" | "mark_string" | "text" | "comment" | "COMMENT" => {
+        "string" | "link_string" | "mark_string" | "text" | "inner_text" | "comment"
+        | "COMMENT" => {
             format_or_lint(results, rule_name, pair);
         }
         "inline_style" | "inline_javascript" | "codeblock" => {
