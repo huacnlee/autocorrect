@@ -34,6 +34,9 @@ mod tests {
 
         # 这是Heading 1大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
 
+        [Link
+        支持Soft换行](https://google.com)
+
         它指向一个[示例](#示例)
 
         ## This is list
@@ -166,6 +169,9 @@ mod tests {
         Example: Hello 你好，世界。
 
         # 这是 Heading 1 大标题[示例](#示例)，代码内部：`minmax(最小值,最大值10)`不应该改变。
+
+        [Link
+        支持 Soft 换行](https://google.com)
 
         它指向一个[示例](#示例)
 
