@@ -1,0 +1,25 @@
+expr = _{ SOI ~ line* ~ EOI }
+line = _{ cjk | word | space | newline | other }
+other = @{ postfix_word | ANY }
+
+cjk = { 
+  (HAN | HANGUL | KATAKANA | HIRAGANA | BOPOMOFO)+
+}
+
+word = @{ 
+    // foo, 100
+    ASCII_ALPHANUMERIC+ | 
+    // +100, -100
+    ("+" | "-") ~ NUMBER+ |
+    // 100%
+    NUMBER+ ~ "%" |
+    // 100.224
+    NUMBER+ ~ "." ~ NUMBER+ |
+    "-"
+}
+
+space = @{ " " | "\t" }
+newline = @{ NEWLINE }
+
+// $1, %100, \s
+postfix_word = @{ ("$" | "%" | "\\") ~ ASCII_ALPHANUMERIC+ }

@@ -3,6 +3,7 @@ mod fullwidth;
 #[allow(clippy::module_inception)]
 mod rule;
 mod strategery;
+mod text;
 mod word;
 
 pub mod halfwidth;
@@ -10,6 +11,7 @@ pub mod spellcheck;
 
 use std::collections::HashMap;
 
+pub struct TextParser;
 use regex::Regex;
 use rule::{Rule, RuleResult};
 
@@ -75,7 +77,8 @@ pub fn default_rule_names() -> Vec<String> {
 }
 
 pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
-    format_or_lint_with_disable_rules(text, lint, &map![])
+    // format_or_lint_with_disable_rules(text, lint, &map![])
+    text::format(text)
 }
 
 pub(crate) fn format_or_lint_with_disable_rules(
