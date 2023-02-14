@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Config",
+  "type": "object",
+  "properties": {
+    "fileTypes": {
+      "default": {},
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "rules": {
+      "default": {},
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/SeverityMode"
+      }
+    },
+    "spellcheck": {
+      "default": {
+        "mode": null,
+        "words": []
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/SpellcheckConfig"
+        }
+      ]
+    },
+    "textRules": {
+      "default": {},
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/SeverityMode"
+      }
+    }
+  },
+  "definitions": {
+    "SeverityMode": {
+      "type": "string",
+      "enum": [
+        "off",
+        "error",
+        "warning"
+      ]
+    },
+    "SpellcheckConfig": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "description": "DEPRACTED: use `rules.spellcheck` instead",
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SeverityMode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "words": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
