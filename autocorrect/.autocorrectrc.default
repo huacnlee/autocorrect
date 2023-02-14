@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://huacnlee.github.io/autocorrect/schema.json
 rules:
   # Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
   # 0 - off, 1 - error, 2 - warning

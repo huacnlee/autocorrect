@@ -1,0 +1,3 @@
+# yaml-language-server: $schema=./public/schema.json
+rules:
+  spellcheck: "off"
