@@ -146,6 +146,7 @@ Now the `.autocorrectrc` file has been created.
 Config file example:
 
 ```yml
+# yaml-language-server: $schema=https://huacnlee.github.io/autocorrect/schema.json
 # Config rules
 rules:
   # Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.
