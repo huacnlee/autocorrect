@@ -1,10 +1,11 @@
-item = _{ SOI ~ line* ~ EOI } 
+item = _{ SOI ~ line* ~ EOI }
 line = _{ other }
-
 other = ${ !(COMMENT) ~ ANY }
 
+/// Whitespace
 WHITESPACE = { " " | "\t" | NEWLINE }
 
+/// Comment
 line_comment  = _{ "#" ~ (!(NEWLINE) ~ ANY)* }
-block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 COMMENT       = ${ line_comment | block_comment }

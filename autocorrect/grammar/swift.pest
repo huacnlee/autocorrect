@@ -1,26 +1,28 @@
-item = _{ SOI ~ line* ~ EOI } 
+//! Swift Parser
+item = _{ SOI ~ line* ~ EOI }
 line = _{ ignore_string | string | other }
-
 other = ${ !(string) ~ ANY }
-
 WHITESPACE = { " " | "\t" | NEWLINE }
 
-line_comment  = _{ "//" ~ (!NEWLINE ~ ANY)* }
-block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/"}
+/// Comment
 COMMENT       = ${ line_comment | block_comment }
+line_comment  = _{ "//" ~ (!NEWLINE ~ ANY)* }
+block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
 
+/// String
 string       = ${ inner_string }
-inner_string = _{ 
-  "\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\""
+inner_string = _{
+    "\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\""
   | "\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\""
 }
 
-BLANK = _{ NEWLINE | WHITE_SPACE }
-
-ingore_methods = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
-ignore_arguments = _{ ("pattern" | "key") ~ ":"  }
-
+/// Ingores
+ingore_methods   = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
+ignore_arguments = _{ ("pattern" | "key") ~ ":" }
 ignore_string = ${
-  ignore_arguments ~ BLANK* ~ inner_string
+    ignore_arguments ~ BLANK* ~ inner_string
   | ingore_methods ~ "(" ~ BLANK* ~ inner_string
 }
+
+/// Misc
+BLANK = _{ NEWLINE | WHITE_SPACE }

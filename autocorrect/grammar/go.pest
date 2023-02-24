@@ -1,24 +1,26 @@
-item = _{ SOI ~ line* ~ EOI } 
-line = _{ regexp | timeparse | string | other }
-
-other = ${ !(string) ~ ANY }
-
+//! Go Parser
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ regexp | timeparse | string | other }
+other      = ${ !(string) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
+/// Comment
 line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
-block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 COMMENT       = ${ line_comment | block_comment }
 
+/// String
 string       = ${ inner_string }
 inner_string = _{
-  ("`" ~ (!("`" | string_verb) ~ ANY)* ~ "`") 
-  | ("\"" ~ (!(NEWLINE | "\"" | string_verb) ~ ANY)* ~ "\"") 
+    ("`" ~ (!("`" | string_verb) ~ ANY)* ~ "`")
+  | ("\"" ~ (!(NEWLINE | "\"" | string_verb) ~ ANY)* ~ "\"")
 }
 string_verb  = { "%" ~ ("s" | "q" | "v") }
 
-regexp = ${
-  ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
+/// Regex and other special function
+regexp    = ${
+    ("regexp." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
 timeparse = ${
-  ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
+    ("time." ~ (ASCII_ALPHA)+ ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }

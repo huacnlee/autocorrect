@@ -1,42 +1,49 @@
-item = _{ SOI ~ line* ~ EOI } 
+//! JavaScript Parser
+//!
+//! Support JavaScript and TypeScript.
+item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | html }
-
-html = _{  html_node | html_void | text }
-expr = _{ pair | string | regexp | other }
-
 other = ${ !(string | open_html) ~ ANY }
-
 WHITESPACE = { " " | "\t" | NEWLINE }
 
+/// Comment
+COMMENT       = ${ line_comment | block_comment }
 line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
-COMMENT       = ${ line_comment | block_comment }
 
+/// HTML tags
+html = _{ html_node | html_void | text }
+expr = _{ pair | string | regexp | other }
+
+/// other text
 text = ${ (!("<") ~ ANY)+ }
 
-html_void  = @{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
-html_node  = ${ open_html ~ (!(close_html) ~ (html_node | text))+  ~ close_html }
+/// HTML void
+html_void = @{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
+
+/// HTML node
+html_node  = ${ open_html ~ (!(close_html) ~ (html_node | text))+ ~ close_html }
 inner_html = @{ (!(">") ~ ANY)* }
 open_html  = @{ "<" ~ PUSH(inner_html) ~ chevron_right }
-close_html = @{ "</" ~ PUSH(inner_html) ~ ">"}
-
+close_html = @{ "</" ~ PUSH(inner_html) ~ ">" }
 chevron_right = @{
-  ">"
+    ">"
   | "/>"
   | "?>"
 }
 
-string = ${ inner_string }
+/// String
+string       = ${ inner_string }
 inner_string = _{
-    ("'" ~ (!("'") ~ ANY)* ~ "'") 
-  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
-  | ("`" ~ (!("`") ~ ANY)* ~ "`"+) 
+    ("'" ~ (!("'") ~ ANY)* ~ "'")
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
+  | ("`" ~ (!("`") ~ ANY)* ~ "`"+)
 }
-key = ${ inner_string ~ (" ")* ~ ":" ~ (" ")* }
-pair = _{ key ~ string }
+key          = ${ inner_string ~ (" ")* ~ ":" ~ (" ")* }
+pair         = _{ key ~ string }
 
+/// Regexp
 regexp = ${
-  ( "/" ~ (!(NEWLINE | "/") ~ ANY)* ~ "/" )
+    ("/" ~ (!(NEWLINE | "/") ~ ANY)* ~ "/")
   | ("RegExp" ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
-

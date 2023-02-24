@@ -1,57 +1,65 @@
-
-// https://docs.asciidoctor.org/asciidoc/latest
+//! Asciidoc Parser
+//! https://docs.asciidoctor.org/asciidoc/latest
 item = _{ SOI ~ line* ~ EOI }
 line = _{ expr }
 expr = _{ block | inline }
 
-block = ${ heading | codeblock | td_tag | paragraph }
+/// Block and Inline
+block  = ${ heading | codeblock | td_tag | paragraph }
 inline = _{ img | link | code | mark }
 
-string = ${ (!(inline | NEWLINE) ~ ANY)+ }
+/// string and text
+string    = ${ (!(inline | NEWLINE) ~ ANY)+ }
 paragraph = { (string | inline)+ }
 
+/// Whitespace
 WHITESPACE = { " " | "\t" | NEWLINE }
 
-codeblock = ${ 
-  codeblock_filename* ~ codeblock_meta* ~ 
-  PUSH("----" | "....") ~ codeblock_lang ~ codeblock_code ~ PUSH("----" | "....")
+/// Codeblock
+codeblock          = ${
+    codeblock_filename* ~ codeblock_meta* ~ PUSH("----" | "....") ~ codeblock_lang ~ codeblock_code ~ PUSH("----" | "....")
 }
 codeblock_filename = @{ "." ~ (!NEWLINE ~ ANY)+ ~ NEWLINE }
-codeblock_meta = @{ "[" ~ (!"]" ~ ANY)+ ~ "]" ~ NEWLINE  }
-codeblock_lang = { ASCII_ALPHA* }
-codeblock_code = { (!(PEEK) ~ ANY)* }
+codeblock_meta     = @{ "[" ~ (!"]" ~ ANY)+ ~ "]" ~ NEWLINE }
+codeblock_lang     = { ASCII_ALPHA* }
+codeblock_code     = { (!(PEEK) ~ ANY)* }
 
+/// Table TD
 td_tag = @{ "|" }
 
+/// Image
 img_start = @{ "!" }
-img = ${ img_start ~ link }
+img       = ${ img_start ~ link }
 
-link = ${ link_string ~ href }
-link_string = { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" } 
-href = { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
+/// Link
+link        = ${ link_string ~ href }
+link_string = { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" }
+href        = { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
 
-open_mark = @{
-  // Bold https://docs.asciidoctor.org/asciidoc/latest/text/bold/
-  "**"
-  // https://docs.asciidoctor.org/asciidoc/latest/text/bold/
-  | "*"
-  // Italic https://docs.asciidoctor.org/asciidoc/latest/text/italic/
-  | "_"
-  // Highlight https://docs.asciidoctor.org/asciidoc/latest/text/highlight/
-  | "#"
-  // Subscript https://docs.asciidoctor.org/asciidoc/latest/text/subscript-and-superscript/
-  | "~"
-  // Superscript
+/// Inline marks
+open_mark   = @{
+    "**" // https://docs.asciidoctor.org/asciidoc/latest/text/bold/
+
+  | "*" // Italic https://docs.asciidoctor.org/asciidoc/latest/text/italic/
+
+  | "_" // Highlight https://docs.asciidoctor.org/asciidoc/latest/text/highlight/
+
+  | "#" // Subscript https://docs.asciidoctor.org/asciidoc/latest/text/subscript-and-superscript/
+
+  | "~" // Superscript
+
   | "^"
 }
-close_mark = @{ POP }
-mark = ${ PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
+close_mark  = @{ POP }
+mark        = ${ PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
 mark_string = { (!(PEEK | NEWLINE | inline) ~ ANY)* }
 
-code = ${ PUSH(open_code) ~ inner_code ~ close_code }
-open_code = @{ "`" }
+/// Inline code
+code       = ${ PUSH(open_code) ~ inner_code ~ close_code }
+open_code  = @{ "`" }
 close_code = @{ POP }
-inner_code = @{ (!(NEWLINE | PEEK) ~ ANY)*  }
+inner_code = @{ (!(NEWLINE | PEEK) ~ ANY)* }
 
+/// Heading
 heading_tag = @{ ("======" | "=====" | "====" | "===" | "==" | "=") ~ " "* }
-heading = ${ PUSH(heading_tag) ~ string }
+heading     = ${ PUSH(heading_tag) ~ string }

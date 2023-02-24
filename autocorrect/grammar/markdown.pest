@@ -1,92 +1,78 @@
 //! Markdown grammar for supports CommonMark and GFM.
 item = _{ SOI ~ line* ~ EOI }
 line = _{ expr | newline }
-
-expr = _{ 
-  comment | html | meta_info | block | inline | td_tag
+expr = _{
+    comment
+  | html
+  | meta_info
+  | block
+  | inline
+  | td_tag
 }
 
 /// Matches a CJK character
-CJK = { 
-  HAN
-  | HANGUL 
-  | KATAKANA | HIRAGANA
+CJK = {
+    HAN
+  | HANGUL
+  | KATAKANA
+  | HIRAGANA
   | BOPOMOFO
 }
 
 /// Block elements, e.g.: paragraphs, lists, code blocks, etc.
-block = ${ 
-  meta_tags
+block = ${
+    meta_tags
   | hr
   | list
   | codeblock
   | block_item
-  | paragraph  
+  | paragraph
 }
+
 /// Inline elements, e.g.: links, images, bold, italic, code, etc.
-inline = ${ wikilinks | img | link | code | mark }
+inline    = ${ wikilinks | img | link | code | mark }
 paragraph = { (inline | text)+ }
-text   = @{ string ~ (newline ~ string)* } 
+text      = @{ string ~ (newline ~ string)* }
 
 /// Matches HTML tags (In some Markdown implementations, HTML tags are allowed)
-html = { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end }
+html       = { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end }
 inner_html = _{ html | inner_text }
-inner_text = { (!("<" | ">") ~ ANY)+ } 
-tag_start = @{ "<" ~ ws* ~ (!("/" | ">") ~ ANY)* ~ ws* ~ ">" }
-tag_end = @{ "</" ~ ws* ~ (!">" ~ ANY)* ~ ws* ~ ">" }
-tag_self = @{ "<" ~ ws* ~ (!(">" | "/>") ~ ANY)* ~ ws* ~ "/>" }
-
+inner_text = { (!("<" | ">") ~ ANY)+ }
+tag_start  = @{ "<" ~ ws* ~ (!("/" | ">") ~ ANY)* ~ ws* ~ ">" }
+tag_end    = @{ "</" ~ ws* ~ (!">" ~ ANY)* ~ ws* ~ ">" }
+tag_self   = @{ "<" ~ ws* ~ (!(">" | "/>") ~ ANY)* ~ ws* ~ "/>" }
 hr = @{ "--" ~ "-"+ }
-
 identifier = @{ ("_" | "-" | "." | ASCII_ALPHANUMERIC) }
-
-newline = @{ "\n" | "\r\n" }
-space = @{ " " }
+newline    = @{ "\n" | "\r\n" }
+space      = @{ " " }
 blank_line = @{ space* ~ newline }
-ws = @{ space | newline }
+ws         = @{ space | newline }
 
 /// 4 spaces or a tab
-indent = @{ " "{4,} | "\t" }
-
+indent = @{ " "{4, } | "\t" }
 codeblock = ${
-  PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
+    PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
   | indent_code+
 }
+
 /// Codeblock that used 4 spaces or a tab as indent
-indent_code = @{
-  indent ~ (!"\n" ~ ANY)* ~ newline
+indent_code    = @{
+    indent ~ (!"\n" ~ ANY)* ~ newline
 }
 codeblock_lang = { identifier* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
 
 /// Matches table cell
 td_tag = @{ space* ~ "|" ~ space* }
-
 block_prefix = @{
-   ("######" | "#####" | "####" | "###" | "##" | "#" | ">")
+    ("######" | "#####" | "####" | "###" | "##" | "#" | ">")
 }
-block_item = { (block_prefix ~ space* ~ (inline | string)+)  }
-
-list = { list_item ~ (list_item | list_paragraph)*  }
-list_item = ${ list_prefix ~ (inline | string)+ ~ newline+ }
+block_item   = { (block_prefix ~ space* ~ (inline | string)+) }
+list           = { list_item ~ (list_item | list_paragraph)* }
+list_item      = ${ list_prefix ~ (inline | string)+ ~ newline+ }
 list_paragraph = { indent ~ (inline | string)* ~ newline+ }
-list_prefix = @{
-  /*
-    - Foo
-    * Foo
-    1. Foo
-    [ ] Foo
-    [x] Foo
-  */
-  (
-    space* ~ 
-    (
-      "*" 
-      | "-" 
-      | ASCII_DIGIT ~ "." 
-      | "[" ~ (" " | "x" | "X") ~ "]"
-    ) ~ " "*
-  )
+list_prefix    = @{
+    (space* ~ ("*" | "-" | ASCII_DIGIT ~ "." | "[" ~ (" " | "x" | "X") ~ "]") ~ " "*)
 }
 
 /// Matches meta info for some special Markdown implementations, e.g.: YAML front matter
@@ -98,48 +84,43 @@ list_prefix = @{
 /// tags: Rust, JavaScript
 /// ------------------
 meta_info = ${ meta_wrap ~ newline ~ meta_pair* ~ meta_wrap ~ newline* }
-meta_wrap = @{ "-"{3,} }
+meta_wrap = @{ "-"{3, } }
 meta_pair = ${ meta_key ~ string ~ newline }
-meta_key = @{ (!(":" | newline) ~ identifier)* ~ ":" ~ " "* }
+meta_key  = @{ (!(":" | newline) ~ identifier)* ~ ":" ~ " "* }
 
 /// Ignore tags in Markdown, e.g.: "tags: 美国, 中国"
-meta_tags = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ newline }
-meta_tags_val = @{ meta_tags_item ~ meta_tags_divider }
-meta_tags_item = { (!(newline | ",")  ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
+meta_tags         = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ newline }
+meta_tags_val     = @{ meta_tags_item ~ meta_tags_divider }
+meta_tags_item    = { (!(newline | ",") ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
 meta_tags_divider = { " "* ~ "," ~ " "* }
-
 image_prefix = @{ "!" }
-img = ${ image_prefix ~ link }
+img          = ${ image_prefix ~ link }
 
 /// Matches link, e.g.: `[Hello](/hello)` or `[Hello]`
-link = ${ link_string_wrap ~ href? }
+link             = ${ link_string_wrap ~ href? }
 link_string_wrap = { open_bracket ~ (mark* ~ link_string ~ mark*) ~ close_bracket }
-link_string = @{ (!(close_bracket) ~ ANY)* }
-open_bracket = @{ "[" }
-close_bracket = @{ "]" }
-href = @{ paren }
-
-wikilinks = ${"[[" ~ (!("]]") ~ ANY)* ~ "]]" }
-
-mark = ${ code | PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
-open_mark = @{ "***" | "**" | "*" | "~~" | "\"" }
-close_mark = @{ POP }
+link_string      = @{ (!(close_bracket) ~ ANY)* }
+open_bracket     = @{ "[" }
+close_bracket    = @{ "]" }
+href             = @{ paren }
+wikilinks = ${ "[[" ~ (!("]]") ~ ANY)* ~ "]]" }
+mark        = ${ code | PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
+open_mark   = @{ "***" | "**" | "*" | "~~" | "\"" }
+close_mark  = @{ POP }
 mark_string = { (!(PEEK | inline) ~ ANY)* }
-
-code = ${ PUSH(open_code) ~ inner_code ~ close_code }
-open_code = @{ "`" }
+code       = ${ PUSH(open_code) ~ inner_code ~ close_code }
+open_code  = @{ "`" }
 close_code = @{ POP }
-inner_code = @{ (!(newline | PEEK) ~ ANY)*  }
-
+inner_code = @{ (!(newline | PEEK) ~ ANY)* }
 string = @{ (!(newline | inline) ~ ANY)+ }
 
 /// HTML comment, e.g.: <!-- This is a comment -->
-comment = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
-open_comment  = @{  "<!--" }
+comment       = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }
+open_comment  = @{ "<!--" }
 close_comment = @{ "-->" }
 
 /// Matches link href part, e.g.: `(hello (world))`
-paren = { open_paren ~ inner_paren ~ paren* ~ inner_paren* ~ close_paren | open_paren ~ close_paren }
+paren       = { open_paren ~ inner_paren ~ paren* ~ inner_paren* ~ close_paren | open_paren ~ close_paren }
 inner_paren = { (!(newline | open_paren | close_paren) ~ ANY)+ }
 open_paren  = { "(" }
 close_paren = { ")" }

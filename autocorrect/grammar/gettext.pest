@@ -1,26 +1,29 @@
-item = _{ SOI ~ line* ~ EOI } 
+//! Gettext Parser
+item = _{ SOI ~ line* ~ EOI }
 line = _{ pair | key | value | string | refrence | other }
-
 other = ${ !(string) ~ ANY }
-
 WHITESPACE = { " " | "\t" | NEWLINE }
 
-refrence = ${ "#:" ~ (!(NEWLINE) ~ ANY)* }
-
+/// Comment
 line_comment  = _{ "#" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 COMMENT       = ${ line_comment | block_comment }
 
-key_func   = @{ "msgid" | "msgid_plural" | "msgctxt" }
-value_func = @{ "msgstr" }
+/// refrence
+refrence = ${ "#:" ~ (!(NEWLINE) ~ ANY)* }
 
-string = @{ inner_string }
+/// string
+string       = @{ inner_string }
 inner_string = @{
-  ("'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'") 
-  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
+    ("'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'")
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
 }
 
-pair  = _{ key ~ NEWLINE+ ~ value } 
-key   = ${ key_func ~ other* ~ inner_string } 
+/// pair
+pair  = _{ key ~ NEWLINE+ ~ value }
+key   = ${ key_func ~ other* ~ inner_string }
 value = ${ value_func ~ other* ~ string }
 
+/// key value
+key_func   = @{ "msgid" | "msgid_plural" | "msgctxt" }
+value_func = @{ "msgstr" }

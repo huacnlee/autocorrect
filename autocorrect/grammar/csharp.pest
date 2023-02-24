@@ -1,19 +1,21 @@
-item = _{ SOI ~ line* ~ EOI } 
+//! C# Parser
+item = _{ SOI ~ line* ~ EOI }
 line = _{ regexp | string | other }
-
 other = ${ !(string) ~ ANY }
-
 WHITESPACE = { " " | "\t" | NEWLINE }
 
+/// Comment
 line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
-block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/"}
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 COMMENT       = ${ line_comment | block_comment }
 
+/// String
 string       = ${ inner_string }
-inner_string = _{ 
-  ("@\"" ~ (!("\"") ~ ANY)* ~ "\"") 
-  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
-  | ("$\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
+inner_string = _{
+    ("@\"" ~ (!("\"") ~ ANY)* ~ "\"")
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
+  | ("$\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
 }
 
+/// Regex
 regexp = ${ "Regex(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")" }

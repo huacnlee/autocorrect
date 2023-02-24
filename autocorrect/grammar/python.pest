@@ -1,23 +1,25 @@
-item = _{ SOI ~ line* ~ EOI } 
-line = _{ regexp | string | other }
+//! Python Parser
+item  = _{ SOI ~ line* ~ EOI }
+line  = _{ regexp | string | other }
 other = ${ !(string) ~ ANY }
-
 WHITESPACE = { " " | "\t" | NEWLINE }
 
-line_comment = _{ "#" ~ (!(NEWLINE) ~ ANY)* }
-block_comment = _{ "'''" ~ (!("'''") ~ ANY)* ~ "'''"}
-COMMENT = ${ line_comment | block_comment }
+/// Comment
+COMMENT       = ${ line_comment | block_comment }
+line_comment  = _{ "#" ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "'''" ~ (!("'''") ~ ANY)* ~ "'''" }
 
-string = ${ inner_string }
+/// String
+string       = ${ inner_string }
 inner_string = _{
-  ("'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'") 
-  | ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\""+) 
-  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"") 
+    ("'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'")
+  | ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\""+)
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
 }
 
+/// Regexp
 regexp = ${
-  ( "r'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'" )
+    ("r'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'")
   | ("r\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"")
-  | ("compile(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")" )
+  | ("compile(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
-

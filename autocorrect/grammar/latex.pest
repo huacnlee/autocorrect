@@ -1,19 +1,23 @@
-item = _{ SOI ~ line* ~ EOI } 
+//! Latex Parser
+item = _{ SOI ~ line* ~ EOI }
 line = _{ para | text | string | other }
-
 other = ${ ANY }
-
 WHITESPACE = @{ " " | "\t" | NEWLINE }
 
-text  = @{ (!para ~ ANY)+ }
+/// Other text
+text = @{ (!para ~ ANY)+ }
+
+/// String
 string = ${ "{" ~ fn_name* ~ (string_bracket | inner_string) ~ "}" }
-
 string_bracket = ${ "(" ~ string ~ ")" }
-inner_string = @{ (!("}" | ")") ~ ANY)*  }
+inner_string   = @{ (!("}" | ")") ~ ANY)* }
 
+/// Paragraph
 para = ${ function | section }
 
-fn_name = @{ "\\" ~ ASCII_ALPHA+ ~ ("["~ " "* ~"]")* ~ " "* }
+/// Function
+fn_name  = @{ "\\" ~ ASCII_ALPHA+ ~ ("[" ~ " "* ~ "]")* ~ " "* }
 function = ${ fn_name ~ (function | string) }
 
+/// Section
 section = @{ "%" ~ (!NEWLINE ~ ANY)+ }

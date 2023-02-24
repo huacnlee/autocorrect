@@ -1,27 +1,30 @@
-item = _{ SOI ~ line* ~ EOI } 
+//! PHP Parser
+item = _{ SOI ~ line* ~ EOI }
 line = _{ php | other }
-
 other = ${ !(php) ~ ANY }
+WHITESPACE = { " " | "\t" | NEWLINE }
 
+/// Comment
+COMMENT       = ${ line_comment | block_comment }
+line_comment  = _{ ("//" | "#") ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
+
+/// PHP entry
 php       = _{ open_php ~ (!close_php ~ expr)* ~ close_php }
 open_php  = ${ "<?php" }
 close_php = ${ "?>" }
 
+/// Expressions
 expr = { regexp | string | other }
 
-WHITESPACE = { " " | "\t" | NEWLINE }
-
-line_comment  = _{ ("//" | "#") ~ (!(NEWLINE) ~ ANY)*  }
-block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
-COMMENT = ${ line_comment | block_comment }
-
-string = ${ inner_string }
+/// String
+string       = ${ inner_string }
 inner_string = _{
-  ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"") 
-  | ("\"" ~ (!("\"") ~ ANY)* ~ "\"") 
+    ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"")
+  | ("\"" ~ (!("\"") ~ ANY)* ~ "\"")
 }
 
+/// Regexp
 regexp = ${
-  (("preg_match_all" | "preg_match") ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
+    (("preg_match_all" | "preg_match") ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
-
