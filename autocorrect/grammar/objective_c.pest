@@ -1,7 +1,7 @@
 //! Objective-C Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ ignore_string | string | other }
-other = ${ !(string) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ ignore_string | string | other }
+other      = ${ !(string) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment

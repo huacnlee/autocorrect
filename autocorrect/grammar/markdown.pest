@@ -41,7 +41,7 @@ inner_text = { (!("<" | ">") ~ ANY)+ }
 tag_start  = @{ "<" ~ ws* ~ (!("/" | ">") ~ ANY)* ~ ws* ~ ">" }
 tag_end    = @{ "</" ~ ws* ~ (!">" ~ ANY)* ~ ws* ~ ">" }
 tag_self   = @{ "<" ~ ws* ~ (!(">" | "/>") ~ ANY)* ~ ws* ~ "/>" }
-hr = @{ "--" ~ "-"+ }
+hr         = @{ "--" ~ "-"+ }
 identifier = @{ ("_" | "-" | "." | ASCII_ALPHANUMERIC) }
 newline    = @{ "\n" | "\r\n" }
 space      = @{ " " }
@@ -49,7 +49,7 @@ blank_line = @{ space* ~ newline }
 ws         = @{ space | newline }
 
 /// 4 spaces or a tab
-indent = @{ " "{4, } | "\t" }
+indent    = @{ " "{4, } | "\t" }
 codeblock = ${
     PUSH("```") ~ codeblock_lang ~ codeblock_code ~ POP
   | indent_code+
@@ -63,11 +63,11 @@ codeblock_lang = { identifier* }
 codeblock_code = { (!(PEEK) ~ ANY)* }
 
 /// Matches table cell
-td_tag = @{ space* ~ "|" ~ space* }
-block_prefix = @{
+td_tag         = @{ space* ~ "|" ~ space* }
+block_prefix   = @{
     ("######" | "#####" | "####" | "###" | "##" | "#" | ">")
 }
-block_item   = { (block_prefix ~ space* ~ (inline | string)+) }
+block_item     = { (block_prefix ~ space* ~ (inline | string)+) }
 list           = { list_item ~ (list_item | list_paragraph)* }
 list_item      = ${ list_prefix ~ (inline | string)+ ~ newline+ }
 list_paragraph = { indent ~ (inline | string)* ~ newline+ }
@@ -93,8 +93,8 @@ meta_tags         = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ newline }
 meta_tags_val     = @{ meta_tags_item ~ meta_tags_divider }
 meta_tags_item    = { (!(newline | ",") ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
 meta_tags_divider = { " "* ~ "," ~ " "* }
-image_prefix = @{ "!" }
-img          = ${ image_prefix ~ link }
+image_prefix      = @{ "!" }
+img               = ${ image_prefix ~ link }
 
 /// Matches link, e.g.: `[Hello](/hello)` or `[Hello]`
 link             = ${ link_string_wrap ~ href? }
@@ -103,16 +103,16 @@ link_string      = @{ (!(close_bracket) ~ ANY)* }
 open_bracket     = @{ "[" }
 close_bracket    = @{ "]" }
 href             = @{ paren }
-wikilinks = ${ "[[" ~ (!("]]") ~ ANY)* ~ "]]" }
-mark        = ${ code | PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
-open_mark   = @{ "***" | "**" | "*" | "~~" | "\"" }
-close_mark  = @{ POP }
-mark_string = { (!(PEEK | inline) ~ ANY)* }
-code       = ${ PUSH(open_code) ~ inner_code ~ close_code }
-open_code  = @{ "`" }
-close_code = @{ POP }
-inner_code = @{ (!(newline | PEEK) ~ ANY)* }
-string = @{ (!(newline | inline) ~ ANY)+ }
+wikilinks        = ${ "[[" ~ (!("]]") ~ ANY)* ~ "]]" }
+mark             = ${ code | PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
+open_mark        = @{ "***" | "**" | "*" | "~~" | "\"" }
+close_mark       = @{ POP }
+mark_string      = { (!(PEEK | inline) ~ ANY)* }
+code             = ${ PUSH(open_code) ~ inner_code ~ close_code }
+open_code        = @{ "`" }
+close_code       = @{ POP }
+inner_code       = @{ (!(newline | PEEK) ~ ANY)* }
+string           = @{ (!(newline | inline) ~ ANY)+ }
 
 /// HTML comment, e.g.: <!-- This is a comment -->
 comment       = ${ open_comment ~ (!close_comment ~ ANY)* ~ close_comment }

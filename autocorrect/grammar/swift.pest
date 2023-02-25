@@ -1,7 +1,7 @@
 //! Swift Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ ignore_string | string | other }
-other = ${ !(string) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ ignore_string | string | other }
+other      = ${ !(string) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment
@@ -19,7 +19,7 @@ inner_string = _{
 /// Ingores
 ingore_methods   = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
 ignore_arguments = _{ ("pattern" | "key") ~ ":" }
-ignore_string = ${
+ignore_string    = ${
     ignore_arguments ~ BLANK* ~ inner_string
   | ingore_methods ~ "(" ~ BLANK* ~ inner_string
 }

@@ -1,7 +1,7 @@
 //! Gettext Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ pair | key | value | string | refrence | other }
-other = ${ !(string) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ pair | key | value | string | refrence | other }
+other      = ${ !(string) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment

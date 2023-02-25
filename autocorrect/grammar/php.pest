@@ -1,7 +1,7 @@
 //! PHP Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ php | other }
-other = ${ !(php) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ php | other }
+other      = ${ !(php) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment

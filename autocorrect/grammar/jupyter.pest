@@ -1,8 +1,8 @@
 //! The Jupyter Notebook Format
 //! https://nbformat.readthedocs.io/en/latest/
-item = _{ SOI ~ line* ~ EOI }
-line = _{ object | array | other }
-other = _{ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ object | array | other }
+other      = _{ ANY }
 WHITESPACE = _{ " " | "\t" | NEWLINE }
 
 /// value

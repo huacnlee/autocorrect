@@ -1,5 +1,5 @@
-item = _{ SOI ~ line* ~ EOI }
-line = _{ other }
+item  = _{ SOI ~ line* ~ EOI }
+line  = _{ other }
 other = ${ !(COMMENT) ~ ANY }
 
 /// Whitespace

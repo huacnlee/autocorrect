@@ -1,9 +1,9 @@
 //! JavaScript Parser
 //!
 //! Support JavaScript and TypeScript.
-item = _{ SOI ~ line* ~ EOI }
-line = _{ expr | html }
-other = ${ !(string | open_html) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ expr | html }
+other      = ${ !(string | open_html) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment
@@ -22,10 +22,10 @@ text = ${ (!("<") ~ ANY)+ }
 html_void = @{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
 
 /// HTML node
-html_node  = ${ open_html ~ (!(close_html) ~ (html_node | text))+ ~ close_html }
-inner_html = @{ (!(">") ~ ANY)* }
-open_html  = @{ "<" ~ PUSH(inner_html) ~ chevron_right }
-close_html = @{ "</" ~ PUSH(inner_html) ~ ">" }
+html_node     = ${ open_html ~ (!(close_html) ~ (html_node | text))+ ~ close_html }
+inner_html    = @{ (!(">") ~ ANY)* }
+open_html     = @{ "<" ~ PUSH(inner_html) ~ chevron_right }
+close_html    = @{ "</" ~ PUSH(inner_html) ~ ">" }
 chevron_right = @{
     ">"
   | "/>"

@@ -1,14 +1,14 @@
 //! Latex Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ para | text | string | other }
-other = ${ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ para | text | string | other }
+other      = ${ ANY }
 WHITESPACE = @{ " " | "\t" | NEWLINE }
 
 /// Other text
 text = @{ (!para ~ ANY)+ }
 
 /// String
-string = ${ "{" ~ fn_name* ~ (string_bracket | inner_string) ~ "}" }
+string         = ${ "{" ~ fn_name* ~ (string_bracket | inner_string) ~ "}" }
 string_bracket = ${ "(" ~ string ~ ")" }
 inner_string   = @{ (!("}" | ")") ~ ANY)* }
 

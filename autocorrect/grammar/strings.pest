@@ -1,8 +1,8 @@
 //! Strings file Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ pair | other }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ pair | other }
 WHITESPACE = { " " | "\t" | NEWLINE }
-other = ${ !(pair) ~ ANY }
+other      = ${ !(pair) ~ ANY }
 
 /// Comment
 COMMENT       = ${ line_comment | block_comment }

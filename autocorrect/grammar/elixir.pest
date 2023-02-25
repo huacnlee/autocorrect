@@ -1,7 +1,7 @@
 //! Elixir Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ regexp | string | other }
-other = ${ !(string) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ regexp | string | other }
+other      = ${ !(string) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment

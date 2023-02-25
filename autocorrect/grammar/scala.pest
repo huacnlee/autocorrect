@@ -1,7 +1,7 @@
 //! Scala Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ regexp | string_literal | string | other }
-other = ${ !(string) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ regexp | string_literal | string | other }
+other      = ${ !(string) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
 /// Comment
@@ -10,8 +10,8 @@ line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 
 /// String
-string       = ${ inner_string }
-inner_string = _{
+string         = ${ inner_string }
+inner_string   = _{
     ("\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"")
   | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
 }

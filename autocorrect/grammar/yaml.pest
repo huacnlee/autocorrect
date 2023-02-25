@@ -12,10 +12,10 @@ pair = _{ key_part ~ string }
 key  = ${ (string_key | simple_key) ~ (":" ~ " "?) }
 
 /// String
-string = ${ string_value | simple_value }
-string_key = _{ "\"" ~ key_str* ~ "\"" }
-simple_key = _{ key_str* }
-key_str    = _{ !(newline | ":" | "\"" | "'") ~ ANY }
+string       = ${ string_value | simple_value }
+string_key   = _{ "\"" ~ key_str* ~ "\"" }
+simple_key   = _{ key_str* }
+key_str      = _{ !(newline | ":" | "\"" | "'") ~ ANY }
 simple_value = _{ value_str* }
 string_value = _{ ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") | ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") }
 value_str    = _{ !(newline | "\"" | "'") ~ ANY }

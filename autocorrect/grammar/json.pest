@@ -1,12 +1,13 @@
 //! JSON Parser
-item = _{ SOI ~ line* ~ EOI }
-line = _{ object | array | other }
-other = ${ !(pair) ~ ANY }
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ object | array | other }
+other      = ${ !(pair) ~ ANY }
 WHITESPACE = { " " | "\t" | NEWLINE }
 
-/// Comment
-COMMENT       = { line_comment | block_comment }
-line_comment  = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
+// Comment
+COMMENT      = { line_comment | block_comment }
+line_comment = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
+
 block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 
 /// Value
