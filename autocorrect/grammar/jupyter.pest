@@ -7,20 +7,20 @@ WHITESPACE = _{ " " | "\t" | NEWLINE }
 
 /// value
 value  = _{ quote ~ string ~ quote | number | object | array | bool | null }
-string = { inner }
+string =  { inner }
 number = @{ "-"? ~ int ~ ("." ~ ASCII_DIGIT+ ~ exp? | exp)? }
 int    = @{ "0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* }
 exp    = @{ ("E" | "e") ~ ("+" | "-")? ~ ASCII_DIGIT+ }
-bool   = { "true" | "false" }
-null   = { "null" }
+bool   =  { "true" | "false" }
+null   =  { "null" }
 
 /// Object
-object       = { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
+object       =  { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
 open_object  = _{ "{" }
 close_object = _{ "}" }
 
 /// Array
-array       = { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
+array       =  { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
 open_array  = _{ "[" }
 close_array = _{ "]" }
 

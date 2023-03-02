@@ -1,7 +1,7 @@
 //! Strings file Parser
 item       = _{ SOI ~ line* ~ EOI }
 line       = _{ pair | other }
-WHITESPACE = { " " | "\t" | NEWLINE }
+WHITESPACE =  { " " | "\t" | NEWLINE }
 other      = ${ !(pair) ~ ANY }
 
 /// Comment

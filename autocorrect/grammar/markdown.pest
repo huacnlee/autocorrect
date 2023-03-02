@@ -31,13 +31,13 @@ block = ${
 
 /// Inline elements, e.g.: links, images, bold, italic, code, etc.
 inline    = ${ wikilinks | img | link | code | mark }
-paragraph = { (inline | text)+ }
+paragraph =  { (inline | text)+ }
 text      = @{ string ~ (newline ~ string)* }
 
 /// Matches HTML tags (In some Markdown implementations, HTML tags are allowed)
-html       = { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end }
+html       =  { tag_self | tag_start ~ ws* ~ inner_html* ~ ws* ~ tag_end }
 inner_html = _{ html | inner_text }
-inner_text = { (!("<" | ">") ~ ANY)+ }
+inner_text =  { (!("<" | ">") ~ ANY)+ }
 tag_start  = @{ "<" ~ ws* ~ (!("/" | ">") ~ ANY)* ~ ws* ~ ">" }
 tag_end    = @{ "</" ~ ws* ~ (!">" ~ ANY)* ~ ws* ~ ">" }
 tag_self   = @{ "<" ~ ws* ~ (!(">" | "/>") ~ ANY)* ~ ws* ~ "/>" }
@@ -59,18 +59,18 @@ codeblock = ${
 indent_code    = @{
     indent ~ (!"\n" ~ ANY)* ~ newline
 }
-codeblock_lang = { identifier* }
-codeblock_code = { (!(PEEK) ~ ANY)* }
+codeblock_lang =  { identifier* }
+codeblock_code =  { (!(PEEK) ~ ANY)* }
 
 /// Matches table cell
 td_tag         = @{ space* ~ "|" ~ space* }
 block_prefix   = @{
     ("######" | "#####" | "####" | "###" | "##" | "#" | ">")
 }
-block_item     = { (block_prefix ~ space* ~ (inline | string)+) }
-list           = { list_item ~ (list_item | list_paragraph)* }
+block_item     =  { (block_prefix ~ space* ~ (inline | string)+) }
+list           =  { list_item ~ (list_item | list_paragraph)* }
 list_item      = ${ list_prefix ~ (inline | string)+ ~ newline+ }
-list_paragraph = { indent ~ (inline | string)* ~ newline+ }
+list_paragraph =  { indent ~ (inline | string)* ~ newline+ }
 list_prefix    = @{
     (space* ~ ("*" | "-" | ASCII_DIGIT ~ "." | "[" ~ (" " | "x" | "X") ~ "]") ~ " "*)
 }
@@ -91,14 +91,14 @@ meta_key  = @{ (!(":" | newline) ~ identifier)* ~ ":" ~ " "* }
 /// Ignore tags in Markdown, e.g.: "tags: 美国, 中国"
 meta_tags         = @{ meta_key ~ meta_tags_val+ ~ meta_tags_item ~ newline }
 meta_tags_val     = @{ meta_tags_item ~ meta_tags_divider }
-meta_tags_item    = { (!(newline | ",") ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
-meta_tags_divider = { " "* ~ "," ~ " "* }
+meta_tags_item    =  { (!(newline | ",") ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
+meta_tags_divider =  { " "* ~ "," ~ " "* }
 image_prefix      = @{ "!" }
 img               = ${ image_prefix ~ link }
 
 /// Matches link, e.g.: `[Hello](/hello)` or `[Hello]`
 link             = ${ link_string_wrap ~ href? }
-link_string_wrap = { open_bracket ~ (mark* ~ link_string ~ mark*) ~ close_bracket }
+link_string_wrap =  { open_bracket ~ (mark* ~ link_string ~ mark*) ~ close_bracket }
 link_string      = @{ (!(close_bracket) ~ ANY)* }
 open_bracket     = @{ "[" }
 close_bracket    = @{ "]" }
@@ -107,7 +107,7 @@ wikilinks        = ${ "[[" ~ (!("]]") ~ ANY)* ~ "]]" }
 mark             = ${ code | PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
 open_mark        = @{ "***" | "**" | "*" | "~~" | "\"" }
 close_mark       = @{ POP }
-mark_string      = { (!(PEEK | inline) ~ ANY)* }
+mark_string      =  { (!(PEEK | inline) ~ ANY)* }
 code             = ${ PUSH(open_code) ~ inner_code ~ close_code }
 open_code        = @{ "`" }
 close_code       = @{ POP }

@@ -2,7 +2,7 @@
 item       = _{ SOI ~ line* ~ EOI }
 line       = _{ regexp | timeparse | string | other }
 other      = ${ !(string) ~ ANY }
-WHITESPACE = { " " | "\t" | NEWLINE }
+WHITESPACE =  { " " | "\t" | NEWLINE }
 
 /// Comment
 line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }
@@ -15,7 +15,7 @@ inner_string = _{
     ("`" ~ (!("`" | string_verb) ~ ANY)* ~ "`")
   | ("\"" ~ (!(NEWLINE | "\"" | string_verb) ~ ANY)* ~ "\"")
 }
-string_verb  = { "%" ~ ("s" | "q" | "v") }
+string_verb  =  { "%" ~ ("s" | "q" | "v") }
 
 /// Regex and other special function
 regexp    = ${

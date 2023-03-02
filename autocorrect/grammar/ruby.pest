@@ -2,7 +2,7 @@
 item       = _{ SOI ~ line* ~ EOI }
 line       = _{ string | regexp | other }
 other      = ${ !(string) ~ ANY }
-WHITESPACE = { " " | "\t" | NEWLINE }
+WHITESPACE =  { " " | "\t" | NEWLINE }
 
 /// Comment
 COMMENT       = ${ line_comment | block_comment }
@@ -14,7 +14,7 @@ string       = ${
     PUSH("'") ~ inner_string ~ POP
   | PUSH("\"") ~ inner_string ~ POP
 }
-inner_string = { (!(NEWLINE | PEEK) ~ ANY)* }
+inner_string =  { (!(NEWLINE | PEEK) ~ ANY)* }
 
 /// Regexp
 regexp = ${

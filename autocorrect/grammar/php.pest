@@ -2,7 +2,7 @@
 item       = _{ SOI ~ line* ~ EOI }
 line       = _{ php | other }
 other      = ${ !(php) ~ ANY }
-WHITESPACE = { " " | "\t" | NEWLINE }
+WHITESPACE =  { " " | "\t" | NEWLINE }
 
 /// Comment
 COMMENT       = ${ line_comment | block_comment }

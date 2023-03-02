@@ -4,7 +4,7 @@
 item       = _{ SOI ~ line* ~ EOI }
 line       = _{ other }
 other      = ${ !(COMMENT) ~ ANY }
-WHITESPACE = { " " | "\t" | NEWLINE }
+WHITESPACE =  { " " | "\t" | NEWLINE }
 
 /// Comment
 line_comment  = _{ "//" ~ (!(NEWLINE) ~ ANY)* }

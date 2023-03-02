@@ -10,7 +10,7 @@ inline = _{ img | link | code | mark }
 
 /// string and text
 string    = ${ (!(inline | NEWLINE) ~ ANY)+ }
-paragraph = { (string | inline)+ }
+paragraph =  { (string | inline)+ }
 
 /// Whitespace
 WHITESPACE = { " " | "\t" | NEWLINE }
@@ -21,8 +21,8 @@ codeblock          = ${
 }
 codeblock_filename = @{ "." ~ (!NEWLINE ~ ANY)+ ~ NEWLINE }
 codeblock_meta     = @{ "[" ~ (!"]" ~ ANY)+ ~ "]" ~ NEWLINE }
-codeblock_lang     = { ASCII_ALPHA* }
-codeblock_code     = { (!(PEEK) ~ ANY)* }
+codeblock_lang     =  { ASCII_ALPHA* }
+codeblock_code     =  { (!(PEEK) ~ ANY)* }
 
 /// Table TD
 td_tag = @{ "|" }
@@ -33,8 +33,8 @@ img       = ${ img_start ~ link }
 
 /// Link
 link        = ${ link_string ~ href }
-link_string = { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" }
-href        = { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
+link_string =  { "[" ~ (!("]" | NEWLINE) ~ ANY)* ~ "]" }
+href        =  { "(" ~ (!(")" | NEWLINE) ~ ANY)* ~ ")" }
 
 /// Inline marks
 open_mark   = @{
@@ -52,7 +52,7 @@ open_mark   = @{
 }
 close_mark  = @{ POP }
 mark        = ${ PUSH(open_mark) ~ (mark | mark_string) ~ close_mark }
-mark_string = { (!(PEEK | NEWLINE | inline) ~ ANY)* }
+mark_string =  { (!(PEEK | NEWLINE | inline) ~ ANY)* }
 
 /// Inline code
 code       = ${ PUSH(open_code) ~ inner_code ~ close_code }

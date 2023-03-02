@@ -1,11 +1,11 @@
 //! XML Parser
-item  = { SOI ~ line* ~ EOI }
+item  =  { SOI ~ line* ~ EOI }
 line  = _{ self_close_tag | tag | other }
-other = { ANY }
+other =  { ANY }
 
 /// XML Tag
-tag            = { open_tag ~ tag* ~ (cdata | text) ~ close_tag? }
-self_close_tag = {
+tag            =  { open_tag ~ tag* ~ (cdata | text) ~ close_tag? }
+self_close_tag =  {
     "<?" ~ (!"?>" ~ ANY)* ~ "?>"
   | "<" ~ (!"/>" ~ ANY)* ~ "/>"
 }
@@ -18,4 +18,4 @@ text = @{ (!(open_cdata | close_cdata | open_tag | close_tag) ~ ANY)* }
 /// CDATA
 open_cdata  = @{ "<![CDATA[" }
 close_cdata = @{ "]]>" }
-cdata       = { open_cdata ~ text ~ close_cdata }
+cdata       =  { open_cdata ~ text ~ close_cdata }

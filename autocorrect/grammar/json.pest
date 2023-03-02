@@ -2,10 +2,10 @@
 item       = _{ SOI ~ line* ~ EOI }
 line       = _{ object | array | other }
 other      = ${ !(pair) ~ ANY }
-WHITESPACE = { " " | "\t" | NEWLINE }
+WHITESPACE =  { " " | "\t" | NEWLINE }
 
 // Comment
-COMMENT      = { line_comment | block_comment }
+COMMENT      =  { line_comment | block_comment }
 line_comment = @{ "//" ~ (!(NEWLINE) ~ ANY)* }
 
 block_comment = @{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
@@ -23,18 +23,18 @@ bool   = @{ "true" | "false" }
 null   = @{ "null" }
 
 /// Object
-object       = { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
+object       =  { open_object ~ pair ~ (comma ~ pair?)* ~ close_object | open_object ~ close_object }
 open_object  = @{ "{" }
 close_object = @{ "}" }
 
 /// Array
-array       = { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
+array       =  { open_array ~ value ~ (comma ~ value?)* ~ close_array | open_array ~ close_array }
 open_array  = @{ "[" }
 close_array = @{ "]" }
 
 /// Pair
-pair  = { key ~ value }
-key   = { inner_string ~ colon }
+pair  =  { key ~ value }
+key   =  { inner_string ~ colon }
 colon = @{ ":" }
 
 /// Misc
