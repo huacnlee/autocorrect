@@ -24,8 +24,8 @@ html_void = @{ "<" ~ (!("/>" | ">") ~ ANY)* ~ (">" | "/>") }
 /// HTML node
 html_node     = ${ open_html ~ (!(close_html) ~ (html_node | text))+ ~ close_html }
 inner_html    = @{ (!(">") ~ ANY)* }
-open_html     = @{ "<" ~ PUSH(inner_html) ~ chevron_right }
-close_html    = @{ "</" ~ PUSH(inner_html) ~ ">" }
+open_html     = @{ "<" ~ inner_html ~ chevron_right }
+close_html    = @{ "</" ~ inner_html ~ ">" }
 chevron_right = @{
     ">"
   | "/>"
