@@ -41,7 +41,7 @@ install:
 wasm:
 	wasm-pack build --release --scope huacnlee -d $(WORKDIR)/pkg --out-name autocorrect autocorrect-wasm
 	sed -ie "s/autocorrect\-wasm/autocorrect/" $(WORKDIR)/pkg/package.json
-	wasm-opt -Os -o pkg/autocorrect_bg.wasm pkg/autocorrect_bg.wasm
+	wasm-opt -Os --signext-lowering -o pkg/autocorrect_bg.wasm pkg/autocorrect_bg.wasm
 wasm\:publish:
 	make wasm
 	@echo "\n\nWill release version: $(LAST_TAG_VERSION)\n\n"
