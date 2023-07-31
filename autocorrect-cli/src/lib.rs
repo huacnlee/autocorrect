@@ -76,7 +76,23 @@ where
 
     load_config(&cli.config_file);
 
-    let mut arg_files = cli.files.iter();
+    let cwd = std::env::current_dir().unwrap();
+    let mut arg_files = cli.files.iter().map(|f| {
+        // For example: autocorrect --lint /Users/jason/project/foo/bar.md
+        //
+        // - f is /Users/jason/project/foo.md
+        // - cwd is /Users/jason/project
+        // - relative_path is foo/bar.md
+        //
+        // Then this will matched with .autocorrectignore rules.
+        //
+        // Convert absolute path to relative path, in cwd
+        if let Ok(relative_path) = Path::new(&f).strip_prefix(&cwd) {
+            relative_path.to_str().unwrap_or("").to_owned()
+        } else {
+            f.to_owned()
+        }
+    });
 
     // calc run time
     let start_t = SystemTime::now();
