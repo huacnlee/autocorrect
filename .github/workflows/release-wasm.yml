@@ -3,8 +3,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - "release-node"
 jobs:
   npm:
     name: NPM Build & Publish
