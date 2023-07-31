@@ -28,8 +28,8 @@ walkdir = "2.3.2"
 # Request features:
 # - blocking - for blocking request
 # - rustls-tls - for use native rustls without system openssl dependency
-reqwest = {version = "0.11.18", features = ["rustls-tls"], default-features = false, optional = true}
-tokio = {version = "1", features = ["macros", "sync", "rt", "rt-multi-thread", "time"], default-features = false, optional = true}
+reqwest = {version = "0.11.18", features = ["rustls-tls"], default-features = false}
+tokio = {version = "1", features = ["macros", "sync", "rt", "rt-multi-thread", "time"], default-features = false}
 
 # Self Update
 # - archive-tar + compression-flate2 - for tar.gz
@@ -38,8 +38,7 @@ self_update = {version = "0.30.0", features = ["archive-tar", "compression-flate
 sudo = {version = "0.5", optional = true}
 
 [features]
-default = ["update", "init"]
-init = ["reqwest", "tokio"]
+default = ["update"]
 update = ["self_update", "sudo"]
 
 [profile.release]

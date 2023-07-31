@@ -8,11 +8,10 @@ use std::path::Path;
 use std::time::SystemTime;
 
 mod cli;
+mod initializer;
 mod logger;
 mod progress;
 
-#[cfg(feature = "init")]
-mod initializer;
 #[cfg(feature = "update")]
 mod update;
 
@@ -57,7 +56,6 @@ where
     }
 
     match cli.command {
-        #[cfg(feature = "init")]
         Some(cli::Commands::Init { local, force }) => {
             initializer::run(&cli, &initializer::InitOption { force, local }).await;
             return;

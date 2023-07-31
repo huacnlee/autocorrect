@@ -82,7 +82,6 @@ pub(crate) struct Cli {
 
 #[derive(Debug, Subcommand, Clone)]
 pub(crate) enum Commands {
-    #[cfg(feature = "init")]
     #[command(name = "init", about = "Initialize AutoCorrect config file.")]
     Init {
         #[clap(
