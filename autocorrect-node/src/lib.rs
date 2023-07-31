@@ -74,3 +74,8 @@ pub fn lint_for(text: String, filepath: String) -> LintResult {
 pub fn load_config(config_str: String) {
     autocorrect::config::load(&config_str).unwrap();
 }
+
+#[napi]
+pub async fn run() {
+    autocorrect_cli::run().await;
+}

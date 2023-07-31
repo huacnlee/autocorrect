@@ -236,10 +236,11 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Ignorer, format, formatFor, lintFor, loadConfig } = nativeBinding
+const { Ignorer, format, formatFor, lintFor, loadConfig, run } = nativeBinding
 
 module.exports.Ignorer = Ignorer
 module.exports.format = format
 module.exports.formatFor = formatFor
 module.exports.lintFor = lintFor
 module.exports.loadConfig = loadConfig
+module.exports.run = run

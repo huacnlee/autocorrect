@@ -1,0 +1,10 @@
+{
+  "name": "node-cli-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jason Lee",
+  "devDependencies": {
+    "autocorrect-node": "file:../../autocorrect-node"
+  },
+  "license": "MIT"
+}
