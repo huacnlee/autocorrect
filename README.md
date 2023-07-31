@@ -85,6 +85,7 @@ $ autocorrect update
 ## Usage
 
 - [Use in CLI](#use-in-cli)
+- [Use in NPM](#use-in-npm)
 - [Configuration](#configuration)
 - [VS Code Extension](#vs-code-extension)
 - [Intellij Platform Plugin](#intellij-platform-plugin)
@@ -126,6 +127,23 @@ You also can lint multiple files:
 
 ```bash
 $ autocorrect --lint
+```
+
+## Use in NPM
+
+> since: 2.7.0
+
+AutoCorrect has been published in NPM with CLI command support. If you want to use it in Frontend or Node.js project, you can just install `autocorrect-node` package for without install AutoCorrect bin.
+
+```bash
+cd your-project
+yarn add autocorrect-node
+```
+
+Now you can run `yarn autocorrect` command in your project. This command is same as `autocorrect` command.
+
+```bash
+$ yarn autocorrect -h
 ```
 
 ### Configuration
