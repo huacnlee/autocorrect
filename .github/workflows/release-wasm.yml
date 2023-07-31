@@ -1,8 +1,10 @@
-name: NPM Release
+name: Release WebAssembly
 on:
   push:
     tags:
       - "v*"
+    branches:
+      - "release-node"
 jobs:
   npm:
     name: NPM Build & Publish
@@ -40,8 +42,11 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - name: Install wasm-opt
-        run: sudo apt install -y binaryen
+      - name: Install binaryen
+        run: |
+          set -e
+          curl -L https://github.com/WebAssembly/binaryen/releases/download/version_114/binaryen-version_114-x86_64-linux.tar.gz | tar xzf -
+          echo "`pwd`/binaryen-version_114/bin" > $GITHUB_PATH
 
       - name: Publish NPM for Bundler
         run: |
