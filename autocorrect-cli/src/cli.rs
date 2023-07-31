@@ -21,7 +21,7 @@ impl OutputFormatter {
 #[command(name = "AutoCorrect")]
 #[command(author, version, about, long_about = None)]
 pub(crate) struct Cli {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     pub command: Option<Commands>,
 
     #[clap(long, action = clap::ArgAction::SetTrue, help = "Lint and output problems.")]
@@ -82,7 +82,8 @@ pub(crate) struct Cli {
 
 #[derive(Debug, Subcommand, Clone)]
 pub(crate) enum Commands {
-    #[clap(name = "init", about = "Initialize AutoCorrect config file.")]
+    #[cfg(feature = "init")]
+    #[command(name = "init", about = "Initialize AutoCorrect config file.")]
     Init {
         #[clap(
             long,
@@ -98,7 +99,7 @@ pub(crate) enum Commands {
         force: bool,
     },
     #[cfg(feature = "update")]
-    #[clap(
+    #[command(
         name = "update",
         alias = "upgrade",
         about = "Update AutoCorrect to latest version."

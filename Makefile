@@ -14,7 +14,7 @@ run\:json:
 build:
 	cargo build --manifest-path autocorrect-cli/Cargo.toml --release --target aarch64-apple-darwin
 	ls -lha target/aarch64-apple-darwin/release/autocorrect
-	ln -f target/aarch64-apple-darwin/release/autocorrect $(BIN_PATH)
+	sudo ln -f target/aarch64-apple-darwin/release/autocorrect $(BIN_PATH)
 test:
 	@cargo test
 test\:stdin:
@@ -31,7 +31,7 @@ test\:node:
 	cd autocorrect-node && yarn && yarn build && yarn test
 test\:node\:cli:
 	cd autocorrect-node && yarn && yarn build
-	cd tests/node-cli-test && yarn upgrade autocorrect-node && yarn autocorrect --lint ./
+	cd tests/node-cli-test && yarn upgrade autocorrect-node && yarn autocorrect --lint
 test\:python:
 	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
 test\:ruby:

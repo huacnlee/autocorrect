@@ -1,6 +1,6 @@
 // autocorrect: false
 use clap::Parser;
-use initializer::InitOption;
+use std::ffi::OsString;
 use std::fs;
 use std::io;
 use std::io::BufRead;
@@ -8,10 +8,11 @@ use std::path::Path;
 use std::time::SystemTime;
 
 mod cli;
-mod initializer;
 mod logger;
 mod progress;
 
+#[cfg(feature = "init")]
+mod initializer;
 #[cfg(feature = "update")]
 mod update;
 
@@ -36,8 +37,12 @@ macro_rules! bench {
     () => {};
 }
 
-pub async fn run() {
-    let mut cli = Cli::parse();
+pub async fn run<I, T>(args: I)
+where
+    I: IntoIterator<Item = T>,
+    T: Into<OsString> + Clone,
+{
+    let mut cli = Cli::parse_from(args);
 
     // Set log level
     let log_level = cli.log_level();
@@ -47,10 +52,14 @@ pub async fn run() {
         cli.threads = num_cpus::get();
     }
     log::debug!("Threads: {}", cli.threads);
+    if cli.debug {
+        log::debug!("Files: {:?}", cli.files);
+    }
 
     match cli.command {
+        #[cfg(feature = "init")]
         Some(cli::Commands::Init { local, force }) => {
-            initializer::run(&cli, &InitOption { force, local }).await;
+            initializer::run(&cli, &initializer::InitOption { force, local }).await;
             return;
         }
         #[cfg(feature = "update")]
