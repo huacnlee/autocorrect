@@ -1,5 +1,5 @@
 use crate::{cli::Cli, CONFIG_TEMPLATE};
-use std::{fs, path::Path, time::Duration};
+use std::{fs, path::Path};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -12,7 +12,7 @@ pub(crate) struct InitOption {
     pub local: bool,
 }
 
-pub(crate) fn run(cli: &Cli, option: &InitOption) {
+pub(crate) async fn run(cli: &Cli, option: &InitOption) {
     if Path::exists(Path::new(&cli.config_file)) && !option.force {
         log::warn!("{} already exists.", cli.config_file);
         return;
@@ -21,7 +21,7 @@ pub(crate) fn run(cli: &Cli, option: &InitOption) {
     let mut template = CONFIG_TEMPLATE.to_string();
 
     if !option.local {
-        match fetch_config_template() {
+        match fetch_config_template().await {
             Ok(out) => {
                 template = out;
             }
@@ -38,23 +38,17 @@ pub(crate) fn run(cli: &Cli, option: &InitOption) {
         .unwrap_or_else(|_| panic!("Failed to write config file: {}", &cli.config_file));
 }
 
-pub fn fetch_config_template() -> Result<String> {
+pub async fn fetch_config_template() -> Result<String> {
     log::info!("Fetching {}", CONFIG_TEMPLATE_URL);
 
-    let client = reqwest::blocking::Client::builder()
-        .connect_timeout(Duration::from_secs(5))
-        .build()?;
-
-    let resp = client
-        .get(CONFIG_TEMPLATE_URL)
-        .timeout(Duration::from_secs(10))
-        .send()?;
+    let client = reqwest::Client::builder().build()?;
+    let resp = client.get(CONFIG_TEMPLATE_URL).send().await?;
 
     if !resp.status().is_success() {
         return Err(format!("Fetch config template error: {}", resp.status()).into());
     }
 
-    let body = resp.text()?;
+    let body = resp.text().await?;
 
     Ok(body)
 }
