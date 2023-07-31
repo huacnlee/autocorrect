@@ -1,3 +1,3 @@
-# `@huacnlee/autocorrect-node-darwin-arm64`
+# `autocorrect-node-darwin-arm64`
 
-This is the **aarch64-apple-darwin** binary for `@huacnlee/autocorrect-node`
+This is the **aarch64-apple-darwin** binary for [autocorrect-node](https://www.npmjs.com/package/autocorrect-node)

@@ -16,6 +16,18 @@ The Native Node.js version of [AutoCorrect](https://github.com/huacnlee/autocorr
 $ yarn add autocorrect-node
 ```
 
+## Use CLI
+
+```bash
+$ yarn autocorrect -h
+```
+
+Lint you files
+
+```bash
+$ yarn autocorrect --lint .
+```
+
 ## Usage
 
 ```js
