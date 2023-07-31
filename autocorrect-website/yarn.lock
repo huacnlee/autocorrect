@@ -297,6 +297,36 @@ arg@^5.0.2:
   resolved "https://registry.yarnpkg.com/arg/-/arg-5.0.2.tgz#c81433cc427c92c4dcf4865142dbca6f15acd59c"
   integrity sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==
 
+autocorrect-node-darwin-arm64@2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/autocorrect-node-darwin-arm64/-/autocorrect-node-darwin-arm64-2.7.0.tgz#5fe4972ab40fd29424027caa360dd66b302eaa42"
+  integrity sha512-QNZv8d6xtb//J7aLDPb1TmEFawo2pStFARtO+iPCBBjul6LB3mvcYOakwfiWt4iSQ0o6Hry4WgGxcwgRWxjGag==
+
+autocorrect-node-darwin-x64@2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/autocorrect-node-darwin-x64/-/autocorrect-node-darwin-x64-2.7.0.tgz#f40b0e2778644a3472c5eaefc64b1d6e9736782e"
+  integrity sha512-4pcQc+2oqKOESMeSrgtT+470eYpSroB+dv85Imbwnd3+fxHWjCGgoWaiBxiO4O/6C9wi3pF8nwJAkdwGcRpsYg==
+
+autocorrect-node-linux-x64-gnu@2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/autocorrect-node-linux-x64-gnu/-/autocorrect-node-linux-x64-gnu-2.7.0.tgz#c11e9096a09f3cebd2868fae6093bcdd0fcc44e3"
+  integrity sha512-/DhgD1k/OV8BL59z42BmgXisvUalRB0wKJgUrS3OqmzRpYOGGJZy9BNKhVgx44YuuWUb+SXZRd3Rn4bqGeeurw==
+
+autocorrect-node-win32-x64-msvc@2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/autocorrect-node-win32-x64-msvc/-/autocorrect-node-win32-x64-msvc-2.7.0.tgz#cfadc6dcdbe82fb640f0e256e4d9609a4bdbe3c5"
+  integrity sha512-5kQvY8/rRs182gm29S4cLCUGd1f/Y9E9zeGqhtGsEL0gOcl4Icn5H3T1BcxvN/FTdpShqN8OnfEnFuh4fQJrdw==
+
+autocorrect-node@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/autocorrect-node/-/autocorrect-node-2.7.0.tgz#ece1ee8cd5567f3ff2ed2221904bb38be81ce68c"
+  integrity sha512-QQXO8f7CjJktvMXg68PNK2Yh5hX9nOUnEgPyFIIxNVMY5qvGWf1plgvCiISdZITyWHLjWdR2RQS/FnzNweyJ0Q==
+  optionalDependencies:
+    autocorrect-node-darwin-arm64 "2.7.0"
+    autocorrect-node-darwin-x64 "2.7.0"
+    autocorrect-node-linux-x64-gnu "2.7.0"
+    autocorrect-node-win32-x64-msvc "2.7.0"
+
 balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
