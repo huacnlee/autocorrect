@@ -3,7 +3,7 @@
   "version": "2.7.0",
   "main": "index.js",
   "bin": {
-    "autocorrect": "./cli.mjs"
+    "autocorrect": "./cli.js"
   },
   "types": "index.d.ts",
   "napi": {
