@@ -28,6 +28,20 @@ Lint you files
 $ yarn autocorrect --lint .
 ```
 
+## Work with Lint-Staged
+
+If you are use `lint-staged`, you can add this config to your `package.json` for run AutoCorrect lint before commit for changed files.
+
+```json
+{
+  "lint-staged": {
+    "*": [
+      "autocorrect --lint"
+    ]
+  }
+}
+```
+
 ## Usage
 
 ```js

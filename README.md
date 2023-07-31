@@ -152,6 +152,8 @@ Now you can run `yarn autocorrect` command in your project. This command is same
 $ yarn autocorrect -h
 ```
 
+More docs: [autocorrect-node/README.md](autocorrect-node/README.md)
+
 ### Configuration
 
 > Default config: [.autocorrect.default](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/.autocorrectrc.default)
