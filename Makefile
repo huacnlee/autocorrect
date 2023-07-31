@@ -50,8 +50,6 @@ wasm\:publish:
 	cd pkg && yarn publish --new-version $(LAST_TAG_VERSION)
 crate\:publish:
 	cargo release --manifest-path autocorrect/Cargo.toml --config autocorrect/release.toml $(LAST_TAG_VERSION)
-tauri\:release:
-	cd autocorrect-tauri; yarn tauri build --target universal-apple-darwin
 version:
 	# Use ripgrep
 	rg -N $(FROM) -r $(TO) --files-with-matches $(VERSION_FILES) | xargs sed -i '' 's%$(FROM)%$(TO)%g'
