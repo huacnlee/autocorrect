@@ -97,6 +97,7 @@ pub(crate) enum Commands {
         )]
         force: bool,
     },
+    #[cfg(feature = "update")]
     #[clap(
         name = "update",
         alias = "upgrade",

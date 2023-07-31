@@ -12,7 +12,7 @@ mod initializer;
 mod logger;
 mod progress;
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(feature = "update")]
 mod update;
 
 use cli::Cli;
@@ -53,7 +53,7 @@ pub async fn run() {
             initializer::run(&cli, &InitOption { force, local }).await;
             return;
         }
-        #[cfg(not(target_arch = "wasm32"))]
+        #[cfg(feature = "update")]
         Some(cli::Commands::Update {}) => {
             match update::run() {
                 Ok(_) => {}
