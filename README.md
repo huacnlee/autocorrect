@@ -142,7 +142,7 @@ How to lint all changed files in Git:
 $ git diff --name-only | xargs autocorrect --lint
 ```
 
-## Use in NPM
+### Use in NPM
 
 > since: 2.7.0
 
