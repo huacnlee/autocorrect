@@ -70,6 +70,13 @@ $ autocorrect -V
 AutoCorrect 2.4.0
 ```
 
+Or install NPM:
+
+```bash
+$ yarn add autocorrect-node
+$ yarn autocorrect -V
+```
+
 ## Upgrade
 
 > Since: 1.9.0
