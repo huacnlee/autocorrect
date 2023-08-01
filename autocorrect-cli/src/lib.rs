@@ -1,3 +1,4 @@
+use autocorrect::LintResult;
 // autocorrect: false
 use clap::Parser;
 use std::ffi::OsString;
@@ -97,7 +98,7 @@ where
     // calc run time
     let start_t = SystemTime::now();
 
-    let mut lint_results: Vec<String> = Vec::new();
+    let mut lint_results: Vec<LintResult> = Vec::new();
     let lint_errors_count = std::sync::Arc::new(std::sync::Mutex::new(0));
     let lint_warnings_count = std::sync::Arc::new(std::sync::Mutex::new(0));
 
@@ -184,7 +185,7 @@ where
                 Ok(raw) => {
                     bench!(format!("Done {filepath}"), {
                         if cli.lint {
-                            let mut lint_results: Vec<String> = Vec::new();
+                            let mut lint_results: Vec<LintResult> = Vec::new();
 
                             let mut _err_count = 0;
                             let mut _warn_count = 0;
@@ -226,18 +227,14 @@ where
     log::debug!("Lint result found: {} issues.", lint_results.len());
 
     if cli.lint {
-        if cli.formatter.is_json() {
-            log::info!(
-                r#"{{"count": {},"messages": [{}]}}"#,
-                lint_results.len(),
-                lint_results.join(",")
-            );
-        } else {
+        if cli.formatter.is_diff() {
             let _err_count = *lint_errors_count.lock().unwrap();
             let _warn_count = *lint_warnings_count.lock().unwrap();
 
             log::info!("\n");
-            log::info!("{}", lint_results.join(""));
+            lint_results.iter().for_each(|lint_result| {
+                log::info!("{}", lint_result.to_diff(cli.no_diff_bg_color))
+            });
 
             log::info!(
                 "{}, {}\n",
@@ -251,6 +248,15 @@ where
             if _err_count > 0 {
                 // Exit with code = 1
                 std::process::exit(1);
+            }
+        } else {
+            if cli.formatter == cli::OutputFormatter::Json {
+                log::info!("{}", autocorrect::json::to_lint_results_json(lint_results));
+            } else {
+                log::info!(
+                    "{}",
+                    autocorrect::rdjson::to_lint_results_rdjson(lint_results)
+                )
             }
         }
     } else if cli.fix {
@@ -327,7 +333,7 @@ fn lint_and_output(
     filetype: &str,
     raw: &str,
     cli: &Cli,
-    results: &mut Vec<String>,
+    results: &mut Vec<LintResult>,
     errors_count: &mut usize,
     warings_count: &mut usize,
 ) {
@@ -352,14 +358,12 @@ fn lint_and_output(
         }
     }
 
-    if diff_mode {
+    if cli.formatter.is_diff() {
         if result.has_error() {
             log::debug!("{}\n{}", filepath, result.error);
             return;
         }
-
-        results.push(result.to_diff(cli.no_diff_bg_color));
-    } else {
-        results.push(result.to_json());
     }
+
+    results.push(result.clone());
 }

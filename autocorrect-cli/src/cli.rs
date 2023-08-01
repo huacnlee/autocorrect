@@ -5,13 +5,10 @@ use clap::{Parser, Subcommand, ValueEnum};
 pub(crate) enum OutputFormatter {
     Diff,
     Json,
+    Rdjson,
 }
 
 impl OutputFormatter {
-    pub fn is_json(&self) -> bool {
-        *self == OutputFormatter::Json
-    }
-
     pub fn is_diff(&self) -> bool {
         *self == OutputFormatter::Diff
     }

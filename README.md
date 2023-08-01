@@ -91,6 +91,7 @@ $ autocorrect update
 - [Intellij Platform Plugin](#intellij-platform-plugin)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
+- [Work with ReviewDog](#work-with-reviewdog)
 - [Use for programming](#use-for-programming)
 
 ### Use in CLI
@@ -362,6 +363,18 @@ autocorrect:
     - autocorrect --lint
   # Enable allow_failure if you wants.
   # allow_failure: true
+```
+
+### Work with ReviewDog
+
+> Since: 2.8.0
+
+AutoCorrect can work with [reviewdog](https://github.com/reviewdog/reviewdog), so you can use it in CI/CD. ReviewDog will post a comment to your PR with the AutoCorrect change suggestions. Then the PR committer can easy to accept the suggestions.
+
+Use `--format rdjson` option to output the lint results as the [reviewdog](https://github.com/reviewdog/reviewdog) supported format.
+
+```bash
+autocorrect --lint --format rdjson | reviewdog -f=rdjson -reporter=github-pr-check
 ```
 
 ### Use for programming
