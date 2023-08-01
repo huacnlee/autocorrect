@@ -76,11 +76,10 @@ pub fn load_config(config_str: String) {
 }
 
 #[napi]
-pub async fn run() {
+pub async fn run(args: Vec<String>) {
     // skip 2 args:
     // 1. node
     // 2. node_modules/.bin/autocorrect
-    let args = std::env::args().skip(1).collect::<Vec<_>>();
-
+    let args = args.iter().skip(1).collect::<Vec<_>>();
     autocorrect_cli::run(args).await;
 }

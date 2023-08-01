@@ -31,7 +31,7 @@ test\:node:
 	cd autocorrect-node && yarn && yarn build && yarn test
 test\:node\:cli:
 	cd autocorrect-node && yarn && yarn build
-	cd tests/node-cli-test && yarn upgrade autocorrect-node && yarn autocorrect init
+	cd tests/node-cli-test && yarn upgrade autocorrect-node && yarn autocorrect --lint
 test\:python:
 	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
 test\:ruby:

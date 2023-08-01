@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 const process = require('process');
-const autocorrect = require("./index.js");
+const autocorrect = require('./index.js');
 
-autocorrect.run();
+autocorrect.run(process.argv);
