@@ -1,6 +1,6 @@
 {
   "name": "autocorrect-node",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "main": "index.js",
   "bin": {
     "autocorrect": "./cli.js"
@@ -10,7 +10,8 @@
     "name": "autocorrect-node",
     "triples": {
       "additional": [
-        "aarch64-apple-darwin"
+        "aarch64-apple-darwin",
+        "x86_64-unknown-linux-musl"
       ]
     }
   },

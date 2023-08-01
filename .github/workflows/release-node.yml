@@ -203,6 +203,44 @@ jobs:
         shell: bash
       - name: Test bindings
         run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-slim yarn test
+  test-linux-x64-musl-binding:
+    name: Test bindings on Linux-x64-musl - node@${{ matrix.node }}
+    needs:
+      - build
+    strategy:
+      fail-fast: false
+      matrix:
+        node:
+          - "14"
+          - "16"
+          - "18"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+          cache: yarn
+          cache-dependency-path: "autocorrect-node/yarn.lock"
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: autocorrect-node/.yarn/cache
+          key: npm-cache-test-linux-x64-musl-${{ matrix.node }}
+      - name: Install dependencies
+        run: yarn install
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-x86_64-unknown-linux-musl
+          path: autocorrect-node/
+      - name: List packages
+        run: ls -R .
+        shell: bash
+      - name: Test bindings
+        run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-alpine yarn test
   publish:
     name: Publish Node
     runs-on: ubuntu-latest
@@ -210,6 +248,7 @@ jobs:
       - build
       - test-macOS-windows-binding
       - test-linux-x64-gnu-binding
+      - test-linux-x64-musl-binding
     steps:
       - uses: actions/checkout@v3
       - name: Setup node

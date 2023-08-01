@@ -1,6 +1,6 @@
 {
   "name": "autocorrect-node-linux-x64-musl",
-  "version": "2.1.1",
+  "version": "2.8.1",
   "os": [
     "linux"
   ],
@@ -14,5 +14,8 @@
   "license": "MIT",
   "engines": {
     "node": ">= 10"
-  }
+  },
+  "libc": [
+    "musl"
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "autocorrect-node-win32-x64-msvc",
-  "version": "2.1.1",
+  "version": "2.8.1",
   "os": [
     "win32"
   ],
