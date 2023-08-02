@@ -39,8 +39,9 @@ struct RdfRange {
 
 #[derive(Serialize, Deserialize, Clone)]
 struct RdfLineColumn {
+    // start from 1
     line: usize,
-    // byte count in UTF-8, not char count
+    // start from 1, byte count in UTF-8, not char count
     // For example: "你好" is 6 bytes
     column: usize,
 }
