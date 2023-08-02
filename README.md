@@ -381,8 +381,12 @@ AutoCorrect can work with [reviewdog](https://github.com/reviewdog/reviewdog), s
 Use `--format rdjson` option to output the lint results as the [reviewdog](https://github.com/reviewdog/reviewdog) supported format.
 
 ```bash
-autocorrect --lint --format rdjson | reviewdog -f=rdjson -reporter=github-pr-check
+autocorrect --lint --format rdjson | reviewdog -f=rdjson -reporter=github-pr-review
 ```
+
+Use [huacnlee/autocorrect-action](https://github.com/huacnlee/autocorrect-action) can help you setup GitHub Action.
+
+<img src="https://user-images.githubusercontent.com/5518/257680682-050d6f62-d461-44fc-a22f-2fb581ba0912.png" width="640" />
 
 ### Use for programming
 
