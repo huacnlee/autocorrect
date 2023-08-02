@@ -40,6 +40,8 @@ struct RdfRange {
 #[derive(Serialize, Deserialize, Clone)]
 struct RdfLineColumn {
     line: usize,
+    // byte count in UTF-8, not char count
+    // For example: "你好" is 6 bytes
     column: usize,
 }
 
@@ -66,71 +68,53 @@ fn to_severity_str(severity: super::Severity) -> String {
 /// RDF JSONSchema
 /// https://github.com/reviewdog/reviewdog/blob/master/proto/rdf/jsonschema/Diagnostic.jsonschema
 #[doc(hidden)]
-pub(crate) fn to_rdjson_diagnostic(lint_result: &LintResult, pretty: bool) -> String {
-    let mut rdf_diagnostic: RdfDiagnostic = RdfDiagnostic {
-        message: "".to_owned(),
-        location: RdfLocation {
-            path: lint_result.filepath.replace("./", ""),
-            range: RdfRange {
-                start: None,
-                end: None,
-            },
-        },
-        severity: "UNKNOWN_SEVERITY".to_owned(),
-        code: RdfCode {
-            value: Some("AutoCorrect".to_owned()),
-            url: "https://github.com/huacnlee/autocorrect".to_owned(),
-        },
-        suggestions: vec![],
-    };
-
+pub(crate) fn to_rdjson_diagnostics(lint_result: &LintResult) -> Vec<String> {
+    let mut diagnostics = vec![];
     lint_result.lines.iter().for_each(|line_result| {
-        if rdf_diagnostic.severity == "UNKNOWN_SEVERITY" {
-            rdf_diagnostic.severity = to_severity_str(line_result.severity);
-        }
-        if rdf_diagnostic.location.range.start.is_none() {
-            rdf_diagnostic.location.range.start = Some(RdfLineColumn {
-                line: line_result.line,
-                column: line_result.col,
-            });
-        }
-
-        let suggestion = RdfSuggetion {
-            text: line_result.new.clone(),
-            range: RdfRange {
-                start: Some(RdfLineColumn {
-                    line: line_result.line,
-                    column: line_result.col,
-                }),
-                end: Some(RdfLineColumn {
-                    line: line_result.line + line_result.old.split("\n").count() - 1,
-                    column: line_result.col
-                        + line_result
-                            .old
-                            .split("\n")
-                            .last()
-                            .unwrap_or("")
-                            .chars()
-                            .count(),
-                }),
-            },
+        let start: RdfLineColumn = RdfLineColumn {
+            line: line_result.line,
+            column: line_result.col,
+        };
+        let end = RdfLineColumn {
+            line: line_result.line + line_result.old.split("\n").count() - 1,
+            column: line_result.col + line_result.old.split("\n").last().unwrap_or("").len(),
         };
 
-        rdf_diagnostic.suggestions.push(suggestion);
+        let rdf_diagnostic: RdfDiagnostic = RdfDiagnostic {
+            message: "".to_owned(),
+            location: RdfLocation {
+                path: lint_result.filepath.replace("./", ""),
+                range: RdfRange {
+                    start: Some(start.clone()),
+                    end: Some(end.clone()),
+                },
+            },
+            severity: to_severity_str(line_result.severity),
+            code: RdfCode {
+                value: Some("AutoCorrect".to_owned()),
+                url: "https://github.com/huacnlee/autocorrect".to_owned(),
+            },
+            suggestions: vec![RdfSuggetion {
+                text: line_result.new.clone(),
+                range: RdfRange {
+                    start: Some(start),
+                    end: Some(end),
+                },
+            }],
+        };
+
+        diagnostics.push(serde_json::to_string(&rdf_diagnostic).unwrap())
     });
 
-    if pretty {
-        serde_json::to_string_pretty(&rdf_diagnostic).unwrap()
-    } else {
-        serde_json::to_string(&rdf_diagnostic).unwrap()
-    }
+    diagnostics
 }
 
 #[doc(hidden)]
 pub fn to_lint_results_rdjson(lint_results: Vec<LintResult>) -> String {
     let diagnostics = lint_results
         .iter()
-        .map(|r| to_rdjson_diagnostic(r, false))
+        .map(|r| to_rdjson_diagnostics(r))
+        .flatten()
         .collect::<Vec<_>>()
         .join(",");
     format!(
@@ -144,7 +128,7 @@ mod tests {
     fn test_to_lint_results_rdjson() {
         let rdjson = super::to_lint_results_rdjson(crate::result::json::crate_test_lint_results());
 
-        let expected = r#"{"source":{"name":"AutoCorrect Lint","url": "https://github.com/huacnlee/autocorrect"},"diagnostics": [{"message":"","severity":"ERROR","code":{"value":"AutoCorrect","url":"https://github.com/huacnlee/autocorrect"},"location":{"path":"test/foo/bar.rs","range":{"start":{"line":1,"column":1},"end":null}},"suggestions":[{"text":"hello 你好。","range":{"start":{"line":1,"column":1},"end":{"line":1,"column":9}}},{"text":"这是第 2 行","range":{"start":{"line":2,"column":1},"end":{"line":2,"column":6}}}]}]}"#;
+        let expected = r#"{"source":{"name":"AutoCorrect Lint","url": "https://github.com/huacnlee/autocorrect"},"diagnostics": [{"message":"","severity":"ERROR","code":{"value":"AutoCorrect","url":"https://github.com/huacnlee/autocorrect"},"location":{"path":"test/foo/bar.rs","range":{"start":{"line":1,"column":1},"end":{"line":1,"column":13}}},"suggestions":[{"text":"hello 你好。","range":{"start":{"line":1,"column":1},"end":{"line":1,"column":13}}}]},{"message":"","severity":"ERROR","code":{"value":"AutoCorrect","url":"https://github.com/huacnlee/autocorrect"},"location":{"path":"test/foo/bar.rs","range":{"start":{"line":2,"column":1},"end":{"line":2,"column":14}}},"suggestions":[{"text":"这是第 2 行","range":{"start":{"line":2,"column":1},"end":{"line":2,"column":14}}}]}]}"#;
         if expected != rdjson {
             println!("--------------- rdjson:\n{}", rdjson);
         }
