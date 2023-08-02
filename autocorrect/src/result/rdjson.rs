@@ -67,19 +67,14 @@ fn to_severity_str(severity: super::Severity) -> String {
 /// https://github.com/reviewdog/reviewdog/blob/master/proto/rdf/jsonschema/Diagnostic.jsonschema
 #[doc(hidden)]
 pub(crate) fn to_rdjson_diagnostic(lint_result: &LintResult, pretty: bool) -> String {
-    let range = RdfRange {
-        start: Some(RdfLineColumn {
-            line: lint_result.line,
-            column: lint_result.col,
-        }),
-        end: None,
-    };
-
     let mut rdf_diagnostic: RdfDiagnostic = RdfDiagnostic {
         message: "".to_owned(),
         location: RdfLocation {
-            path: lint_result.filepath.clone(),
-            range: range.clone(),
+            path: lint_result.filepath.replace("./", ""),
+            range: RdfRange {
+                start: None,
+                end: None,
+            },
         },
         severity: "UNKNOWN_SEVERITY".to_owned(),
         code: RdfCode {
@@ -92,6 +87,12 @@ pub(crate) fn to_rdjson_diagnostic(lint_result: &LintResult, pretty: bool) -> St
     lint_result.lines.iter().for_each(|line_result| {
         if rdf_diagnostic.severity == "UNKNOWN_SEVERITY" {
             rdf_diagnostic.severity = to_severity_str(line_result.severity);
+        }
+        if rdf_diagnostic.location.range.start.is_none() {
+            rdf_diagnostic.location.range.start = Some(RdfLineColumn {
+                line: line_result.line,
+                column: line_result.col,
+            });
         }
 
         let suggestion = RdfSuggetion {

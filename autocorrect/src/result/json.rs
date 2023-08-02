@@ -19,7 +19,9 @@ pub(crate) fn crate_test_lint_results() -> Vec<LintResult> {
     use crate::result::{LineResult, Results, Severity};
 
     let mut lint_result = LintResult::new("hello你好.\n这是第2行");
-    lint_result.filepath = "test/foo/bar.rs".to_owned();
+    lint_result.line = 10;
+    lint_result.col = 12;
+    lint_result.filepath = "./test/foo/bar.rs".to_owned();
     lint_result.push(LineResult {
         line: 1,
         col: 1,
@@ -44,7 +46,7 @@ mod tests {
     fn test_to_lint_results_json() {
         let json = super::to_lint_results_json(crate::result::json::crate_test_lint_results());
 
-        let expected = r#"{"count": 1,"messages": [{"filepath":"test/foo/bar.rs","lines":[{"l":1,"c":1,"new":"hello 你好。","old":"hello你好.","severity":1},{"l":2,"c":1,"new":"这是第 2 行","old":"这是第2行","severity":1}],"error":""}]}"#;
+        let expected = r#"{"count": 1,"messages": [{"filepath":"./test/foo/bar.rs","lines":[{"l":1,"c":1,"new":"hello 你好。","old":"hello你好.","severity":1},{"l":2,"c":1,"new":"这是第 2 行","old":"这是第2行","severity":1}],"error":""}]}"#;
         if expected != json {
             println!("--------------- json:\n{}", json);
         }
