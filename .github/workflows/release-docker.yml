@@ -28,5 +28,13 @@ jobs:
           tags: |
             huacnlee/autocorrect:latest
 
+      - name: Build and push (reviewdog)
+        uses: docker/build-push-action@v2
+        with:
+          file: ./Dockerfile.reviewdog
+          push: true
+          tags: |
+            huacnlee/autocorrect:latest-reviewdog
+
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
