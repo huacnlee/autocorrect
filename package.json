@@ -1,6 +1,10 @@
 {
-  "devDependencies": {
-    "@tauri-apps/cli": "^1.0.0"
-  },
-  "packageManager": "yarn@3.2.4"
+  "name": "autocorrect-monorepo",
+  "private": true,
+  "workspaces": [
+    "autocorrect-node",
+    "autocorrect-website",
+    "tests/node-cli-test"
+  ],
+  "license": "MIT"
 }
