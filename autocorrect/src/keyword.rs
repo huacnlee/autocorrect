@@ -51,9 +51,9 @@ pub struct Span {
     /// zero-based index, start of the matched keyword
     /// char index, not byte index
     // For example: "你好" has 2 chars, but 6 bytes in UTF-8.
-    start: usize,
+    pub start: usize,
     /// zero-based index, end of the matched keyword
-    end: usize,
+    pub end: usize,
 }
 
 impl Span {
@@ -68,7 +68,7 @@ impl fmt::Display for Span {
     }
 }
 
-type MatchedResult = HashMap<String, Vec<Span>>;
+pub type MatchedResult = HashMap<String, Vec<Span>>;
 
 impl Node {
     pub fn new(case_insensitive: bool) -> Self {

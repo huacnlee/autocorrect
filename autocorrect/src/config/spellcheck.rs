@@ -1,3 +1,5 @@
+use crate::keyword;
+
 use super::severity::*;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -15,13 +17,20 @@ pub struct SpellcheckConfig {
     #[serde(default)]
     pub words: Vec<SpellcheckWord>,
     #[serde(skip)]
-    pub dict: HashMap<String, String>,
+    pub word_map: HashMap<String, String>,
     #[serde(skip)]
-    pub dict_re: HashMap<String, Regex>,
+    pub word_re: HashMap<String, Regex>,
+    #[serde(skip)]
+    pub matcher: keyword::Node,
 }
 
 impl SpellcheckConfig {
     pub fn prepare(&mut self) {
+        self.matcher = keyword::Node::new(true);
+        self.matcher
+            .add_keywords(self.words.iter().map(|w| w.as_str()).collect::<Vec<_>>());
+        self.matcher.build();
+
         if !self.words.is_empty() {
             let mut lines = self.words.clone();
 
@@ -57,12 +66,11 @@ impl SpellcheckConfig {
                 left_str = left_str.trim();
                 right_str = right_str.trim();
 
-                self.dict
-                    .insert(left_str.to_string(), right_str.to_string());
-                self.dict_re.insert(
-                    left_str.to_string(),
-                    crate::rule::spellcheck::word_regexp(left_str),
-                );
+                let key = left_str.to_lowercase();
+
+                self.word_map.insert(key.clone(), right_str.to_string());
+                self.word_re
+                    .insert(key, crate::spellcheck::word_regexp(left_str));
             }
         }
     }

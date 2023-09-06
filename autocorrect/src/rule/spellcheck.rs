@@ -1,8 +1,8 @@
-use regex::Regex;
+use std::collections::HashMap;
 
-use crate::config::Config;
+use crate::{config::Config, keyword::MatchedResult};
 
-pub(crate) fn word_regexp(word: &str) -> Regex {
+pub(crate) fn word_regexp(word: &str) -> regex::Regex {
     let prefix = r#"([^\W]|[\p{Han}？！：，。；、]|$|^)"#;
 
     regexp!(
@@ -13,25 +13,98 @@ pub(crate) fn word_regexp(word: &str) -> Regex {
     )
 }
 
+lazy_static! {
+    static ref DISALLOW_CHAR_RE: regex::Regex = regexp!("{}", r#"([^\p{Han}\s？！：，。；、])"#);
+}
+
 // Spell check by dict
 pub fn format(text: &str) -> String {
     let mut out = String::from(text);
 
     let config = Config::current();
 
-    let spellcheck_dict_re = &config.spellcheck.dict_re;
-    let spellcheck_dict = &config.spellcheck.dict;
+    let word_map = &config.spellcheck.word_map;
+    let word_re = &config.spellcheck.word_re;
+    let matcher = &config.spellcheck.matcher;
 
-    for (word, re) in spellcheck_dict_re.iter() {
-        let new_word = spellcheck_dict.get(word).unwrap_or(word);
-        out = re
-            .replace_all(&out, |cap: &regex::Captures| {
-                cap[0].replace(&cap[3], new_word)
+    let matched_words = matcher.match_keywords(text);
+    return replace_with_spans(text, &matched_words, word_map);
+}
+
+struct SpanInfo {
+    old: String,
+    new: String,
+    span: crate::keyword::Span,
+}
+
+fn replace_with_spans(
+    text: &str,
+    words: &MatchedResult,
+    word_map: &HashMap<String, String>,
+) -> String {
+    let mut spans = words
+        .iter()
+        .map(|(w, spans)| {
+            spans.iter().map(move |span| SpanInfo {
+                old: w.to_string(),
+                new: word_map.get(w).unwrap().to_string(),
+                span: span.clone(),
             })
-            .to_string();
+        })
+        .flatten()
+        .collect::<Vec<_>>();
+
+    spans.sort_by(|a, b| a.span.start.cmp(&b.span.start));
+
+    let mut text_chars = text.chars().collect::<Vec<_>>();
+    let mut offset_change = 0;
+
+    for span_info in spans.iter() {
+        let old_str = &span_info.old;
+        let new_str = &span_info.new;
+        let span_start = span_info.span.start;
+        let span_end = span_info.span.end;
+
+        let offset_start = span_start + offset_change;
+        let offset_end = span_end + offset_change;
+
+        // Check whether the left and right 1 characters are allowed
+        let left_start = offset_start as isize - 1;
+        let left_start = if left_start < 0 {
+            0
+        } else {
+            left_start as usize
+        };
+        let left_str: String = text_chars
+            .get(left_start..offset_start)
+            .unwrap_or_default()
+            .iter()
+            .collect();
+        let right_str: String = text_chars
+            .get(offset_end..offset_end + 1)
+            .unwrap_or_default()
+            .iter()
+            .collect();
+
+        println!(
+            "----------------- l: `{}` {}..{}, r: `{}`",
+            left_str, left_start, offset_start, right_str
+        );
+
+        if DISALLOW_CHAR_RE.is_match(&left_str) || DISALLOW_CHAR_RE.is_match(&right_str) {
+            // println!("------- not allow:{}", old_str);
+            continue;
+        }
+
+        // Perform replacement
+        let new_str_chars = new_str.chars().collect::<Vec<_>>();
+        text_chars.splice(offset_start..offset_end, new_str_chars);
+
+        // Update offset_change due to length change after replacement
+        offset_change += new_str.chars().count() - old_str.chars().count();
     }
 
-    out
+    text_chars.into_iter().collect::<String>()
 }
 
 #[cfg(test)]
@@ -41,11 +114,29 @@ mod tests {
     use super::*;
     use std::collections::HashMap;
 
+    #[track_caller]
     fn assert_spellcheck_cases(cases: HashMap<&str, &str>) {
         for (source, exptected) in cases.into_iter() {
             let actual = format(source);
             assert_eq!(exptected, actual);
         }
+    }
+
+    #[test]
+    fn test_disallow_char_re() {
+        assert_eq!(DISALLOW_CHAR_RE.is_match(","), true);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("a"), true);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("-"), true);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("a你"), true);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("a\n"), true);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("a "), true);
+
+        assert_eq!(DISALLOW_CHAR_RE.is_match(""), false);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("你 "), false);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("你好"), false);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("你，"), false);
+        assert_eq!(DISALLOW_CHAR_RE.is_match(" ，"), false);
+        assert_eq!(DISALLOW_CHAR_RE.is_match("？"), false);
     }
 
     #[test]
@@ -106,14 +197,8 @@ mod tests {
 
         let words = Config::current().spellcheck.words.clone();
         for l in words.iter() {
-            let mut left = l.as_str();
-            let mut right = l.as_str();
-
-            let pair = crate::config::PAIR_RE.split(l).collect::<Vec<_>>();
-            if pair.len() == 2 {
-                left = pair[0];
-                right = pair[1];
-            }
+            let left = l.as_str();
+            let right = l.as_str();
 
             assert_eq!(right, format(left));
             assert_eq!(right, format(&left.to_uppercase()));
