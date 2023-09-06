@@ -13,11 +13,10 @@ string_bracket = ${ "(" ~ string ~ ")" }
 inner_string   = @{ (!("}" | ")") ~ ANY)* }
 
 /// Paragraph
-para = ${ function | section }
+para = ${ function | comment }
 
 /// Function
 fn_name  = @{ "\\" ~ ASCII_ALPHA+ ~ ("[" ~ " "* ~ "]")* ~ " "* }
 function = ${ fn_name ~ (function | string) }
 
-/// Section
-section = @{ "%" ~ (!NEWLINE ~ ANY)+ }
+comment = @{ "%" ~ (!NEWLINE ~ ANY)+ }
