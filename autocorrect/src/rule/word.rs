@@ -15,6 +15,7 @@ lazy_static! {
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
         // 300+单词，A+评分，C++中文，C#中文, 100#中文
+        // The `#` can'not work, because is related to URL anchor, can't do it.
         Strategery::new(r"[a-zA-Z0-9][+#]+", r"\p{CJK}"),
     ];
 
