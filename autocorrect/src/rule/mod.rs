@@ -56,7 +56,7 @@ lazy_static! {
     /// /foo/bar/dar
     /// ignore //foo/bar/dar
     /// ```
-    static ref PATH_RE: Regex = regexp!(r"(^[a-zA-Z\d]+://)|(^/?[a-zA-Z\d\-_\.]+/)");
+    static ref PATH_RE: Regex = regexp!(r"(^[a-zA-Z\d]+://)|(^/?[a-zA-Z\d\-_\.]{2,}/)");
     /// Match string is path with hash, e.g.: `foo-a_01.html#测试test`
     static ref PATH_HASH_RE: Regex = regexp!(r"[a-zA-Z0-9\-_.]+#[\w\-_.]*[\p{Han}]+[a-zA-Z0-9\-_.]*");
 }
@@ -295,6 +295,7 @@ mod tests {
             hello world
             你好啊
             逐步改善你的C/C++/Zig代码库
+            测试 C/C++代码
         "#};
         for case in no_match_cases {
             assert!(
