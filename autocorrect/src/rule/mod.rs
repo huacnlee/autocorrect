@@ -42,11 +42,10 @@ lazy_static! {
 
 lazy_static! {
     static ref FULL_DATE_RE: Regex = regexp!(
-        "{}",
         r"[ ]{0,}\d+[ ]{0,}年 [ ]{0,}\d+[ ]{0,}月 [ ]{0,}\d+[ ]{0,}[日号][ ]{0,}"
     );
-    pub static ref CJK_RE: Regex = regexp!("{}", r"\p{CJK}");
-    static ref SPACE_RE: Regex = regexp!("{}", r"[ ]");
+    pub static ref CJK_RE: Regex = regexp!(r"\p{CJK}");
+    static ref SPACE_RE: Regex = regexp!(r"[ ]");
     /// Match string start with Path or URL:
     ///
     /// ```ignore
@@ -57,9 +56,9 @@ lazy_static! {
     /// /foo/bar/dar
     /// ignore //foo/bar/dar
     /// ```
-    static ref PATH_RE: Regex = regexp!("{}", r"^(([a-z\d]+)://)|(^/?[\w\d\-]+/)");
+    static ref PATH_RE: Regex = regexp!(r"(^[a-zA-Z\d]+://)|(^/?[a-zA-Z\d\-_\.]+/)");
     /// Match string is path with hash, e.g.: `foo-a_01.html#测试test`
-    static ref PATH_HASH_RE: Regex = regexp!("{}", r"[a-zA-Z0-9\-_.]+#[\w\-_.]*[\p{Han}]+[a-zA-Z0-9\-_.]*");
+    static ref PATH_HASH_RE: Regex = regexp!(r"[a-zA-Z0-9\-_.]+#[\w\-_.]*[\p{Han}]+[a-zA-Z0-9\-_.]*");
 }
 
 /// Get all rule names for default enable
@@ -290,43 +289,69 @@ mod tests {
 
     #[test]
     fn test_is_match_path() {
-        let cases = vec!["//foo/bar/foo_bar"];
-        for case in cases {
-            assert!(!is_match_path(case), "{}", case);
+        let no_match_cases = cases! {r#"
+            //foo/bar/foo_bar
+            foo /foo/bar/foo_bar
+            hello world
+            你好啊
+            逐步改善你的C/C++/Zig代码库
+        "#};
+        for case in no_match_cases {
+            assert!(
+                !is_match_path(case),
+                "expected `{}` to not match, but matched.",
+                case
+            );
         }
 
-        let cases = vec![
-            "http://google.com/foo-bar_01.htm",
-            "http://google.com/foo/bar_01?a=1&b=2#foo",
-            "app://foo.com/bar.1",
-            "/foo/bar/foo_bar",
-        ];
-        for case in cases {
-            assert!(is_match_path(case), "{}", case);
+        let match_cases = cases! {r#"
+            http://google.com/foo-bar_01.htm
+            http://google.com/foo/bar_01?a=1&b=2#foo
+            app://foo.com/bar.1
+            /foo/bar/foo_bar
+            /.foo/bar/foo_bar
+            /foo/bar/foo_bar/
+            foo/bar/dar
+        "#};
+        for case in match_cases {
+            assert!(
+                is_match_path(case),
+                "expected `{}` to be match, but not.",
+                case
+            );
         }
     }
 
     #[test]
     fn test_is_match_path_hash() {
-        let cases = vec![
-            "演示#标签",
-            "HashTag的演示#标签1",
-            "foo bar #符号",
-            "记事本,记事本1显示阅读次数#149号",
-        ];
-        for case in cases {
-            assert!(!is_match_path_hash(case), "{}", case);
+        let no_match_cases = cases! {r#"
+            演示#标签
+            HashTag的演示#标签1
+            foo bar #符号
+            记事本,记事本1显示阅读次数#149号
+            逐步改善你的C/C++/Zig代码库
+        "#};
+        for case in no_match_cases {
+            assert!(
+                !is_match_path_hash(case),
+                "expected `{}` to not match, but matched.",
+                case
+            );
         }
 
-        let cases = vec![
-            "foo-bar_01.htm#测试copy",
-            "foo-bar_01#copy测试",
-            " foo-bar#测试 ",
-            "Foo_bar#a测试",
-            "foo.Bar#测A试1",
-        ];
-        for case in cases {
-            assert!(is_match_path_hash(case), "{}", case);
+        let match_cases = cases! {r#"
+            foo-bar_01.htm#测试copy
+            foo-bar_01#copy测试
+             foo-bar#测试
+            Foo_bar#a测试
+            foo.Bar#测A试1
+        "#};
+        for case in match_cases {
+            assert!(
+                is_match_path_hash(case),
+                "expected `{}` to be match, but not.",
+                case
+            );
         }
     }
 }

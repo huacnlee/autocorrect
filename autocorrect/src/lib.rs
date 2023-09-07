@@ -47,6 +47,9 @@ extern crate lazy_static;
 /// - `\p{CJK}`: `\p{Han}|\p{Hangul}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}`
 /// - `\p{CJ}`: `\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Bopomofo}`
 macro_rules! regexp {
+    ($arg:tt) => {{
+        regexp!("{}", $arg)
+    }};
     ($($arg:tt)*) => {{
         let reg_str = format!($($arg)*);
 
@@ -118,6 +121,18 @@ macro_rules! assert_json_eq {
         let expect_json = serde_json::from_str(expected).unwrap_or(serde_json::Value::default());
         let result = serde_json::from_str(actual.as_str()).unwrap_or(serde_json::Value::default());
         assert_eq!(expect_json, result);
+    }};
+}
+
+/// Create a Vec<String> from a multiple line text.
+///
+/// This will split by `\n`.
+#[allow(unused)]
+#[track_caller]
+macro_rules! cases {
+    ($text:tt) => {{
+        let cases = indoc::indoc!($text);
+        cases.trim().split("\n").collect::<Vec<&str>>()
     }};
 }
 

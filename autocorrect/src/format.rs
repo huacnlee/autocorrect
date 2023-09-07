@@ -250,6 +250,7 @@ mod tests {
             "foo-bar_01.htm#测试copy" => "foo-bar_01.htm#测试copy",
             "foo-bar_01#copy测试" => "foo-bar_01#copy测试",
             "ch04-01-what-is-ownership.html#只在堆疊上的資料拷貝copy" => "ch04-01-what-is-ownership.html#只在堆疊上的資料拷貝copy",
+            "中文A/B中文" => "中文 A/B 中文",
         ];
         assert_cases(cases);
 
