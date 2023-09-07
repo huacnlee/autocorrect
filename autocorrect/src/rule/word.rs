@@ -2,8 +2,8 @@
 use super::{strategery::Strategery, CJK_RE};
 
 lazy_static! {
-       // Strategies all rules
-       static ref WORD_STRATEGIES: Vec<Strategery> = vec![
+    // Strategies all rules
+    static ref WORD_STRATEGIES: Vec<Strategery> = vec![
         // EnglishLetter, Number
         // Avoid add space when Letter, Number has %, $, \ prefix, eg. %s, %d, $1, $2, \1, \2, \d, \r, \p ... in source code
         Strategery::new(r"\p{CJK}[^%\$\\]", r"[a-zA-Z0-9]"),
@@ -14,6 +14,8 @@ lazy_static! {
         Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),
+        // 300+单词，A+评分，C++中文，C#中文, 100#中文
+        Strategery::new(r"[a-zA-Z0-9][+#]+", r"\p{CJK}"),
     ];
 
     static ref PUNCTUATION_STRATEGIES: Vec<Strategery> = vec![
@@ -38,8 +40,6 @@ lazy_static! {
         // Remove space around fullwidth quotes
         Strategery::new(r"\w|\p{CJK}", r"[“”‘’]").with_remove_space().with_reverse(),
     ];
-
-
 }
 
 pub fn format_space_word(input: &str) -> String {
