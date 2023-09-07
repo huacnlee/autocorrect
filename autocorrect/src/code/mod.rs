@@ -30,6 +30,7 @@ mod strings;
 mod swift;
 mod xml;
 mod yaml;
+mod zig;
 
 pub use code::*;
 pub use types::*;
@@ -111,6 +112,7 @@ pub fn lint_for(raw: &str, filename_or_ext: &str) -> LintResult {
         "c" => lint_c(raw),
         "xml" => lint_xml(raw),
         "jupyter" => lint_jupyter(raw),
+        "zig" => lint_rust(raw),
         "text" => lint_markdown(raw),
         _ => LintResult::new(raw),
     };
@@ -168,6 +170,7 @@ pub fn format_for(raw: &str, filename_or_ext: &str) -> FormatResult {
         "c" => format_c(raw),
         "xml" => format_xml(raw),
         "jupyter" => format_jupyter(raw),
+        "zig" => format_rust(raw),
         "text" => format_markdown(raw),
         _ => {
             let mut result = FormatResult::new(raw);
