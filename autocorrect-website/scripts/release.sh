@@ -3,7 +3,8 @@ set -e
 
 rm -Rf dist/
 # build
-yarn build
+bun install
+bun run build
 
 # navigate into the build output directory
 cd dist

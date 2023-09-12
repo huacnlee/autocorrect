@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
 const autocorrectLib = import('@huacnlee/autocorrect');
 import * as monaco from 'monaco-editor';
 import examples from './examples';
