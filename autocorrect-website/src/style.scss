@@ -52,10 +52,10 @@ select {
 }
 
 button {
-  @apply border-0 shadow bg-gray-900 text-white rounded-md leading-4 py-3 px-10;
+  @apply border shadow border-gray-300 bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200 rounded-md leading-4 py-2.5 px-10;
 
-  &:active {
-    @apply bg-black;
+  &.btn-primary {
+    @apply bg-gray-900 text-white active:bg-black;
   }
 }
 
