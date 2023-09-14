@@ -7,6 +7,7 @@ bun install
 bun run build
 
 # navigate into the build output directory
+cp dist/index.html dist/404.html
 cd dist
 
 # place .nojekyll to bypass Jekyll processing
