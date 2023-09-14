@@ -7,8 +7,6 @@ export const autocorrectLib = import('@huacnlee/autocorrect');
 
 export let config = {
   rules: {
-    fullwidth: 2,
-    'halfwidth-punctuation': 2,
     spellcheck: 2,
   },
   spellcheck: {
@@ -27,7 +25,7 @@ export const createMarkers = (result: any) => {
         startLineNumber: lineResult.l,
         startColumn: lineResult.c,
         endLineNumber: lineResult.l,
-        endColumn: lineResult.c + lineResult.old.length + 1,
+        endColumn: lineResult.c + lineResult.old.length,
         message: `AutoCorrect: ${lineResult.new}`,
       };
     }
