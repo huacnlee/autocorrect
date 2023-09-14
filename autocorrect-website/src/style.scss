@@ -2,24 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply text-sm px-6 lg:px-0 text-center pb-20;
+html {
+  overscroll-behavior: none;
 }
 
-.container {
-  @apply max-w-5xl w-full my-8 mx-auto text-left;
+body {
+  @apply text-sm text-center pt-12;
 }
 
 .navbar {
-  @apply text-lg text-gray-300;
+  @apply bg-white shadow fixed top-0 left-0 right-0 z-50;
 
-  a {
-    @apply text-blue-600 px-2;
+  .navbar-brand {
+    @apply flex items-center flex-shrink-0 py-2;
+  }
+
+  .navbar-item {
+    @apply inline-flex items-center px-4 py-2 h-8 text-sm rounded font-medium text-gray-900;
+
+    &-active {
+      @apply bg-gray-200;
+    }
   }
 }
 
-.sub-navbar {
-  @apply flex items-center justify-center space-x-2;
+.container {
+  @apply max-w-5xl w-full my-8 px-4 mx-auto text-left;
 }
 
 .intro {
@@ -31,9 +39,7 @@ body {
 }
 
 .editor-wraper {
-  width: 100%;
-  height: 480px;
-  @apply rounded-sm border border-gray-300 shadow mb-4;
+  @apply rounded-sm border border-gray-300 shadow;
 }
 
 select {
@@ -48,14 +54,14 @@ select {
 }
 
 select {
-  @apply block pl-3 pr-10 py-2 text-base shadow-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md;
+  @apply block pl-3 pr-4 py-1.5 text-base shadow-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md;
 }
 
 button {
-  @apply border shadow border-gray-300 bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200 rounded-md leading-4 py-2.5 px-10;
+  @apply rounded bg-white px-4 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50;
 
   &.btn-primary {
-    @apply bg-gray-900 text-white active:bg-black;
+    @apply bg-blue-600 ring-blue-800 hover:to-blue-500 text-white active:bg-blue-700;
   }
 }
 

@@ -1,5 +1,20 @@
 // autocorrect: false
 export default {
+  markdown: {
+    title: 'Markdown',
+    raw: `# 这是Heading 1大标题
+**加粗** 
+*倾斜*
+~~删除线~~
+这是**Bold加粗**在1个段落中，这端会correct掉，如果是inline code，例如\`Rust语言\`，也可以应该处理。
+> 引用文本：Quote也是可以的。
+\`\`\`rust
+// Codeblock里面也会处理
+let a = "你好hello";
+\`\`\`
+- ![img图片](https://google.com/a/b/url不处理)
+- [link链接](https://google.com/a/b/url不处理)`,
+  },
   javascript: {
     title: 'JavaScript',
     raw: `/**
@@ -52,21 +67,6 @@ function application() {
   font: Helvetica, sans-serif;
 }
 `,
-  },
-  markdown: {
-    title: 'Markdown',
-    raw: `# 这是Heading 1大标题
-**加粗** 
-*倾斜*
-~~删除线~~
-这是**Bold加粗**在1个段落中，这端会correct掉，如果是inline code，例如\`Rust语言\`，也可以应该处理。
-> 引用文本：Quote也是可以的。
-\`\`\`rust
-// Codeblock里面也会处理
-let a = "你好hello";
-\`\`\`
-- ![img图片](https://google.com/a/b/url不处理)
-- [link链接](https://google.com/a/b/url不处理)`,
   },
   rust: {
     title: 'Rust',

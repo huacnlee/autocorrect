@@ -1,0 +1,17 @@
+{
+  "name": "AutoCorrect",
+  "short_name": "AutoCorrect",
+  "description": "AutoCorrect Playground.",
+  "start_url": "/autocorrect/editor",
+  "scope": "/autocorrect/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "https://user-images.githubusercontent.com/5518/194691346-13856309-266b-4bf6-b505-5a8b15d0c02e.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
