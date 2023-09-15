@@ -1,7 +1,7 @@
 export const Welcome = () => {
   return (
     <div className="container">
-      <div className="mb-10 space-y-6 text-center ">
+      <article className="mb-10 space-y-6 text-center">
         <div className="space-y-3">
           <div className="flex items-center justify-center space-x-2">
             <a href="https://github.com/huacnlee/autocorrect/actions?query=workflow%3ACI">
@@ -127,7 +127,7 @@ export const Welcome = () => {
             src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png"
           />
         </p>
-      </div>
+      </article>
     </div>
   );
 };

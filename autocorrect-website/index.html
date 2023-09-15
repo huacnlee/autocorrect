@@ -14,7 +14,7 @@
   <script type="module" src="/src/app.tsx"></script>
   <div id="app">
     <div class="container">
-      <div class="mb-10 space-y-6 text-center ">
+      <article class="mb-10 space-y-6 text-center ">
         <div class="flex justify-center"><img
             src="https://user-images.githubusercontent.com/5518/194691346-13856309-266b-4bf6-b505-5a8b15d0c02e.png"
             width="120" />
@@ -27,15 +27,15 @@
         <div class="flex flex-col justify-center space-y-2 text-center md:flex-row md:space-y-0 md:space-x-6">
           <a href="https://github.com/huacnlee/autocorrect/releases/latest" target="_blank" class="btn btn-download">
             <div class="text-lg">Download</div>
-            <div class="text-xs text-gray-200">macOS / Windows / Linux</div>
+            <div class="text-xs text-gray-200 dark:text-gray-800">macOS / Windows / Linux</div>
           </a>
           <a href="vscode:extension/huacnlee.autocorrect" class="btn btn-install">
             <div class="text-lg">Install Extension</div>
-            <div class="text-xs text-gray-200">Visual Studio Code</div>
+            <div class="text-xs text-gray-200 dark:text-gray-800">Visual Studio Code</div>
           </a>
           <a href="https://plugins.jetbrains.com/plugin/20244-autocorrect" target="_blank" class="btn btn-install2">
             <div class="text-lg">Install Plugin</div>
-            <div class="text-xs text-gray-200">Intellij Platform</div>
+            <div class="text-xs text-gray-200 dark:text-gray-800">Intellij Platform</div>
           </a>
         </div>
         <div class="codeblock-wrap">
@@ -61,20 +61,19 @@
           <img class="w-full max-w-4xl mx-auto"
             src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png" />
         </p>
-      </div>
-      <div class="absolute top-0 bottom-0 left-0 right-0 flex space-x-4 text-center bg-white">
-        <div class="flex-1 py-1 m-6 space-y-6 w-[400px] animate-pulse">
-          <div class="w-2/6 h-4 rounded bg-slate-200"></div>
-          <div class="w-8/12 h-2 col-span-2 rounded bg-slate-200"></div>
-          <div class="w-6/12 h-2 col-span-2 rounded bg-slate-200"></div>
-          <div class="w-10/12 h-2 col-span-2 rounded bg-slate-200"></div>
-          <div class="w-full h-4 col-span-2 mt-2 rounded bg-slate-200"></div>
-          <div class="w-10/12 h-2 col-span-2 mt-2 rounded bg-slate-200"></div>
-          <div class="w-2/6 h-2 col-span-2 mt-2 rounded bg-slate-200"></div>
-
-        </div>
+    </div>
+    <div class="absolute top-0 bottom-0 left-0 right-0 flex space-x-4 text-center bg-white dark:bg-black">
+      <div class="flex-1 py-1 m-6 space-y-6 w-[400px] animate-pulse">
+        <div class="w-2/6 h-4 rounded bg-slate-200 dark:bg-slate-800"></div>
+        <div class="w-8/12 h-2 col-span-2 rounded bg-slate-200 dark:bg-slate-800"></div>
+        <div class="w-6/12 h-2 col-span-2 rounded bg-slate-200 dark:bg-slate-800"></div>
+        <div class="w-10/12 h-2 col-span-2 rounded bg-slate-200 dark:bg-slate-800"></div>
+        <div class="w-full h-4 col-span-2 mt-2 rounded bg-slate-200 dark:bg-slate-800"></div>
+        <div class="w-10/12 h-2 col-span-2 mt-2 rounded bg-slate-200 dark:bg-slate-800"></div>
+        <div class="w-2/6 h-2 col-span-2 mt-2 rounded bg-slate-200 dark:bg-slate-800"></div>
       </div>
     </div>
+  </div>
   </div>
 </body>
 

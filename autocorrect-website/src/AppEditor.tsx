@@ -36,30 +36,30 @@ export const createMarkers = (result: any) => {
 
 autocorrectLib.then((ac) => {
   const loadedConfig = ac.loadConfig(JSON.stringify(config));
-  console.log('Loaded config: ', loadedConfig);
   // @ts-ignore
   window.autocorrect = ac;
 });
 
-export const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions =
-  {
-    theme: 'vs',
-    tabSize: 2,
-    useTabStops: true,
-    scrollbar: {
-      verticalScrollbarSize: 5,
-      horizontalScrollbarSize: 5,
-      useShadows: true,
-    },
-    renderLineHighlight: 'none',
-    minimap: {
-      enabled: false,
-    },
-    formatOnPaste: true,
-    unicodeHighlight: {
-      ambiguousCharacters: false,
-    },
-  };
+const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
+  theme: window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'vs-dark'
+    : 'vs',
+  tabSize: 2,
+  useTabStops: false,
+  scrollbar: {
+    verticalScrollbarSize: 5,
+    horizontalScrollbarSize: 5,
+    useShadows: false,
+  },
+  renderLineHighlight: 'none',
+  minimap: {
+    enabled: false,
+  },
+  formatOnPaste: true,
+  unicodeHighlight: {
+    ambiguousCharacters: false,
+  },
+};
 
 export const AppEditor = () => {
   const [monaco, setMonaco] = useState<any>();
@@ -69,6 +69,27 @@ export const AppEditor = () => {
 
   // @ts-ignore
   const autocorrect = window.autocorrect;
+
+  useEffect(() => {
+    if (monaco) {
+      // Get media query is dark mode
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      // Watch dark mode change
+      mediaQuery.addEventListener('change', (e) => {
+        const newTheme = e.matches ? 'vs-dark' : 'vs';
+        monaco?.editor?.setTheme(newTheme);
+      });
+
+      monaco.editor.defineTheme('vs-dark', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [],
+        colors: {
+          'editor.background': '#030712',
+        },
+      });
+    }
+  }, [monaco]);
 
   const onLint = () => {
     if (!editor) {
@@ -105,10 +126,9 @@ export const AppEditor = () => {
 
     // @ts-ignore
     const example = examples[fileType];
-
-    editor.setValue(example.raw);
     // @ts-ignore
     monaco.editor.setModelLanguage(editor.getModel(), fileType);
+    editor.setValue(example.raw);
   };
 
   const FileTypeOptions = () => {
@@ -150,22 +170,19 @@ export const AppEditor = () => {
     return false;
   };
 
-  const initEditor = () => {
-    if (!editor) {
-      return;
-    }
-
-    editor.onDidChangeModelContent(() => {
-      onLint();
-    });
-
-    editor.addCommand(monaco.KeyCode.KeyZ + monaco.KeyMod.CtrlCmd, function () {
-      reloadExample();
-    });
+  const onEditorMounted = (
+    editor: monaco.editor.IStandaloneCodeEditor,
+    monaco: any
+  ) => {
+    setEditor(editor);
+    setMonaco(monaco);
   };
 
   useEffect(() => {
-    initEditor();
+    editor?.onDidChangeModelContent(() => {
+      onLint();
+    });
+
     reloadExample();
   }, [editor]);
 
@@ -193,11 +210,9 @@ export const AppEditor = () => {
       <div className="editor-wraper absolute bottom-4 left-4 right-4 top-[110px]">
         <Editor
           defaultLanguage="markdown"
+          theme={editorOptions.theme}
           options={editorOptions}
-          onMount={(editor, monaco) => {
-            setEditor(editor);
-            setMonaco(monaco);
-          }}
+          onMount={onEditorMounted}
         />
       </div>
     </div>
