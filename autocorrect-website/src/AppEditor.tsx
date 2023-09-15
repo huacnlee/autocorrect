@@ -192,13 +192,13 @@ export const AppEditor = () => {
         <select
           onChange={onChangeFileType}
           value={fileType}
-          className="min-w-[250px]"
+          className="w-[180px] sm:w-[250px]"
         >
           <FileTypeOptions />
         </select>
 
-        <div className="flex flex-wrap items-center justify-between space-y-6 lg:flex-nowrap lg:space-x-6 lg:space-y-0">
-          <span className="message">{message}</span>
+        <div className="flex items-center justify-between space-x-3">
+          <span className="hidden message sm:block">{message}</span>
           <div className="flex gap-3">
             <button onClick={reloadExample}>Reset</button>
             <button className="btn-primary" onClick={formatText}>
