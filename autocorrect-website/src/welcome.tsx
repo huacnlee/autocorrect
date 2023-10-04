@@ -1,3 +1,38 @@
+const USE_CASES = [
+  {
+    name: 'MDN Web Docs',
+    url: 'https://developer.mozilla.org',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/be3f0252-9655-4742-bf6b-1df4011fe82f',
+  },
+  {
+    name: 'Apache APISIX',
+    url: 'https://apisix.apache.org',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/2b286775-e619-4d7e-9c81-37479b93b18e',
+  },
+  {
+    name: 'Longbridge',
+    url: 'https://open.longportapp.com',
+    className: 'scale-[1.2]',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/4d43712d-30ac-4bad-95bc-9b571cd43660',
+  },
+  {
+    name: 'JuiceFS',
+    url: 'https://juicefs.com',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/788634f6-080f-4c0e-8e13-0da22a5d3ae7',
+  },
+  {
+    name: 'Lowcode Engine',
+    url: 'https://lowcode-engine.cn',
+    className: 'scale-[0.8]',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/89c60e49-cda2-4e9a-a739-ef4d769c7457',
+  },
+];
+
 export const Welcome = () => {
   return (
     <div className="container">
@@ -127,6 +162,25 @@ export const Welcome = () => {
             src="https://user-images.githubusercontent.com/5518/192738752-89a9e4f5-75cb-40af-b84d-04889d22e834.png"
           />
         </p>
+
+        <div className="intro">
+          <h2 className="text-lg">Use cases</h2>
+          <div
+            className="flex flex-wrap items-center place-content-center gap-x-4 py-8 dark:invert-[0.2]"
+            style={{ colorScheme: 'revert' }}
+          >
+            {USE_CASES.map((item) => {
+              return (
+                <a href={item.url} target="_blank" title={item.name}>
+                  <img
+                    src={item.image}
+                    className={`${item.className} h-6 lg:h-8 m-2 lg:m-6`}
+                  />
+                </a>
+              );
+            })}
+          </div>
+        </div>
       </article>
     </div>
   );
