@@ -2,8 +2,9 @@ const USE_CASES = [
   {
     name: 'MDN Web Docs',
     url: 'https://developer.mozilla.org',
+    className: 'dark:invert-1',
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/be3f0252-9655-4742-bf6b-1df4011fe82f',
+      'https://github.com/huacnlee/autocorrect/assets/5518/72fd3ebf-43e4-4cd2-b0ab-08a6700f63b2',
   },
   {
     name: 'Apache APISIX',
@@ -30,6 +31,13 @@ const USE_CASES = [
     className: 'scale-[0.8]',
     image:
       'https://github.com/huacnlee/autocorrect/assets/5518/89c60e49-cda2-4e9a-a739-ef4d769c7457',
+  },
+  {
+    name: 'Envd',
+    url: 'https://envd.tensorchord.ai',
+    className: 'scale-[1.2]',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/bd055496-62aa-4d6e-accb-775c26014f15',
   },
 ];
 
@@ -166,7 +174,7 @@ export const Welcome = () => {
         <div className="intro">
           <h2 className="text-lg">Use cases</h2>
           <div
-            className="flex flex-wrap items-center place-content-center gap-x-4 py-8 dark:invert-[0.2]"
+            className="flex flex-wrap items-center place-content-center gap-4 lg:gap-6 py-8 dark:invert-[0.2]"
             style={{ colorScheme: 'revert' }}
           >
             {USE_CASES.map((item) => {
@@ -174,7 +182,7 @@ export const Welcome = () => {
                 <a href={item.url} target="_blank" title={item.name}>
                   <img
                     src={item.image}
-                    className={`${item.className} h-6 lg:h-8 m-2 lg:m-6`}
+                    className={`${item.className} h-6 lg:h-8`}
                   />
                 </a>
               );
