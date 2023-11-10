@@ -25,7 +25,7 @@
 
   code {
     color: var(--tw-prose-pre-code);
-    @apply bg-gray-100 text-gray-600 dark:bg-stone-900 py-0.5 px-1 font-normal font-mono;
+    @apply bg-gray-100 text-stone-800 dark:text-gray-300 dark:bg-stone-900 py-0.5 px-1 font-normal font-mono;
     font-size: 13px;
 
     &::before,
@@ -217,7 +217,7 @@
   .hljs-code,
   .hljs-formula {
     /* prettylights-syntax-comment */
-    color: #8b949e;
+    color: #5c636c;
   }
 
   .hljs-name,
