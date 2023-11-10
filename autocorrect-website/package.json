@@ -23,6 +23,11 @@
   "dependencies": {
     "@huacnlee/autocorrect": "^2.6.3",
     "@monaco-editor/react": "^4.5.2",
+    "@tailwindcss/typography": "^0.5.10",
+    "highlight.js": "^11.9.0",
+    "marked": "^9.1.5",
+    "marked-gfm-heading-id": "^3.1.0",
+    "marked-highlight": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0"

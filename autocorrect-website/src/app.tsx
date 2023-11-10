@@ -11,6 +11,7 @@ import {
   createBrowserRouter,
 } from 'react-router-dom';
 import { AppEditor } from './AppEditor';
+import { UsagePage } from './usage';
 import { Welcome } from './welcome';
 
 const ExternalIcon = () => {
@@ -67,6 +68,7 @@ const Layout = () => {
           </div>
           <nav className="ml-5 space-x-4">
             <NavbarItem href="/autocorrect/">Intro</NavbarItem>
+            <NavbarItem href="/autocorrect/usage">Usage</NavbarItem>
             <NavbarItem href="/autocorrect/editor">Playground</NavbarItem>
             <NavbarItem
               href="https://github.com/huacnlee/autocorrect"
@@ -93,6 +95,10 @@ const router = createBrowserRouter([
         path: '',
         index: true,
         element: <Welcome />,
+      },
+      {
+        path: '/autocorrect/usage',
+        element: <UsagePage />,
       },
       {
         path: '/autocorrect/editor',

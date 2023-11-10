@@ -39,6 +39,13 @@ const USE_CASES = [
     image:
       'https://github.com/huacnlee/autocorrect/assets/5518/bd055496-62aa-4d6e-accb-775c26014f15',
   },
+  {
+    name: 'MatrixOne',
+    url: 'https://matrixorigin.cn',
+    className: 'scale-[1.1]',
+    image:
+      'https://github.com/huacnlee/autocorrect/assets/5518/4959c8d2-cec4-4115-8556-faca6b32c405',
+  },
 ];
 
 export const Welcome = () => {
