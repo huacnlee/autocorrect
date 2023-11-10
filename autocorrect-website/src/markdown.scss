@@ -1,21 +1,30 @@
 .markdown-toc {
   max-height: calc(100vh - 160px);
-  @apply hidden lg:block ml-10 top-12 md:top-40 w-56 self-start sticky overflow-auto;
+  @apply hidden lg:block ml-10 top-12 md:top-40 w-[300px] self-start sticky overflow-auto;
   @apply text-gray-600 dark:text-gray-400;
 
   ul {
-    @apply pl-4 leading-6;
+    @apply leading-6;
 
     li.active {
       & > a {
         @apply text-blue-500;
       }
     }
+
+    ul {
+      @apply pl-3;
+    }
+
+    li > li {
+      @apply text-sm;
+    }
   }
 }
 
 .markdown-body {
   background: transparent !important;
+  @apply pb-10;
 }
 
 .hljs {

@@ -99,7 +99,7 @@ Now you can run `yarn autocorrect` command in your project. This command is same
 $ yarn autocorrect -h
 ```
 
-### Configuration
+## Configuration
 
 > Default config: [.autocorrect.default](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/.autocorrectrc.default)
 
@@ -164,7 +164,7 @@ spellcheck:
     - SSL
 ```
 
-#### Ignore option
+### Ignore option
 
 > Since: 2.2.0
 
@@ -187,7 +187,7 @@ textRules:
 
 After that, AutoCorrect will follow your `textRules` to process.
 
-#### Ignore files
+### Ignore files
 
 **Use `.autocorrectignore` to ignore files**
 
@@ -197,7 +197,7 @@ By default, the file matched `.gitignore` rule will be ignored.
 
 You can also use `.autocorrectignore` to ignore other files, format like `.gitignore`.
 
-#### Disable by inline comment
+### Disable by inline comment
 
 If you just want to disable some special lines in a file, you can write a comment `autocorrect-disable`,
 when AutoCorrect matched the comment include that, it will disable temporarily.
@@ -228,7 +228,7 @@ function hello() {
 }
 ```
 
-#### Disable some rules
+### Disable some rules
 
 > Since: 2.0
 
@@ -260,6 +260,8 @@ function hello() {
 }
 ```
 
+## Editor Integration
+
 ### VS Code Extension
 
 [![Install Extension](https://img.shields.io/badge/Install%20Extension-VS%20Code-brightgreen)](https://marketplace.visualstudio.com/items?itemName=huacnlee.autocorrect)
@@ -279,6 +281,8 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.autocorrect
 <img width="900" alt="AutoCorrect for Intellij Platform Plugin" src="https://user-images.githubusercontent.com/5518/198998494-82d017f1-40c1-4622-b13f-f67cfecd284a.png">
 
 https://github.com/huacnlee/autocorrect-idea-plugin
+
+## CI/CD
 
 ### GitHub Action
 
@@ -325,7 +329,7 @@ Use [huacnlee/autocorrect-action](https://github.com/huacnlee/autocorrect-action
 
 <img src="https://user-images.githubusercontent.com/5518/257680682-050d6f62-d461-44fc-a22f-2fb581ba0912.png" width="640" />
 
-### Use for programming
+## Use for programming
 
 AutoCorrect makes for support use in many programming languages.
 
