@@ -21,7 +21,7 @@ body {
   }
 
   .navbar-item {
-    @apply inline-flex items-center px-4 py-2 h-8 space-x-1 text-sm rounded font-medium text-gray-900;
+    @apply inline-flex items-center px-2 md:px-4 py-2 h-8 space-x-1 text-sm rounded font-medium text-gray-900;
     @apply dark:text-gray-200;
 
     &-active {
@@ -39,7 +39,7 @@ body {
   @apply text-base text-left;
 
   p {
-    @apply mb-5 text-justify;
+    @apply mb-4;
   }
 }
 

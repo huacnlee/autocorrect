@@ -13,6 +13,7 @@ import ruby from 'highlight.js/lib/languages/ruby';
 import rust from 'highlight.js/lib/languages/rust';
 import shell from 'highlight.js/lib/languages/shell';
 
+import 'github-markdown-css/github-markdown.css';
 import './markdown.scss';
 
 hljs.registerLanguage('javascript', javascript);
@@ -50,9 +51,9 @@ const markdown = (source: string) => {
 export const MarkdownContent = ({ content }: { content: string }) => {
   const html = markdown(content);
   return (
-    <div className="relative flex">
+    <div className="relative block md:flex">
       <article
-        className="mx-auto prose dark:prose-invert"
+        className="markdown-body"
         dangerouslySetInnerHTML={{ __html: html }}
       ></article>
       <TableOfContents className="sticky" />

@@ -1,6 +1,6 @@
 .markdown-toc {
   max-height: calc(100vh - 160px);
-  @apply hidden md:block ml-10 top-12 md:top-40 w-56 self-start sticky overflow-auto;
+  @apply hidden lg:block ml-10 top-12 md:top-40 w-56 self-start sticky overflow-auto;
   @apply text-gray-600 dark:text-gray-400;
 
   ul {
@@ -14,35 +14,8 @@
   }
 }
 
-.prose {
-  @apply max-w-3xl;
-
-  --tw-prose-pre-bg: rgb(229 231 235 / 55%);
-
-  img {
-    max-width: 100%;
-  }
-
-  code {
-    color: var(--tw-prose-pre-code);
-    @apply bg-gray-100 text-stone-800 dark:text-gray-300 dark:bg-stone-900 py-0.5 px-1 font-normal font-mono;
-    font-size: 13px;
-
-    &::before,
-    &::after {
-      @apply hidden;
-    }
-  }
-
-  pre > code {
-    background: transparent;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .dark\:prose-invert {
-    --tw-prose-pre-bg: rgb(109 120 151 / 17%);
-  }
+.markdown-body {
+  background: transparent !important;
 }
 
 .hljs {
