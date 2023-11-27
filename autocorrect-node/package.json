@@ -33,6 +33,5 @@
     "prepublishOnly": "napi prepublish -t npm",
     "test": "ava",
     "version": "napi version"
-  },
-  "packageManager": "yarn@3.2.4"
+  }
 }
