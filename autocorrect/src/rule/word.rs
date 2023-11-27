@@ -32,6 +32,8 @@ lazy_static! {
         Strategery::new(r"[\]\)]", r"\p{CJK}"),
     ];
 
+    static ref DASH_RE : regex::Regex = regexp!(r"([\p{CJK}])[\-]([\p{CJK}])");
+
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
         Strategery::new(r"\w|\p{CJK}|`", r"[，。、！？：；（）「」《》【】]").with_remove_space().with_reverse(),
@@ -65,6 +67,14 @@ pub fn format_space_bracket(input: &str) -> String {
     out
 }
 
+pub fn format_space_dash(input: &str) -> String {
+    DASH_RE
+        .replace_all(&input, |cap: &regex::Captures| {
+            return format!("{} - {}", &cap[1], &cap[2]);
+        })
+        .to_string()
+}
+
 pub fn format_no_space_fullwidth(input: &str) -> String {
     let mut out = String::from(input);
 
@@ -89,4 +99,17 @@ pub fn format_no_space_fullwidth_quote(input: &str) -> String {
         .iter()
         .for_each(|s| out = s.format(&out));
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::rule::word::format_space_dash;
+
+    #[test]
+    fn test_format_space_bracket() {
+        assert_eq!(format_space_dash("你好-世界"), "你好 - 世界");
+        assert_eq!(format_space_dash("foo-世界"), "foo-世界");
+        assert_eq!(format_space_dash("你好-world"), "你好-world");
+        assert_eq!(format_space_dash("hello-world"), "hello-world");
+    }
 }

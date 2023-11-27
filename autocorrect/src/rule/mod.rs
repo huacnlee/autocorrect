@@ -23,6 +23,8 @@ lazy_static! {
         Rule::new("space-punctuation", word::format_space_punctuation),
         // Rule: space-bracket
         Rule::new("space-bracket", word::format_space_bracket),
+        // Rule: space-dash
+        Rule::new("space-dash", word::format_space_dash),
         // Rule: fullwidth
         Rule::new("fullwidth", fullwidth::format),
     ];
@@ -197,6 +199,7 @@ mod tests {
             "space-word",
             "space-punctuation",
             "space-bracket",
+            "space-dash",
             "fullwidth",
             "halfwidth-word",
             "halfwidth-punctuation",
@@ -272,6 +275,7 @@ mod tests {
                 "no-space-fullwidth-quote" => true,
             }, "hello 你好 “Quote” 和 ‘Single Quote’ 测试 0"),
             "hello你好 “Quote” 和 ‘Single Quote’ 测试1" => (map!{}, "hello 你好“Quote”和‘Single Quote’测试 1"),
+            "你好-世界" => (map!{"space-dash" => true}, "你好 - 世界"),
         };
 
         for (input, (disable_rules, expect)) in cases {

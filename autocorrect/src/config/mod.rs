@@ -341,10 +341,10 @@ mod tests {
         assert_eq!(rule_names, keys);
 
         for (k, v) in config.rules.clone() {
-            if k == "spellcheck" {
-                assert_eq!(SeverityMode::Warning, v);
-            } else {
-                assert_eq!(SeverityMode::Error, v);
+            match k.as_str() {
+                "spellcheck" => assert_eq!(SeverityMode::Warning, v),
+                "space-dash" => assert_eq!(SeverityMode::Off, v),
+                _ => assert_eq!(SeverityMode::Error, v),
             }
         }
 
