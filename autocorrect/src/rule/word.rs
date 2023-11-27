@@ -32,6 +32,12 @@ lazy_static! {
         Strategery::new(r"[\]\)]", r"\p{CJK}"),
     ];
 
+    static ref BACKTICK_QUOTE_STRATEGIES: Vec<Strategery> = vec![
+        // Add space before and after backtick ` near the CJK
+        Strategery::new(r"\p{CJK}", r"`.+`"),
+        Strategery::new(r"`.+`", r"\p{CJK}"),
+    ];
+
     static ref DASH_RE : regex::Regex = regexp!(r"([\p{CJK}])[\-]([\p{CJK}])");
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
@@ -75,6 +81,14 @@ pub fn format_space_dash(input: &str) -> String {
         .to_string()
 }
 
+pub fn format_space_backtick_quote(input: &str) -> String {
+    let mut out = String::from(input);
+    BACKTICK_QUOTE_STRATEGIES
+        .iter()
+        .for_each(|s| out = s.format(&out));
+    out
+}
+
 pub fn format_no_space_fullwidth(input: &str) -> String {
     let mut out = String::from(input);
 
@@ -103,7 +117,7 @@ pub fn format_no_space_fullwidth_quote(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::rule::word::format_space_dash;
+    use crate::rule::word::{format_space_backtick_quote, format_space_dash};
 
     #[test]
     fn test_format_space_bracket() {
@@ -111,5 +125,27 @@ mod tests {
         assert_eq!(format_space_dash("foo-世界"), "foo-世界");
         assert_eq!(format_space_dash("你好-world"), "你好-world");
         assert_eq!(format_space_dash("hello-world"), "hello-world");
+    }
+
+    #[test]
+    fn test_format_space_backtick_quote() {
+        assert_eq!(format_space_backtick_quote("代码`code`"), "代码 `code`");
+        assert_eq!(
+            format_space_backtick_quote("代码`code`代码"),
+            "代码 `code` 代码"
+        );
+        assert_eq!(
+            format_space_backtick_quote("`code`代码`code`"),
+            "`code` 代码 `code`"
+        );
+        assert_eq!(
+            format_space_backtick_quote("`code`hello`code`"),
+            "`code`hello`code`"
+        );
+
+        assert_eq!(format_space_backtick_quote("```rs"), "```rs");
+        assert_eq!(format_space_backtick_quote("``代码第1行"), "``代码第1行");
+        assert_eq!(format_space_backtick_quote("`代码第1行"), "`代码第1行");
+        assert_eq!(format_space_backtick_quote("代码第2行`"), "代码第2行`");
     }
 }

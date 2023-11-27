@@ -25,6 +25,8 @@ lazy_static! {
         Rule::new("space-bracket", word::format_space_bracket),
         // Rule: space-dash
         Rule::new("space-dash", word::format_space_dash),
+        // Rule: space-backtick-quote
+        Rule::new("space-backtick-quote", word::format_space_backtick_quote),
         // Rule: fullwidth
         Rule::new("fullwidth", fullwidth::format),
     ];
@@ -200,6 +202,7 @@ mod tests {
             "space-punctuation",
             "space-bracket",
             "space-dash",
+            "space-backtick-quote",
             "fullwidth",
             "halfwidth-word",
             "halfwidth-punctuation",
