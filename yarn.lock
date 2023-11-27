@@ -112,7 +112,7 @@ arrify@^3.0.0:
   integrity sha512-tLkvA81vQG/XqE2mjDkGQHoOINtMHtysSnemrmoGe6PydDPMRbVugqyk4A6V/WDWEfm3l+0d8anA9r8cv/5Jaw==
 
 "autocorrect-node@file:autocorrect-node":
-  version "2.8.4"
+  version "2.8.5"
 
 ava@^4.3.3:
   version "4.3.3"
