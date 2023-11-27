@@ -96,7 +96,9 @@ mod tests {
           "蚂蚁疾奔:蚂蚁集团两地上市~全速推进!" =>                                                        "蚂蚁疾奔：蚂蚁集团两地上市~全速推进！",
           "蚂蚁集团是阿里巴巴 (BABA.N) 旗下金融科技子公司" =>                                                "蚂蚁集团是阿里巴巴 (BABA.N) 旗下金融科技子公司",
           "Dollar 的演示 $阿里巴巴.US$ 股票标签" =>                                                   "Dollar 的演示 $阿里巴巴.US$ 股票标签",
-          "确保&quot;&gt;HTML Entity&lt;&quot;的字符&#34;不会被处理&#34; Ruby&amp;Go" => "确保&quot;&gt;HTML Entity&lt;&quot;的字符&#34;不会被处理&#34; Ruby&amp;Go"
+          "确保&quot;&gt;HTML Entity&lt;&quot;的字符&#34;不会被处理&#34; Ruby&amp;Go" => "确保&quot;&gt;HTML Entity&lt;&quot;的字符&#34;不会被处理&#34; Ruby&amp;Go",
+          // No ; convert, because it's danger.
+          "中文;中文" => "中文;中文"
         );
 
         assert_cases(cases);
