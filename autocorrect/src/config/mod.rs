@@ -11,7 +11,6 @@ use std::{
     fs,
     path::Path,
     sync::{Arc, RwLock, RwLockReadGuard},
-    vec,
 };
 
 use crate::serde_any;

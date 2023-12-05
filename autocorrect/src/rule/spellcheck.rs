@@ -2,39 +2,27 @@ use std::collections::HashMap;
 
 use crate::{config::Config, keyword::MatchedResult};
 
-pub(crate) fn word_regexp(word: &str) -> regex::Regex {
-    let prefix = r#"([^\W]|[\p{Han}？！：，。；、]|$|^)"#;
-
-    regexp!(
-        r#"(?im){}([\s？！：，。；、]|^)+({})([\s？！：，。；、]|$)+{}"#,
-        prefix,
-        word.replace('-', r"\-").replace('.', r"\."),
-        prefix
-    )
-}
-
 lazy_static! {
-    static ref DISALLOW_CHAR_RE: regex::Regex = regexp!("{}", r#"([^\p{Han}\s？！：，。；、])"#);
+    static ref DISALLOW_CHAR_RE: regex::Regex =
+        regexp!("{}", r#"([^\p{Han}\s？！：，。；、「」“”‘’【】《》])"#);
 }
 
 // Spell check by dict
 pub fn format(text: &str) -> String {
-    let mut out = String::from(text);
-
     let config = Config::current();
 
     let word_map = &config.spellcheck.word_map;
-    let word_re = &config.spellcheck.word_re;
     let matcher = &config.spellcheck.matcher;
 
     let matched_words = matcher.match_keywords(text);
-    return replace_with_spans(text, &matched_words, word_map);
+    replace_with_spans(text, &matched_words, word_map)
 }
 
-struct SpanInfo {
-    old: String,
-    new: String,
-    span: crate::keyword::Span,
+#[derive(Debug)]
+struct SpanInfo<'a> {
+    old: &'a String,
+    new: &'a String,
+    span: &'a crate::keyword::Span,
 }
 
 fn replace_with_spans(
@@ -42,26 +30,24 @@ fn replace_with_spans(
     words: &MatchedResult,
     word_map: &HashMap<String, String>,
 ) -> String {
-    let mut spans = words
-        .iter()
-        .map(|(w, spans)| {
-            spans.iter().map(move |span| SpanInfo {
-                old: w.to_string(),
-                new: word_map.get(w).unwrap().to_string(),
-                span: span.clone(),
-            })
-        })
-        .flatten()
-        .collect::<Vec<_>>();
+    let mut span_infos = vec![];
 
-    spans.sort_by(|a, b| a.span.start.cmp(&b.span.start));
+    for (old, spans) in words {
+        if let Some(new) = word_map.get(old) {
+            for span in spans {
+                span_infos.push(SpanInfo { old, new, span })
+            }
+        }
+    }
+
+    span_infos.sort_by(|a, b| a.span.start.cmp(&b.span.start));
 
     let mut text_chars = text.chars().collect::<Vec<_>>();
     let mut offset_change = 0;
 
-    for span_info in spans.iter() {
-        let old_str = &span_info.old;
-        let new_str = &span_info.new;
+    for span_info in span_infos.iter() {
+        let old_str = span_info.old;
+        let new_str = span_info.new;
         let span_start = span_info.span.start;
         let span_end = span_info.span.end;
 
@@ -69,30 +55,18 @@ fn replace_with_spans(
         let offset_end = span_end + offset_change;
 
         // Check whether the left and right 1 characters are allowed
-        let left_start = offset_start as isize - 1;
-        let left_start = if left_start < 0 {
-            0
+        // If not allowed, skip this replacement
+        let l_c = if offset_start == 0 {
+            None
         } else {
-            left_start as usize
+            text_chars.get(offset_start - 1)
         };
-        let left_str: String = text_chars
-            .get(left_start..offset_start)
-            .unwrap_or_default()
-            .iter()
-            .collect();
-        let right_str: String = text_chars
-            .get(offset_end..offset_end + 1)
-            .unwrap_or_default()
-            .iter()
-            .collect();
+        let r_c = text_chars.get(offset_end);
 
-        println!(
-            "----------------- l: `{}` {}..{}, r: `{}`",
-            left_str, left_start, offset_start, right_str
-        );
-
-        if DISALLOW_CHAR_RE.is_match(&left_str) || DISALLOW_CHAR_RE.is_match(&right_str) {
-            // println!("------- not allow:{}", old_str);
+        if DISALLOW_CHAR_RE.is_match(&l_c.unwrap_or(&' ').to_string())
+            || DISALLOW_CHAR_RE.is_match(&r_c.unwrap_or(&' ').to_string())
+        {
+            // println!("---- `{:?}`|`{:?}`", l_c, r_c);
             continue;
         }
 
@@ -122,6 +96,7 @@ mod tests {
         }
     }
 
+    #[allow(clippy::bool_assert_comparison)]
     #[test]
     fn test_disallow_char_re() {
         assert_eq!(DISALLOW_CHAR_RE.is_match(","), true);
@@ -175,13 +150,10 @@ mod tests {
         crate::config::setup_test();
 
         let cases = map! [
-            "var ios = '1.0.0'" => "var ios = '1.0.0'",
-            "let wifi = ios" => "let wifi = ios",
-            "ipad + ios" => "ipad + ios",
-            "html { color: #999; }" => "html { color: #999; }",
-            "> IOS" => "> IOS",
-            "ios => {}" => "ios => {}",
-            "if ios > 0" => "if ios > 0",
+            "ios_url" => "ios_url",
+            "ios-url" => "ios-url",
+            "ios+1" => "ios+1",
+            "`ios 的`" => "`ios 的`",
             r#""IOS""# => r#""IOS""#,
             r#"'IOS'"# => r#"'IOS'"#,
             r#""IOS 11""# => r#""IOS 11""#,
@@ -197,8 +169,12 @@ mod tests {
 
         let words = Config::current().spellcheck.words.clone();
         for l in words.iter() {
-            let left = l.as_str();
-            let right = l.as_str();
+            let (left, right) = if l.contains('=') {
+                let pars = l.split('=').collect::<Vec<_>>();
+                (pars[0].trim(), pars[1].trim())
+            } else {
+                (l.as_str(), l.as_str())
+            };
 
             assert_eq!(right, format(left));
             assert_eq!(right, format(&left.to_uppercase()));

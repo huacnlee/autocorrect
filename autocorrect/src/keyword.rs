@@ -118,7 +118,7 @@ impl Node {
         while let Some(current) = queue.pop_front() {
             for (char, child) in current.children.iter_mut() {
                 let mut fail_node = current.fail.clone().unwrap();
-                while !fail_node.children.contains_key(char) && !fail_node.fail.is_none() {
+                while !fail_node.children.contains_key(char) && fail_node.fail.is_some() {
                     fail_node = fail_node.fail.clone().unwrap();
                 }
 
@@ -148,8 +148,14 @@ impl Node {
         let mut result = MatchedResult::new();
         let mut node = self;
 
-        for (i, char) in text.chars().enumerate() {
-            while node.children.get(&char).is_none() {
+        for (i, c) in text.chars().enumerate() {
+            let c = if self.case_insensitive {
+                c.to_ascii_lowercase()
+            } else {
+                c
+            };
+
+            while node.children.get(&c).is_none() {
                 if node.fail.is_none() {
                     node = self;
                     break;
@@ -158,7 +164,7 @@ impl Node {
                 node = node.fail.as_ref().unwrap();
             }
 
-            if let Some(child) = node.children.get(&char) {
+            if let Some(child) = node.children.get(&c) {
                 node = child;
                 for keyword in &node.keywords {
                     let len = keyword.chars().count();
@@ -167,7 +173,7 @@ impl Node {
 
                     result
                         .entry(keyword.clone())
-                        .or_insert(Vec::new())
+                        .or_default()
                         .push(Span::new(start, end));
                 }
             }
@@ -183,11 +189,11 @@ mod tests {
 
     #[test]
     fn test_match_keywords_keywords() {
-        let mut dict = Node::new(false);
-        dict.add_keywords(&["hello", "world", "世界", "😀"]);
-        dict.build();
+        let mut tree = Node::new(false);
+        tree.add_keywords(["hello", "world", "世界", "😀"]);
+        tree.build();
 
-        let tree = indoc::indoc! {r#"
+        let expected = indoc::indoc! {r#"
             |-h
             |-|-e
             |-|-l
@@ -202,9 +208,43 @@ mod tests {
             |-|-界
             |-😀
         "#};
-        assert_eq!(tree.trim(), format!("{}", dict).trim());
+        assert_eq!(expected.trim(), format!("{}", tree).trim());
 
-        let result = dict.match_keywords("hello world (世界) 😀, hello rust.");
+        let result = tree.match_keywords("hello world (世界) 😀, hello rust.");
+        assert_eq!(
+            result,
+            vec![
+                (
+                    "hello".to_string(),
+                    vec![Span::new(0, 5), Span::new(20, 25)]
+                ),
+                ("world".to_string(), vec![Span::new(6, 11)]),
+                ("世界".to_string(), vec![Span::new(13, 15)]),
+                ("😀".to_string(), vec![Span::new(17, 18)]),
+            ]
+            .into_iter()
+            .collect()
+        );
+
+        // test case insensitive
+        let mut tree = Node::new(true);
+        tree.add_keywords(["hello", "world", "世界", "😀"]);
+        let result = tree.match_keywords("hello world (世界) 😀, hello rust.");
+        assert_eq!(
+            result,
+            vec![
+                (
+                    "hello".to_string(),
+                    vec![Span::new(0, 5), Span::new(20, 25)]
+                ),
+                ("world".to_string(), vec![Span::new(6, 11)]),
+                ("世界".to_string(), vec![Span::new(13, 15)]),
+                ("😀".to_string(), vec![Span::new(17, 18)]),
+            ]
+            .into_iter()
+            .collect()
+        );
+        let result = tree.match_keywords("HELLO WORLD (世界) 😀, HELLO RUST.");
         assert_eq!(
             result,
             vec![

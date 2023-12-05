@@ -75,8 +75,8 @@ pub fn format_space_bracket(input: &str) -> String {
 
 pub fn format_space_dash(input: &str) -> String {
     DASH_RE
-        .replace_all(&input, |cap: &regex::Captures| {
-            return format!("{} - {}", &cap[1], &cap[2]);
+        .replace_all(input, |cap: &regex::Captures| {
+            format!("{} - {}", &cap[1], &cap[2])
         })
         .to_string()
 }
