@@ -38,7 +38,6 @@ impl Rule {
         if result.out.ne(&new) {
             result.severity = Severity::Error;
         }
-
         result.out = new;
     }
 
@@ -46,15 +45,16 @@ impl Rule {
         if self.severity() == SeverityMode::Off {
             return;
         }
-        let input = result.out.clone();
-        result.out = (self.format_fn)(&input);
-        if result.out.ne(&input) && result.severity == Severity::Pass {
+
+        let new = (self.format_fn)(&result.out);
+        if result.out.ne(&new) && result.severity == Severity::Pass {
             if self.severity() == SeverityMode::Warning {
                 result.severity = Severity::Warning;
             } else {
                 result.severity = Severity::Error;
             }
         }
+        result.out = new;
     }
 
     fn severity(&self) -> SeverityMode {

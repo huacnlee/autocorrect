@@ -424,13 +424,13 @@ spellcheck_50           time:   [1.6012 µs 1.6122 µs 1.6306 µs]
 spellcheck_100          time:   [3.0968 µs 3.1696 µs 3.2653 µs]
 spellcheck_400          time:   [10.136 µs 10.478 µs 10.898 µs]
 
-lint_markdown           time:   [1.1195 ms 1.1205 ms 1.1215 ms]
-lint_json               time:   [67.764 µs 68.341 µs 69.137 µs]
-lint_html               time:   [280.87 µs 281.44 µs 282.20 µs]
-lint_javascript         time:   [123.99 µs 125.50 µs 128.38 µs]
-lint_yaml               time:   [433.41 µs 441.09 µs 452.74 µs]
-lint_to_json            time:   [1.8391 ms 1.8428 ms 1.8476 ms]
-lint_to_diff            time:   [1.8632 ms 1.8801 ms 1.9030 ms]
+lint_markdown           time:   [937.57 µs 942.59 µs 949.15 µs]
+lint_json               time:   [59.174 µs 60.302 µs 61.763 µs]
+lint_html               time:   [238.03 µs 241.38 µs 245.77 µs]
+lint_javascript         time:   [111.64 µs 113.05 µs 114.82 µs]
+lint_yaml               time:   [348.56 µs 350.11 µs 352.80 µs]
+lint_to_json            time:   [941.25 µs 948.95 µs 958.26 µs]
+lint_to_diff            time:   [1.0573 ms 1.0823 ms 1.1134 ms]
 ```
 
 ### Real world benchmark
