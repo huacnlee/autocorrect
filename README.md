@@ -190,6 +190,10 @@ rules:
   space-punctuation: 1
   # Add space between brackets (), [] when near the CJK.
   space-bracket: 1
+  # Add space between ``, when near the CJK.
+  space-backticks: 1
+  # Add space between dash `-`
+  space-dash: 0
   # Convert to fullwidth.
   fullwidth: 1
   # To remove space near the fullwidth.

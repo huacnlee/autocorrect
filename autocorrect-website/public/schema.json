@@ -34,6 +34,16 @@
           "default": 1,
           "$ref": "#/definitions/SeverityMode"
         },
+        "space-backticks": {
+          "description": "Add space between ``, when near the CJK.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "space-dash": {
+          "description": "Add space between dash `-`",
+          "default": 0,
+          "$ref": "#/definitions/SeverityMode"
+        },
         "fullwidth": {
           "description": "Convert to fullwidth.",
           "default": 1,
