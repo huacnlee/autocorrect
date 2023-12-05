@@ -11,7 +11,6 @@ use std::{
     fs,
     path::Path,
     sync::{Arc, RwLock, RwLockReadGuard},
-    vec,
 };
 
 use crate::serde_any;
@@ -66,12 +65,7 @@ impl Default for Config {
         Config {
             rules: HashMap::new(),
             text_rules: HashMap::new(),
-            spellcheck: SpellcheckConfig {
-                mode: None,
-                words: vec![],
-                dict: HashMap::new(),
-                dict_re: HashMap::new(),
-            },
+            spellcheck: SpellcheckConfig::default(),
             file_types: HashMap::new(),
         }
     }
@@ -350,7 +344,7 @@ mod tests {
 
         assert_eq!(None, config.spellcheck.mode);
         assert!(!config.spellcheck.words.is_empty());
-        assert!(!config.spellcheck.dict.is_empty());
+        assert!(!config.spellcheck.word_map.is_empty());
     }
 
     #[test]

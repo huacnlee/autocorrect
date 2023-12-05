@@ -137,9 +137,9 @@ macro_rules! cases {
 }
 
 mod code;
-
 mod diff;
 mod format;
+mod keyword;
 mod result;
 mod rule;
 mod serde_any;

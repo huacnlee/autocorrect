@@ -1,5 +1,6 @@
+use crate::keyword;
+
 use super::severity::*;
-use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -14,14 +15,31 @@ pub struct SpellcheckConfig {
     pub mode: Option<SeverityMode>,
     #[serde(default)]
     pub words: Vec<SpellcheckWord>,
+    /// key is always in lowercase
+    /// value is the original word
     #[serde(skip)]
-    pub dict: HashMap<String, String>,
+    pub word_map: HashMap<String, String>,
+    /// A tree to match words
     #[serde(skip)]
-    pub dict_re: HashMap<String, Regex>,
+    pub matcher: keyword::Node,
 }
 
 impl SpellcheckConfig {
     pub fn prepare(&mut self) {
+        self.matcher = keyword::Node::new(true);
+        self.matcher.add_keywords(
+            self.words
+                .iter()
+                .map(|w| {
+                    // get the = before, and trim
+                    // ios
+                    // wifi = Wi-Fi
+                    w.split('=').next().unwrap().trim()
+                })
+                .collect::<Vec<_>>(),
+        );
+        self.matcher.build();
+
         if !self.words.is_empty() {
             let mut lines = self.words.clone();
 
@@ -57,12 +75,9 @@ impl SpellcheckConfig {
                 left_str = left_str.trim();
                 right_str = right_str.trim();
 
-                self.dict
-                    .insert(left_str.to_string(), right_str.to_string());
-                self.dict_re.insert(
-                    left_str.to_string(),
-                    crate::rule::spellcheck::word_regexp(left_str),
-                );
+                let key = left_str.to_lowercase();
+
+                self.word_map.insert(key.clone(), right_str.to_string());
             }
         }
     }
