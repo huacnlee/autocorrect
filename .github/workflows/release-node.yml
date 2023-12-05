@@ -2,13 +2,13 @@ name: Release Node
 env:
   DEBUG: napi:*
   APP_NAME: autocorrect-node
-  MACOSX_DEPLOYMENT_TARGET: "10.13"
+  MACOSX_DEPLOYMENT_TARGET: '10.13'
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
     branches:
-      - "release-node"
+      - 'release-node'
 defaults:
   run:
     working-directory: autocorrect-node
@@ -57,15 +57,15 @@ jobs:
     name: Build - ${{ matrix.settings.target }}- node
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: yarn
-          cache-dependency-path: "autocorrect-node/yarn.lock"
+          cache-dependency-path: 'autocorrect-node/yarn.lock'
       - name: Install
         uses: actions-rs/toolchain@v1
         if: ${{ !matrix.settings.docker }}
@@ -84,6 +84,10 @@ jobs:
             autocorrect-node/.cargo-cache
             target/
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
+      - uses: goto-bus-stop/setup-zig@v2
+        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
+        with:
+          version: 0.11.0
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
@@ -103,17 +107,17 @@ jobs:
         uses: actions/setup-node@v3
         if: matrix.settings.target == 'i686-pc-windows-msvc'
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: yarn
-          cache-dependency-path: "autocorrect-node/yarn.lock"
+          cache-dependency-path: 'autocorrect-node/yarn.lock'
           architecture: x86
       - name: Build in docker
         uses: addnab/docker-run-action@v3
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: "--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build"
+          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
           run: ${{ matrix.settings.build }}
       - name: Build
         run: ${{ matrix.settings.build }}
@@ -133,26 +137,21 @@ jobs:
       fail-fast: false
       matrix:
         settings:
+          - host: macos-latest
+            target: x86_64-apple-darwin
           - host: windows-latest
             target: x86_64-pc-windows-msvc
         node:
-          - "16"
-          - "18"
+          - '18'
+          - '20'
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          check-latest: true
           cache: yarn
-          cache-dependency-path: "autocorrect-node/yarn.lock"
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: npm-cache-test-${{ matrix.settings.target }}-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: yarn install
       - name: Download artifacts
@@ -173,24 +172,16 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - "14"
-          - "16"
-          - "18"
+          - '18'
+          - '20'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          check-latest: true
           cache: yarn
-          cache-dependency-path: "autocorrect-node/yarn.lock"
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: autocorrect-node/.yarn/cache
-          key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}
       - name: Install dependencies
         run: yarn install
       - name: Download artifacts
@@ -204,33 +195,27 @@ jobs:
       - name: Test bindings
         run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-slim yarn test
   test-linux-x64-musl-binding:
-    name: Test bindings on Linux-x64-musl - node@${{ matrix.node }}
+    name: Test bindings on x86_64-unknown-linux-musl - node@${{ matrix.node }}
     needs:
       - build
     strategy:
       fail-fast: false
       matrix:
         node:
-          - "14"
-          - "16"
-          - "18"
+          - '18'
+          - '20'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          check-latest: true
           cache: yarn
-          cache-dependency-path: "autocorrect-node/yarn.lock"
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: autocorrect-node/.yarn/cache
-          key: npm-cache-test-linux-x64-musl-${{ matrix.node }}
       - name: Install dependencies
-        run: yarn install
+        run: |
+          yarn config set supportedArchitectures.libc "musl"
+          yarn install
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
@@ -241,6 +226,7 @@ jobs:
         shell: bash
       - name: Test bindings
         run: docker run --rm -v $(pwd):/build -w /build node:${{ matrix.node }}-alpine yarn test
+
   publish:
     name: Publish Node
     runs-on: ubuntu-latest
@@ -257,7 +243,7 @@ jobs:
           node-version: 16
           check-latest: true
           cache: yarn
-          cache-dependency-path: "autocorrect-node/yarn.lock"
+          cache-dependency-path: 'autocorrect-node/yarn.lock'
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
