@@ -33,12 +33,13 @@ impl Rule {
         if self.severity() != SeverityMode::Error {
             return;
         }
-        let input = result.out.clone();
 
-        result.out = (self.format_fn)(&input);
-        if result.out.ne(&input) {
+        let new = (self.format_fn)(&result.out);
+        if result.out.ne(&new) {
             result.severity = Severity::Error;
         }
+
+        result.out = new;
     }
 
     pub fn lint(&self, result: &mut RuleResult) {

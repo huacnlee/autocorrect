@@ -409,19 +409,21 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
 
 ```bash
-format_050              time:   [10.003 µs 10.013 µs 10.024 µs]
-format_100              time:   [18.511 µs 18.550 µs 18.597 µs]
-format_400              time:   [60.089 µs 60.216 µs 60.461 µs]
-format_html             time:   [220.68 µs 220.91 µs 221.18 µs]
-halfwidth_english       time:   [3.2353 µs 3.2452 µs 3.2545 µs]
-format_json             time:   [55.620 µs 55.658 µs 55.695 µs]
-format_javascript       time:   [108.63 µs 108.70 µs 108.79 µs]
-format_json_2k          time:   [9.3879 ms 9.4871 ms 9.6541 ms]
-format_jupyter          time:   [86.660 µs 86.743 µs 86.830 µs]
-format_markdown         time:   [1.0007 ms 1.0123 ms 1.0285 ms]
+format_050              time:   [8.2420 µs 8.2657 µs 8.2937 µs]
+format_100              time:   [14.199 µs 14.246 µs 14.298 µs]
+format_400              time:   [40.511 µs 41.923 µs 43.798 µs]
+format_html             time:   [204.94 µs 208.61 µs 214.07 µs]
+halfwidth_english       time:   [2.4983 µs 2.5541 µs 2.6293 µs]
+format_json             time:   [54.037 µs 57.023 µs 61.821 µs]
+format_javascript       time:   [102.81 µs 104.41 µs 106.92 µs]
+format_json_2k          time:   [8.7609 ms 8.9099 ms 9.1201 ms]
+format_jupyter          time:   [81.765 µs 83.038 µs 85.321 µs]
+format_markdown         time:   [879.27 µs 894.86 µs 918.30 µs]
+
 spellcheck_50           time:   [1.6012 µs 1.6122 µs 1.6306 µs]
 spellcheck_100          time:   [3.0968 µs 3.1696 µs 3.2653 µs]
 spellcheck_400          time:   [10.136 µs 10.478 µs 10.898 µs]
+
 lint_markdown           time:   [1.1195 ms 1.1205 ms 1.1215 ms]
 lint_json               time:   [67.764 µs 68.341 µs 69.137 µs]
 lint_html               time:   [280.87 µs 281.44 µs 282.20 µs]
