@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    autocorrect-rb (2.9.0)
+    autocorrect-rb (2.9.1)
       rb_sys (>= 0.9.54)
 
 GEM
@@ -55,4 +55,4 @@ DEPENDENCIES
   rb_sys
 
 BUNDLED WITH
-   2.5.0.dev
+   2.5.3

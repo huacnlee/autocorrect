@@ -1,4 +1,4 @@
-use magnus::{define_class, function, method, Error, Module, Object};
+use magnus::{define_class, function, method, Error, IntoValue, Module, Object};
 
 #[derive(Debug, Clone)]
 pub struct LineResult {
@@ -74,10 +74,11 @@ impl LintResult {
         hash.aset("filepath", self.filepath())?;
         hash.aset(
             "lines",
-            self.lines()
-                .iter()
-                .map(|l| l.to_hash().unwrap())
-                .collect::<Vec<magnus::RHash>>(),
+            magnus::RArray::from_iter(
+                self.lines()
+                    .iter()
+                    .map(|l| l.to_hash().unwrap().into_value()),
+            ),
         )?;
         hash.aset("error", self.error())?;
         Ok(hash)
@@ -137,13 +138,13 @@ pub fn load_config(config_str: String) {
 
 #[magnus::init(name = "autocorrect")]
 fn init() -> Result<(), Error> {
-    let class = define_class("AutoCorrect", Default::default())?;
+    let class = define_class("AutoCorrect", magnus::class::object())?;
     class.define_singleton_method("format", function!(format, 1))?;
     class.define_singleton_method("format_for", function!(format_for, 2))?;
     class.define_singleton_method("lint_for", function!(lint_for, 2))?;
     class.define_singleton_method("load_config", function!(load_config, 1))?;
 
-    let ignorer_class = class.define_class("Ignorer", Default::default())?;
+    let ignorer_class = class.define_class("Ignorer", magnus::class::object())?;
     ignorer_class.define_singleton_method("new", function!(Ignorer::new, 1))?;
     ignorer_class.define_method("ignored?", method!(Ignorer::is_ignored, 1))?;
 
