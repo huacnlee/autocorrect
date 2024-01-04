@@ -34,9 +34,9 @@ jobs:
           - x86_64-linux-musl
     steps:
       - uses: actions/checkout@v3
-      - uses: oxidize-rb/actions/setup-ruby-and-rust@main
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.1.9
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           bundler-cache: true
           cargo-cache: true
           cargo-vendor: false
@@ -45,12 +45,17 @@ jobs:
         run: |
           touch Rakefile
 
-      - uses: oxidize-rb/cross-gem-action@main
+      - uses: oxidize-rb/actions/cross-gem@v1.1.9
         with:
           platform: ${{ matrix.ruby-platform }}
-          directory: ./
+          working-directory: autocorrect-rb/
           ruby-versions: '3.3, 3.2, 3.1' # optional
-          setup: cd autocorrect-rb/ && bundle install
+
+      - name: Upload Gem
+        uses: actions/upload-artifact@v3
+        with:
+          name: cross-gem
+          path: autocorrect-rb/pkg/
 
   build_source:
     name: Build source gem
@@ -59,9 +64,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: oxidize-rb/actions/setup-ruby-and-rust@main
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.1.9
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           bundler-cache: false
           cargo-cache: true
           cargo-vendor: true
@@ -88,7 +93,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           bundler-cache: true
       - uses: actions/download-artifact@v3
         with:
@@ -108,10 +113,6 @@ jobs:
           touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
           printf -- "---\n:rubygems_api_key: ${RUBYGEM_TOKEN}\n" > $HOME/.gem/credentials
-          for filename in autocorrect-rb/**/*.gem; do
-            echo $filename
-            gem push $filename
-          done
           for filename in *.gem; do
             echo $filename
             gem push $filename
