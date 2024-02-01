@@ -1,14 +1,14 @@
-name: "Create Homebrew PR"
+name: 'Create Homebrew PR'
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
 jobs:
   homebrew:
     name: Bump Homebrew formula
     runs-on: ubuntu-latest
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v2
+      - uses: mislav/bump-homebrew-formula-action@v3
         with:
           formula-name: autocorrect
           formula-path: Formula/a/autocorrect.rb
