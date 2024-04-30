@@ -13,6 +13,12 @@ pub enum Severity {
     Warning = 2,
 }
 
+impl Default for Severity {
+    fn default() -> Self {
+        Severity::Pass
+    }
+}
+
 impl Severity {
     pub fn is_error(&self) -> bool {
         self == &Severity::Error
