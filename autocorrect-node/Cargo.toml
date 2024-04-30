@@ -21,3 +21,6 @@ napi-build = "2.1.0"
 
 [profile.release]
 lto = true
+
+[package.metadata.cargo-machete]
+ignored = ["napi"]
