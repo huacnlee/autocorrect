@@ -11,4 +11,3 @@ name = "autocorrect"
 [dependencies]
 autocorrect = "2"
 magnus = "0.6"
-rb-sys = { version = "*", default-features = false, features = ["stable-api-compiled-fallback"] }

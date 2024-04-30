@@ -7,6 +7,7 @@ pub(crate) struct Rule {
     pub format_fn: fn(input: &str) -> String,
 }
 
+#[derive(Default)]
 pub(crate) struct RuleResult {
     pub out: String,
     pub severity: Severity,
@@ -16,7 +17,7 @@ impl RuleResult {
     pub fn new(input: &str) -> Self {
         Self {
             out: input.to_string(),
-            severity: Severity::Pass,
+            ..Default::default()
         }
     }
 }

@@ -86,18 +86,17 @@ pub(crate) fn format_or_lint_with_disable_rules(
     lint: bool,
     disable_rules: &HashMap<String, bool>,
 ) -> RuleResult {
-    let mut result = RuleResult::new(text);
+    let mut result = RuleResult::default();
 
     // skip if not has CJK
     if CJK_RE.is_match(text) {
-        result.out = String::from("");
         let mut part = String::new();
         for ch in text.chars() {
             part.push(ch);
 
             // Is next char is newline or space, break part to format
-            if ch == ' ' || ch == '\n' || ch == '\r' {
-                let mut sub_result = RuleResult::new(&part.clone());
+            if matches!(ch, ' ' | '\n' | '\r') {
+                let mut sub_result = RuleResult::new(&part);
                 sub_result.severity = result.severity;
 
                 part.clear();
@@ -110,7 +109,7 @@ pub(crate) fn format_or_lint_with_disable_rules(
         }
 
         if !part.is_empty() {
-            let mut sub_result = RuleResult::new(&part.clone());
+            let mut sub_result = RuleResult::new(&part);
             sub_result.severity = result.severity;
 
             format_part(&mut sub_result, lint, disable_rules);
@@ -118,6 +117,8 @@ pub(crate) fn format_or_lint_with_disable_rules(
             result.out.push_str(&sub_result.out);
             result.severity = sub_result.severity;
         }
+    } else {
+        result.out = text.to_string();
     }
 
     format_after_rules(&mut result, lint, disable_rules);
