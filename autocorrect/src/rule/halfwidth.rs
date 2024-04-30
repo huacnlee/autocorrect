@@ -95,6 +95,7 @@ lazy_static! {
     );
 }
 
+#[allow(dead_code)]
 trait CharMatching {
     fn is_ascii_alphanumeric_punctuation(&self) -> bool;
     fn is_alphanumeric_or_space(&self) -> bool;
