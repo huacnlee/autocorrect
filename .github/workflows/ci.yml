@@ -3,9 +3,9 @@ on:
   pull_request:
   push:
     branches:
-      - '*'
+      - "*"
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build:
@@ -26,8 +26,10 @@ jobs:
           key: ubuntu-test-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Test
         run: |
-          cargo test
+          cargo install cargo-machete
+          cargo machete
           cargo clippy
+          cargo test
       - name: Lint output
         run: make test:lint
       - name: Init test
@@ -58,7 +60,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 21
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
 
       - name: Test Node.js
         run: |
@@ -83,7 +85,7 @@ jobs:
           key: ubuntu-test-cargo-python-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
       - name: Install pytest
         run: python3 -m pip install pytest
       - name: Test Python
@@ -138,7 +140,7 @@ jobs:
       - name: Install JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'
+          java-version: "11"
+          distribution: "temurin"
       - name: Test Java
         run: make test:java

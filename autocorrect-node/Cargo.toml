@@ -8,9 +8,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
-autocorrect = {path = "../autocorrect", version = ">= 1.0.0"}
-autocorrect-cli = {path = "../autocorrect-cli", version = ">= 2.6", default-features = false}
-napi = {version = "2.14.1", default-features = false, features = ["napi4", "async"]}
+autocorrect = { path = "../autocorrect", version = ">= 1.0.0" }
+autocorrect-cli = { path = "../autocorrect-cli", version = ">= 2.6", default-features = false }
 napi-derive = "2.14.2"
 
 [build-dependencies]
