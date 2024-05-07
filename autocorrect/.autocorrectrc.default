@@ -135,6 +135,9 @@ fileTypes:
   # Notebook
   jupyter: jupyter
   ipynb: jupyter
+  # Shell
+  sh: ruby
+  shell: ruby
   # Text
   text: text
   plain: text

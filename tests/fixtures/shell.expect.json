@@ -1,0 +1,25 @@
+{
+  "count": 1,
+  "messages": [
+    {
+      "filepath": "tests/fixtures/shell.raw.sh",
+      "lines": [
+        {
+          "l": 1,
+          "c": 1,
+          "new": "# 这是一个 Shell 脚本",
+          "old": "# 这是一个Shell脚本",
+          "severity": 1
+        },
+        {
+          "l": 3,
+          "c": 10,
+          "new": "\"Usage 使用说明：$0 <file>\"",
+          "old": "\"Usage使用说明: $0 <file>\"",
+          "severity": 1
+        }
+      ],
+      "error": ""
+    }
+  ]
+}
