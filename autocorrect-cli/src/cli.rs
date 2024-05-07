@@ -30,6 +30,9 @@ pub(crate) struct Cli {
     #[clap(long, help = "Print debug information.")]
     pub debug: bool,
 
+    #[clap(long, short = 'q', help = "Do not print progress information.")]
+    pub quiet: bool,
+
     #[clap(
         name = "FORMAT",
         long = "format",
@@ -105,7 +108,7 @@ pub(crate) enum Commands {
 
 impl Cli {
     pub fn log_level(&self) -> log::LevelFilter {
-        if self.debug {
+        if self.debug && !self.quiet {
             log::LevelFilter::Debug
         } else {
             log::LevelFilter::Info
