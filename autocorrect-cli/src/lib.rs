@@ -1,11 +1,15 @@
+//! AutoCorrect Cli
+//! autocorrect: false
+
 use autocorrect::LintResult;
-// autocorrect: false
 use clap::Parser;
 use std::ffi::OsString;
 use std::fs;
 use std::io;
 use std::io::BufRead;
 use std::path::Path;
+use std::sync::Arc;
+use std::sync::Mutex;
 use std::time::SystemTime;
 
 mod cli;
@@ -46,15 +50,13 @@ where
 
     // Set log level
     let log_level = cli.log_level();
-    Logger::init(log_level).expect("Init logger error");
+    Logger::init(log_level).expect("failed to initialize logger");
 
     if cli.threads == 0 {
         cli.threads = num_cpus::get();
     }
     log::debug!("Threads: {}", cli.threads);
-    if cli.debug {
-        log::debug!("Files: {:?}", cli.files);
-    }
+    log::debug!("Files: {:?}", cli.files);
 
     match cli.command {
         Some(cli::Commands::Init { local, force }) => {
@@ -99,8 +101,8 @@ where
     let start_t = SystemTime::now();
 
     let mut lint_results: Vec<LintResult> = Vec::new();
-    let lint_errors_count = std::sync::Arc::new(std::sync::Mutex::new(0));
-    let lint_warnings_count = std::sync::Arc::new(std::sync::Mutex::new(0));
+    let lint_errors_count = Arc::new(Mutex::new(0));
+    let lint_warnings_count = Arc::new(Mutex::new(0));
 
     if cli.stdin {
         let mut _err_count = 0;
@@ -228,22 +230,22 @@ where
 
     if cli.lint {
         if cli.formatter.is_diff() {
+            log::info!("");
+
             let _err_count = *lint_errors_count.lock().unwrap();
             let _warn_count = *lint_warnings_count.lock().unwrap();
 
-            log::info!("\n");
-            lint_results.iter().for_each(|lint_result| {
+            for lint_result in &lint_results {
                 log::info!("{}", lint_result.to_diff(cli.no_diff_bg_color))
-            });
+            }
 
             log::info!(
-                "{}, {}\n",
+                "{}, {}",
                 format!("Error: {_err_count}").red(),
                 format!("Warning: {_warn_count}").yellow(),
             );
 
-            // print time spend from start_t to now
-            log::info!("AutoCorrect spend time {}ms\n", start_t.elapsed_millis());
+            progress::finish(&cli, start_t);
 
             if _err_count > 0 {
                 // Exit with code = 1
@@ -260,10 +262,7 @@ where
             }
         }
     } else if cli.fix {
-        log::info!("\n");
-
-        // print time spend from start_t to now
-        log::info!("AutoCorrect spend time: {}ms\n", start_t.elapsed_millis());
+        progress::finish(&cli, start_t);
     }
 }
 
@@ -310,9 +309,9 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
         // do not rewrite ignored file
         if !filepath.is_empty() {
             if result.out.eq(&String::from(raw)) {
-                progress::ok(!cli.debug);
+                progress::ok(cli);
             } else {
-                progress::err(!cli.debug);
+                progress::err(cli);
             }
 
             fs::write(Path::new(filepath), result.out).unwrap();
@@ -337,7 +336,6 @@ fn lint_and_output(
     errors_count: &mut usize,
     warings_count: &mut usize,
 ) {
-    let diff_mode = cli.formatter.is_diff();
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
 
@@ -345,17 +343,15 @@ fn lint_and_output(
     *warings_count += result.warnings_count();
 
     // do not print anything, when not lint results
-    if !cli.debug {
-        if result.lines.is_empty() {
-            progress::ok(diff_mode);
-            return;
-        }
+    if result.lines.is_empty() {
+        progress::ok(cli);
+        return;
+    }
 
-        if *errors_count > 0 {
-            progress::err(diff_mode);
-        } else if *warings_count > 0 {
-            progress::warn(diff_mode);
-        }
+    if *errors_count > 0 {
+        progress::err(cli);
+    } else if *warings_count > 0 {
+        progress::warn(cli);
     }
 
     if cli.formatter.is_diff() {

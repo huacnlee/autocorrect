@@ -1,23 +1,39 @@
 use owo_colors::OwoColorize;
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    time::SystemTime,
+};
 
-pub fn ok(show: bool) {
-    if show {
-        print!("{}", ".".green());
-        io::stdout().flush().unwrap();
+use crate::{cli::Cli, logger::SystemTimeDuration as _};
+
+pub fn ok(cli: &Cli) {
+    if cli.quiet || !cli.formatter.is_diff() {
+        return;
     }
+
+    write!(io::stdout(), "{}", ".".green()).unwrap();
 }
 
-pub fn warn(show: bool) {
-    if show {
-        print!("{}", ".".yellow());
-        io::stdout().flush().unwrap();
+pub fn warn(cli: &Cli) {
+    if cli.quiet || !cli.formatter.is_diff() {
+        return;
     }
+
+    write!(io::stdout(), "{}", ".".yellow()).unwrap();
 }
 
-pub fn err(show: bool) {
-    if show {
-        print!("{}", ".".red());
-        io::stdout().flush().unwrap();
+pub fn err(cli: &Cli) {
+    if cli.quiet || !cli.formatter.is_diff() {
+        return;
     }
+
+    write!(io::stdout(), "{}", ".".red()).unwrap();
+}
+
+/// print time spend from start_t to now
+pub fn finish(_cli: &Cli, start_t: SystemTime) {
+    log::info!(
+        "AutoCorrect spend time: {}\n",
+        format!("{}ms", start_t.elapsed_millis()).bright_black()
+    );
 }
