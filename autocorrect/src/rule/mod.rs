@@ -279,7 +279,8 @@ mod tests {
                 "no-space-fullwidth-quote" => true,
             }, "hello 你好 “Quote” 和 ‘Single Quote’ 测试 0"),
             "hello你好 “Quote” 和 ‘Single Quote’ 测试1" => (map!{}, "hello 你好“Quote”和‘Single Quote’测试 1"),
-            "你好-世界" => (map!{"space-dash" => true}, "你好 - 世界"),
+            "你好-世界" => (map!{}, "你好 - 世界"),
+            "世界-你好" => (map!{"space-dash" => true}, "世界-你好"),
         };
 
         for (input, (disable_rules, expect)) in cases {
