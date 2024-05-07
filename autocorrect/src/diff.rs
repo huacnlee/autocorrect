@@ -38,9 +38,13 @@ fn on_color_transparent(s: char, color: owo_colors::AnsiColors) -> String {
     format!("{t}")
 }
 
-// Screenshot:
-// https://raw.githubusercontent.com/johannhof/difference.rs/master/assets/github-style.png
-// https://github.com/johannhof/difference.rs/blob/master/examples/github-style.rs
+/// Diff two strings and colorize the output.
+///
+/// Screenshot:
+/// https://raw.githubusercontent.com/johannhof/difference.rs/master/assets/github-style.png
+///
+/// Forked from:
+/// https://github.com/johannhof/difference.rs/blob/master/examples/github-style.rs
 #[allow(unused_must_use)]
 pub(crate) fn diff_lines_with_err_color(
     old_str: &str,
@@ -135,7 +139,7 @@ mod tests {
 
         let diff = diff_lines_with_err_color(old_str, new_str, Yellow, on_color);
         assert_eq!(
-            "\u{1b}[33m-\u{1b}[39m\u{1b}[30;43m \u{1b}[0m\u{1b}[33mH\u{1b}[39m\u{1b}[30;43me\u{1b}[0m\u{1b}[33ml\u{1b}[39m\u{1b}[33ml\u{1b}[39m\u{1b}[33mo\u{1b}[39m\u{1b}[33m你\u{1b}[39m\u{1b}[33m好\u{1b}[39m\u{1b}[30;43m \u{1b}[0m\n\u{1b}[32m+\u{1b}[39m\u{1b}[32mH\u{1b}[39m\u{1b}[30;42ma\u{1b}[0m\u{1b}[32ml\u{1b}[39m\u{1b}[32ml\u{1b}[39m\u{1b}[32mo\u{1b}[39m\u{1b}[30;42m \u{1b}[0m\u{1b}[32m你\u{1b}[39m\u{1b}[32m好\u{1b}[39m\n\n", 
+            "\u{1b}[33m-\u{1b}[39m\u{1b}[30;43m \u{1b}[0m\u{1b}[33mH\u{1b}[39m\u{1b}[30;43me\u{1b}[0m\u{1b}[33ml\u{1b}[39m\u{1b}[33ml\u{1b}[39m\u{1b}[33mo\u{1b}[39m\u{1b}[33m你\u{1b}[39m\u{1b}[33m好\u{1b}[39m\u{1b}[30;43m \u{1b}[0m\n\u{1b}[32m+\u{1b}[39m\u{1b}[32mH\u{1b}[39m\u{1b}[30;42ma\u{1b}[0m\u{1b}[32ml\u{1b}[39m\u{1b}[32ml\u{1b}[39m\u{1b}[32mo\u{1b}[39m\u{1b}[30;42m \u{1b}[0m\u{1b}[32m你\u{1b}[39m\u{1b}[32m好\u{1b}[39m\n\n",
             diff
         );
 

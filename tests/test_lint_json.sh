@@ -16,6 +16,7 @@ diff_lint_json "conf" "toml"
 diff_lint_json "latex" "tex"
 diff_lint_json "strings" "strings"
 diff_lint_json "svelte" "svelte"
+diff_lint_json "shell" "sh"
 
 # this ignore work with direct file
 cargo run -q -- --lint tests/fixtures/this-file-will-ignore.rs
