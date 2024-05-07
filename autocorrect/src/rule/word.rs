@@ -21,8 +21,8 @@ lazy_static! {
 
     static ref PUNCTUATION_STRATEGIES: Vec<Strategery> = vec![
         // SpecialSymbol
-        Strategery::new(r"[\p{CJK_N}”’]", r"[\-\|+][\p{CJK_N}\s（【「《“‘]"),
-        Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-\|+]", r"[\p{CJK_N}“‘]"),
+        Strategery::new(r"[\p{CJK_N}”’]", r"[\|+][\p{CJK_N}\s（【「《“‘]"),
+        Strategery::new(r"[\p{CJK_N}\s）】」”’》][\|+]", r"[\p{CJK_N}“‘]"),
         Strategery::new(r"[!]", r"\p{CJK}"),
     ];
 
@@ -38,14 +38,18 @@ lazy_static! {
         Strategery::new(r"`.+`", r"\p{CJK}"),
     ];
 
-    static ref DASH_RE : regex::Regex = regexp!(r"([\p{CJK}])[\-]([\p{CJK}])");
+    static ref DASH_STRATEGIES: Vec<Strategery> = vec![
+        // Add space before and after dash - near the CJK
+        Strategery::new(r"[\p{CJK_N}”’]", r"[\-][\p{CJK_N}\s（【「《“‘]"),
+        Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-]", r"[\p{CJK_N}“‘]"),
+    ];
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
         Strategery::new(r"\w|\p{CJK}|`", r"[，。、！？：；（）「」《》【】]").with_remove_space().with_reverse(),
     ];
 
-    static ref NO_SPACE_FULLWIDTH_QUOTE_STRATEGIES : Vec<Strategery> = vec![
+    static ref NO_SPACE_FULLWIDTH_QUOTE_STRATEGIES: Vec<Strategery> = vec![
         // Remove space around fullwidth quotes
         Strategery::new(r"\w|\p{CJK}", r"[“”‘’]").with_remove_space().with_reverse(),
     ];
@@ -74,11 +78,9 @@ pub fn format_space_bracket(input: &str) -> String {
 }
 
 pub fn format_space_dash(input: &str) -> String {
-    DASH_RE
-        .replace_all(input, |cap: &regex::Captures| {
-            format!("{} - {}", &cap[1], &cap[2])
-        })
-        .to_string()
+    let mut out = String::from(input);
+    DASH_STRATEGIES.iter().for_each(|s| out = s.format(&out));
+    out
 }
 
 pub fn format_space_backticks(input: &str) -> String {
@@ -120,7 +122,7 @@ mod tests {
     use crate::rule::word::{format_space_backticks, format_space_dash};
 
     #[test]
-    fn test_format_space_bracket() {
+    fn test_format_space_dash() {
         assert_eq!(format_space_dash("你好-世界"), "你好 - 世界");
         assert_eq!(format_space_dash("foo-世界"), "foo-世界");
         assert_eq!(format_space_dash("你好-world"), "你好-world");

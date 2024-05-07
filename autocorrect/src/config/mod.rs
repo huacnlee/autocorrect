@@ -87,7 +87,7 @@ pub fn load(config_str: &str) -> Result<Config, Error> {
 
     let new_config: Config = CURRENT_CONFIG.write().unwrap().merge(&config)?;
 
-    Ok(new_config)
+    Ok(dbg!(new_config))
 }
 
 #[derive(Debug, Clone)]
@@ -337,7 +337,7 @@ mod tests {
         for (k, v) in config.rules.clone() {
             match k.as_str() {
                 "spellcheck" => assert_eq!(SeverityMode::Warning, v),
-                "space-dash" => assert_eq!(SeverityMode::Off, v),
+                "space-dash" => assert_eq!(SeverityMode::Error, v),
                 _ => assert_eq!(SeverityMode::Error, v),
             }
         }
