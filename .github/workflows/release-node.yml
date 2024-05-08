@@ -2,13 +2,13 @@ name: Release Node
 env:
   DEBUG: napi:*
   APP_NAME: autocorrect-node
-  MACOSX_DEPLOYMENT_TARGET: '10.13'
+  MACOSX_DEPLOYMENT_TARGET: "10.13"
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
     branches:
-      - 'release-node'
+      - "release-node"
 defaults:
   run:
     working-directory: autocorrect-node
@@ -22,7 +22,7 @@ jobs:
           - host: macos-latest
             target: x86_64-apple-darwin
             build: |
-              yarn build
+              yarn build --target x86_64-apple-darwin
               strip -x *.node
           - host: windows-latest
             build: |
@@ -65,7 +65,7 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-          cache-dependency-path: 'autocorrect-node/yarn.lock'
+          cache-dependency-path: "autocorrect-node/yarn.lock"
       - name: Install
         uses: actions-rs/toolchain@v1
         if: ${{ !matrix.settings.docker }}
@@ -110,14 +110,14 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-          cache-dependency-path: 'autocorrect-node/yarn.lock'
+          cache-dependency-path: "autocorrect-node/yarn.lock"
           architecture: x86
       - name: Build in docker
         uses: addnab/docker-run-action@v3
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
+          options: "--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build"
           run: ${{ matrix.settings.build }}
       - name: Build
         run: ${{ matrix.settings.build }}
@@ -137,13 +137,15 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          - host: macos-latest
+          - host: macos-13
             target: x86_64-apple-darwin
+          - host: macos-14
+            target: aarch64-apple-darwin
           - host: windows-latest
             target: x86_64-pc-windows-msvc
         node:
-          - '18'
-          - '20'
+          - "18"
+          - "20"
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
@@ -172,8 +174,8 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '18'
-          - '20'
+          - "18"
+          - "20"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -202,8 +204,8 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '18'
-          - '20'
+          - "18"
+          - "20"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -243,7 +245,7 @@ jobs:
           node-version: 16
           check-latest: true
           cache: yarn
-          cache-dependency-path: 'autocorrect-node/yarn.lock'
+          cache-dependency-path: "autocorrect-node/yarn.lock"
       - name: Cache NPM dependencies
         uses: actions/cache@v3
         with:
