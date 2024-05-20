@@ -31,7 +31,11 @@ pub fn err(cli: &Cli) {
 }
 
 /// print time spend from start_t to now
-pub fn finish(_cli: &Cli, start_t: SystemTime) {
+pub fn finish(cli: &Cli, start_t: SystemTime) {
+    if cli.quiet || !cli.formatter.is_diff() {
+        return;
+    }
+
     log::info!(
         "AutoCorrect spend time: {}\n",
         format!("{}ms", start_t.elapsed_millis()).bright_black()
