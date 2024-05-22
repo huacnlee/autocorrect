@@ -1,6 +1,6 @@
 {
   "name": "autocorrect-node",
-  "version": "2.9.3",
+  "version": "2.9.4",
   "main": "index.js",
   "bin": {
     "autocorrect": "./cli.js"
