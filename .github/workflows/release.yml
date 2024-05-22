@@ -18,13 +18,13 @@ jobs:
             os: ubuntu-latest
             name: autocorrect-linux-amd64.tar.gz
             arch: x86_64
-            rustflags: "-Z linker-features=-lld"
+            rustflags: "-Zlinker-features=-lld"
 
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
             name: autocorrect-linux-arm64.tar.gz
             arch: aarch64
-            rustflags: "-Z linker-features=-lld"
+            rustflags: "-Zlinker-features=-lld"
 
           - target: x86_64-apple-darwin
             os: macOS-latest
@@ -92,9 +92,11 @@ jobs:
 
       - name: Build | Build
         uses: actions-rs/cargo@v1
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
         with:
           command: build
-          args: --manifest-path autocorrect-cli/Cargo.toml --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"' ${{ matrix.rustflags }}
+          args: --manifest-path autocorrect-cli/Cargo.toml --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
           use-cross: ${{ matrix.os == 'ubuntu-latest' }}
 
       - name: Prepare artifacts [Windows]
