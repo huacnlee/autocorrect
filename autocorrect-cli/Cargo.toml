@@ -55,7 +55,3 @@ update = ["self_update", "sudo"]
 lto = true
 opt-level = "z" # Optimize for size.
 strip = true    # Automatically strip symbols from the binary.
-
-[target.x86_64-unknown-linux-gnu]
-# https://github.com/huacnlee/autocorrect/pull/198
-rustflags = ["-Zlinker-features=-lld"]

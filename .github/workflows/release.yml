@@ -88,6 +88,10 @@ jobs:
           profile: minimal
           target: ${{ matrix.target }}
 
+      # rust-lang/rust#124129
+      - name: Disable rust-lld
+        run: echo RUSTFLAGS=${RUSTFLAGS}\ -Zlinker-features=-lld >> $GITHUB_ENV
+
       - name: Build | Build
         uses: actions-rs/cargo@v1
         with:
