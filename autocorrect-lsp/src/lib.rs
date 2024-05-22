@@ -1,17 +1,30 @@
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 
-#[derive(Debug)]
 struct Backend {
     client: Client,
+    work_dir: RwLock<PathBuf>,
     documents: RwLock<HashMap<Url, Arc<TextDocumentItem>>>,
+    ignorer: RwLock<Option<autocorrect::ignorer::Ignorer>>,
 }
 
+static DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
+static DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
+
 impl Backend {
+    fn work_dir(&self) -> PathBuf {
+        self.work_dir.read().unwrap().clone()
+    }
+
+    fn set_work_dir(&self, work_dir: PathBuf) {
+        *self.work_dir.write().unwrap() = work_dir;
+    }
+
     fn upsert_document(&self, doc: Arc<TextDocumentItem>) {
         let uri = doc.uri.clone();
         self.documents
@@ -86,11 +99,59 @@ impl Backend {
             .publish_diagnostics(uri.clone(), vec![], None)
             .await;
     }
+
+    async fn clear_all_diagnostic(&self) {
+        let uris = self
+            .documents
+            .read()
+            .unwrap()
+            .keys()
+            .cloned()
+            .collect::<Vec<_>>();
+
+        for uri in uris.iter() {
+            self.clear_diagnostics(uri).await;
+        }
+    }
+
+    fn reload_config(&self) {
+        let conf_file = self.work_dir().join(DEFAULT_CONFIG_FILE);
+        autocorrect::config::load_file(&conf_file.to_string_lossy()).ok();
+
+        let ignorer = autocorrect::ignorer::Ignorer::new(&self.work_dir().to_string_lossy());
+        self.ignorer.write().unwrap().replace(ignorer);
+    }
+
+    fn is_ignored(&self, uri: &Url) -> bool {
+        if let Some(ignorer) = self.ignorer.read().unwrap().as_ref() {
+            if let Some(filepath) = uri.to_file_path().ok() {
+                return ignorer.is_ignored(&filepath.to_string_lossy());
+            }
+        }
+
+        false
+    }
 }
 
 #[tower_lsp::async_trait]
 impl LanguageServer for Backend {
-    async fn initialize(&self, _: InitializeParams) -> Result<InitializeResult> {
+    async fn initialize(&self, params: InitializeParams) -> Result<InitializeResult> {
+        if let Some(root_uri) = params.root_uri {
+            let root_path = root_uri.to_file_path().unwrap();
+            self.set_work_dir(root_path.clone());
+            self.client
+                .log_message(
+                    MessageType::INFO,
+                    format!("root_uri: {}\n", root_path.display()),
+                )
+                .await;
+
+            let ignorer = autocorrect::ignorer::Ignorer::new(&root_path.to_string_lossy());
+            self.ignorer.write().unwrap().replace(ignorer);
+        }
+
+        self.reload_config();
+
         Ok(InitializeResult {
             server_info: Some(ServerInfo {
                 name: "AutoCorrect".into(),
@@ -138,10 +199,19 @@ impl LanguageServer for Backend {
 
     async fn did_open(&self, params: DidOpenTextDocumentParams) {
         let DidOpenTextDocumentParams { text_document } = params;
+
+        if self.is_ignored(&text_document.uri) {
+            return;
+        }
+
         self.client
             .log_message(
                 MessageType::INFO,
-                format!("did_open {}\n", text_document.uri),
+                format!(
+                    "did_open {}, workdir: {:?}\n",
+                    text_document.uri,
+                    self.work_dir()
+                ),
             )
             .await;
 
@@ -152,6 +222,11 @@ impl LanguageServer for Backend {
 
     async fn did_close(&self, params: DidCloseTextDocumentParams) {
         let DidCloseTextDocumentParams { text_document } = params;
+
+        if self.is_ignored(&text_document.uri) {
+            return;
+        }
+
         self.client
             .log_message(
                 MessageType::INFO,
@@ -170,6 +245,10 @@ impl LanguageServer for Backend {
         } = params;
         let VersionedTextDocumentIdentifier { uri, version } = text_document;
 
+        if self.is_ignored(&uri) {
+            return;
+        }
+
         self.client
             .log_message(MessageType::INFO, format!("did_change {}\n", uri))
             .await;
@@ -185,8 +264,32 @@ impl LanguageServer for Backend {
         self.lint_document(&updated_doc).await;
     }
 
+    async fn did_save(&self, params: DidSaveTextDocumentParams) {
+        let DidSaveTextDocumentParams { text_document, .. } = params;
+        self.client
+            .log_message(
+                MessageType::INFO,
+                format!("did_save {}\n", text_document.uri),
+            )
+            .await;
+
+        if text_document.uri.path().ends_with(DEFAULT_CONFIG_FILE)
+            || text_document.uri.path().ends_with(DEFAULT_IGNORE_FILE)
+        {
+            self.clear_all_diagnostic().await;
+            self.client
+                .log_message(MessageType::INFO, "reload config\n")
+                .await;
+            self.reload_config();
+        }
+    }
+
     async fn formatting(&self, params: DocumentFormattingParams) -> Result<Option<Vec<TextEdit>>> {
         let DocumentFormattingParams { text_document, .. } = params;
+
+        if self.is_ignored(&text_document.uri) {
+            return Ok(None);
+        }
 
         self.client
             .log_message(
@@ -219,6 +322,10 @@ impl LanguageServer for Backend {
             context,
             ..
         } = params;
+
+        if self.is_ignored(&text_document.uri) {
+            return Ok(None);
+        }
 
         self.client
             .log_message(
@@ -263,9 +370,13 @@ pub async fn start() {
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 
-    let (service, socket) = LspService::new(|client| Backend {
-        client,
-        documents: RwLock::new(HashMap::new()),
+    let (service, socket) = LspService::new(|client| {
+        return Backend {
+            client,
+            work_dir: RwLock::new(PathBuf::new()),
+            documents: RwLock::new(HashMap::new()),
+            ignorer: RwLock::new(None),
+        };
     });
     Server::new(stdin, stdout, socket).serve(service).await;
 }
