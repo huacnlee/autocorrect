@@ -83,20 +83,16 @@ jobs:
       - name: Setup | Rust
         uses: actions-rs/toolchain@v1.0.7
         with:
-          toolchain: nightly
+          toolchain: stable
           override: true
           profile: minimal
           target: ${{ matrix.target }}
-
-      # rust-lang/rust#124129
-      - name: Disable rust-lld
-        run: echo RUSTFLAGS=${RUSTFLAGS}\ -Zlinker-features=-lld >> $GITHUB_ENV
 
       - name: Build | Build
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --manifest-path autocorrect-cli/Cargo.toml --release --target ${{ matrix.target }} -Z unstable-options --config 'package.version="${{ steps.tagName.outputs.version }}"'
+          args: --manifest-path autocorrect-cli/Cargo.toml --release --target ${{ matrix.target }} --config 'package.version="${{ steps.tagName.outputs.version }}"'
           use-cross: ${{ matrix.os == 'ubuntu-latest' }}
 
       - name: Prepare artifacts [Windows]
