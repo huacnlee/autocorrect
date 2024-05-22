@@ -104,6 +104,8 @@ pub(crate) enum Commands {
         about = "Update AutoCorrect to latest version."
     )]
     Update {},
+    #[command(name = "server", about = "Start AutoCorrect LSP server.")]
+    Server {},
 }
 
 impl Cli {

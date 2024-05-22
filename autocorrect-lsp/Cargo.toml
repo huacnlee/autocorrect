@@ -1,0 +1,18 @@
+[package]
+name = "autocorrect-lsp"
+version = "2.9.4"
+edition = "2021"
+
+[dependencies]
+autocorrect.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+
+tokio = { version = "1.37.0", features = [
+    "io-util",
+    "io-std",
+    "macros",
+    "rt-multi-thread",
+] }
+tower-lsp = "0.20.0"

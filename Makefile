@@ -11,6 +11,8 @@ run:
 	cargo run -- --lint --config $(WORKDIR)/.autocorrectrc.template --no-diff-bg-color
 run\:json:
 	cargo run -- --lint --format json
+server:
+	cargo run -- server
 build:
 	cargo build --manifest-path autocorrect-cli/Cargo.toml --release --target aarch64-apple-darwin
 	ls -lha target/aarch64-apple-darwin/release/autocorrect
