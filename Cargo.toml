@@ -1,23 +1,32 @@
 [workspace]
-default-members = [
-  "autocorrect",
-  "autocorrect-derive",
-  "autocorrect-wasm",
-  "autocorrect-cli",
-]
-exclude = [
-  "autocorrect-tauri",
-]
-members = [
-  "autocorrect",
-  "autocorrect-wasm",
-  "autocorrect-derive",
-  "autocorrect-cli",
-  "autocorrect-py",
-  "autocorrect-node",
-  "autocorrect-rb/ext/autocorrect",
-  "autocorrect-java",
-]
-
 # https://github.com/seanmonstar/reqwest/issues/1300#issuecomment-1368265203
 resolver = "2"
+default-members = [
+    "autocorrect",
+    "autocorrect-derive",
+    "autocorrect-wasm",
+    "autocorrect-cli",
+    "autocorrect-lsp",
+]
+members = [
+    "autocorrect",
+    "autocorrect-wasm",
+    "autocorrect-derive",
+    "autocorrect-cli",
+    "autocorrect-py",
+    "autocorrect-node",
+    "autocorrect-rb/ext/autocorrect",
+    "autocorrect-java",
+    "autocorrect-lsp",
+]
+
+[workspace.dependencies]
+autocorrect = { path = "autocorrect" }
+autocorrect-derive = { path = "autocorrect-derive" }
+autocorrect-wasm = { path = "autocorrect-wasm" }
+autocorrect-cli = { path = "autocorrect-cli" }
+autocorrect-lsp = { path = "autocorrect-lsp" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1.0.64"
+anyhow = "1.0.86"

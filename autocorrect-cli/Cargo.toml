@@ -14,7 +14,9 @@ name = "autocorrect"
 path = "src/main.rs"
 
 [dependencies]
-autocorrect = { path = "../autocorrect", version = ">1.0.0" }
+autocorrect.workspace = true
+autocorrect-lsp.workspace = true
+
 clap = { version = "4", features = ['derive'] }
 ignore = "0.4"
 log = "0.4"

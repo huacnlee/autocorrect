@@ -15,7 +15,7 @@ name = "autocorrect"
 path = "src/lib.rs"
 
 [dependencies]
-autocorrect-derive = {version = "0.3.0", path = "../autocorrect-derive"}
+autocorrect-derive = { version = "0.3.0", path = "../autocorrect-derive" }
 diff = "0.1.13"
 ignore = "0.4"
 lazy_static = "1.4.0"
@@ -23,8 +23,8 @@ owo-colors = "3"
 pest = "2.6.1"
 pest_derive = "2.6.1"
 regex = "1"
-serde = {version = "1", features = ["derive"]}
-serde_json = "1.0.83"
+serde.workspace = true
+serde_json.workspace = true
 serde_repr = "0.1"
 serde_yaml = "0.9.9"
 
