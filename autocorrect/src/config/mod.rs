@@ -87,7 +87,7 @@ pub fn load(config_str: &str) -> Result<Config, Error> {
 
     let new_config: Config = CURRENT_CONFIG.write().unwrap().merge(&config)?;
 
-    Ok(dbg!(new_config))
+    Ok(new_config)
 }
 
 #[derive(Debug, Clone)]
