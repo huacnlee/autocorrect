@@ -96,6 +96,7 @@ $ autocorrect update
 - [Use in NPM](#use-in-npm)
 - [Configuration](#configuration)
 - [VS Code Extension](#vs-code-extension)
+- [Zed extension](https://github.com/huacnlee/zed-autocorrect)
 - [Intellij Platform Plugin](#intellij-platform-plugin)
 - [GitHub Action](#github-action)
 - [GitLab CI](#gitlab-ci)
