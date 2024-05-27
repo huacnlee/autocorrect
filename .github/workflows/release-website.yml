@@ -19,6 +19,7 @@ jobs:
       - name: Install
         run: bun install
       - name: Build
+        working-directory: autocorrect-website
         run: |
           bun run build
           cp dist/index.html dist/404.html
@@ -27,7 +28,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "dist"
+          path: "autocorrect-website/dist"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
