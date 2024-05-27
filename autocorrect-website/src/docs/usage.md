@@ -2,11 +2,19 @@
 
 ## Installation
 
+You can install AutoCorrect via [Homebrew](https://brew.sh) on macOS:
+
 ```bash
 $ brew install autocorrect
 ```
 
-Or you can just install it via this:
+For Windows, you can use [Scoop](https://scoop.sh):
+
+```bash
+$ scoop install autocorrect
+```
+
+Or you can just install it via this on Unix-like system:
 
 ```bash
 $ curl -sSL https://git.io/JcGER | sh
@@ -213,10 +221,10 @@ For example, in JavaScript:
 ```js
 function hello() {
   // autocorrect-disable
-  console.log('现在这行开始autocorrect会暂时禁用');
-  console.log('这行也是disable的状态');
+  console.log("现在这行开始autocorrect会暂时禁用");
+  console.log("这行也是disable的状态");
   // autocorrect-enable
-  let a = '现在起autocorrect回到了启用的状态';
+  let a = "现在起autocorrect回到了启用的状态";
 }
 ```
 
@@ -225,10 +233,10 @@ The output will:
 ```js
 function hello() {
   // autocorrect-disable
-  console.log('现在这行开始autocorrect会暂时禁用');
-  console.log('这行也是disable的状态');
+  console.log("现在这行开始autocorrect会暂时禁用");
+  console.log("这行也是disable的状态");
   // autocorrect-enable
-  let a = '现在起 autocorrect 回到了启用的状态';
+  let a = "现在起 autocorrect 回到了启用的状态";
 }
 ```
 
@@ -243,11 +251,11 @@ You can use `autocorrect-disable <rule>` in a comment to disable some rules.
 ```js
 function hello() {
   // autocorrect-disable space-word
-  console.log('现在这行开始autocorrect会暂时禁用.');
+  console.log("现在这行开始autocorrect会暂时禁用.");
   // autocorrect-disable fullwidth
-  console.log('这行也是disable的状态.');
+  console.log("这行也是disable的状态.");
   // autocorrect-enable
-  let a = '现在起autocorrect回到了启用的状态.';
+  let a = "现在起autocorrect回到了启用的状态.";
 }
 ```
 
@@ -256,11 +264,11 @@ Will get:
 ```js
 function hello() {
   // autocorrect-disable space-word
-  console.log('现在这行开始autocorrect会暂时禁用。');
+  console.log("现在这行开始autocorrect会暂时禁用。");
   // autocorrect-disable fullwidth, space-word
-  console.log('这行也是disable的状态.');
+  console.log("这行也是disable的状态.");
   // autocorrect-enable
-  let a = '现在起 autocorrect 回到了启用的状态。';
+  let a = "现在起 autocorrect 回到了启用的状态。";
 }
 ```
 
@@ -278,7 +286,13 @@ https://marketplace.visualstudio.com/items?itemName=huacnlee.autocorrect
 
 <img width="900" alt="AutoCorrect for VS Code Extension" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
 
-### Intellij Platform Plugin
+### Zed Extension
+
+https://github.com/huacnlee/zed-autocorrect
+
+<img alt="image" src="https://github.com/huacnlee/zed-autocorrect/assets/5518/762c70e4-961b-4a9d-850c-5768389c459b">
+
+### Intellij Plugin
 
 [![](https://img.shields.io/badge/Plugin-Intellij%20Platform-brightgreen)](https://plugins.jetbrains.com/plugin/20244-autocorrect)
 

@@ -3,105 +3,109 @@
 @tailwind utilities;
 
 html {
-  overscroll-behavior: none;
+    overscroll-behavior: none;
 }
 
 body {
-  @apply text-sm text-center pt-12;
-  @apply bg-white text-black;
-  @apply dark:bg-black  dark:text-white;
+    @apply text-sm text-center pt-12;
+    @apply bg-white text-black;
+    @apply dark:bg-black  dark:text-white;
 }
 
 .navbar {
-  @apply bg-white shadow fixed top-0 left-0 right-0 z-50;
-  @apply dark:bg-gray-950 dark:border-b dark:border-gray-800;
+    @apply bg-white shadow fixed top-0 left-0 right-0 z-50;
+    @apply dark:bg-gray-950 dark:border-b dark:border-gray-800;
 
-  .navbar-brand {
-    @apply flex items-center flex-shrink-0 py-2;
-  }
-
-  .navbar-item {
-    @apply inline-flex items-center px-2 md:px-4 py-2 h-8 space-x-1 text-sm rounded font-medium text-gray-900;
-    @apply dark:text-gray-200;
-
-    &-active {
-      @apply bg-gray-200;
-      @apply dark:bg-gray-800;
+    .navbar-brand {
+        @apply flex items-center flex-shrink-0 py-2;
     }
-  }
+
+    .navbar-item {
+        @apply inline-flex items-center px-2 md:px-4 py-2 h-8 space-x-1 text-sm rounded font-medium text-gray-900;
+        @apply dark:text-gray-200;
+
+        &-active {
+            @apply bg-gray-200;
+            @apply dark:bg-gray-800;
+        }
+    }
 }
 
 .container {
-  @apply max-w-5xl w-full my-8 px-4 mx-auto text-left;
+    @apply max-w-5xl w-full my-8 px-4 mx-auto text-left;
 }
 
 .intro {
-  @apply text-base text-left;
+    @apply text-base text-left;
 
-  p {
-    @apply mb-4;
-  }
+    p {
+        @apply mb-4;
+    }
 }
 
 .editor-wraper {
-  @apply rounded-sm border border-gray-300 shadow;
-  @apply dark:border-gray-700;
+    @apply rounded-sm border border-gray-300 shadow;
+    @apply dark:border-gray-700;
 }
 
 select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
-  -webkit-print-color-adjust: exact;
-  color-adjust: exact;
-  appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+    appearance: none;
 }
 
 select {
-  @apply block pl-3 pr-4 py-1.5 text-base shadow-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md;
-  @apply dark:bg-gray-950 dark:border-gray-700 dark:focus:ring-blue-700 dark:focus:border-blue-700;
+    @apply block pl-3 pr-4 py-1.5 text-base shadow-sm border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md;
+    @apply dark:bg-gray-950 dark:border-gray-700 dark:focus:ring-blue-700 dark:focus:border-blue-700;
 }
 
 button {
-  @apply rounded bg-white px-4 py-1.5 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50;
-  @apply dark:bg-gray-950 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-900 dark:active:bg-gray-950;
+    @apply rounded bg-white px-4 py-1.5 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50;
+    @apply dark:bg-gray-950 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-900 dark:active:bg-gray-950;
 
-  &.btn-primary {
-    @apply bg-blue-600 ring-blue-800 hover:bg-blue-500 text-white active:bg-blue-700;
-    @apply dark:bg-blue-950 dark:ring-blue-700 dark:hover:bg-opacity-40 dark:text-white dark:active:bg-blue-950;
-  }
+    &.btn-primary {
+        @apply bg-blue-600 ring-blue-800 hover:bg-blue-500 text-white active:bg-blue-700;
+        @apply dark:bg-blue-950 dark:ring-blue-700 dark:hover:bg-opacity-40 dark:text-white dark:active:bg-blue-950;
+    }
 }
 
 .btn {
-  @apply border-0 text-lg shadow bg-gray-700 text-white rounded-md leading-none py-2 px-6 lg:py-3 lg:px-12 block whitespace-nowrap;
+    @apply border-0 text-lg shadow bg-gray-700 text-white rounded-md leading-none py-2 px-6 lg:py-3 lg:px-12 block whitespace-nowrap;
 }
-.btn-install {
-  @apply bg-blue-600 border border-blue-600 shadow-sm;
-  @apply dark:bg-blue-950 dark:border-blue-800;
+.btn-install-vscode {
+    @apply bg-sky-600 border border-sky-600 shadow-sm hover:bg-sky-500;
+    @apply dark:bg-sky-950 dark:border-sky-700 dark:hover:bg-sky-900;
 }
-.btn-install2 {
-  @apply bg-gray-800 border border-gray-800 shadow-sm;
-  @apply dark:bg-gray-900 dark:border-gray-700;
+.btn-install-intellij {
+    @apply bg-gray-800 border border-gray-800 shadow-sm hover:bg-gray-700;
+    @apply dark:bg-gray-950 dark:border-gray-700 dark:hover:bg-gray-900;
 }
 .btn-download {
-  @apply bg-green-600 border border-green-600 shadow-sm;
-  @apply dark:bg-green-950 dark:border-green-800;
+    @apply bg-green-600 border border-green-600 shadow-sm hover:bg-green-500;
+    @apply dark:bg-green-950 dark:border-green-800 dark:hover:bg-green-900;
+}
+.btn-install-zed {
+    @apply bg-blue-800 border border-blue-800 shadow-sm hover:bg-blue-700;
+    @apply dark:bg-blue-950 dark:border-blue-800 dark:hover:bg-blue-900;
 }
 .btn-github {
 }
 
 .message {
-  @apply ml-3 text-green-600;
-  @apply dark:text-green-700;
+    @apply ml-3 text-green-600;
+    @apply dark:text-green-700;
 }
 
 .codeblock-wrap {
-  @apply space-y-2;
+    @apply space-y-2;
 }
 
 .codeblock {
-  @apply p-4 text-gray-800 bg-gray-100 rounded hover:select-all;
-  @apply dark:text-gray-200 dark:bg-gray-900;
+    @apply p-4 text-gray-800 bg-gray-100 rounded hover:select-all;
+    @apply dark:text-gray-200 dark:bg-gray-900;
 }

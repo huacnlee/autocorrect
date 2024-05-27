@@ -1,52 +1,54 @@
 const USE_CASES = [
   {
-    name: 'MDN Web Docs',
-    url: 'https://developer.mozilla.org',
-    className: 'dark:invert-1',
+    name: "MDN Web Docs",
+    url: "https://developer.mozilla.org",
+    className: "dark:invert-1",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/72fd3ebf-43e4-4cd2-b0ab-08a6700f63b2',
+      "https://github.com/huacnlee/autocorrect/assets/5518/72fd3ebf-43e4-4cd2-b0ab-08a6700f63b2",
   },
   {
-    name: 'Apache APISIX',
-    url: 'https://apisix.apache.org',
+    name: "Apache APISIX",
+    url: "https://apisix.apache.org",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/2b286775-e619-4d7e-9c81-37479b93b18e',
+      "https://github.com/huacnlee/autocorrect/assets/5518/2b286775-e619-4d7e-9c81-37479b93b18e",
   },
   {
-    name: 'Longbridge',
-    url: 'https://open.longportapp.com',
-    className: 'scale-[1.2]',
+    name: "Longbridge",
+    url: "https://open.longportapp.com",
+    className: "scale-[1.2]",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/4d43712d-30ac-4bad-95bc-9b571cd43660',
+      "https://github.com/huacnlee/autocorrect/assets/5518/4d43712d-30ac-4bad-95bc-9b571cd43660",
   },
   {
-    name: 'JuiceFS',
-    url: 'https://juicefs.com',
+    name: "JuiceFS",
+    url: "https://juicefs.com",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/788634f6-080f-4c0e-8e13-0da22a5d3ae7',
+      "https://github.com/huacnlee/autocorrect/assets/5518/788634f6-080f-4c0e-8e13-0da22a5d3ae7",
   },
   {
-    name: 'Lowcode Engine',
-    url: 'https://lowcode-engine.cn',
-    className: 'scale-[0.8]',
+    name: "Lowcode Engine",
+    url: "https://lowcode-engine.cn",
+    className: "scale-[0.8]",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/89c60e49-cda2-4e9a-a739-ef4d769c7457',
+      "https://github.com/huacnlee/autocorrect/assets/5518/89c60e49-cda2-4e9a-a739-ef4d769c7457",
   },
   {
-    name: 'Envd',
-    url: 'https://envd.tensorchord.ai',
-    className: 'scale-[1.2]',
+    name: "Envd",
+    url: "https://envd.tensorchord.ai",
+    className: "scale-[1.2]",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/bd055496-62aa-4d6e-accb-775c26014f15',
+      "https://github.com/huacnlee/autocorrect/assets/5518/bd055496-62aa-4d6e-accb-775c26014f15",
   },
   {
-    name: 'MatrixOne',
-    url: 'https://matrixorigin.cn',
-    className: 'scale-[1.1]',
+    name: "MatrixOne",
+    url: "https://matrixorigin.cn",
+    className: "scale-[1.1]",
     image:
-      'https://github.com/huacnlee/autocorrect/assets/5518/4959c8d2-cec4-4115-8556-faca6b32c405',
+      "https://github.com/huacnlee/autocorrect/assets/5518/4959c8d2-cec4-4115-8556-faca6b32c405",
   },
 ];
+
+import { Tabs } from "./tabs";
 
 export const Welcome = () => {
   return (
@@ -121,28 +123,75 @@ export const Welcome = () => {
           </a>
           <a
             href="vscode:extension/huacnlee.autocorrect"
-            className="btn btn-install"
+            className="btn btn-install-vscode"
           >
-            <div className="text-lg">Install Extension</div>
-            <div className="text-xs text-gray-200">Visual Studio Code</div>
+            <div className="text-lg">VS Code</div>
+            <div className="text-xs text-gray-200">VS Code Extension</div>
+          </a>
+          <a
+            href="https://github.com/huacnlee/zed-autocorrect"
+            className="btn btn-install-zed"
+          >
+            <div className="text-lg">Zed</div>
+            <div className="text-xs text-gray-200">Zed Extension</div>
           </a>
           <a
             href="https://plugins.jetbrains.com/plugin/20244-autocorrect"
             target="_blank"
-            className="btn btn-install2"
+            className="btn btn-install-intellij"
           >
-            <div className="text-lg">Install Plugin</div>
-            <div className="text-xs text-gray-200">Intellij Platform</div>
+            <div className="text-lg">Intellij Plugin</div>
+            <div className="text-xs text-gray-200">JetBrains Plugin</div>
           </a>
         </div>
-        <div className="codeblock-wrap">
-          <pre className="codeblock">
-            <span>brew install autocorrect</span>
-          </pre>
-          <div className="text-gray-200">Or just install via this:</div>
-          <pre className="codeblock">
-            <span>curl -sSL https://git.io/JcGER | sh</span>
-          </pre>
+
+        <div className="tabs">
+          <input
+            type="radio"
+            name="tabset"
+            id="tab1"
+            key="tab1"
+            defaultChecked
+            aria-controls="install-macos"
+          />
+          <label htmlFor="tab1">macOS</label>
+          <input
+            type="radio"
+            name="tabset"
+            key="tab2"
+            id="tab2"
+            aria-controls="install-windows"
+          />
+          <label htmlFor="tab2">Windows</label>
+          <input
+            type="radio"
+            name="tabset"
+            key="tab3"
+            id="tab3"
+            aria-controls="install-unix"
+          />
+          <label htmlFor="tab3">Unix-like</label>
+
+          <div className="tab-panels">
+            <div className="tab-panel" id="install-macos">
+              <p>You can install AutoCorrect via Homebrew on macOS:</p>
+              <pre className="codeblock">
+                <span>brew install autocorrect</span>
+              </pre>
+            </div>
+            <div className="tab-panel" id="install-windows">
+              <p>You can install AutoCorrect via Scoop on Windows:</p>
+              <pre className="codeblock">
+                <span>scoop install autocorrect</span>
+              </pre>
+            </div>
+            <div className="tab-panel" id="install-unix">
+              <p>Or you can install by this script on any Unix-like system:</p>
+              <pre className="codeblock">
+                <span>curl -sSL https://git.io/JcGER | sh</span>
+              </pre>
+            </div>
+          </div>
         </div>
         <div className="intro">
           <p>
@@ -182,11 +231,11 @@ export const Welcome = () => {
           <h2 className="text-lg">Use cases</h2>
           <div
             className="flex flex-wrap items-center place-content-center gap-4 lg:gap-6 py-8 dark:invert-[0.2]"
-            style={{ colorScheme: 'revert' }}
+            style={{ colorScheme: "revert" }}
           >
-            {USE_CASES.map((item) => {
+            {USE_CASES.map((item, idx) => {
               return (
-                <a href={item.url} target="_blank" title={item.name}>
+                <a href={item.url} target="_blank" key={idx} title={item.name}>
                   <img
                     src={item.image}
                     className={`${item.className} h-6 lg:h-8`}
