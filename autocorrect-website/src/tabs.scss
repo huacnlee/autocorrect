@@ -21,7 +21,7 @@
     @apply ml-3 select-none;
 
     &:hover {
-        @apply bg-gray-100;
+        @apply bg-gray-100 dark:hover-gray-900;
     }
 }
 
@@ -41,19 +41,19 @@
 }
 
 .tabs > input:checked + label {
-    @apply border-gray-300;
-    border-bottom: 1px solid #fff;
+    @apply border-gray-300 dark:border-gray-700;
+    border-bottom: 1px solid transparent;
     margin-bottom: -1px;
 }
 
 .tabs .tab-panel {
-    @apply border-gray-300 border-t py-4 px-2 md:w-[640px]  mx-auto;
+    @apply border-gray-300 dark:border-gray-700 border-t py-4 px-2 md:w-[640px]  mx-auto;
 
     p {
         @apply mb-4;
     }
 
     pre {
-        @apply bg-gray-100 p-3 rounded-sm;
+        @apply p-3 rounded-sm;
     }
 }
