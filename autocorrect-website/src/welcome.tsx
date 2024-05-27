@@ -106,7 +106,7 @@ export const Welcome = () => {
             </a>
           </div>
         </div>
-        <div className="intro">
+        <div className="intro mb-6">
           <p>
             A linter and formatter for help you improve copywriting, to correct
             spaces, punctuations between CJK (Chinese, Japanese, Korean).
