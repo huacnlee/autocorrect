@@ -1,0 +1,173 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AutoCorrect Config",
+  "type": "object",
+  "properties": {
+    "fileTypes": {
+      "default": {},
+      "description": "Speical file type mapping.\nExample:\n{ \"mdx\": \"markdown\" }\nDefault: https://github.com/huacnlee/autocorrect/raw/main/autocorrect/.autocorrectrc.default",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/FileType"
+      }
+    },
+    "rules": {
+      "default": {},
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/SeverityMode"
+      },
+      "description": "Config rules, default rules: https://github.com/huacnlee/autocorrect/raw/main/autocorrect/.autocorrectrc.default",
+      "properties": {
+        "space-word": {
+          "description": "Auto add spacing between CJK (Chinese, Japanese, Korean) and English words.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "space-punctuation": {
+          "description": "Add space between some punctuations.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "space-bracket": {
+          "description": "Add space between brackets (), [] when near the CJK.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "space-backticks": {
+          "description": "Add space between ``, when near the CJK.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "space-dash": {
+          "description": "Add space between dash `-`",
+          "default": 0,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "fullwidth": {
+          "description": "Convert to fullwidth.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "no-space-punctuation": {
+          "description": "To remove space near the fullwidth punctuations.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "no-space-fullwidth-quote": {
+          "description": "To remove space arouned the fullwidth quotes “”, ‘’.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "halfwidth-word": {
+          "description": "Fullwidth alphanumeric characters to halfwidth.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "halfwidth-punctuation": {
+          "description": "Fullwidth punctuations to halfwidth in english.",
+          "default": 1,
+          "$ref": "#/definitions/SeverityMode"
+        },
+        "spellcheck": {
+          "description": "Spellcheck",
+          "default": 0,
+          "$ref": "#/definitions/SeverityMode"
+        }
+      }
+    },
+    "spellcheck": {
+      "default": {
+        "mode": null,
+        "words": []
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/SpellcheckConfig"
+        }
+      ]
+    },
+    "textRules": {
+      "default": {},
+      "type": "object",
+      "description": "Config text rules, when AutoCorrect matches the text, it will apply the rules. \nFor instance for ignore some text:\n{ \"Hello你好\": \"off\" }",
+      "additionalProperties": {
+        "$ref": "#/definitions/SeverityMode"
+      }
+    }
+  },
+  "definitions": {
+    "SeverityMode": {
+      "type": [
+        "number",
+        "string"
+      ],
+      "enum": [
+        "off",
+        0,
+        "error",
+        1,
+        "warning",
+        2
+      ]
+    },
+    "FileType": {
+      "type": "string",
+      "enum": [
+        "html",
+        "yaml",
+        "sql",
+        "rust",
+        "ruby",
+        "elixir",
+        "go",
+        "javascript",
+        "css",
+        "json",
+        "python",
+        "objective_c",
+        "strings",
+        "csharp",
+        "swift",
+        "java",
+        "scala",
+        "kotlin",
+        "php",
+        "dart",
+        "markdown",
+        "latex",
+        "asciidoc",
+        "gettext",
+        "conf",
+        "c",
+        "xml",
+        "jupyter",
+        "text"
+      ]
+    },
+    "SpellcheckConfig": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "description": "DEPRACTED: use `rules.spellcheck` instead",
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SeverityMode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "words": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
