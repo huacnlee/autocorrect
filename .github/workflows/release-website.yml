@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - main
+      - release-website
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - name: Install
+        run: bun install
+      - name: Build
+        run: |
+          bun run build
+          cp dist/index.html dist/404.html
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "dist"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
