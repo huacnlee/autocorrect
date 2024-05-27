@@ -1,0 +1,59 @@
+.tabs > input[type="radio"] {
+    position: absolute;
+    left: -200vw;
+}
+
+.tabs .tab-panel {
+    display: none;
+}
+
+.tabs > input:first-child:checked ~ .tab-panels > .tab-panel:first-child,
+.tabs > input:nth-child(3):checked ~ .tab-panels > .tab-panel:nth-child(2),
+.tabs > input:nth-child(5):checked ~ .tab-panels > .tab-panel:nth-child(3),
+.tabs > input:nth-child(7):checked ~ .tab-panels > .tab-panel:nth-child(4),
+.tabs > input:nth-child(9):checked ~ .tab-panels > .tab-panel:nth-child(5),
+.tabs > input:nth-child(11):checked ~ .tab-panels > .tab-panel:nth-child(6) {
+    display: block;
+}
+
+.tabs > label {
+    @apply relative inline-block py-2 px-4 border border-transparent border-b-0 cursor-pointer rounded-tl rounded-tr;
+    @apply ml-3 select-none;
+
+    &:hover {
+        @apply bg-gray-100;
+    }
+}
+
+.tabs input:focus-visible + label {
+    outline: 2px solid rgba(0, 102, 204, 1);
+    border-radius: 3px;
+}
+
+.tabs > input:checked + label {
+    @apply text-blue-600 bg-transparent;
+}
+
+.tabs > label:hover::after,
+.tabs > input:focus + label::after,
+.tabs > input:checked + label::after {
+    background: #06c;
+}
+
+.tabs > input:checked + label {
+    @apply border-gray-300;
+    border-bottom: 1px solid #fff;
+    margin-bottom: -1px;
+}
+
+.tabs .tab-panel {
+    @apply border-gray-300 border-t py-4 px-2 md:w-[640px]  mx-auto;
+
+    p {
+        @apply mb-4;
+    }
+
+    pre {
+        @apply bg-gray-100 p-3 rounded-sm;
+    }
+}

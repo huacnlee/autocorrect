@@ -1,16 +1,18 @@
-import Editor from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
-import { useEffect, useState } from 'react';
-import examples from './examples';
-import './style.scss';
-export const autocorrectLib = import('@huacnlee/autocorrect');
+import Editor from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
+import { useEffect, useState } from "react";
+import examples from "./examples";
+import "./style.scss";
+import "./tabs.scss";
+
+export const autocorrectLib = import("@huacnlee/autocorrect");
 
 export let config = {
   rules: {
     spellcheck: 2,
   },
   spellcheck: {
-    words: ['WebAssembly', 'Rust', 'NPM', 'Web', 'JavaScript'],
+    words: ["WebAssembly", "Rust", "NPM", "Web", "JavaScript"],
   },
 };
 
@@ -28,7 +30,7 @@ export const createMarkers = (result: any) => {
         endColumn: lineResult.c + lineResult.old.length,
         message: `AutoCorrect: ${lineResult.new}`,
       };
-    }
+    },
   );
 
   return markers;
@@ -41,9 +43,9 @@ autocorrectLib.then((ac) => {
 });
 
 const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
-  theme: window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'vs-dark'
-    : 'vs',
+  theme: window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "vs-dark"
+    : "vs",
   tabSize: 2,
   useTabStops: false,
   scrollbar: {
@@ -51,7 +53,7 @@ const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     horizontalScrollbarSize: 5,
     useShadows: false,
   },
-  renderLineHighlight: 'none',
+  renderLineHighlight: "none",
   minimap: {
     enabled: false,
   },
@@ -64,8 +66,8 @@ const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
 export const AppEditor = () => {
   const [monaco, setMonaco] = useState<any>();
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor>();
-  const [message, showMessage] = useState('');
-  const [fileType, setFileType] = useState('markdown');
+  const [message, showMessage] = useState("");
+  const [fileType, setFileType] = useState("markdown");
 
   // @ts-ignore
   const autocorrect = window.autocorrect;
@@ -73,19 +75,19 @@ export const AppEditor = () => {
   useEffect(() => {
     if (monaco) {
       // Get media query is dark mode
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
       // Watch dark mode change
-      mediaQuery.addEventListener('change', (e) => {
-        const newTheme = e.matches ? 'vs-dark' : 'vs';
+      mediaQuery.addEventListener("change", (e) => {
+        const newTheme = e.matches ? "vs-dark" : "vs";
         monaco?.editor?.setTheme(newTheme);
       });
 
-      monaco.editor.defineTheme('vs-dark', {
-        base: 'vs-dark',
+      monaco.editor.defineTheme("vs-dark", {
+        base: "vs-dark",
         inherit: true,
         rules: [],
         colors: {
-          'editor.background': '#030712',
+          "editor.background": "#030712",
         },
       });
     }
@@ -108,8 +110,8 @@ export const AppEditor = () => {
     monaco.editor.setModelMarkers(
       // @ts-ignore
       editor.getModel(),
-      'autocorrect',
-      createMarkers(result)
+      "autocorrect",
+      createMarkers(result),
     );
 
     return false;
@@ -172,7 +174,7 @@ export const AppEditor = () => {
 
   const onEditorMounted = (
     editor: monaco.editor.IStandaloneCodeEditor,
-    monaco: any
+    monaco: any,
   ) => {
     setEditor(editor);
     setMonaco(monaco);
