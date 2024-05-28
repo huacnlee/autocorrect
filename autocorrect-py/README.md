@@ -28,7 +28,7 @@ autocorrect.format_for("let title = 'Hello你好。'", "js")
 # => "let title = 'Hello 你好。'"
 
 result = autocorrect.lint_for("<h1>这是 Heading标题</h1>", "html")
-print result
+print(result)
 # => LintResult(filepath='html', lines=[LineResult { line: 1, col: 5, new: "这是 Heading 标题", old: "这是 Heading标题", severity: Error }], enable=true)
 
 # Load config
