@@ -1,5 +1,8 @@
 // autocorrect: false
-use crate::code::{self, Results};
+use crate::{
+    code::{self},
+    rule::format_or_lint,
+};
 
 /// Automatically add spaces between Chinese and English words.
 ///
@@ -20,12 +23,10 @@ use crate::code::{self, Results};
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
 pub fn format(text: &str) -> String {
-    let result = crate::rule::format_or_lint(text, false);
-    result.out
+    format_or_lint(text, false).out
 }
 
 /// Format a html content.
-///
 ///
 /// Example:
 ///
@@ -44,8 +45,8 @@ pub fn format(text: &str) -> String {
 /// autocorrect::format_html(html);
 /// ```
 #[deprecated(since = "2.0.0", note = "Please use `format_for` instead")]
-pub fn format_html(html_str: &str) -> String {
-    code::format_html(html_str).to_string()
+pub fn format_html(html: &str) -> String {
+    code::format_html(html).out
 }
 
 #[cfg(test)]

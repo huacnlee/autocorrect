@@ -108,7 +108,7 @@ impl CharMatching for char {
     }
 
     fn is_alphanumeric_or_space(&self) -> bool {
-        self.is_ascii_alphanumeric() || self.eq(&' ') || self.eq(&'\t')
+        self.is_ascii_alphanumeric() || matches!(self, ' ' | '\t')
     }
 }
 

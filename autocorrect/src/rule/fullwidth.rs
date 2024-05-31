@@ -1,6 +1,6 @@
 // autocorrect: false
 use regex::Regex;
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 const SPCIAL_PUNCTUATIONS: &str = "[.:!]([ ]*)";
 const NORMAL_PUNCTUATIONS: &str = "[,?]([ ]*)";
@@ -12,7 +12,7 @@ lazy_static! {
       ";" => "；",
       ":" => "：",
       "!" => "！",
-      "?" => "？"
+      "?" => "？",
     );
     static ref PUNCTUATION_WITH_LEFT_CJK_RE: Regex = regexp!(
         "{}{}{}",
@@ -31,43 +31,28 @@ lazy_static! {
 }
 
 // fullwidth correct punctuations near the CJK chars
-pub fn format(text: &str) -> String {
-    let mut out = String::from(text);
+pub fn format<'h>(text: &'h str) -> String {
+    let out = PUNCTUATION_WITH_LEFT_CJK_RE.replace_all(&text, |cap: &regex::Captures| {
+        fullwidth_replace_part(&cap[0]).to_string()
+    });
 
-    out = PUNCTUATION_WITH_LEFT_CJK_RE
-        .replace_all(&out, |cap: &regex::Captures| {
-            fullwidth_replace_part(&cap[0])
-        })
-        .to_string();
+    let out = PUNCTUATION_WITH_RIGHT_CJK_RE.replace_all(&out, |cap: &regex::Captures| {
+        fullwidth_replace_part(&cap[0]).to_string()
+    });
 
-    out = PUNCTUATION_WITH_RIGHT_CJK_RE
-        .replace_all(&out, |cap: &regex::Captures| {
-            fullwidth_replace_part(&cap[0])
-        })
-        .to_string();
+    let out = PUNCTUATION_WITH_SPEICAL_CJK_RE.replace_all(&out, |cap: &regex::Captures| {
+        fullwidth_replace_part(&cap[0]).to_string()
+    });
 
-    out = PUNCTUATION_WITH_SPEICAL_CJK_RE
-        .replace_all(&out, |cap: &regex::Captures| {
-            fullwidth_replace_part(&cap[0])
-        })
-        .to_string();
-
-    out = PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE
-        .replace_all(&out, |cap: &regex::Captures| {
-            fullwidth_replace_part(&cap[0])
-        })
-        .to_string();
-
-    out
-}
-
-fn fullwidth_replace_part(part: &str) -> String {
-    let out = PUNCTUATIONS_RE.replace_all(part, |cap: &regex::Captures| {
-        let str = &cap[0];
-        return FULLWIDTH_MAPS[String::from(str).trim()];
+    let out = PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE.replace_all(&out, |cap: &regex::Captures| {
+        fullwidth_replace_part(&cap[0]).to_string()
     });
 
     out.to_string()
+}
+
+fn fullwidth_replace_part<'h>(part: &'h str) -> Cow<'h, str> {
+    PUNCTUATIONS_RE.replace_all(part, |cap: &regex::Captures| FULLWIDTH_MAPS[&cap[0].trim()])
 }
 
 #[cfg(test)]
