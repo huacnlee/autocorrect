@@ -48,6 +48,7 @@ pub trait Results {
     fn push(&mut self, line_result: LineResult);
     fn ignore(&mut self, str: &str);
     fn error(&mut self, err: &str);
+    #[allow(unused)]
     fn to_string(&self) -> String;
     fn is_lint(&self) -> bool;
     fn get_toggle(&self) -> toggle::Toggle;

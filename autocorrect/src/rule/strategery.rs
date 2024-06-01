@@ -46,31 +46,25 @@ impl Strategery {
     }
 
     fn add_space(&self, text: &str) -> String {
-        let mut out = self.add_space_re.replace_all(text, "$1 $2").to_string();
-
-        if self.reverse {
-            out = self
-                .add_space_reverse_re
-                .replace_all(&out, "$1 $2")
-                .to_string();
+        let out = self.add_space_re.replace_all(text, "$1 $2");
+        if !self.reverse {
+            return out.to_string();
         }
 
-        out
+        let out = self
+            .add_space_reverse_re
+            .replace_all(&out, "$1 $2")
+            .to_string();
+        out.to_string()
     }
 
     fn remove_space(&self, text: &str) -> String {
-        // println!("--- remove space before:`{}`", text);
-        let mut out = self.remove_space_re.replace_all(text, "$1$2").to_string();
-        // println!("--- remove space after1:`{}`", out);
-
-        if self.reverse {
-            out = self
-                .remove_space_reverse_re
-                .replace_all(&out, "$1$2")
-                .to_string();
+        let out = self.remove_space_re.replace_all(text, "$1$2");
+        if !self.reverse {
+            return out.to_string();
         }
-        // println!("--- remove space after2:`{}`", self.remove_space_reverse_re);
-        // println!("--- remove space after2:`{}`", out);
-        out
+
+        let out = self.remove_space_reverse_re.replace_all(&out, "$1$2");
+        out.to_string()
     }
 }

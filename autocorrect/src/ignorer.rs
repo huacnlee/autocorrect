@@ -10,9 +10,11 @@ static GITIGNORE: &str = ".gitignore";
 impl Ignorer {
     pub fn new(work_dir: &str) -> Ignorer {
         let mut builder = ignore::gitignore::GitignoreBuilder::new(work_dir);
-        builder.add(Path::join(Path::new(work_dir), AUTOCORRECTIGNORE));
-        builder.add(Path::join(Path::new(work_dir), GITIGNORE));
-        let ignorer = builder.build().unwrap();
+        let work_dir = Path::new(work_dir);
+
+        builder.add(work_dir.join(AUTOCORRECTIGNORE));
+        builder.add(work_dir.join(GITIGNORE));
+        let ignorer = builder.build().expect("failed to build ignorer");
 
         // println!("---- {:?}", ignorer.len());
 

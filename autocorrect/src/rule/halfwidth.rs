@@ -108,7 +108,7 @@ impl CharMatching for char {
     }
 
     fn is_alphanumeric_or_space(&self) -> bool {
-        self.is_ascii_alphanumeric() || self.eq(&' ') || self.eq(&'\t')
+        self.is_ascii_alphanumeric() || matches!(self, ' ' | '\t')
     }
 }
 
@@ -145,11 +145,8 @@ pub fn format_word(text: &str) -> String {
     }
 
     // Fix 12：00 -> 12:00
-    out = HALF_TIME_RE
-        .replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"))
-        .to_string();
-
-    out
+    let out = HALF_TIME_RE.replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"));
+    out.to_string()
 }
 
 fn is_may_only_english(text: &str) -> bool {
