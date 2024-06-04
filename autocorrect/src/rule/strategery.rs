@@ -51,10 +51,7 @@ impl Strategery {
             return out.to_string();
         }
 
-        let out = self
-            .add_space_reverse_re
-            .replace_all(&out, "$1 $2")
-            .to_string();
+        let out = self.add_space_reverse_re.replace_all(&out, "$1 $2");
         out.to_string()
     }
 
