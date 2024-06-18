@@ -233,10 +233,12 @@ where
 
     log::debug!("Lint result found: {} issues.", lint_results.len());
 
+    if !cli.quiet {
+        log::info!("");
+    }
+
     if cli.lint {
         if cli.formatter.is_diff() {
-            log::info!("");
-
             let _err_count = *lint_errors_count.lock().unwrap();
             let _warn_count = *lint_warnings_count.lock().unwrap();
 
@@ -244,11 +246,15 @@ where
                 log::info!("{}", lint_result.to_diff(cli.no_diff_bg_color))
             }
 
-            log::info!(
-                "{}, {}",
-                format!("Error: {_err_count}").red(),
-                format!("Warning: {_warn_count}").yellow(),
-            );
+            if _err_count > 0 || _warn_count > 0 {
+                log::info!(
+                    "{}, {}",
+                    format!("Error: {_err_count}").red(),
+                    format!("Warning: {_warn_count}").yellow(),
+                );
+            } else {
+                log::info!("No issues found.");
+            }
 
             progress::finish(&cli, start_t);
 
