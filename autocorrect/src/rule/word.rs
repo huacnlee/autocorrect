@@ -119,7 +119,7 @@ pub fn format_no_space_fullwidth_quote(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::rule::word::{format_space_backticks, format_space_dash};
+    use crate::rule::word::{format_space_backticks, format_space_bracket, format_space_dash};
 
     #[test]
     fn test_format_space_dash() {
@@ -127,6 +127,15 @@ mod tests {
         assert_eq!(format_space_dash("foo-世界"), "foo-世界");
         assert_eq!(format_space_dash("你好-world"), "你好-world");
         assert_eq!(format_space_dash("hello-world"), "hello-world");
+    }
+
+    #[test]
+    fn test_format_space_bracket() {
+        assert_eq!(format_space_bracket("你好[世界]"), "你好 [世界]");
+        assert_eq!(format_space_bracket("你好(世界)"), "你好 (世界)");
+        assert_eq!(format_space_bracket("foo[世界"), "foo[世界");
+        assert_eq!(format_space_bracket("你好]world"), "你好]world");
+        assert_eq!(format_space_bracket("hello]world"), "hello]world");
     }
 
     #[test]
