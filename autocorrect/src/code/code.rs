@@ -3,6 +3,7 @@ use super::*;
 use crate::config::toggle;
 pub use crate::result::*;
 use crate::rule::CJK_RE;
+use crate::Config;
 use pest::error::Error;
 use pest::iterators::{Pair, Pairs};
 use pest::RuleType;
@@ -44,7 +45,6 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, pair: Pair<R>) {
     let rule_name = rule_name.as_str();
 
     // println!("rule: {}, {}", rule_name, item.as_str());
-
     match rule_name {
         "string" | "link_string" | "mark_string" | "text" | "inner_text" | "comment"
         | "COMMENT" => {
@@ -182,9 +182,16 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
     let part = pair.as_str();
     let (base_line, _) = pair.line_col();
 
+    let is_enable_context =
+        rule_name != "codeblock" || Config::current().is_enabled_context("codeblock");
+
     if results.is_lint() {
         // Skip lint if AutoCorrect disabled
         if !results.is_enabled() {
+            return;
+        }
+
+        if !is_enable_context {
             return;
         }
 
@@ -213,7 +220,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
         let mut new_part = String::from(part);
 
         // Skip format if AutoCorrect disabled
-        if results.is_enabled() {
+        if results.is_enabled() && is_enable_context {
             let sub_result = match rule_name {
                 "inline_style" => Some(format_for(part, "css")),
                 "inline_javascript" => Some(format_for(part, "js")),
@@ -221,6 +228,7 @@ fn format_or_lint_for_inline_scripts<R: RuleType, O: Results>(
                     // WARNING: nested codeblock, when call format_for again.
                     // Because codeblock.data has wrap chars, this make overflowed its stack.
                     let mut codeblock = Codeblock::from_pair(pair);
+
                     let mut result = format_for(&codeblock.code, &codeblock.lang);
                     codeblock.update_data(&result.out);
                     result.out = codeblock.data;

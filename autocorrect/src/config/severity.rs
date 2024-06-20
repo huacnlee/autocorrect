@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize, Serializer};
 
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Default)]
 pub enum SeverityMode {
+    #[default]
     Off = 0,
     Error = 1,
     Warning = 2,
