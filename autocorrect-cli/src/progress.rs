@@ -1,8 +1,5 @@
 use owo_colors::OwoColorize;
-use std::{
-    io::{self, Write},
-    time::SystemTime,
-};
+use std::time::SystemTime;
 
 use crate::{cli::Cli, logger::SystemTimeDuration as _};
 
@@ -11,7 +8,7 @@ pub fn ok(cli: &Cli) {
         return;
     }
 
-    write!(io::stdout(), "{}", ".".green()).unwrap();
+    print!("{}", ".".green());
 }
 
 pub fn warn(cli: &Cli) {
@@ -19,7 +16,7 @@ pub fn warn(cli: &Cli) {
         return;
     }
 
-    write!(io::stdout(), "{}", ".".yellow()).unwrap();
+    print!("{}", ".".yellow());
 }
 
 pub fn err(cli: &Cli) {
@@ -27,7 +24,7 @@ pub fn err(cli: &Cli) {
         return;
     }
 
-    write!(io::stdout(), "{}", ".".red()).unwrap();
+    print!("{}", ".".red());
 }
 
 /// print time spend from start_t to now

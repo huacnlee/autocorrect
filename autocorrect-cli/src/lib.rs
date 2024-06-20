@@ -175,7 +175,7 @@ where
 
             let mut filetype = autocorrect::get_file_extension(filepath);
             if let Some(ref ftype) = cli.filetype {
-                filetype = ftype.to_owned();
+                filetype = ftype.to_string();
             }
             if !autocorrect::is_support_type(&filetype) {
                 continue;
@@ -262,15 +262,13 @@ where
                 // Exit with code = 1
                 std::process::exit(1);
             }
+        } else if cli.formatter == cli::OutputFormatter::Json {
+            log::info!("{}", autocorrect::json::to_lint_results_json(lint_results));
         } else {
-            if cli.formatter == cli::OutputFormatter::Json {
-                log::info!("{}", autocorrect::json::to_lint_results_json(lint_results));
-            } else {
-                log::info!(
-                    "{}",
-                    autocorrect::rdjson::to_lint_results_rdjson(lint_results)
-                )
-            }
+            log::info!(
+                "{}",
+                autocorrect::rdjson::to_lint_results_rdjson(lint_results)
+            )
         }
     } else if cli.fix {
         progress::finish(&cli, start_t);
@@ -365,11 +363,9 @@ fn lint_and_output(
         progress::warn(cli);
     }
 
-    if cli.formatter.is_diff() {
-        if result.has_error() {
-            log::debug!("{}\n{}", filepath, result.error);
-            return;
-        }
+    if cli.formatter.is_diff() && result.has_error() {
+        log::debug!("{}\n{}", filepath, result.error);
+        return;
     }
 
     results.push(result.clone());

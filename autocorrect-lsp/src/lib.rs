@@ -34,8 +34,8 @@ impl Backend {
             .map(|old| std::mem::replace(old, doc.clone()));
     }
 
-    fn get_document<'a>(&'a self, uri: &Url) -> Option<Arc<TextDocumentItem>> {
-        self.documents.read().unwrap().get(uri).map(|a| a.clone())
+    fn get_document(&self, uri: &Url) -> Option<Arc<TextDocumentItem>> {
+        self.documents.read().unwrap().get(uri).cloned()
     }
 
     fn remove_document(&self, uri: &Url) {
@@ -47,7 +47,7 @@ impl Backend {
 
         let input = document.text.as_str();
         let path = document.uri.path();
-        let result = autocorrect::lint_for(input, &path);
+        let result = autocorrect::lint_for(input, path);
 
         let diagnostics = result
             .lines
@@ -124,7 +124,7 @@ impl Backend {
 
     fn is_ignored(&self, uri: &Url) -> bool {
         if let Some(ignorer) = self.ignorer.read().unwrap().as_ref() {
-            if let Some(filepath) = uri.to_file_path().ok() {
+            if let Ok(filepath) = uri.to_file_path() {
                 return ignorer.is_ignored(&filepath.to_string_lossy());
             }
         }
@@ -302,12 +302,12 @@ impl LanguageServer for Backend {
             self.clear_diagnostics(&text_document.uri).await;
             let input = document.text.as_str();
 
-            let result = autocorrect::format_for(input, &document.uri.path());
+            let result = autocorrect::format_for(input, document.uri.path());
             let range = Range::new(
                 Position::new(0, 0),
                 Position {
-                    line: u32::max_value(),
-                    character: u32::max_value(),
+                    line: u32::MAX,
+                    character: u32::MAX,
                 },
             );
             return Ok(Some(vec![TextEdit::new(range, result.out)]));
@@ -345,7 +345,7 @@ impl LanguageServer for Backend {
                         vec![(
                             text_document.uri.clone(),
                             vec![TextEdit {
-                                range: diagnostic.range.clone(),
+                                range: diagnostic.range,
                                 new_text: diagnostic.message.clone(),
                             }],
                         )]
@@ -370,13 +370,12 @@ pub async fn start() {
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 
-    let (service, socket) = LspService::new(|client| {
-        return Backend {
-            client,
-            work_dir: RwLock::new(PathBuf::new()),
-            documents: RwLock::new(HashMap::new()),
-            ignorer: RwLock::new(None),
-        };
+    let (service, socket) = LspService::new(|client| Backend {
+        client,
+        work_dir: RwLock::new(PathBuf::new()),
+        documents: RwLock::new(HashMap::new()),
+        ignorer: RwLock::new(None),
     });
+
     Server::new(stdin, stdout, socket).serve(service).await;
 }

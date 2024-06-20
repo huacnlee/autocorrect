@@ -10,7 +10,8 @@ use std::{
     collections::HashMap,
     fs,
     path::Path,
-    sync::{Arc, RwLock, RwLockReadGuard},
+    rc::Rc,
+    sync::{RwLock, RwLockReadGuard},
 };
 
 use crate::serde_any;
@@ -45,7 +46,7 @@ impl ConfigFileTypes for HashMap<String, String> {
     }
 }
 
-#[derive(Deserialize, Serialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Default, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Config {
     #[serde(default)]
@@ -58,17 +59,6 @@ pub struct Config {
     // Addition file types map, high priority than default
     #[serde(default)]
     pub file_types: HashMap<String, String>,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            rules: HashMap::new(),
-            text_rules: HashMap::new(),
-            spellcheck: SpellcheckConfig::default(),
-            file_types: HashMap::new(),
-        }
-    }
 }
 
 pub fn load_file(config_file: &str) -> Result<Config, Error> {
@@ -132,8 +122,8 @@ impl From<std::string::String> for Error {
 }
 
 impl Config {
-    pub fn current() -> Arc<RwLockReadGuard<'static, Config>> {
-        Arc::new(CURRENT_CONFIG.read().unwrap())
+    pub fn current() -> Rc<RwLockReadGuard<'static, Config>> {
+        Rc::new(CURRENT_CONFIG.read().unwrap())
     }
 
     pub fn get_file_type(&self, ext: &str) -> Option<&str> {

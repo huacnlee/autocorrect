@@ -114,8 +114,7 @@ pub(crate) fn to_rdjson_diagnostics(lint_result: &LintResult) -> Vec<String> {
 pub fn to_lint_results_rdjson(lint_results: Vec<LintResult>) -> String {
     let diagnostics = lint_results
         .iter()
-        .map(|r| to_rdjson_diagnostics(r))
-        .flatten()
+        .flat_map(to_rdjson_diagnostics)
         .collect::<Vec<_>>()
         .join(",");
     format!(

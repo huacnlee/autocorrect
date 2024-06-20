@@ -21,7 +21,7 @@ pub(crate) fn crate_test_lint_results() -> Vec<LintResult> {
     let mut lint_result = LintResult::new("hello你好.\n这是第2行");
     lint_result.line = 10;
     lint_result.col = 12;
-    lint_result.filepath = "./test/foo/bar.rs".to_owned();
+    lint_result.filepath = "./test/foo/bar.rs".to_string();
     lint_result.push(LineResult {
         line: 1,
         col: 1,

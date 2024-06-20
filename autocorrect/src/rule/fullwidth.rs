@@ -31,8 +31,8 @@ lazy_static! {
 }
 
 // fullwidth correct punctuations near the CJK chars
-pub fn format<'h>(text: &'h str) -> String {
-    let out = PUNCTUATION_WITH_LEFT_CJK_RE.replace_all(&text, |cap: &regex::Captures| {
+pub fn format(text: &str) -> String {
+    let out = PUNCTUATION_WITH_LEFT_CJK_RE.replace_all(text, |cap: &regex::Captures| {
         fullwidth_replace_part(&cap[0])
     });
 
