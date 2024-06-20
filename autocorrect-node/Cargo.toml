@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "autocorrect-node"
-version = "2.10.0"
+version = "2.11.0"
 
 [lib]
 crate-type = ["cdylib"]
