@@ -112,18 +112,8 @@
     },
     "definitions": {
       "SeverityMode": {
-        "type": [
-          "number",
-          "string"
-        ],
-        "enum": [
-          "off",
-          0,
-          "error",
-          1,
-          "warning",
-          2
-        ]
+        "type": ["number", "string"],
+        "enum": ["off", 0, "error", 1, "warning", 2]
       },
       "FileType": {
         "type": "string",
@@ -185,3 +175,4 @@
       }
     }
   }
+}
