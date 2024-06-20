@@ -23,6 +23,10 @@ rules:
   halfwidth-punctuation: 1
   # Spellcheck
   spellcheck: 0
+# Enable or disable in spatial context
+context:
+  # Enable or disable to format codeblock in Markdown or AsciiDoc etc.
+  codeblock: 1
 textRules:
   # No default text rules.
 spellcheck:

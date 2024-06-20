@@ -11,6 +11,8 @@ struct MarkdownParser;
 
 #[cfg(test)]
 mod tests {
+    use crate::config::SeverityMode;
+
     use super::*;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
@@ -355,5 +357,37 @@ mod tests {
         let expected = include_str!("../../../tests/fixtures/markdown.fixed.md");
 
         assert_eq!(expected, format_markdown(raw).out);
+    }
+
+    #[test]
+    fn test_disable_context_codeblock() {
+        use std::collections::HashMap;
+
+        let last_mode = *crate::config::Config::current()
+            .context
+            .get("codeblock")
+            .unwrap();
+
+        crate::config::CURRENT_CONFIG.write().unwrap().context = map! {
+            "codeblock".to_string() => SeverityMode::Off,
+        };
+
+        let raw = indoc! {r###"
+        ```rust
+        // 这段应该ignore掉
+        ```
+        "###};
+
+        let expected = indoc! {r###"
+        ```rust
+        // 这段应该ignore掉
+        ```
+        "###};
+
+        assert_eq!(expected, format_for(raw, "markdown").to_string());
+
+        crate::config::CURRENT_CONFIG.write().unwrap().context = map! {
+            "codeblock".to_string() => last_mode,
+        };
     }
 }

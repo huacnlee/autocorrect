@@ -10,7 +10,8 @@ use std::{
     collections::HashMap,
     fs,
     path::Path,
-    sync::{Arc, RwLock, RwLockReadGuard},
+    rc::Rc,
+    sync::{RwLock, RwLockReadGuard},
 };
 
 use crate::serde_any;
@@ -20,7 +21,8 @@ lazy_static! {
         env!("CARGO_MANIFEST_DIR"),
         "/.autocorrectrc.default"
     ));
-    static ref CURRENT_CONFIG: RwLock<Config> = RwLock::new(Config::from_str(&CONFIG_STR).unwrap());
+    pub(crate) static ref CURRENT_CONFIG: RwLock<Config> =
+        RwLock::new(Config::from_str(&CONFIG_STR).unwrap());
 }
 
 pub trait ConfigFileTypes {
@@ -45,7 +47,7 @@ impl ConfigFileTypes for HashMap<String, String> {
     }
 }
 
-#[derive(Deserialize, Serialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Default, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Config {
     #[serde(default)]
@@ -58,17 +60,8 @@ pub struct Config {
     // Addition file types map, high priority than default
     #[serde(default)]
     pub file_types: HashMap<String, String>,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            rules: HashMap::new(),
-            text_rules: HashMap::new(),
-            spellcheck: SpellcheckConfig::default(),
-            file_types: HashMap::new(),
-        }
-    }
+    #[serde(default)]
+    pub context: HashMap<String, SeverityMode>,
 }
 
 pub fn load_file(config_file: &str) -> Result<Config, Error> {
@@ -132,8 +125,8 @@ impl From<std::string::String> for Error {
 }
 
 impl Config {
-    pub fn current() -> Arc<RwLockReadGuard<'static, Config>> {
-        Arc::new(CURRENT_CONFIG.read().unwrap())
+    pub fn current() -> Rc<RwLockReadGuard<'static, Config>> {
+        Rc::new(CURRENT_CONFIG.read().unwrap())
     }
 
     pub fn get_file_type(&self, ext: &str) -> Option<&str> {
@@ -186,6 +179,15 @@ impl Config {
         self.prepare();
 
         Ok(self.clone())
+    }
+
+    /// Check is enable format in context
+    pub fn is_enabled_context(&self, name: &str) -> bool {
+        if let Some(mode) = self.context.get(name) {
+            return *mode != SeverityMode::Off;
+        }
+
+        false
     }
 }
 
@@ -366,6 +368,7 @@ mod tests {
                 words: vec!["foo".to_string(), "bar".to_string(), "baz".to_string()],
                 ..Default::default()
             },
+            ..Default::default()
         };
 
         let config1 = Config {
@@ -384,6 +387,7 @@ mod tests {
                 words: vec!["foo1".to_string(), "bar1".to_string()],
                 ..Default::default()
             },
+            ..Default::default()
         };
 
         config.merge(&config1).unwrap();

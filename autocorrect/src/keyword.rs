@@ -155,7 +155,7 @@ impl Node {
                 c
             };
 
-            while node.children.get(&c).is_none() {
+            while !node.children.contains_key(&c) {
                 if node.fail.is_none() {
                     node = self;
                     break;

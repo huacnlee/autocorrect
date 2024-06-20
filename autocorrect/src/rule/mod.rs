@@ -281,6 +281,10 @@ mod tests {
             "hello你好 “Quote” 和 ‘Single Quote’ 测试1" => (map!{}, "hello 你好“Quote”和‘Single Quote’测试 1"),
             "你好-世界" => (map!{}, "你好 - 世界"),
             "世界-你好" => (map!{"space-dash" => true}, "世界-你好"),
+            "1你好[世界]" => (map!{ }, "1 你好 [世界]"),
+            "2你好[世界]" => (map!{ "space-bracket" => true }, "2 你好[世界]"),
+            "代码`code`例子1" => (map!{}, "代码 `code` 例子 1"),
+            "代码`code`例子2" => (map!{ "space-backticks" => true }, "代码`code`例子 2"),
         };
 
         for (input, (disable_rules, expect)) in cases {

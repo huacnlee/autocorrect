@@ -5,18 +5,13 @@ use serde_repr::*;
 
 use crate::config::toggle;
 
-#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(Serialize_repr, Deserialize_repr, PartialEq, Eq, Debug, Default, Clone, Copy)]
 #[repr(u8)]
 pub enum Severity {
+    #[default]
     Pass = 0,
     Error = 1,
     Warning = 2,
-}
-
-impl Default for Severity {
-    fn default() -> Self {
-        Severity::Pass
-    }
 }
 
 impl Severity {
@@ -146,7 +141,7 @@ impl Results for FormatResult {
 
     fn error(&mut self, err: &str) {
         // Revert out to raw when has error, make sure return raw value.
-        self.out = self.raw.clone();
+        self.out = String::from(&self.raw);
         self.error = String::from(err);
     }
 
