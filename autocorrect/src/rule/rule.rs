@@ -62,7 +62,7 @@ impl Rule {
         let config = crate::Config::current();
 
         if let Some(s) = config.rules.get(&self.name) {
-            s.clone()
+            *s
         } else {
             SeverityMode::Off
         }

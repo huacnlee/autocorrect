@@ -224,6 +224,10 @@ rules:
   halfwidth-punctuation: 1
   # Spellcheck
   spellcheck: 2
+# Enable or disable in a specific context
+context:
+  # Enable or disable to format codeblock in Markdown or AsciiDoc etc.
+  codeblock: 1
 textRules:
   # Config special rules for some texts
   # For example, if we wants to let "Hello你好" just warning, and "Hi你好" to ignore

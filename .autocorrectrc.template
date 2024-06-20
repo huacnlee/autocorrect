@@ -2,7 +2,7 @@
 rules:
   # Default rules: https://github.com/huacnlee/autocorrect/raw/main/autocorrect/.autocorrectrc.default
   spellcheck: 2
-# Enable or disable in spatial context
+# Enable or disable in special context
 context:
   # Enable or disable to format codeblock in Markdown or AsciiDoc etc.
   codeblock: 1

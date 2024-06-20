@@ -76,98 +76,112 @@
         }
       }
     },
-    "spellcheck": {
-      "default": {
-        "mode": null,
-        "words": []
-      },
-      "allOf": [
-        {
-          "$ref": "#/definitions/SpellcheckConfig"
-        }
-      ]
-    },
-    "textRules": {
+    "context": {
       "default": {},
       "type": "object",
-      "description": "Config text rules, when AutoCorrect matches the text, it will apply the rules. \nFor instance for ignore some text:\n{ \"Hello你好\": \"off\" }",
+      "description": "Enable or disable in special context",
       "additionalProperties": {
         "$ref": "#/definitions/SeverityMode"
-      }
-    }
-  },
-  "definitions": {
-    "SeverityMode": {
-      "type": [
-        "number",
-        "string"
-      ],
-      "enum": [
-        "off",
-        0,
-        "error",
-        1,
-        "warning",
-        2
-      ]
-    },
-    "FileType": {
-      "type": "string",
-      "enum": [
-        "html",
-        "yaml",
-        "sql",
-        "rust",
-        "ruby",
-        "elixir",
-        "go",
-        "javascript",
-        "css",
-        "json",
-        "python",
-        "objective_c",
-        "strings",
-        "csharp",
-        "swift",
-        "java",
-        "scala",
-        "kotlin",
-        "php",
-        "dart",
-        "markdown",
-        "latex",
-        "asciidoc",
-        "gettext",
-        "conf",
-        "c",
-        "xml",
-        "jupyter",
-        "text"
-      ]
-    },
-    "SpellcheckConfig": {
-      "type": "object",
+      },
       "properties": {
-        "mode": {
-          "description": "DEPRACTED: use `rules.spellcheck` instead",
-          "default": null,
-          "anyOf": [
-            {
-              "$ref": "#/definitions/SeverityMode"
-            },
-            {
-              "type": "null"
-            }
-          ]
+        "codeblock": {
+          "description": "Enable or disable to format codeblock in Markdown or AsciiDoc etc.",
+          "default": 0,
+          "$ref": "#/definitions/SeverityMode"
+        }
+      },
+      "spellcheck": {
+        "default": {
+          "mode": null,
+          "words": []
         },
-        "words": {
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/definitions/SpellcheckConfig"
+          }
+        ]
+      },
+      "textRules": {
+        "default": {},
+        "type": "object",
+        "description": "Config text rules, when AutoCorrect matches the text, it will apply the rules. \nFor instance for ignore some text:\n{ \"Hello 你好\": \"off\" }",
+        "additionalProperties": {
+          "$ref": "#/definitions/SeverityMode"
+        }
+      }
+    },
+    "definitions": {
+      "SeverityMode": {
+        "type": [
+          "number",
+          "string"
+        ],
+        "enum": [
+          "off",
+          0,
+          "error",
+          1,
+          "warning",
+          2
+        ]
+      },
+      "FileType": {
+        "type": "string",
+        "enum": [
+          "html",
+          "yaml",
+          "sql",
+          "rust",
+          "ruby",
+          "elixir",
+          "go",
+          "javascript",
+          "css",
+          "json",
+          "python",
+          "objective_c",
+          "strings",
+          "csharp",
+          "swift",
+          "java",
+          "scala",
+          "kotlin",
+          "php",
+          "dart",
+          "markdown",
+          "latex",
+          "asciidoc",
+          "gettext",
+          "conf",
+          "c",
+          "xml",
+          "jupyter",
+          "text"
+        ]
+      },
+      "SpellcheckConfig": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "description": "DEPRACTED: use `rules.spellcheck` instead",
+            "default": null,
+            "anyOf": [
+              {
+                "$ref": "#/definitions/SeverityMode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "words": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
     }
   }
-}

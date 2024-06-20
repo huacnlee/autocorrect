@@ -155,11 +155,16 @@ impl Config {
         }
 
         // DEPRECATED: since 2.0.0, remove this in 3.0.0
-        if let Some(mode) = config.spellcheck.mode.clone() {
+        if let Some(mode) = config.spellcheck.mode {
             println!("DEPRECATED: `spellcheck.mode` use `rules.spellcheck` instead since 2.0.0");
-            self.spellcheck.mode = Some(mode.clone());
+            self.spellcheck.mode = Some(mode);
             self.rules.insert("spellcheck".to_string(), mode);
         }
+
+        config.context.iter().for_each(|(k, v)| {
+            self.context.insert(k.to_owned(), v.to_owned());
+        });
+
         config.text_rules.iter().for_each(|(k, v)| {
             self.text_rules.insert(k.to_owned(), v.to_owned());
         });
@@ -355,6 +360,10 @@ mod tests {
             rules: map! {
                 "foo".to_owned() => SeverityMode::Error,
             },
+            context: map! {
+                "foo".to_owned() => SeverityMode::Error,
+                "foo1".to_owned() => SeverityMode::Off,
+            },
             text_rules: map! {
                 "a".to_owned() => SeverityMode::Off,
                 "hello".to_owned() => SeverityMode::Error
@@ -368,12 +377,15 @@ mod tests {
                 words: vec!["foo".to_string(), "bar".to_string(), "baz".to_string()],
                 ..Default::default()
             },
-            ..Default::default()
         };
 
         let config1 = Config {
             rules: map! {
                 "bar".to_owned() => SeverityMode::Warning,
+            },
+            context: map! {
+                "foo".to_owned() => SeverityMode::Warning,
+                "foo2".to_owned() => SeverityMode::Off,
             },
             text_rules: map! {
                 "world".to_owned() => SeverityMode::Off
@@ -387,7 +399,6 @@ mod tests {
                 words: vec!["foo1".to_string(), "bar1".to_string()],
                 ..Default::default()
             },
-            ..Default::default()
         };
 
         config.merge(&config1).unwrap();
@@ -398,6 +409,10 @@ mod tests {
             "bar".to_owned() => SeverityMode::Warning
         };
         assert_eq!(new_rules, config.rules);
+
+        assert_eq!(config.context.get("foo"), Some(&SeverityMode::Warning));
+        assert_eq!(config.context.get("foo1"), Some(&SeverityMode::Off));
+        assert_eq!(config.context.get("foo2"), Some(&SeverityMode::Off));
 
         let new_text_rules = map! {
             "a".to_owned() => SeverityMode::Off,
