@@ -262,6 +262,10 @@ where
                 // Exit with code = 1
                 std::process::exit(1);
             }
+            if cli.strict && _warn_count > 0 {
+                // Exit with code = 1
+                std::process::exit(1);
+            }
         } else if cli.formatter == cli::OutputFormatter::Json {
             log::info!("{}", autocorrect::json::to_lint_results_json(lint_results));
         } else {
