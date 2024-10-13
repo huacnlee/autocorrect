@@ -78,6 +78,13 @@ pub(crate) struct Cli {
         help = "Disable diff background color for diff output."
     )]
     pub no_diff_bg_color: bool,
+
+    #[clap(
+        long,
+        help = "Strict mode will cause warnings to return a non-zero value.",
+        default_value = "false"
+    )]
+    pub strict: bool,
 }
 
 #[derive(Debug, Subcommand, Clone)]
