@@ -380,7 +380,7 @@ Add to your `.github/workflows/ci.yml`
 ```yml
 steps:
   - name: Check source code
-    uses: actions/checkout@v3
+    uses: actions/checkout@v4
 
   - name: AutoCorrect
     uses: huacnlee/autocorrect-action@main

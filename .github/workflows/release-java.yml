@@ -28,7 +28,7 @@ jobs:
             target: aarch64-apple-darwin
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -45,7 +45,7 @@ jobs:
           cargo build -p autocorrect-java --release --target ${{ matrix.settings.target }}
           mv target/${{ matrix.settings.target }}/release/${{ matrix.settings.lib_prefix }}autocorrect_java${{ matrix.settings.lib_suffix }} autocorrect_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: jnis
           path: autocorrect_java-${{ matrix.settings.target }}${{ matrix.settings.lib_suffix }}
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -65,7 +65,7 @@ jobs:
           distribution: "temurin"
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: jnis
           path: ./autocorrect-java/jnis

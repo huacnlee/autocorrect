@@ -13,7 +13,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
         uses: actions/cache@v3.0.11
         with:
@@ -42,7 +42,7 @@ jobs:
     name: Test for Node.js
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -71,7 +71,7 @@ jobs:
     name: Test for Python
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
         uses: actions/cache@v3.0.11
         with:
@@ -96,7 +96,7 @@ jobs:
     name: Test for Ruby
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
         uses: actions/cache@v3.0.11
         with:
@@ -125,7 +125,7 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     name: Test for Java on ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
         uses: actions/cache@v3.0.11
         with:
