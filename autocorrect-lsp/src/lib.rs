@@ -175,7 +175,10 @@ impl LanguageServer for Backend {
                 document_formatting_provider: Some(OneOf::Left(true)),
                 code_action_provider: Some(CodeActionProviderCapability::Options(
                     CodeActionOptions {
-                        code_action_kinds: Some(vec![CodeActionKind::QUICKFIX]),
+                        code_action_kinds: Some(vec![
+                            CodeActionKind::QUICKFIX,
+                            CodeActionKind::SOURCE_FIX_ALL,
+                        ]),
                         ..Default::default()
                     },
                 )),
@@ -330,11 +333,46 @@ impl LanguageServer for Backend {
         self.client
             .log_message(
                 MessageType::INFO,
-                format!("code_action {}\n", text_document.uri),
+                format!(
+                    "code_action {:?} {}\n",
+                    context.trigger_kind, text_document.uri
+                ),
             )
             .await;
 
         let mut response = CodeActionResponse::new();
+
+        let fix_all_action = CodeAction {
+            title: "AutoCorrect (Fix all)".into(),
+            kind: Some(CodeActionKind::SOURCE_FIX_ALL),
+            diagnostics: None,
+            edit: Some(WorkspaceEdit {
+                changes: Some(
+                    context
+                        .diagnostics
+                        .iter()
+                        .map(|diagnostic| {
+                            let input = diagnostic.message.as_str();
+                            let result = autocorrect::format_for(input, text_document.uri.path());
+                            (
+                                text_document.uri.clone(),
+                                vec![TextEdit {
+                                    range: diagnostic.range,
+                                    new_text: result.out,
+                                }],
+                            )
+                        })
+                        .collect(),
+                ),
+                document_changes: None,
+                change_annotations: None,
+            }),
+            command: None,
+            is_preferred: Some(false),
+            disabled: None,
+            data: None,
+        };
+
         for diagnostic in context.diagnostics.iter() {
             let action = CodeAction {
                 title: diagnostic.source.clone().unwrap_or("AutoCorrect".into()),
@@ -361,6 +399,7 @@ impl LanguageServer for Backend {
                 data: None,
             };
             response.push(CodeActionOrCommand::CodeAction(action));
+            response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
         }
         return Ok(Some(response));
     }
