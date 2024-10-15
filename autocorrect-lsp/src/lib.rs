@@ -11,6 +11,7 @@ struct Backend {
     work_dir: RwLock<PathBuf>,
     documents: RwLock<HashMap<Url, Arc<TextDocumentItem>>>,
     ignorer: RwLock<Option<autocorrect::ignorer::Ignorer>>,
+    diagnostics: RwLock<HashMap<Url, Vec<Diagnostic>>>,
 }
 
 static DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
@@ -89,12 +90,18 @@ impl Backend {
     }
 
     async fn send_diagnostics(&self, document: &TextDocumentItem, diagnostics: Vec<Diagnostic>) {
+        if let Ok(mut map) = self.diagnostics.write() {
+            map.entry(document.uri.clone())
+                .and_modify(|old_diagnostics| old_diagnostics.extend_from_slice(&diagnostics))
+                .or_insert_with(|| diagnostics.clone());
+        }
         self.client
             .publish_diagnostics(document.uri.clone(), diagnostics, None)
             .await;
     }
 
     async fn clear_diagnostics(&self, uri: &Url) {
+        self.diagnostics.write().unwrap().remove(uri);
         self.client
             .publish_diagnostics(uri.clone(), vec![], None)
             .await;
@@ -330,47 +337,46 @@ impl LanguageServer for Backend {
             return Ok(None);
         }
 
-        self.client
-            .log_message(
-                MessageType::INFO,
-                format!(
-                    "code_action {:?} {}\n",
-                    context.trigger_kind, text_document.uri
-                ),
-            )
-            .await;
-
         let mut response = CodeActionResponse::new();
 
+        let all_diagnostics = self
+            .diagnostics
+            .read()
+            .unwrap()
+            .get(&text_document.uri)
+            .cloned();
+
+        let all_changes = all_diagnostics.map(|diagnostics| {
+            let mut map = HashMap::new();
+            map.insert(
+                text_document.uri.clone(),
+                diagnostics
+                    .iter()
+                    .map(|diagnostic| TextEdit {
+                        range: diagnostic.range,
+                        new_text: diagnostic.message.clone(),
+                    })
+                    .collect(),
+            );
+            map
+        });
+
+        // self.client
+        //     .log_message(
+        //         MessageType::LOG,
+        //         format!("all changes: {:?}\n", all_changes),
+        //     )
+        //     .await;
+
         let fix_all_action = CodeAction {
-            title: "AutoCorrect (Fix all)".into(),
+            title: "AutoCorrect All".into(),
             kind: Some(CodeActionKind::SOURCE_FIX_ALL),
             diagnostics: None,
             edit: Some(WorkspaceEdit {
-                changes: Some(
-                    context
-                        .diagnostics
-                        .iter()
-                        .map(|diagnostic| {
-                            let input = diagnostic.message.as_str();
-                            let result = autocorrect::format_for(input, text_document.uri.path());
-                            (
-                                text_document.uri.clone(),
-                                vec![TextEdit {
-                                    range: diagnostic.range,
-                                    new_text: result.out,
-                                }],
-                            )
-                        })
-                        .collect(),
-                ),
-                document_changes: None,
-                change_annotations: None,
+                changes: all_changes,
+                ..Default::default()
             }),
-            command: None,
-            is_preferred: Some(false),
-            disabled: None,
-            data: None,
+            ..Default::default()
         };
 
         for diagnostic in context.diagnostics.iter() {
@@ -390,13 +396,10 @@ impl LanguageServer for Backend {
                         .into_iter()
                         .collect(),
                     ),
-                    document_changes: None,
-                    change_annotations: None,
+                    ..Default::default()
                 }),
-                command: None,
                 is_preferred: Some(true),
-                disabled: None,
-                data: None,
+                ..Default::default()
             };
             response.push(CodeActionOrCommand::CodeAction(action));
             response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
@@ -414,6 +417,7 @@ pub async fn start() {
         work_dir: RwLock::new(PathBuf::new()),
         documents: RwLock::new(HashMap::new()),
         ignorer: RwLock::new(None),
+        diagnostics: RwLock::new(HashMap::new()),
     });
 
     Server::new(stdin, stdout, socket).serve(service).await;
