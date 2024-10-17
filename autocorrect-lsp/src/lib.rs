@@ -361,6 +361,8 @@ impl LanguageServer for Backend {
             map
         });
 
+        let has_fix_all = all_changes.is_some() && !all_changes.as_ref().unwrap().is_empty();
+
         // self.client
         //     .log_message(
         //         MessageType::LOG,
@@ -402,7 +404,9 @@ impl LanguageServer for Backend {
                 ..Default::default()
             };
             response.push(CodeActionOrCommand::CodeAction(action));
-            response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+            if has_fix_all {
+                response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+            }
         }
         return Ok(Some(response));
     }
