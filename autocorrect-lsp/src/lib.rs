@@ -14,8 +14,12 @@ struct Backend {
     diagnostics: RwLock<HashMap<Url, Vec<Diagnostic>>>,
 }
 
-static DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
-static DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
+const LSP_NAME: &str = "AutoCorrect";
+const DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
+const DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
+
+const DIAGNOSTIC_SOURCE: &str = "AutoCorrect";
+const DIAGNOSTIC_SOURCE_SPELLCHECK: &str = "Spellcheck";
 
 impl Backend {
     fn work_dir(&self) -> PathBuf {
@@ -58,11 +62,11 @@ impl Backend {
                 let (severity, source) = match result.severity {
                     autocorrect::Severity::Error => (
                         Some(DiagnosticSeverity::WARNING),
-                        Some("AutoCorrect".to_string()),
+                        Some(DIAGNOSTIC_SOURCE.to_string()),
                     ),
                     autocorrect::Severity::Warning => (
                         Some(DiagnosticSeverity::INFORMATION),
-                        Some("Spellcheck".to_string()),
+                        Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string()),
                     ),
                     _ => (None, None),
                 };
@@ -161,7 +165,7 @@ impl LanguageServer for Backend {
 
         Ok(InitializeResult {
             server_info: Some(ServerInfo {
-                name: "AutoCorrect".into(),
+                name: LSP_NAME.into(),
                 version: Some(env!("CARGO_PKG_VERSION").into()),
             }),
             capabilities: ServerCapabilities {
@@ -346,8 +350,18 @@ impl LanguageServer for Backend {
             .get(&text_document.uri)
             .cloned();
 
+        let mut show_fix_all = false;
+
         let all_changes = all_diagnostics.map(|diagnostics| {
             let mut map = HashMap::new();
+
+            if !show_fix_all {
+                show_fix_all = diagnostics.iter().any(|diagnostic| {
+                    diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string())
+                        || diagnostic.source == Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string())
+                });
+            }
+
             map.insert(
                 text_document.uri.clone(),
                 diagnostics
@@ -360,13 +374,6 @@ impl LanguageServer for Backend {
             );
             map
         });
-
-        // self.client
-        //     .log_message(
-        //         MessageType::LOG,
-        //         format!("all changes: {:?}\n", all_changes),
-        //     )
-        //     .await;
 
         let fix_all_action = CodeAction {
             title: "AutoCorrect All".into(),
@@ -402,7 +409,9 @@ impl LanguageServer for Backend {
                 ..Default::default()
             };
             response.push(CodeActionOrCommand::CodeAction(action));
-            response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+            if show_fix_all {
+                response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+            }
         }
         return Ok(Some(response));
     }
