@@ -361,8 +361,6 @@ mod tests {
 
     #[test]
     fn test_disable_context_codeblock() {
-        use std::collections::HashMap;
-
         let last_mode = *crate::config::Config::current()
             .context
             .get("codeblock")

@@ -62,10 +62,8 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, pair: Pair<R>) {
             // If they has CJK chars, disable `halfwidth-punctuation` rule temporary.
             let mut last_toggle = None;
             if rule_name == "block" && CJK_RE.is_match(pair_str) {
-                last_toggle = Some(results.get_toggle());
-                results.toggle_merge(toggle::Toggle::Disable(vec![
-                    "halfwidth-punctuation".to_owned()
-                ]));
+                last_toggle = Some(results.get_toggle().clone());
+                results.toggle_merge_for_codeblock();
             }
 
             for child in sub_pairs {
@@ -74,7 +72,7 @@ fn format_pair<R: RuleType, O: Results>(results: &mut O, pair: Pair<R>) {
             }
 
             // Restore toggle if last_toggle is some
-            if let Some(t) = last_toggle {
+            if let Some(t) = &last_toggle {
                 results.toggle(t);
             }
 
@@ -93,7 +91,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
     // Check AutoCorrect enable/disable toggle marker
     // If disable results.is_enabled() will be false
     if rule_name == "comment" || rule_name == "COMMENT" {
-        results.toggle(toggle::parse(part));
+        results.toggle(&toggle::parse(part));
     }
 
     let disabled_rules = results.get_toggle().disable_rules();
