@@ -46,30 +46,25 @@ pub trait Results {
     #[allow(unused)]
     fn to_string(&self) -> String;
     fn is_lint(&self) -> bool;
-    fn get_toggle(&self) -> toggle::Toggle;
-    fn set_toggle(&mut self, t: toggle::Toggle);
+    fn get_toggle(&self) -> &toggle::Toggle;
+    fn toggle_mut(&mut self) -> &mut toggle::Toggle;
 
     /// Move and save current line,col return the previus line number
     fn move_cursor(&mut self, part: &str) -> (usize, usize);
 
     /// Toggle AutoCorrrect template enable or disable
     /// If new toggle is None, ignore
-    fn toggle(&mut self, new_toggle: toggle::Toggle) {
-        if new_toggle == toggle::Toggle::None {
+    fn toggle(&mut self, new_toggle: &toggle::Toggle) {
+        if new_toggle.is_none() {
             return;
         }
 
-        self.set_toggle(new_toggle);
+        *self.toggle_mut() = new_toggle.clone();
     }
 
-    fn toggle_merge(&mut self, new_toggle: toggle::Toggle) {
-        if new_toggle == toggle::Toggle::None {
-            return;
-        }
-
-        let mut toggle = self.get_toggle();
-        toggle.merge(new_toggle);
-        self.set_toggle(toggle);
+    fn toggle_merge_for_codeblock(&mut self) {
+        self.toggle_mut()
+            .merge(toggle::Toggle::disable(vec!["halfwidth-punctuation"]));
     }
 
     /// Is AutoCorrrect current is enable
@@ -153,12 +148,12 @@ impl Results for FormatResult {
         false
     }
 
-    fn set_toggle(&mut self, t: toggle::Toggle) {
-        self.toggle = t
+    fn toggle_mut(&mut self) -> &mut toggle::Toggle {
+        &mut self.toggle
     }
 
-    fn get_toggle(&self) -> toggle::Toggle {
-        self.toggle.clone()
+    fn get_toggle(&self) -> &toggle::Toggle {
+        &self.toggle
     }
 
     fn move_cursor(&mut self, _part: &str) -> (usize, usize) {
@@ -252,12 +247,12 @@ impl Results for LintResult {
         true
     }
 
-    fn set_toggle(&mut self, t: toggle::Toggle) {
-        self.toggle = t
+    fn get_toggle(&self) -> &toggle::Toggle {
+        &self.toggle
     }
 
-    fn get_toggle(&self) -> toggle::Toggle {
-        self.toggle.clone()
+    fn toggle_mut(&mut self) -> &mut toggle::Toggle {
+        &mut self.toggle
     }
 
     /// Move the (line, col) with string part

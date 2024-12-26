@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
 use pest::Parser;
 use pest_derive::Parser;
@@ -11,18 +11,45 @@ pub struct ToggleParser;
 pub enum Toggle {
     None,
     // Empty to disable all
-    Disable(Vec<String>),
+    Disable(Arc<HashMap<String, bool>>),
     // Empty to enable all
-    Enable(Vec<String>),
+    Enable(Arc<HashMap<String, bool>>),
 }
 
 impl Default for Toggle {
     fn default() -> Self {
-        Toggle::Enable(vec![])
+        Toggle::enable(vec![])
     }
 }
 
 impl Toggle {
+    pub fn none() -> Self {
+        Toggle::None
+    }
+
+    pub fn enable(rules: Vec<&str>) -> Self {
+        let rules = rules
+            .into_iter()
+            .map(|r| (r.to_lowercase().to_string(), true))
+            .collect();
+        Toggle::Enable(Arc::new(rules))
+    }
+
+    pub fn disable(rules: Vec<&str>) -> Self {
+        let rules = rules
+            .into_iter()
+            .map(|r| (r.to_lowercase().to_string(), true))
+            .collect();
+        Toggle::Disable(Arc::new(rules))
+    }
+
+    pub fn is_none(&self) -> bool {
+        match self {
+            Toggle::None => true,
+            _ => false,
+        }
+    }
+
     pub fn match_rule(&self, rule_name: &str) -> Option<bool> {
         match self {
             Toggle::None => None,
@@ -30,29 +57,23 @@ impl Toggle {
                 if rules.is_empty() {
                     Some(false)
                 } else {
-                    Some(!rules.contains(&rule_name.to_string()))
+                    Some(!rules.contains_key(rule_name))
                 }
             }
             Toggle::Enable(rules) => {
                 if rules.is_empty() {
                     Some(true)
                 } else {
-                    Some(rules.contains(&rule_name.to_string()))
+                    Some(rules.contains_key(rule_name))
                 }
             }
         }
     }
 
-    pub fn disable_rules(&self) -> HashMap<String, bool> {
+    pub fn disable_rules(&self) -> Arc<HashMap<String, bool>> {
         match self {
-            Toggle::Disable(rules) => {
-                let mut map = HashMap::new();
-                for rule in rules {
-                    map.insert(rule.to_string(), true);
-                }
-                map
-            }
-            _ => HashMap::new(),
+            Toggle::Disable(rules) => rules.clone(),
+            _ => Arc::new(HashMap::new()),
         }
     }
 
@@ -61,26 +82,41 @@ impl Toggle {
         match new_toggle {
             Toggle::Disable(rules) => {
                 if let Toggle::Disable(old_rules) = self {
+                    let mut old_rules = old_rules
+                        .iter()
+                        .map(|(k, v)| (k.clone(), *v))
+                        .collect::<HashMap<String, bool>>();
                     if !old_rules.is_empty() {
-                        old_rules.extend(rules.clone());
+                        for (k, v) in rules.iter() {
+                            old_rules.insert(k.clone(), *v);
+                        }
                     }
 
                     if rules.is_empty() {
                         old_rules.clear();
                     }
+                    *self = Toggle::Disable(Arc::new(old_rules));
                 } else {
                     *self = Toggle::Disable(rules);
                 }
             }
             Toggle::Enable(rules) => {
                 if let Toggle::Enable(old_rules) = self {
+                    let mut old_rules = old_rules
+                        .iter()
+                        .map(|(k, v)| (k.clone(), *v))
+                        .collect::<HashMap<String, bool>>();
+
                     if !old_rules.is_empty() {
-                        old_rules.extend(rules.clone());
+                        for (k, v) in rules.iter() {
+                            old_rules.insert(k.clone(), *v);
+                        }
                     }
 
                     if rules.is_empty() {
                         old_rules.clear();
                     }
+                    *self = Toggle::Enable(Arc::new(old_rules));
                 } else {
                     *self = Toggle::Enable(rules);
                 }
@@ -98,20 +134,20 @@ pub fn parse(input: &str) -> Toggle {
                     let mut rules = vec![];
                     for pair in pair.into_inner() {
                         if pair.as_rule() == Rule::rule_name {
-                            rules.push(pair.as_str().to_lowercase().to_owned());
+                            rules.push(pair.as_str());
                         }
                     }
 
-                    return Toggle::Disable(rules);
+                    return Toggle::disable(rules);
                 }
                 Rule::enable => {
                     let mut rules = vec![];
                     for pair in pair.into_inner() {
                         if pair.as_rule() == Rule::rule_name {
-                            rules.push(pair.as_str().to_lowercase().to_owned());
+                            rules.push(pair.as_str());
                         }
                     }
-                    return Toggle::Enable(rules);
+                    return Toggle::enable(rules);
                 }
                 _ => {}
             }
@@ -128,80 +164,67 @@ mod tests {
 
     #[test]
     fn it_match_rule() {
-        assert_eq!(Toggle::Enable(vec![]).match_rule("rule"), Some(true));
-        assert_eq!(Toggle::Enable(vec![]).match_rule("foo"), Some(true));
-        assert_eq!(Toggle::Enable(vec![]).match_rule(""), Some(true));
+        assert_eq!(Toggle::enable(vec![]).match_rule("rule"), Some(true));
+        assert_eq!(Toggle::enable(vec![]).match_rule("foo"), Some(true));
+        assert_eq!(Toggle::enable(vec![]).match_rule(""), Some(true));
 
+        assert_eq!(Toggle::enable(vec!["foo"]).match_rule("foo"), Some(true));
+        assert_eq!(Toggle::enable(vec!["bar"]).match_rule("foo"), Some(false));
         assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned()]).match_rule("foo"),
+            Toggle::enable(vec!["foo", "bar"]).match_rule("foo"),
             Some(true)
         );
         assert_eq!(
-            Toggle::Enable(vec!["bar".to_owned()]).match_rule("foo"),
+            Toggle::enable(vec!["foo", "bar"]).match_rule("bar"),
+            Some(true)
+        );
+        assert_eq!(
+            Toggle::enable(vec!["foo", "bar"]).match_rule("dar"),
             Some(false)
         );
         assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]).match_rule("foo"),
-            Some(true)
-        );
-        assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]).match_rule("bar"),
-            Some(true)
-        );
-        assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]).match_rule("dar"),
-            Some(false)
-        );
-        assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]).match_rule(""),
+            Toggle::enable(vec!["foo", "bar"]).match_rule(""),
             Some(false)
         );
     }
 
     #[test]
     fn it_parse() {
-        assert_eq!(Toggle::Enable(vec![]), parse("autocorrect-enable"));
-        assert_eq!(Toggle::Enable(vec![]), parse("// autocorrect-enable"));
-        assert_eq!(Toggle::Enable(vec![]), parse("# autocorrect-enable"));
-        assert_eq!(Toggle::Enable(vec![]), parse("# autocorrect: true"));
-        assert_eq!(Toggle::Enable(vec![]), parse("# autocorrect:true"));
-        assert_eq!(Toggle::Disable(vec![]), parse("# autocorrect: false"));
-        assert_eq!(Toggle::Disable(vec![]), parse("# autocorrect:false"));
-        assert_eq!(Toggle::Disable(vec![]), parse("# autocorrect-disable"));
-        assert_eq!(Toggle::Disable(vec![]), parse("// autocorrect-disable"));
-        assert_eq!(Toggle::None, parse("// hello world"));
+        assert_eq!(Toggle::enable(vec![]), parse("autocorrect-enable"));
+        assert_eq!(Toggle::enable(vec![]), parse("// autocorrect-enable"));
+        assert_eq!(Toggle::enable(vec![]), parse("# autocorrect-enable"));
+        assert_eq!(Toggle::enable(vec![]), parse("# autocorrect: true"));
+        assert_eq!(Toggle::enable(vec![]), parse("# autocorrect:true"));
+        assert_eq!(Toggle::disable(vec![]), parse("# autocorrect: false"));
+        assert_eq!(Toggle::disable(vec![]), parse("# autocorrect:false"));
+        assert_eq!(Toggle::disable(vec![]), parse("# autocorrect-disable"));
+        assert_eq!(Toggle::disable(vec![]), parse("// autocorrect-disable"));
+        assert_eq!(Toggle::none(), parse("// hello world"));
     }
 
     #[test]
     fn it_parse_with_rules() {
-        assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned()]),
-            parse("autocorrect-enable foo")
-        );
+        assert_eq!(Toggle::enable(vec!["foo"]), parse("autocorrect-enable foo"));
 
         assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]),
+            Toggle::enable(vec!["foo", "bar"]),
             parse("// autocorrect-enable foo, bar")
         );
         assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]),
+            Toggle::enable(vec!["foo", "bar"]),
             parse("// autocorrect-enable foo,bar")
         );
 
         assert_eq!(
-            Toggle::Disable(vec!["foo".to_owned()]),
+            Toggle::disable(vec!["foo"]),
             parse("# autocorrect-disable foo")
         );
         assert_eq!(
-            Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned()]),
+            Toggle::disable(vec!["foo", "bar"]),
             parse("// autocorrect-disable foo,bar")
         );
         assert_eq!(
-            Toggle::Disable(vec![
-                "foo".to_owned(),
-                "bar".to_owned(),
-                "foo-bar_dar".to_owned()
-            ]),
+            Toggle::disable(vec!["foo", "bar", "foo-bar_dar"]),
             parse("// autocorrect-disable foo,Bar, Foo-bAr_dar")
         );
     }
@@ -237,39 +260,33 @@ mod tests {
 
     #[test]
     fn test_merge() {
-        let mut toggle = Toggle::Enable(vec!["foo".to_owned()]);
-        toggle.merge(Toggle::Enable(vec!["bar".to_owned()]));
-        assert_eq!(
-            Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]),
-            toggle
-        );
-        toggle.merge(Toggle::Enable(vec![]));
-        assert_eq!(Toggle::Enable(vec![]), toggle);
-        toggle.merge(Toggle::Enable(vec!["foo".to_owned()]));
-        assert_eq!(Toggle::Enable(vec![]), toggle);
+        let mut toggle = Toggle::enable(vec!["foo"]);
+        toggle.merge(Toggle::enable(vec!["bar"]));
+        assert_eq!(Toggle::enable(vec!["foo", "bar"]), toggle);
+        toggle.merge(Toggle::enable(vec![]));
+        assert_eq!(Toggle::enable(vec![]), toggle);
+        toggle.merge(Toggle::enable(vec!["foo"]));
+        assert_eq!(Toggle::enable(vec![]), toggle);
 
-        let mut toggle = Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned()]);
-        toggle.merge(Toggle::Disable(vec!["dar".to_owned()]));
-        assert_eq!(
-            Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned(), "dar".to_owned()]),
-            toggle
-        );
-        toggle.merge(Toggle::Disable(vec![]));
-        assert_eq!(Toggle::Disable(vec![]), toggle);
-        toggle.merge(Toggle::Disable(vec!["foo".to_owned()]));
-        assert_eq!(Toggle::Disable(vec![]), toggle);
+        let mut toggle = Toggle::disable(vec!["foo", "bar"]);
+        toggle.merge(Toggle::disable(vec!["dar"]));
+        assert_eq!(Toggle::disable(vec!["foo", "bar", "dar"]), toggle);
+        toggle.merge(Toggle::disable(vec![]));
+        assert_eq!(Toggle::disable(vec![]), toggle);
+        toggle.merge(Toggle::disable(vec!["foo"]));
+        assert_eq!(Toggle::disable(vec![]), toggle);
 
         // Merge with disable enum value, override
-        let mut toggle = Toggle::Enable(vec!["foo".to_owned(), "bar".to_owned()]);
-        toggle.merge(Toggle::Disable(vec!["dar".to_owned()]));
-        assert_eq!(Toggle::Disable(vec!["dar".to_owned()]), toggle);
-        toggle.merge(Toggle::None);
-        assert_eq!(Toggle::None, toggle);
+        let mut toggle = Toggle::enable(vec!["foo", "bar"]);
+        toggle.merge(Toggle::disable(vec!["dar"]));
+        assert_eq!(Toggle::disable(vec!["dar"]), toggle);
+        toggle.merge(Toggle::none());
+        assert_eq!(Toggle::none(), toggle);
 
-        let mut toggle = Toggle::Disable(vec!["foo".to_owned(), "bar".to_owned()]);
-        toggle.merge(Toggle::Enable(vec!["dar".to_owned()]));
-        assert_eq!(Toggle::Enable(vec!["dar".to_owned()]), toggle);
-        toggle.merge(Toggle::None);
-        assert_eq!(Toggle::None, toggle);
+        let mut toggle = Toggle::disable(vec!["foo", "bar"]);
+        toggle.merge(Toggle::enable(vec!["dar"]));
+        assert_eq!(Toggle::enable(vec!["dar"]), toggle);
+        toggle.merge(Toggle::none());
+        assert_eq!(Toggle::none(), toggle);
     }
 }

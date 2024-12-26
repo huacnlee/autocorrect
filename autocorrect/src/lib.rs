@@ -92,7 +92,7 @@ macro_rules! regexp {
 #[allow(unused)]
 macro_rules! map {
     {$($key:expr => $value:expr),+ $(,)?} => {{
-        let mut m = HashMap::new();
+        let mut m = std::collections::HashMap::new();
         $(
             m.insert($key, $value);
         )+
