@@ -10,4 +10,4 @@ name = "autocorrect"
 
 [dependencies]
 autocorrect = "2"
-magnus = "0.6"
+magnus = "0.7"

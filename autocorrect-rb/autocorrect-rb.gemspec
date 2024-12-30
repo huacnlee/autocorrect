@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   s.extensions = ["ext/autocorrect/extconf.rb"]
 
   # needed until rubygems supports Rust support is out of beta
-  s.add_dependency "rb_sys", ">= 0.9.54"
+  s.add_dependency "rb_sys", ">= 0.9.105"
 end
