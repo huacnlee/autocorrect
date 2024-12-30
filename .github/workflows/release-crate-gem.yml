@@ -101,7 +101,7 @@ jobs:
 
       - name: Display structure of built gems
         run: |
-          mv -lha **/autocorrect-*.gem ./
+          mv -f **/autocorrect-*.gem ./
           ls -lha autocorrect-*.gem
         working-directory: pkg/
 
