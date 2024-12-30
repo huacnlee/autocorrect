@@ -52,9 +52,9 @@ jobs:
           ruby-versions: "3.4, 3.3, 3.2" # optional
 
       - name: Upload Gem
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: cross-gem
+          name: cross-gem-${{ matrix.ruby-platform }}
           path: autocorrect-rb/pkg/
 
   build_source:
@@ -79,9 +79,9 @@ jobs:
           mv *.gem pkg/
 
       - name: Upload Gem
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: cross-gem
+          name: cross-gem-${{ matrix.ruby-platform }}
           path: autocorrect-rb/pkg/
 
   publish:
@@ -97,7 +97,6 @@ jobs:
           bundler-cache: true
       - uses: actions/download-artifact@v4
         with:
-          name: cross-gem
           path: pkg/
 
       - name: Display structure of built gems
