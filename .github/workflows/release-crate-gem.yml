@@ -112,7 +112,7 @@ jobs:
           touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
           printf -- "---\n:rubygems_api_key: ${RUBYGEM_TOKEN}\n" > $HOME/.gem/credentials
-          for filename in *.gem; do
+          for filename in **/autocorrect-*.gem; do
             echo $filename
             gem push $filename
           done
