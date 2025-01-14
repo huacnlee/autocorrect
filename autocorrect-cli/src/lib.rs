@@ -48,8 +48,6 @@ where
 {
     let mut cli = Cli::parse_from(args);
 
-    cli.quiet = cli.stdin || cli.quiet;
-
     // Set log level
     let log_level = cli.log_level();
     Logger::init(log_level).expect("failed to initialize logger");
@@ -235,7 +233,7 @@ where
 
     log::debug!("Lint result found: {} issues.", lint_results.len());
 
-    if !cli.quiet {
+    if !cli.stdin && !cli.quiet {
         log::info!("");
     }
 
