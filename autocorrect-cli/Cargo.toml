@@ -21,7 +21,7 @@ clap = { version = "4", features = ['derive'] }
 ignore = "0.4"
 log = "0.4"
 num_cpus = "1.13.0"
-owo-colors = "3"
+owo-colors = "4.2.0"
 threadpool = "1.8.1"
 
 # Config template from remote

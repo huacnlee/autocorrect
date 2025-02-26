@@ -28,7 +28,7 @@ impl<'a> Deserialize<'a> for SeverityMode {
     {
         struct SeverityModeVisitor;
 
-        impl<'de> serde::de::Visitor<'de> for SeverityModeVisitor {
+        impl serde::de::Visitor<'_> for SeverityModeVisitor {
             type Value = SeverityMode;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
