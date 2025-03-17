@@ -233,7 +233,7 @@ where
 
     log::debug!("Lint result found: {} issues.", lint_results.len());
 
-    if !cli.quiet {
+    if !cli.stdin && !cli.quiet {
         log::info!("");
     }
 
