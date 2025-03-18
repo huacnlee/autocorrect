@@ -44,10 +44,7 @@ impl Toggle {
     }
 
     pub fn is_none(&self) -> bool {
-        match self {
-            Toggle::None => true,
-            _ => false,
-        }
+        matches!(self, Toggle::None)
     }
 
     pub fn match_rule(&self, rule_name: &str) -> Option<bool> {
