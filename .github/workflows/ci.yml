@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -47,7 +47,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Setup | Cache Cargo
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -73,7 +73,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -98,7 +98,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -127,7 +127,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup | Cache Cargo
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
