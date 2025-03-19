@@ -39,6 +39,6 @@ colon = @{ ":" }
 
 /// Misc
 comma   = @{ "," }
-inner   = @{ (!("\"" | "\\") ~ ANY)* ~ (escape ~ inner)? }
+inner   = @{ ((!("\"" | "\\") ~ ANY) | escape)* }
 escape  = @{ "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | unicode) }
 unicode = @{ "u" ~ ASCII_HEX_DIGIT{4} }
