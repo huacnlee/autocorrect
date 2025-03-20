@@ -486,6 +486,7 @@ The other implementations from the community.
 - [Rust Book CN](https://kaisery.github.io/trpl-zh-cn)
 - [Ruby China](https://ruby-china.org)
 - [JuiceFS](https://juicefs.com)
+- [GreptimeDB](https://greptime.com)
 
 ## License
 
