@@ -1,6 +1,6 @@
 // autocorrect: false
 use regex::Regex;
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 use super::CJK_RE;
 
@@ -108,17 +108,31 @@ impl CharMatching for char {
     }
 }
 
-pub fn format_punctuation(text: &str) -> String {
+pub fn format_punctuation(text: &str) -> Cow<str> {
     // Get first non space char as quote
     let wrap_quote = text.chars().find(|c| !c.is_whitespace()).unwrap_or(' ');
 
-    text.split_inclusive('\n')
-        .map(|line| format_line(line, wrap_quote))
-        .collect()
+    let mut changed = false;
+    let lines: Vec<_> = text
+        .split_inclusive('\n')
+        .map(|line| match format_line(line, wrap_quote) {
+            Cow::Borrowed(s) => Cow::Borrowed(s),
+            Cow::Owned(s) => {
+                changed = true;
+                Cow::Owned(s)
+            }
+        })
+        .collect();
+
+    if changed {
+        Cow::Owned(lines.into_iter().collect::<String>())
+    } else {
+        Cow::Borrowed(text)
+    }
 }
 
-/// Normalize chars to use general half width in Chinese contents.
-pub fn format_word(text: &str) -> String {
+pub fn format_word(text: &str) -> Cow<str> {
+    let mut changed = false;
     let out = text
         .chars()
         .map(|c| match c {
@@ -126,19 +140,26 @@ pub fn format_word(text: &str) -> String {
             // ０ .. ９ | Ａ .. Ｚ | ａ .. ｚ
             // https://www.unicode.org/charts/nameslist/n_FF00.html
             '\u{FF10}'..='\u{FF19}' | '\u{FF21}'..='\u{FF3A}' | '\u{FF41}'..='\u{FF5A}' => {
+                changed = true;
                 // checked char is in range of fullwidth number and alphabetic
                 unsafe { char::from_u32_unchecked(c as u32 - 0xFEE0) }
             }
             // Ideographic Space:
             // https://en.wikipedia.org/wiki/Whitespace_character#Unicode
-            '\u{3000}' => ' ',
+            '\u{3000}' => {
+                changed = true;
+                ' '
+            }
             _ => c,
         })
         .collect::<String>();
 
-    // Fix 12：00 -> 12:00
-    let out = HALF_TIME_RE.replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"));
-    out.into_owned()
+    if changed {
+        let out = HALF_TIME_RE.replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"));
+        Cow::Owned(out.into_owned())
+    } else {
+        HALF_TIME_RE.replace_all(text, |cap: &regex::Captures| cap[0].replace('：', ":"))
+    }
 }
 
 fn is_may_only_english(text: &str) -> bool {
@@ -166,12 +187,13 @@ fn is_may_only_english(text: &str) -> bool {
     false
 }
 
-fn format_line(text: &str, wrap_quote: char) -> String {
+fn format_line(text: &str, wrap_quote: char) -> Cow<str> {
     if !is_may_only_english(text) {
-        return String::from(text);
+        return Cow::Borrowed(text);
     }
 
     let mut out = String::with_capacity(text.len());
+    let mut changed = false;
 
     let mut parts = text.chars().peekable();
     while let Some(part) = parts.next() {
@@ -202,12 +224,16 @@ fn format_line(text: &str, wrap_quote: char) -> String {
                     escape_quote(&mut out, wrap_quote, rule.to);
                 }
             }
+            changed = true;
         } else {
             out.push(part);
         }
     }
-
-    out
+    if changed {
+        Cow::Owned(out)
+    } else {
+        Cow::Borrowed(text)
+    }
 }
 
 fn escape_quote(out: &mut String, wrap_quote: char, quote: char) {

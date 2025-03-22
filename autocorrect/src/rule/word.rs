@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 // autocorrect: false
 use super::{strategery::Strategery, CJK_RE};
 
@@ -55,66 +57,75 @@ lazy_static! {
     ];
 }
 
-pub fn format_space_word(input: &str) -> String {
-    let mut out = String::from(input);
-    WORD_STRATEGIES.iter().for_each(|s| out = s.format(&out));
-    out
+pub fn format_space_word(input: &str) -> Cow<str> {
+    WORD_STRATEGIES
+        .iter()
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
-pub fn format_space_punctuation(input: &str) -> String {
-    let mut out = String::from(input);
+pub fn format_space_punctuation(input: &str) -> Cow<str> {
     PUNCTUATION_STRATEGIES
         .iter()
-        .for_each(|s| out = s.format(&out));
-    out
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
-pub fn format_space_bracket(input: &str) -> String {
-    let mut out = String::from(input);
+pub fn format_space_bracket(input: &str) -> Cow<str> {
     BRACKETS_STRATEGIES
         .iter()
-        .for_each(|s| out = s.format(&out));
-    out
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
-pub fn format_space_dash(input: &str) -> String {
-    let mut out = String::from(input);
-    DASH_STRATEGIES.iter().for_each(|s| out = s.format(&out));
-    out
+pub fn format_space_dash(input: &str) -> Cow<str> {
+    DASH_STRATEGIES
+        .iter()
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
-pub fn format_space_backticks(input: &str) -> String {
-    let mut out = String::from(input);
+pub fn format_space_backticks(input: &str) -> Cow<str> {
     BACKTICKS_STRATEGIES
         .iter()
-        .for_each(|s| out = s.format(&out));
-    out
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
-pub fn format_no_space_fullwidth(input: &str) -> String {
-    let mut out = String::from(input);
-
+pub fn format_no_space_fullwidth(input: &str) -> Cow<str> {
     if !CJK_RE.is_match(input) {
-        return out;
+        return Cow::Borrowed(input);
     }
 
     NO_SPACE_FULLWIDTH_STRATEGIES
         .iter()
-        .for_each(|s| out = s.format(&out));
-    out
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
-pub fn format_no_space_fullwidth_quote(input: &str) -> String {
-    let mut out = String::from(input);
-
+pub fn format_no_space_fullwidth_quote(input: &str) -> Cow<str> {
     if !CJK_RE.is_match(input) {
-        return out;
+        return Cow::Borrowed(input);
     }
 
     NO_SPACE_FULLWIDTH_QUOTE_STRATEGIES
         .iter()
-        .for_each(|s| out = s.format(&out));
-    out
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        })
 }
 
 #[cfg(test)]

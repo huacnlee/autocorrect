@@ -23,7 +23,7 @@ use crate::{
 /// // => "既に、世界中の数百という企業が Rust を採用し、高速で低リソースのクロスプラットフォームソリューションを実現しています。"
 /// ```
 pub fn format(text: &str) -> String {
-    format_or_lint(text, false).out
+    format_or_lint(text, false).out.into_owned()
 }
 
 /// Format a html content.

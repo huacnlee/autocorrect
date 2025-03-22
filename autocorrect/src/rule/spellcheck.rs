@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 use crate::{config::Config, keyword::MatchedResult};
 
@@ -8,13 +8,16 @@ lazy_static! {
 }
 
 // Spell check by dict
-pub fn format(text: &str) -> String {
+pub fn format(text: &str) -> Cow<str> {
     let config = Config::current();
 
     let word_map = &config.spellcheck.word_map;
     let matcher = &config.spellcheck.matcher;
 
     let matched_words = matcher.match_keywords(text);
+    if matched_words.is_empty() {
+        return Cow::Borrowed(text);
+    }
     replace_with_spans(text, matched_words, word_map)
 }
 
@@ -25,29 +28,35 @@ struct SpanInfo<'a> {
     span: usize,
 }
 
-fn replace_with_spans(
-    text: &str,
+fn replace_with_spans<'a>(
+    text: &'a str,
     words: MatchedResult,
     word_map: &HashMap<String, String>,
-) -> String {
-    let mut span_infos = Vec::new();
-
+) -> Cow<'a, str> {
+    let mut text_chars = text.chars().collect::<Vec<_>>();
+    let mut span_infos = Vec::with_capacity(words.len());
     for (old, (old_chars_count, spans)) in words {
         if let Some(new) = word_map.get(old) {
             for span in spans {
-                span_infos.push(SpanInfo {
-                    new,
-                    span,
-                    old_chars_count,
-                });
+                // skip if the new chars are the same as the old chars
+                if text_chars[span..span + old_chars_count]
+                    .iter()
+                    .copied()
+                    .ne(new.chars())
+                {
+                    span_infos.push(SpanInfo {
+                        new,
+                        span,
+                        old_chars_count,
+                    });
+                }
             }
         }
     }
+    span_infos.sort_unstable_by_key(|s| s.span);
 
-    span_infos.sort_by_key(|s| s.span);
-
-    let mut text_chars = text.chars().collect::<Vec<_>>();
     let mut offset_change = 0;
+    let mut changed = false;
 
     for span_info in span_infos.iter() {
         let new_str = span_info.new;
@@ -79,9 +88,14 @@ fn replace_with_spans(
 
         // Update offset_change due to length change after replacement
         offset_change += new_str.chars().count() - old_chars_count;
+        changed = true;
     }
 
-    text_chars.into_iter().collect::<String>()
+    if changed {
+        Cow::Owned(text_chars.into_iter().collect::<String>())
+    } else {
+        Cow::Borrowed(text)
+    }
 }
 
 #[cfg(test)]
