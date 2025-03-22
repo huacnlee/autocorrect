@@ -20,13 +20,13 @@ enum CharType {
 
 #[derive(Clone)]
 struct ReplaceRule {
-    to: &'static str,
+    to: char,
     mode: ReplaceMode,
     char_type: CharType,
 }
 
 impl ReplaceRule {
-    fn new(to: &'static str) -> Self {
+    fn new(to: char) -> Self {
         Self {
             to,
             mode: ReplaceMode::Replace,
@@ -69,29 +69,29 @@ lazy_static! {
     // %{xxx}, #{xxx}, i18n.t(
     static ref CODE_STRING_RE: Regex = regexp!("{}", r#"([#%$]\{.+\})|([\w]+\.[\w]+\()"#);
 
-    static ref PUNCTUATION_MAP: HashMap<&'static str, ReplaceRule> = map!(
+    static ref PUNCTUATION_MAP: HashMap<char, ReplaceRule> = map!(
         // The single (‘...’) and double (“...”) char is used in english typographic.
         // Option + [ and Shift + Option + [ to get “”
         // Option + ] and Shift + Option + ] to get ‘’
         // https://en.wikipedia.org/wiki/Quotation_marks_in_English
 
-        "，" => ReplaceRule::new(",").with_suffix_space(),
-        "、" => ReplaceRule::new(",").with_suffix_space(),
-        "。" => ReplaceRule::new(".").with_suffix_space(),
-        "：" => ReplaceRule::new(":").with_suffix_space(),
-        "；" => ReplaceRule::new(".").with_suffix_space(),
-        "！" => ReplaceRule::new("!").with_suffix_space(),
-        "？" => ReplaceRule::new("?").with_suffix_space(),
+        '，' => ReplaceRule::new(',').with_suffix_space(),
+        '、' => ReplaceRule::new(',').with_suffix_space(),
+        '。' => ReplaceRule::new('.').with_suffix_space(),
+        '：' => ReplaceRule::new(':').with_suffix_space(),
+        '；' => ReplaceRule::new('.').with_suffix_space(),
+        '！' => ReplaceRule::new('!').with_suffix_space(),
+        '？' => ReplaceRule::new('?').with_suffix_space(),
 
-        "（" => ReplaceRule::new("(").left_quote().with_prefix_space(),
-        "【" => ReplaceRule::new("[").left_quote().with_prefix_space(),
-        "「" => ReplaceRule::new("[").left_quote().with_prefix_space(),
-        "《" => ReplaceRule::new("“").left_quote().with_prefix_space(),
+        '（' => ReplaceRule::new('(').left_quote().with_prefix_space(),
+        '【' => ReplaceRule::new('[').left_quote().with_prefix_space(),
+        '「' => ReplaceRule::new('[').left_quote().with_prefix_space(),
+        '《' => ReplaceRule::new('“').left_quote().with_prefix_space(),
 
-        "）" => ReplaceRule::new(")").right_quote().with_suffix_space(),
-        "】" => ReplaceRule::new("]").right_quote().with_suffix_space(),
-        "」" => ReplaceRule::new("]").right_quote().with_suffix_space(),
-        "》" => ReplaceRule::new("”").right_quote().with_suffix_space(),
+        '）' => ReplaceRule::new(')').right_quote().with_suffix_space(),
+        '】' => ReplaceRule::new(']').right_quote().with_suffix_space(),
+        '」' => ReplaceRule::new(']').right_quote().with_suffix_space(),
+        '》' => ReplaceRule::new('”').right_quote().with_suffix_space(),
     );
 }
 
@@ -113,23 +113,12 @@ impl CharMatching for char {
 }
 
 pub fn format_punctuation(text: &str) -> String {
-    let mut out = String::from("");
-
-    // Get quote char in start and end or the text
-    let mut wrap_quote = ' ';
     // Get first non space char as quote
-    for char in text.chars() {
-        if !char.is_whitespace() {
-            wrap_quote = char;
-            break;
-        }
-    }
+    let wrap_quote = text.chars().find(|c| !c.is_whitespace()).unwrap_or(' ');
 
-    for line in text.split_inclusive('\n') {
-        out.push_str(&format_line(line, wrap_quote));
-    }
-
-    out
+    text.split_inclusive('\n')
+        .map(|line| format_line(line, wrap_quote))
+        .collect()
 }
 
 pub fn format_word(text: &str) -> String {
@@ -179,68 +168,52 @@ fn format_line(text: &str, wrap_quote: char) -> String {
         return String::from(text);
     }
 
-    let mut out = String::new();
+    let mut out = String::with_capacity(text.len());
 
-    let mut parts = text.split("").peekable();
+    let mut parts = text.chars().peekable();
     while let Some(part) = parts.next() {
-        let next_part = parts.peek().unwrap_or(&"");
-        let last_part = out.chars().last().unwrap_or(' ');
-
-        // Remove duplicate space without CJK contents
-        // if part.ends_with(|s: char| s.is_whitespace())
-        //     && !next_part.starts_with(|s: char| s.is_ascii_alphanumeric_punctuation())
-        // {
-        //     part = "";
-        // }
-
         // Fix punctuation without CJK contents
-        if let Some(rule) = PUNCTUATION_MAP.get(part) {
-            let to = escape_quote(wrap_quote, rule.to);
-
+        if let Some(rule) = PUNCTUATION_MAP.get(&part) {
+            let next_part = parts.peek();
             // Do not change left quote when is last char.
-            if rule.char_type == CharType::LeftQuote && next_part.is_empty() {
-                out.push_str(part);
+            if next_part.is_none() && rule.char_type == CharType::LeftQuote {
+                out.push(part);
                 continue;
             }
 
             match rule.mode {
                 ReplaceMode::SuffixSpace => {
-                    out.push_str(&to);
-                    if next_part.starts_with(|s: char| s.is_alphanumeric()) {
+                    escape_quote(&mut out, wrap_quote, rule.to);
+                    if next_part.map(|c| c.is_alphanumeric()).unwrap_or_default() {
                         out.push(' ');
                     }
                 }
                 ReplaceMode::PrefixSpace => {
-                    if last_part.is_alphanumeric() {
+                    let last_part = out.chars().last();
+                    if last_part.map(|c| c.is_alphanumeric()).unwrap_or_default() {
                         out.push(' ');
                     }
-                    out.push_str(&to);
+                    escape_quote(&mut out, wrap_quote, rule.to);
                 }
                 ReplaceMode::Replace => {
-                    out.push_str(&to);
+                    escape_quote(&mut out, wrap_quote, rule.to);
                 }
             }
-            continue;
+        } else {
+            out.push(part);
         }
-
-        out.push_str(part);
     }
 
     out
 }
 
-fn escape_quote(wrap_quote: char, quote: &str) -> String {
-    if quote != "\"" && quote != "'" {
-        return String::from(quote);
+fn escape_quote(out: &mut String, wrap_quote: char, quote: char) {
+    if quote != '"' && quote != '\'' || wrap_quote != quote {
+        out.push(quote);
+    } else {
+        out.push('\\');
+        out.push(quote);
     }
-
-    let mut output = String::new();
-    if wrap_quote.to_string().as_str() == quote {
-        output.push('\\');
-    }
-
-    output.push_str(quote);
-    output
 }
 
 #[cfg(test)]
