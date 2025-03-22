@@ -46,29 +46,10 @@ impl fmt::Display for Node {
     }
 }
 
-#[derive(Clone, Eq, PartialEq, Debug)]
-pub struct Span {
-    /// zero-based index, start of the matched keyword
-    /// char index, not byte index
-    // For example: "你好" has 2 chars, but 6 bytes in UTF-8.
-    pub start: usize,
-    /// zero-based index, end of the matched keyword
-    pub end: usize,
-}
-
-impl Span {
-    pub fn new(start: usize, end: usize) -> Self {
-        Span { start, end }
-    }
-}
-
-impl fmt::Display for Span {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({}, {})", self.start, self.end)
-    }
-}
-
-pub type MatchedResult = HashMap<String, Vec<Span>>;
+/// A map of matched keyword and its spans.
+/// The key is the matched keyword.
+/// The value is a tuple of the length of the keyword chars and a list of matched chars index.
+pub type MatchedResult<'a> = HashMap<&'a str, (usize, Vec<usize>)>;
 
 impl Node {
     pub fn new(case_insensitive: bool) -> Self {
@@ -167,14 +148,10 @@ impl Node {
             if let Some(child) = node.children.get(&c) {
                 node = child;
                 for keyword in &node.keywords {
-                    let len = keyword.chars().count();
-                    let start = i - (len - 1);
-                    let end = start + len;
-
-                    result
-                        .entry(keyword.clone())
-                        .or_default()
-                        .push(Span::new(start, end));
+                    let (len, spans) = result
+                        .entry(keyword)
+                        .or_insert((keyword.chars().count(), Vec::new()));
+                    spans.push(i - (*len - 1));
                 }
             }
         }
@@ -214,13 +191,10 @@ mod tests {
         assert_eq!(
             result,
             vec![
-                (
-                    "hello".to_string(),
-                    vec![Span::new(0, 5), Span::new(20, 25)]
-                ),
-                ("world".to_string(), vec![Span::new(6, 11)]),
-                ("世界".to_string(), vec![Span::new(13, 15)]),
-                ("😀".to_string(), vec![Span::new(17, 18)]),
+                ("hello", (5, vec![0, 20])),
+                ("world", (5, vec![6])),
+                ("世界", (2, vec![13])),
+                ("😀", (1, vec![17])),
             ]
             .into_iter()
             .collect()
@@ -233,13 +207,10 @@ mod tests {
         assert_eq!(
             result,
             vec![
-                (
-                    "hello".to_string(),
-                    vec![Span::new(0, 5), Span::new(20, 25)]
-                ),
-                ("world".to_string(), vec![Span::new(6, 11)]),
-                ("世界".to_string(), vec![Span::new(13, 15)]),
-                ("😀".to_string(), vec![Span::new(17, 18)]),
+                ("hello", (5, vec![0, 20])),
+                ("world", (5, vec![6])),
+                ("世界", (2, vec![13])),
+                ("😀", (1, vec![17])),
             ]
             .into_iter()
             .collect()
@@ -248,13 +219,10 @@ mod tests {
         assert_eq!(
             result,
             vec![
-                (
-                    "hello".to_string(),
-                    vec![Span::new(0, 5), Span::new(20, 25)]
-                ),
-                ("world".to_string(), vec![Span::new(6, 11)]),
-                ("世界".to_string(), vec![Span::new(13, 15)]),
-                ("😀".to_string(), vec![Span::new(17, 18)]),
+                ("hello", (5, vec![0, 20])),
+                ("world", (5, vec![6])),
+                ("世界", (2, vec![13])),
+                ("😀", (1, vec![17])),
             ]
             .into_iter()
             .collect()
