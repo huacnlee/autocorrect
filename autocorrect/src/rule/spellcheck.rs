@@ -2,11 +2,6 @@ use std::{borrow::Cow, collections::HashMap};
 
 use crate::{config::Config, keyword::MatchedResult};
 
-lazy_static! {
-    static ref DISALLOW_CHAR_RE: regex::Regex =
-        regexp!("{}", r#"([^\p{Han}\s？！：，。；、「」“”‘’【】《》])"#);
-}
-
 // Spell check by dict
 pub fn format(text: &str) -> Cow<str> {
     let config = Config::current();
@@ -76,8 +71,8 @@ fn replace_with_spans<'a>(
         };
         let r_c = text_chars.get(offset_end);
 
-        if DISALLOW_CHAR_RE.is_match(&l_c.unwrap_or(&' ').to_string())
-            || DISALLOW_CHAR_RE.is_match(&r_c.unwrap_or(&' ').to_string())
+        if l_c.map(is_disallowed_char).unwrap_or_default()
+            || r_c.map(is_disallowed_char).unwrap_or_default()
         {
             // println!("---- `{:?}`|`{:?}`", l_c, r_c);
             continue;
@@ -98,6 +93,19 @@ fn replace_with_spans<'a>(
     }
 }
 
+fn is_disallowed_char(c: &char) -> bool {
+    if c.is_whitespace() {
+        return false;
+    }
+    // CJK Unified Ideographs
+    // https://en.wikipedia.org/wiki/CJK_Unified_Ideographs_(Unicode_block)
+    if ('\u{4E00}'..='\u{9FFF}').contains(c) {
+        return false;
+    }
+    // CJK punctuation characters
+    !"？！：，。；、「」“”‘’【】《》".contains(*c)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::Config;
@@ -115,20 +123,13 @@ mod tests {
 
     #[allow(clippy::bool_assert_comparison)]
     #[test]
-    fn test_disallow_char_re() {
-        assert_eq!(DISALLOW_CHAR_RE.is_match(","), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("-"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a你"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a\n"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a "), true);
-
-        assert_eq!(DISALLOW_CHAR_RE.is_match(""), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("你 "), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("你好"), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("你，"), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match(" ，"), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("？"), false);
+    fn test_disallow_char() {
+        assert_eq!(is_disallowed_char(&','), true);
+        assert_eq!(is_disallowed_char(&'a'), true);
+        assert_eq!(is_disallowed_char(&'-'), true);
+        assert_eq!(is_disallowed_char(&'你'), false);
+        assert_eq!(is_disallowed_char(&'，'), false);
+        assert_eq!(is_disallowed_char(&'？'), false);
     }
 
     #[test]
