@@ -56,10 +56,6 @@ impl ReplaceRule {
 }
 
 lazy_static! {
-    static ref CHAR_WIDTH_MAP: HashMap<&'static str, &'static str> = map!(
-      "ａ" => "a", "ｂ" => "b", "ｃ" => "c", "ｄ" => "d", "ｅ" => "e", "ｆ" => "f", "ｇ" => "g", "ｈ" => "h", "ｉ" => "i", "ｊ" => "j", "ｋ" => "k", "ｌ" => "l", "ｍ" => "m", "ｎ" => "n", "ｏ" => "o", "ｐ" => "p", "ｑ" => "q", "ｒ" => "r", "ｓ" => "s", "ｔ" => "t", "ｕ" => "u", "ｖ" => "v", "ｗ" => "w", "ｘ" => "x", "ｙ" => "y", "ｚ" => "z", "Ａ" => "A", "Ｂ" => "B", "Ｃ" => "C", "Ｄ" => "D", "Ｅ" => "E", "Ｆ" => "F", "Ｇ" => "G", "Ｈ" => "H", "Ｉ" => "I", "Ｊ" => "J", "Ｋ" => "K", "Ｌ" => "L", "Ｍ" => "M", "Ｎ" => "N", "Ｏ" => "O", "Ｐ" => "P", "Ｑ" => "Q", "Ｒ" => "R", "Ｓ" => "S", "Ｔ" => "T", "Ｕ" => "U", "Ｖ" => "V", "Ｗ" => "W", "Ｘ" => "X", "Ｙ" => "Y", "Ｚ" => "Z", "１" => "1", "２" => "2", "３" => "3", "４" => "4", "５" => "5", "６" => "6", "７" => "7", "８" => "8", "９" => "9", "０" => "0", "　" => " ",
-    );
-
     static ref HALF_TIME_RE: Regex = regexp!("{}", r"(\d)(：)(\d)");
     // More than 2 words and leading with words
     static ref ENGLISH_RE: Regex = regexp!("{}", r#"([\w]+[ ,.'?!&:]+[\w]+)"#);
@@ -121,21 +117,28 @@ pub fn format_punctuation(text: &str) -> String {
         .collect()
 }
 
+/// Normalize chars to use general half width in Chinese contents.
 pub fn format_word(text: &str) -> String {
-    let mut out = String::new();
-
-    for part in text.split("") {
-        if let Some(new_str) = CHAR_WIDTH_MAP.get(part) {
-            out.push_str(new_str);
-            continue;
-        }
-
-        out.push_str(part);
-    }
+    let out = text
+        .chars()
+        .map(|c| match c {
+            // Unicode Fullwidth ASCII variants (Only numbers and alphabetics)
+            // ０ .. ９ | Ａ .. Ｚ | ａ .. ｚ
+            // https://www.unicode.org/charts/nameslist/n_FF00.html
+            '\u{FF10}'..='\u{FF19}' | '\u{FF21}'..='\u{FF3A}' | '\u{FF41}'..='\u{FF5A}' => {
+                // checked char is in range of fullwidth number and alphabetic
+                unsafe { char::from_u32_unchecked(c as u32 - 0xFEE0) }
+            }
+            // Ideographic Space:
+            // https://en.wikipedia.org/wiki/Whitespace_character#Unicode
+            '\u{3000}' => ' ',
+            _ => c,
+        })
+        .collect::<String>();
 
     // Fix 12：00 -> 12:00
     let out = HALF_TIME_RE.replace_all(&out, |cap: &regex::Captures| cap[0].replace('：', ":"));
-    out.to_string()
+    out.into_owned()
 }
 
 fn is_may_only_english(text: &str) -> bool {
@@ -143,7 +146,7 @@ fn is_may_only_english(text: &str) -> bool {
         return false;
     }
 
-    // Characters which pass CHAR_WIDTH_MAP replacement
+    // Characters which pass char width replacement
     if ENGLISH_RE.is_match(text) && START_WITH_WORD_RE.is_match(text) {
         // Maybe English, pass
         return true;
