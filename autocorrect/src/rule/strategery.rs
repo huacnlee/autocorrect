@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 // autocorrect: false
 enum SpaceMode {
     Add,
@@ -38,30 +40,40 @@ impl Strategery {
         self
     }
 
-    pub fn format(&self, text: &str) -> String {
+    pub fn format<'a>(&self, text: &'a str) -> Cow<'a, str> {
         match self.space_mode {
             SpaceMode::Add => self.add_space(text),
             SpaceMode::Remove => self.remove_space(text),
         }
     }
 
-    fn add_space(&self, text: &str) -> String {
+    fn add_space<'a>(&self, text: &'a str) -> Cow<'a, str> {
         let out = self.add_space_re.replace_all(text, "$1 $2");
         if !self.reverse {
-            return out.to_string();
+            return out;
         }
 
-        let out = self.add_space_reverse_re.replace_all(&out, "$1 $2");
-        out.to_string()
+        match out {
+            Cow::Borrowed(str) => self.add_space_reverse_re.replace_all(str, "$1 $2"),
+            Cow::Owned(str) => match self.add_space_reverse_re.replace_all(&str, "$1 $2") {
+                Cow::Borrowed(str) => Cow::Owned(str.to_owned()),
+                Cow::Owned(str) => Cow::Owned(str),
+            },
+        }
     }
 
-    fn remove_space(&self, text: &str) -> String {
+    fn remove_space<'a>(&self, text: &'a str) -> Cow<'a, str> {
         let out = self.remove_space_re.replace_all(text, "$1$2");
         if !self.reverse {
-            return out.to_string();
+            return out;
         }
 
-        let out = self.remove_space_reverse_re.replace_all(&out, "$1$2");
-        out.to_string()
+        match out {
+            Cow::Borrowed(str) => self.remove_space_reverse_re.replace_all(str, "$1$2"),
+            Cow::Owned(str) => match self.remove_space_reverse_re.replace_all(&str, "$1$2") {
+                Cow::Borrowed(str) => Cow::Owned(str.to_owned()),
+                Cow::Owned(str) => Cow::Owned(str),
+            },
+        }
     }
 }

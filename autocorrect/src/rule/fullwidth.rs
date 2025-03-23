@@ -1,6 +1,6 @@
 // autocorrect: false
 use regex::Regex;
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 const SPCIAL_PUNCTUATIONS: &str = "[.:!]([ ]*)";
 const NORMAL_PUNCTUATIONS: &str = "[,?]([ ]*)";
@@ -31,24 +31,28 @@ lazy_static! {
 }
 
 // fullwidth correct punctuations near the CJK chars
-pub fn format(text: &str) -> String {
-    let out = PUNCTUATION_WITH_LEFT_CJK_RE.replace_all(text, |cap: &regex::Captures| {
-        fullwidth_replace_part(&cap[0])
-    });
+pub fn format(text: &str) -> Cow<str> {
+    let patterns = [
+        &*PUNCTUATION_WITH_LEFT_CJK_RE,
+        &*PUNCTUATION_WITH_RIGHT_CJK_RE,
+        &*PUNCTUATION_WITH_SPEICAL_CJK_RE,
+        &*PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE,
+    ];
 
-    let out = PUNCTUATION_WITH_RIGHT_CJK_RE.replace_all(&out, |cap: &regex::Captures| {
-        fullwidth_replace_part(&cap[0])
-    });
+    let mut result = Cow::Borrowed(text);
+    for pattern in &patterns {
+        if let Cow::Owned(new_text) = pattern.replace_all(&result, |cap: &regex::Captures| {
+            fullwidth_replace_part(&cap[0])
+        }) {
+            result = Cow::Owned(new_text);
+        }
+    }
 
-    let out = PUNCTUATION_WITH_SPEICAL_CJK_RE.replace_all(&out, |cap: &regex::Captures| {
-        fullwidth_replace_part(&cap[0])
-    });
-
-    let out = PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE.replace_all(&out, |cap: &regex::Captures| {
-        fullwidth_replace_part(&cap[0])
-    });
-
-    out.to_string()
+    if let Cow::Owned(new_text) = result {
+        Cow::Owned(new_text)
+    } else {
+        Cow::Borrowed(text)
+    }
 }
 
 fn fullwidth_replace_part(part: &str) -> String {

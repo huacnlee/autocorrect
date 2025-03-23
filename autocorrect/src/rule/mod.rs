@@ -8,7 +8,7 @@ mod word;
 pub mod halfwidth;
 pub mod spellcheck;
 
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 use regex::Regex;
 use rule::{Rule, RuleResult};
@@ -81,11 +81,11 @@ pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
     format_or_lint_with_disable_rules(text, lint, &map![])
 }
 
-pub(crate) fn format_or_lint_with_disable_rules(
-    text: &str,
+pub(crate) fn format_or_lint_with_disable_rules<'a>(
+    text: &'a str,
     lint: bool,
     disable_rules: &HashMap<String, bool>,
-) -> RuleResult {
+) -> RuleResult<'a> {
     let mut result = RuleResult::default();
 
     // skip if not has CJK
@@ -98,13 +98,13 @@ pub(crate) fn format_or_lint_with_disable_rules(
             if matches!(ch, ' ' | '\n' | '\r') {
                 let mut sub_result = RuleResult::new(&part);
                 sub_result.severity = result.severity;
-
-                part.clear();
-
                 format_part(&mut sub_result, lint, disable_rules);
 
-                result.out.push_str(&sub_result.out);
+                let mut out = result.out.into_owned();
+                out.push_str(&sub_result.out);
+                result.out = Cow::Owned(out);
                 result.severity = sub_result.severity;
+                part.clear();
             }
         }
 
@@ -114,11 +114,13 @@ pub(crate) fn format_or_lint_with_disable_rules(
 
             format_part(&mut sub_result, lint, disable_rules);
 
-            result.out.push_str(&sub_result.out);
+            let mut out = result.out.into_owned();
+            out.push_str(&sub_result.out);
+            result.out = Cow::Owned(out);
             result.severity = sub_result.severity;
         }
     } else {
-        result.out = text.to_string();
+        result.out = Cow::Borrowed(text);
     }
 
     format_after_rules(&mut result, lint, disable_rules);

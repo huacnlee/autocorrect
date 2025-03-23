@@ -1,20 +1,18 @@
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
 use crate::{config::Config, keyword::MatchedResult};
 
-lazy_static! {
-    static ref DISALLOW_CHAR_RE: regex::Regex =
-        regexp!("{}", r#"([^\p{Han}\s？！：，。；、「」“”‘’【】《》])"#);
-}
-
 // Spell check by dict
-pub fn format(text: &str) -> String {
+pub fn format(text: &str) -> Cow<str> {
     let config = Config::current();
 
     let word_map = &config.spellcheck.word_map;
     let matcher = &config.spellcheck.matcher;
 
     let matched_words = matcher.match_keywords(text);
+    if matched_words.is_empty() {
+        return Cow::Borrowed(text);
+    }
     replace_with_spans(text, matched_words, word_map)
 }
 
@@ -25,29 +23,35 @@ struct SpanInfo<'a> {
     span: usize,
 }
 
-fn replace_with_spans(
-    text: &str,
+fn replace_with_spans<'a>(
+    text: &'a str,
     words: MatchedResult,
     word_map: &HashMap<String, String>,
-) -> String {
-    let mut span_infos = Vec::new();
-
+) -> Cow<'a, str> {
+    let mut text_chars = text.chars().collect::<Vec<_>>();
+    let mut span_infos = Vec::with_capacity(words.len());
     for (old, (old_chars_count, spans)) in words {
         if let Some(new) = word_map.get(old) {
             for span in spans {
-                span_infos.push(SpanInfo {
-                    new,
-                    span,
-                    old_chars_count,
-                });
+                // skip if the new chars are the same as the old chars
+                if text_chars[span..span + old_chars_count]
+                    .iter()
+                    .copied()
+                    .ne(new.chars())
+                {
+                    span_infos.push(SpanInfo {
+                        new,
+                        span,
+                        old_chars_count,
+                    });
+                }
             }
         }
     }
+    span_infos.sort_unstable_by_key(|s| s.span);
 
-    span_infos.sort_by_key(|s| s.span);
-
-    let mut text_chars = text.chars().collect::<Vec<_>>();
     let mut offset_change = 0;
+    let mut changed = false;
 
     for span_info in span_infos.iter() {
         let new_str = span_info.new;
@@ -67,8 +71,8 @@ fn replace_with_spans(
         };
         let r_c = text_chars.get(offset_end);
 
-        if DISALLOW_CHAR_RE.is_match(&l_c.unwrap_or(&' ').to_string())
-            || DISALLOW_CHAR_RE.is_match(&r_c.unwrap_or(&' ').to_string())
+        if l_c.map(is_disallowed_char).unwrap_or_default()
+            || r_c.map(is_disallowed_char).unwrap_or_default()
         {
             // println!("---- `{:?}`|`{:?}`", l_c, r_c);
             continue;
@@ -79,9 +83,27 @@ fn replace_with_spans(
 
         // Update offset_change due to length change after replacement
         offset_change += new_str.chars().count() - old_chars_count;
+        changed = true;
     }
 
-    text_chars.into_iter().collect::<String>()
+    if changed {
+        Cow::Owned(text_chars.into_iter().collect::<String>())
+    } else {
+        Cow::Borrowed(text)
+    }
+}
+
+fn is_disallowed_char(c: &char) -> bool {
+    if c.is_whitespace() {
+        return false;
+    }
+    // CJK Unified Ideographs
+    // https://en.wikipedia.org/wiki/CJK_Unified_Ideographs_(Unicode_block)
+    if ('\u{4E00}'..='\u{9FFF}').contains(c) {
+        return false;
+    }
+    // CJK punctuation characters
+    !"？！：，。；、「」“”‘’【】《》".contains(*c)
 }
 
 #[cfg(test)]
@@ -101,20 +123,13 @@ mod tests {
 
     #[allow(clippy::bool_assert_comparison)]
     #[test]
-    fn test_disallow_char_re() {
-        assert_eq!(DISALLOW_CHAR_RE.is_match(","), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("-"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a你"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a\n"), true);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("a "), true);
-
-        assert_eq!(DISALLOW_CHAR_RE.is_match(""), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("你 "), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("你好"), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("你，"), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match(" ，"), false);
-        assert_eq!(DISALLOW_CHAR_RE.is_match("？"), false);
+    fn test_disallow_char() {
+        assert_eq!(is_disallowed_char(&','), true);
+        assert_eq!(is_disallowed_char(&'a'), true);
+        assert_eq!(is_disallowed_char(&'-'), true);
+        assert_eq!(is_disallowed_char(&'你'), false);
+        assert_eq!(is_disallowed_char(&'，'), false);
+        assert_eq!(is_disallowed_char(&'？'), false);
     }
 
     #[test]
