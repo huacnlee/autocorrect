@@ -131,6 +131,7 @@ pub fn format_punctuation(text: &str) -> Cow<str> {
     }
 }
 
+/// Normalize chars to use general half width in Chinese contents.
 pub fn format_word(text: &str) -> Cow<str> {
     let mut changed = false;
     let out = text
