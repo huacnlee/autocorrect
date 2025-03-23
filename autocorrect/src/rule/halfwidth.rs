@@ -128,10 +128,14 @@ pub fn format_punctuation(text: &str) -> String {
     out
 }
 
+/// Normalize chars to use general half width in Chinese contents.
 pub fn format_word(text: &str) -> String {
     let out = text
         .chars()
         .map(|c| match c {
+            // Unicode Fullwidth ASCII variants (Only numbers and alphabetics)
+            // ０ .. ９ | Ａ .. Ｚ | ａ .. ｚ
+            // https://www.unicode.org/charts/nameslist/n_FF00.html
             '\u{FF10}'..='\u{FF19}' | '\u{FF21}'..='\u{FF3A}' | '\u{FF41}'..='\u{FF5A}' => {
                 // checked char is in range of fullwidth number and alphabetic
                 unsafe { char::from_u32_unchecked(c as u32 - 0xFEE0) }
