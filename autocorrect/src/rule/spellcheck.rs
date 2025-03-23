@@ -15,41 +15,45 @@ pub fn format(text: &str) -> String {
     let matcher = &config.spellcheck.matcher;
 
     let matched_words = matcher.match_keywords(text);
-    replace_with_spans(text, &matched_words, word_map)
+    replace_with_spans(text, matched_words, word_map)
 }
 
 #[derive(Debug)]
 struct SpanInfo<'a> {
-    old: &'a String,
     new: &'a String,
-    span: &'a crate::keyword::Span,
+    old_chars_count: usize,
+    span: usize,
 }
 
 fn replace_with_spans(
     text: &str,
-    words: &MatchedResult,
+    words: MatchedResult,
     word_map: &HashMap<String, String>,
 ) -> String {
-    let mut span_infos = vec![];
+    let mut span_infos = Vec::new();
 
-    for (old, spans) in words {
+    for (old, (old_chars_count, spans)) in words {
         if let Some(new) = word_map.get(old) {
             for span in spans {
-                span_infos.push(SpanInfo { old, new, span })
+                span_infos.push(SpanInfo {
+                    new,
+                    span,
+                    old_chars_count,
+                });
             }
         }
     }
 
-    span_infos.sort_by(|a, b| a.span.start.cmp(&b.span.start));
+    span_infos.sort_by_key(|s| s.span);
 
     let mut text_chars = text.chars().collect::<Vec<_>>();
     let mut offset_change = 0;
 
     for span_info in span_infos.iter() {
-        let old_str = span_info.old;
         let new_str = span_info.new;
-        let span_start = span_info.span.start;
-        let span_end = span_info.span.end;
+        let old_chars_count = span_info.old_chars_count;
+        let span_start = span_info.span;
+        let span_end = span_info.span + old_chars_count;
 
         let offset_start = span_start + offset_change;
         let offset_end = span_end + offset_change;
@@ -71,11 +75,10 @@ fn replace_with_spans(
         }
 
         // Perform replacement
-        let new_str_chars = new_str.chars().collect::<Vec<_>>();
-        text_chars.splice(offset_start..offset_end, new_str_chars);
+        text_chars.splice(offset_start..offset_end, new_str.chars());
 
         // Update offset_change due to length change after replacement
-        offset_change += new_str.chars().count() - old_str.chars().count();
+        offset_change += new_str.chars().count() - old_chars_count;
     }
 
     text_chars.into_iter().collect::<String>()
