@@ -136,6 +136,8 @@ pub fn format_word(text: &str) -> String {
                 // checked char is in range of fullwidth number and alphabetic
                 unsafe { char::from_u32_unchecked(c as u32 - 0xFEE0) }
             }
+            // Ideographic Space:
+            // https://en.wikipedia.org/wiki/Whitespace_character#Unicode
             '\u{3000}' => ' ',
             _ => c,
         })
