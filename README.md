@@ -430,7 +430,7 @@ AutoCorrect makes for support use in many programming languages.
 
 ## Benchmark
 
-> MacBook Pro (13-inch, M1, 2020)
+> MacBook Pro (13-inch, Apple M3, 2023)
 
 Use `make bench` to run benchmark tests.
 
