@@ -437,28 +437,28 @@ Use `make bench` to run benchmark tests.
 See [autocorrect/src/benches/example.rs](https://github.com/huacnlee/autocorrect/blob/main/autocorrect/src/benches/example.rs) for details.
 
 ```bash
-format_050              time:   [8.2420 µs 8.2657 µs 8.2937 µs]
-format_100              time:   [14.199 µs 14.246 µs 14.298 µs]
-format_400              time:   [40.511 µs 41.923 µs 43.798 µs]
-format_html             time:   [204.94 µs 208.61 µs 214.07 µs]
-halfwidth_english       time:   [2.4983 µs 2.5541 µs 2.6293 µs]
-format_json             time:   [54.037 µs 57.023 µs 61.821 µs]
-format_javascript       time:   [102.81 µs 104.41 µs 106.92 µs]
-format_json_2k          time:   [8.7609 ms 8.9099 ms 9.1201 ms]
-format_jupyter          time:   [81.765 µs 83.038 µs 85.321 µs]
-format_markdown         time:   [879.27 µs 894.86 µs 918.30 µs]
+format_050              time:   [4.9991 µs 5.0175 µs 5.0382 µs]
+format_100              time:   [8.7714 µs 8.8236 µs 8.8896 µs]
+format_400              time:   [23.535 µs 23.591 µs 23.666 µs]
+format_html             time:   [332.87 µs 334.00 µs 335.37 µs]
+halfwidth_english       time:   [1.2051 µs 1.2079 µs 1.2110 µs]
+format_json             time:   [54.019 µs 54.345 µs 54.855 µs]
+format_javascript       time:   [176.61 µs 181.64 µs 187.20 µs]
+format_json_2k          time:   [9.3245 ms 9.3768 ms 9.4390 ms]
+format_jupyter          time:   [200.77 µs 204.93 µs 210.91 µs]
+format_markdown         time:   [1.2216 ms 1.2246 ms 1.2283 ms]
 
-spellcheck_50           time:   [1.6012 µs 1.6122 µs 1.6306 µs]
-spellcheck_100          time:   [3.0968 µs 3.1696 µs 3.2653 µs]
-spellcheck_400          time:   [10.136 µs 10.478 µs 10.898 µs]
+spellcheck_50           time:   [1.2098 µs 1.2162 µs 1.2234 µs]
+spellcheck_100          time:   [2.2592 µs 2.3049 µs 2.3861 µs]
+spellcheck_400          time:   [7.7480 µs 7.9111 µs 8.1764 µs]
 
-lint_markdown           time:   [937.57 µs 942.59 µs 949.15 µs]
-lint_json               time:   [59.174 µs 60.302 µs 61.763 µs]
-lint_html               time:   [238.03 µs 241.38 µs 245.77 µs]
-lint_javascript         time:   [111.64 µs 113.05 µs 114.82 µs]
-lint_yaml               time:   [348.56 µs 350.11 µs 352.80 µs]
-lint_to_json            time:   [941.25 µs 948.95 µs 958.26 µs]
-lint_to_diff            time:   [1.0573 ms 1.0823 ms 1.1134 ms]
+lint_markdown           time:   [1.2704 ms 1.2883 ms 1.3173 ms]
+lint_json               time:   [58.696 µs 60.847 µs 63.484 µs]
+lint_html               time:   [448.53 µs 486.95 µs 534.01 µs]
+lint_javascript         time:   [177.00 µs 177.88 µs 178.69 µs]
+lint_yaml               time:   [378.35 µs 382.30 µs 387.85 µs]
+lint_to_json            time:   [1.2629 ms 1.2689 ms 1.2769 ms]
+lint_to_diff            time:   [1.3255 ms 1.3288 ms 1.3327 ms]
 ```
 
 ### Real world benchmark
