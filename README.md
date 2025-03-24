@@ -357,9 +357,7 @@ function hello() {
 
 https://marketplace.visualstudio.com/items?itemName=huacnlee.autocorrect
 
-内置 Visual Studio Code 插件，安装后会将 AutoCorrect 和 Visual Studio Code 完整集成，可以达到「保存自动格式化」或「纠正提示」。
-
-如下图：
+Screenshot:
 
 <img width="900" alt="AutoCorrect for VS Code Extension" src="https://user-images.githubusercontent.com/5518/191890126-4e0c99dc-91ce-4262-a774-3813a636eea1.png">
 
