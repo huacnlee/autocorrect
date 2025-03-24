@@ -418,13 +418,13 @@ Use [huacnlee/autocorrect-action](https://github.com/huacnlee/autocorrect-action
 
 AutoCorrect makes for support use in many programming languages.
 
-- Rust - [autocorrect](https://github.com/huacnlee/autocorrect)
-- Ruby - [autocorrect-rb](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-rb)
-- Go - [autocorrect-go](https://github.com/longbridgeapp/autocorrect)
-- Python - [autocorrect-py](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-py)
-- Node.js - [autocorrect-node](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-node)
-- JavaScript (Browser) - [autocorrect-wasm](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-wasm)
-- Java - [autocorrect-java](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-java)
+- Rust - [autocorrect](https://crates.io/crates/autocorrect)
+- Ruby - [autocorrect-rb](https://rubygems.org/gems/autocorrect-rb)
+- Go - [autocorrect-go](https://pkg.go.dev/github.com/longbridge/autocorrect)
+- Python - [autocorrect-py](https://pypi.org/project/autocorrect-py/)
+- Node.js - [autocorrect-node](https://www.npmjs.com/package/autocorrect-node)
+- JavaScript (Browser) - [autocorrect-wasm](https://www.npmjs.com/package/@huacnlee/autocorrect)
+- Java - [autocorrect-java](https://mvnrepository.com/artifact/io.github.huacnlee/autocorrect-java)
 
 ## Benchmark
 
