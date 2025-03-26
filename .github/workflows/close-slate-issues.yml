@@ -1,0 +1,31 @@
+name: "Close Stale Issues"
+permissions:
+  contents: write # only for delete-branch option
+  issues: write
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: "12 3 * * 3"
+  workflow_dispatch:
+
+jobs:
+  stale:
+    if: github.repository_owner == 'huacnlee'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          close-issue-message: >
+            由于没有活动，此问题已关闭。如果您仍遇到此问题，请打开一个新问题并附上此问题的链接。
+
+            This issue was closed due to inactivity. If you still encounter this issue, please open a new issue and link to this issue.
+
+            Thank you.
+          days-before-stale: 120
+          days-before-close: 7
+          operations-per-run: 1000
+          ascending: true
+          enable-statistics: true
+          stale-issue-label: "stale"
