@@ -21,5 +21,6 @@ inner_string = _{
 regexp = ${
     ("r'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'")
   | ("r\"\"\"" ~ (!("\"\"\"") ~ ANY)* ~ "\"\"\"")
+  | ("r\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
   | ("compile(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")")
 }
