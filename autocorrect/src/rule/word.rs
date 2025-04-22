@@ -47,12 +47,9 @@ lazy_static! {
     ];
 
     static ref DOLLAR_STRATEGIES: Vec<Strategery> = vec![
-        // Add space before and after dollar pair $...$ or $$...$$ near the CJK
-        Strategery::new(r"\p{CJK}", r"\$[^\$]+\$"),
-        Strategery::new(r"\$[^\$]+\$", r"\p{CJK}"),
-        // Block-level math mode
-        Strategery::new(r"\p{CJK}", r"\$\$[^$]+\$\$"),
-        Strategery::new(r"\$\$[^$]+\$\$", r"\p{CJK}"),
+        // Add space before and after dollar $ near the CJK
+        Strategery::new(r"\p{CJK}", r"\$"),
+        Strategery::new(r"\$", r"\p{CJK}"),
     ];
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
@@ -189,9 +186,9 @@ mod tests {
 
     #[test]
     fn test_format_space_dollar() {
-        assert_eq!(format_space_dollar("你好$世界"), "你好$世界");
-        assert_eq!(format_space_dollar("hello$世界"), "hello$世界");
-        assert_eq!(format_space_dollar("你好$world"), "你好$world");
+        assert_eq!(format_space_dollar("你好$世界"), "你好 $ 世界");
+        assert_eq!(format_space_dollar("hello$世界"), "hello$ 世界");
+        assert_eq!(format_space_dollar("你好$world"), "你好 $world");
         assert_eq!(format_space_dollar("你好$x$世界"), "你好 $x$ 世界");
         assert_eq!(format_space_dollar("变量 $x$ 代表"), "变量 $x$ 代表");
         assert_eq!(format_space_dollar("令$x^2+y^2=z^2$，可得"), "令 $x^2+y^2=z^2$，可得");

@@ -214,7 +214,7 @@ rules:
   space-backticks: 1
   # Add space between dash `-`
   space-dash: 0
-  # Add space between dollar pair $...$ when near the CJK.
+  # Add space between dollar $ when near the CJK.
   space-dollar: 0
   # Convert to fullwidth.
   fullwidth: 1
