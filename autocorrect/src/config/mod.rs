@@ -197,11 +197,11 @@ impl Config {
 }
 
 // Setup config for test for load tests/.autocorrectrc.test
-static STEUP_ONCE: std::sync::Once = std::sync::Once::new();
+static SETUP_ONCE: std::sync::Once = std::sync::Once::new();
 
 #[allow(unused)]
 pub(crate) fn setup_test() {
-    STEUP_ONCE.call_once(|| {
+    SETUP_ONCE.call_once(|| {
         let config_str = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/tests/.autocorrectrc.test"
@@ -345,6 +345,7 @@ mod tests {
             match k.as_str() {
                 "spellcheck" => assert_eq!(SeverityMode::Warning, v),
                 "space-dash" => assert_eq!(SeverityMode::Error, v),
+                "space-dollar" => assert_eq!(SeverityMode::Off, v),
                 _ => assert_eq!(SeverityMode::Error, v),
             }
         }
