@@ -345,6 +345,7 @@ mod tests {
             match k.as_str() {
                 "spellcheck" => assert_eq!(SeverityMode::Warning, v),
                 "space-dash" => assert_eq!(SeverityMode::Error, v),
+                "space-dollar" => assert_eq!(SeverityMode::Off, v),
                 _ => assert_eq!(SeverityMode::Error, v),
             }
         }
