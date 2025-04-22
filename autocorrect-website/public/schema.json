@@ -45,7 +45,7 @@
           "$ref": "#/definitions/SeverityMode"
         },
         "space-dollar": {
-          "description": "Add space between dollar `$` when near the CJK.",
+          "description": "Add space between dollar pair $...$ when near the CJK.",
           "default": 0,
           "$ref": "#/definitions/SeverityMode"
         },

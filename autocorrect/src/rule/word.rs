@@ -47,9 +47,9 @@ lazy_static! {
     ];
 
     static ref DOLLAR_STRATEGIES: Vec<Strategery> = vec![
-        // Add space before and after dollar $ near the CJK
-        Strategery::new(r"\p{CJK}", r"[$]"),
-        Strategery::new(r"[$]", r"\p{CJK}"),
+        // Add space before and after dollar pair $...$ near the CJK
+        Strategery::new(r"\p{CJK}", r"\$[^\$]+\$"),
+        Strategery::new(r"\$[^\$]+\$", r"\p{CJK}"),
     ];
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
@@ -146,7 +146,7 @@ pub fn format_no_space_fullwidth_quote(input: &str) -> Cow<str> {
 
 #[cfg(test)]
 mod tests {
-    use crate::rule::word::{format_space_backticks, format_space_bracket, format_space_dash};
+    use crate::rule::word::{format_space_backticks, format_space_bracket, format_space_dash, format_space_dollar};
 
     #[test]
     fn test_format_space_dash() {
@@ -182,5 +182,13 @@ mod tests {
         assert_eq!(format_space_backticks("``代码第1行"), "``代码第1行");
         assert_eq!(format_space_backticks("`代码第1行"), "`代码第1行");
         assert_eq!(format_space_backticks("代码第2行`"), "代码第2行`");
+    }
+
+    #[test]
+    fn test_format_space_dollar() {
+        assert_eq!(format_space_dollar("你好$世界"), "你好$世界");
+        assert_eq!(format_space_dollar("hello$世界"), "hello$世界");
+        assert_eq!(format_space_dollar("你好$world"), "你好$world");
+        assert_eq!(format_space_dollar("你好$x$世界"), "你好 $x$ 世界");
     }
 }
