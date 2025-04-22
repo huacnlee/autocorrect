@@ -47,9 +47,12 @@ lazy_static! {
     ];
 
     static ref DOLLAR_STRATEGIES: Vec<Strategery> = vec![
-        // Add space before and after dollar pair $...$ near the CJK
+        // Add space before and after dollar pair $...$ or $$...$$ near the CJK
         Strategery::new(r"\p{CJK}", r"\$[^\$]+\$"),
         Strategery::new(r"\$[^\$]+\$", r"\p{CJK}"),
+        // Block-level math mode
+        Strategery::new(r"\p{CJK}", r"\$\$[^$]+\$\$"),
+        Strategery::new(r"\$\$[^$]+\$\$", r"\p{CJK}"),
     ];
 
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
@@ -190,5 +193,19 @@ mod tests {
         assert_eq!(format_space_dollar("hello$世界"), "hello$世界");
         assert_eq!(format_space_dollar("你好$world"), "你好$world");
         assert_eq!(format_space_dollar("你好$x$世界"), "你好 $x$ 世界");
+        assert_eq!(format_space_dollar("变量 $x$ 代表"), "变量 $x$ 代表");
+        assert_eq!(format_space_dollar("令$x^2+y^2=z^2$，可得"), "令 $x^2+y^2=z^2$，可得");
+        assert_eq!(format_space_dollar("这是一个例子：$E=mc^2$。"), "这是一个例子：$E=mc^2$。");
+        assert_eq!(format_space_dollar("$x+y$是方程"), "$x+y$ 是方程");
+        assert_eq!(format_space_dollar("方程为$x+y=1$"), "方程为 $x+y=1$");
+        assert_eq!(format_space_dollar("若$x>0$且$y<0$"), "若 $x>0$ 且 $y<0$");
+        assert_eq!(format_space_dollar("函数$f(x)$的极值"), "函数 $f(x)$ 的极值");
+        assert_eq!(format_space_dollar("变数$x$、$y$满足"), "变数 $x$、$y$ 满足");
+        assert_eq!(format_space_dollar("公式$$E=mc^2$$证明了"), "公式 $$E=mc^2$$ 证明了");
+        assert_eq!(format_space_dollar("矩阵$A=\\begin{bmatrix}1&0\\\\0&1\\end{bmatrix}$满足"), "矩阵 $A=\\begin{bmatrix}1&0\\\\0&1\\end{bmatrix}$ 满足");
+        assert_eq!(format_space_dollar("测试$x_1,x_2$以及$x_3$"), "测试 $x_1,x_2$ 以及 $x_3$");
+        assert_eq!(format_space_dollar("若$a>b$则有$c>d$"), "若 $a>b$ 则有 $c>d$");
+        assert_eq!(format_space_dollar("设$a,b∈\\mathbb{R}$且$a>b$"), "设 $a,b∈\\mathbb{R}$ 且 $a>b$");
+        assert_eq!(format_space_dollar("下式成立：$$f(x)=x^2$$"), "下式成立：$$f(x)=x^2$$");
     }
 }
