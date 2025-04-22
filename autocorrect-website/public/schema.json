@@ -44,6 +44,11 @@
           "default": 0,
           "$ref": "#/definitions/SeverityMode"
         },
+        "space-dollar": {
+          "description": "Add space between dollar `$` when near the CJK.",
+          "default": 0,
+          "$ref": "#/definitions/SeverityMode"
+        },
         "fullwidth": {
           "description": "Convert to fullwidth.",
           "default": 1,

@@ -46,6 +46,12 @@ lazy_static! {
         Strategery::new(r"[\p{CJK_N}\s）】」”’》][\-]", r"[\p{CJK_N}“‘]"),
     ];
 
+    static ref DOLLAR_STRATEGIES: Vec<Strategery> = vec![
+        // Add space before and after dollar $ near the CJK
+        Strategery::new(r"\p{CJK}", r"[$]"),
+        Strategery::new(r"[$]", r"\p{CJK}"),
+    ];
+
     static ref NO_SPACE_FULLWIDTH_STRATEGIES: Vec<Strategery> = vec![
         // FullwidthPunctuation remove space case, Fullwidth can safe to remove spaces
         Strategery::new(r"\w|\p{CJK}|`", r"[，。、！？：；（）「」《》【】]").with_remove_space().with_reverse(),
@@ -100,6 +106,16 @@ pub fn format_space_backticks(input: &str) -> Cow<str> {
             Cow::Borrowed(s) => strategy.format(s),
             Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
         })
+}
+
+pub fn format_space_dollar(input: &str) -> Cow<str> {
+    DOLLAR_STRATEGIES
+        .iter()
+        .fold(Cow::Borrowed(input), |text, strategy| match text {
+            Cow::Borrowed(s) => strategy.format(s),
+            Cow::Owned(s) => Cow::Owned(strategy.format(&s).into_owned()),
+        },
+    )
 }
 
 pub fn format_no_space_fullwidth(input: &str) -> Cow<str> {
