@@ -81,6 +81,11 @@ Or you can just install it via this on Unix-like system:
 ```bash
 $ curl -sSL https://git.io/JcGER | sh
 ```
+If the above link cannot be used, you can download and install it using the Raw link provided by GitHub.
+
+```bash
+wget -O autocorrect-install.sh https://raw.githubusercontent.com/huacnlee/autocorrect/main/install  &&  chmod +x autocorrect-install.sh  && ./autocorrect-install.sh
+```
 
 After that, you will get `autocorrect` command.
 
