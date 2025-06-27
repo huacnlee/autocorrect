@@ -325,9 +325,8 @@ fn format_and_output(filepath: &str, filetype: &str, raw: &str, cli: &Cli) {
                 progress::ok(cli);
             } else {
                 progress::err(cli);
+                fs::write(Path::new(filepath), result.out).unwrap();
             }
-
-            fs::write(Path::new(filepath), result.out).unwrap();
         }
     } else {
         if result.has_error() {
