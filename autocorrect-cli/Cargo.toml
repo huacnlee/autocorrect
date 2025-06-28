@@ -48,6 +48,7 @@ self_update = { version = "0.30.0", features = [
     "rustls",
 ], default-features = false, optional = true }
 sudo = { version = "0.5", optional = true }
+console = { version = "0.16", features = ["std"], default-features = false }
 
 [features]
 default = ["update"]
