@@ -108,7 +108,7 @@ impl CharMatching for char {
     }
 }
 
-pub fn format_punctuation(text: &str) -> Cow<str> {
+pub fn format_punctuation(text: &str) -> Cow<'_, str> {
     // Get first non space char as quote
     let wrap_quote = text.chars().find(|c| !c.is_whitespace()).unwrap_or(' ');
 
@@ -132,7 +132,7 @@ pub fn format_punctuation(text: &str) -> Cow<str> {
 }
 
 /// Normalize chars to use general half width in Chinese contents.
-pub fn format_word(text: &str) -> Cow<str> {
+pub fn format_word(text: &str) -> Cow<'_, str> {
     let mut changed = false;
     let out = text
         .chars()
@@ -188,7 +188,7 @@ fn is_may_only_english(text: &str) -> bool {
     false
 }
 
-fn format_line(text: &str, wrap_quote: char) -> Cow<str> {
+fn format_line(text: &str, wrap_quote: char) -> Cow<'_, str> {
     if !is_may_only_english(text) {
         return Cow::Borrowed(text);
     }

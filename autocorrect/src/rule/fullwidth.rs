@@ -31,7 +31,7 @@ lazy_static! {
 }
 
 // fullwidth correct punctuations near the CJK chars
-pub fn format(text: &str) -> Cow<str> {
+pub fn format(text: &str) -> Cow<'_, str> {
     let patterns = [
         &*PUNCTUATION_WITH_LEFT_CJK_RE,
         &*PUNCTUATION_WITH_RIGHT_CJK_RE,
