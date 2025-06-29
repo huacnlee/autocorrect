@@ -94,7 +94,7 @@ pub fn lint_jupyter(input: &str) -> LintResult {
     result
 }
 
-fn parse_jupyter(input: &str) -> Result<Vec<NotebookCell>, String> {
+fn parse_jupyter(input: &str) -> Result<Vec<NotebookCell<'_>>, String> {
     // Get MarkedSource from pairs for get source when match cell_type is "markdown" in ast
     let mut cells: Vec<NotebookCell> = vec![];
 

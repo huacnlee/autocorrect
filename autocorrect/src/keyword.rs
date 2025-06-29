@@ -125,7 +125,7 @@ impl Node {
     ///
     /// let result = dict.match_keywords("hello world");
     /// ```
-    pub fn match_keywords(&self, text: &str) -> MatchedResult {
+    pub fn match_keywords(&self, text: &str) -> MatchedResult<'_> {
         let mut result = MatchedResult::new();
         let mut node = self;
 

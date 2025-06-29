@@ -7,7 +7,7 @@ license = "MIT"
 name = "autocorrect-cli"
 readme = "../README.md"
 repository = "https://github.com/huacnlee/autocorrect"
-version = "2.13.3"
+version = "2.14.0"
 
 [[bin]]
 name = "autocorrect"
@@ -42,7 +42,7 @@ tokio = { version = "1", features = [
 # Self Update
 # - archive-tar + compression-flate2 - for tar.gz
 # - rustls - for use native rustls without system openssl dependency
-self_update = { version = "0.30.0", features = [
+self_update = { version = "0.42.0", features = [
     "archive-tar",
     "compression-flate2",
     "rustls",

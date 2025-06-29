@@ -79,7 +79,7 @@ pub fn default_rule_names() -> Vec<String> {
     rule_names
 }
 
-pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult {
+pub(crate) fn format_or_lint(text: &str, lint: bool) -> RuleResult<'_> {
     format_or_lint_with_disable_rules(text, lint, &map![])
 }
 

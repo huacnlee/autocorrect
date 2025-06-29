@@ -3,7 +3,7 @@ use std::{borrow::Cow, collections::HashMap};
 use crate::{config::Config, keyword::MatchedResult};
 
 // Spell check by dict
-pub fn format(text: &str) -> Cow<str> {
+pub fn format(text: &str) -> Cow<'_, str> {
     let config = Config::current();
 
     let word_map = &config.spellcheck.word_map;
