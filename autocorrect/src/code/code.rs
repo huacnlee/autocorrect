@@ -21,7 +21,7 @@ impl<R: RuleType> RuleTypeToString for R {
 
 pub fn format_pairs<R: RuleType, O: Results>(out: O, pairs: Result<Pairs<R>, Error<R>>) -> O {
     // Limit parse stack max depth for avoiding some complex parser will hangs indefinitely.
-    pest::set_call_limit(Some(10_000_000usize.try_into().unwrap()));
+    pest::set_call_limit(Some(100_000_000usize.try_into().unwrap()));
 
     let mut out = out;
 
