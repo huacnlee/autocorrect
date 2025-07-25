@@ -1,10 +1,6 @@
 name: "Release Crate & RubyGem"
 on:
-  push:
-    tags:
-      - "v*"
-    branches:
-      - release-gem
+  workflow_dispatch:
 jobs:
   publish_crate:
     name: Publish Crate

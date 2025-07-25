@@ -1,10 +1,7 @@
 name: Release Java
 on:
-  push:
-    branches:
-      - "release-java"
-    tags:
-      - "v*"
+  workflow_dispatch:
+
 jobs:
   build:
     strategy:
