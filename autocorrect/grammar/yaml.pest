@@ -1,22 +1,36 @@
-//! YAML Parser
-item  = _{ (pair | comment | newline | other)+ }
-other = ${ !(pair) ~ ANY }
+// YAML Parser
+item = _{ item_content }
+item_content = _{ (pair | comment | newline | other)+ }
+other = @{ !("#" | indent ~ (string_key | simple_key) ~ ":") ~ other_content }
+other_content = _{ (!newline ~ ANY)+ }
 
 /// Comment
-comment = ${ "#" ~ (!(NEWLINE) ~ ANY)* }
-indent  = ${ (^" "+)? }
+comment = ${ "#" ~ comment_content }
+comment_content = _{ (!newline ~ ANY)* }
+
+indent = ${ (^" "+)? }
 newline = ${ "\n" | "\r" }
 
 /// Pair
-pair = _{ key_part ~ string }
-key  = ${ (string_key | simple_key) ~ (":" ~ " "?) }
+pair = @{ key_part ~ string }
+key = ${ (string_key | simple_key) ~ (":" ~ " "?) }
 
 /// String
-string       = ${ string_value | simple_value }
-string_key   = _{ "\"" ~ key_str* ~ "\"" }
-simple_key   = _{ key_str* }
-key_str      = _{ !(newline | ":" | "\"" | "'") ~ ANY }
-simple_value = _{ value_str* }
-string_value = _{ ("\"" ~ (!(newline | "\"") ~ ANY)* ~ "\"") | ("'" ~ (!(newline | "'") ~ ANY)* ~ "'") }
-value_str    = _{ !(newline | "\"" | "'") ~ ANY }
-key_part     = _{ indent ~ key }
+string = ${ string_value | simple_value }
+
+string_value = @{ double_quoted | single_quoted }
+double_quoted = _{ "\"" ~ double_quoted_content ~ "\"" }
+single_quoted = _{ "'" ~ single_quoted_content ~ "'" }
+double_quoted_content = _{ (!(newline | "\"") ~ ANY)* }
+single_quoted_content = _{ (!(newline | "'") ~ ANY)* }
+
+string_key = _{ "\"" ~ key_str_content ~ "\"" }
+simple_key = _{ key_str_content }
+key_str_content = _{ key_str* }
+key_str = _{ !(newline | ":" | "\"" | "'") ~ ANY }
+
+simple_value = _{ value_str_content }
+value_str_content = _{ value_str* }
+value_str = _{ !(newline | "\"" | "'") ~ ANY }
+
+key_part = ${ indent ~ key }
