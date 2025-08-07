@@ -69,10 +69,7 @@ pub trait Results {
 
     /// Is AutoCorrrect current is enable
     fn is_enabled(&self) -> bool {
-        match self.get_toggle().match_rule("") {
-            Some(enable) => enable,
-            _ => true,
-        }
+        self.get_toggle().match_rule("").unwrap_or(true)
     }
 }
 

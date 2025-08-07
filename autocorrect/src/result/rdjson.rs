@@ -4,19 +4,6 @@ use super::LintResult;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
-struct RdfJson {
-    source: RdfSource,
-    severity: String,
-    diagnostics: String,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-struct RdfSource {
-    name: String,
-    url: String,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
 struct RdfDiagnostic {
     message: String,
     severity: String,
