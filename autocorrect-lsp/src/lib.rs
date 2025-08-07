@@ -31,12 +31,10 @@ impl Backend {
     }
 
     fn upsert_document(&self, doc: Arc<TextDocumentItem>) {
-        let uri = doc.uri.clone();
         self.documents
             .write()
             .unwrap()
-            .get_mut(&uri)
-            .map(|old| std::mem::replace(old, doc.clone()));
+            .insert(doc.uri.clone(), doc.clone());
     }
 
     fn get_document(&self, uri: &Url) -> Option<Arc<TextDocumentItem>> {
@@ -105,7 +103,6 @@ impl Backend {
     }
 
     async fn clear_diagnostics(&self, uri: &Url) {
-        self.diagnostics.write().unwrap().remove(uri);
         self.client
             .publish_diagnostics(uri.clone(), vec![], None)
             .await;
@@ -263,13 +260,13 @@ impl LanguageServer for Backend {
             return;
         }
 
-        self.client
-            .log_message(MessageType::INFO, format!("did_change {}\n", uri))
-            .await;
-
         assert_eq!(content_changes.len(), 1);
         let change = content_changes.into_iter().next().unwrap();
         assert!(change.range.is_none());
+
+        self.client
+            .log_message(MessageType::INFO, format!("did_change {}", uri))
+            .await;
 
         let updated_doc =
             TextDocumentItem::new(uri.clone(), "".to_string(), version, change.text.clone());
@@ -316,7 +313,13 @@ impl LanguageServer for Backend {
             self.clear_diagnostics(&text_document.uri).await;
             let input = document.text.as_str();
 
+            self.client
+                .log_message(MessageType::INFO, format!("before: {}", input))
+                .await;
             let result = autocorrect::format_for(input, document.uri.path());
+            self.client
+                .log_message(MessageType::INFO, format!("after: {}", result.out))
+                .await;
             let range = Range::new(
                 Position::new(0, 0),
                 Position {
