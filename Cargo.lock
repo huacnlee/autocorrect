@@ -238,6 +238,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "autocorrect-swift"
+version = "2.14.3"
+dependencies = [
+ "autocorrect 2.14.3",
+ "libc",
+]
+
+[[package]]
 name = "autocorrect-wasm"
 version = "2.14.3"
 dependencies = [
