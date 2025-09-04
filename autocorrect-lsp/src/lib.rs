@@ -37,6 +37,7 @@ impl Backend {
             .insert(doc.uri.clone(), doc.clone());
     }
 
+    #[allow(unused)]
     fn get_document(&self, uri: &Url) -> Option<Arc<TextDocumentItem>> {
         self.documents.read().unwrap().get(uri).cloned()
     }
@@ -77,7 +78,7 @@ impl Backend {
                         },
                         end: Position {
                             line: (result.line + addition_lines - 1) as u32,
-                            character: (result.col + result.old.chars().count() - 1) as u32,
+                            character: (result.col + result.new.chars().count() - 1) as u32,
                         },
                     },
                     source,
@@ -103,6 +104,7 @@ impl Backend {
     }
 
     async fn clear_diagnostics(&self, uri: &Url) {
+        self.diagnostics.write().unwrap().remove(uri);
         self.client
             .publish_diagnostics(uri.clone(), vec![], None)
             .await;
@@ -180,7 +182,7 @@ impl LanguageServer for Backend {
                         ..Default::default()
                     },
                 )),
-                document_formatting_provider: Some(OneOf::Left(true)),
+                document_formatting_provider: Some(OneOf::Left(false)),
                 code_action_provider: Some(CodeActionProviderCapability::Options(
                     CodeActionOptions {
                         code_action_kinds: Some(vec![
