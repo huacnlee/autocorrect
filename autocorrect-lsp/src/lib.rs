@@ -31,12 +31,10 @@ impl Backend {
     }
 
     fn upsert_document(&self, doc: Arc<TextDocumentItem>) {
-        let uri = doc.uri.clone();
         self.documents
             .write()
             .unwrap()
-            .get_mut(&uri)
-            .map(|old| std::mem::replace(old, doc.clone()));
+            .insert(doc.uri.clone(), doc.clone());
     }
 
     #[allow(unused)]
@@ -299,8 +297,42 @@ impl LanguageServer for Backend {
         }
     }
 
-    async fn formatting(&self, _: DocumentFormattingParams) -> Result<Option<Vec<TextEdit>>> {
-        return Ok(None);
+    async fn formatting(&self, params: DocumentFormattingParams) -> Result<Option<Vec<TextEdit>>> {
+        let DocumentFormattingParams { text_document, .. } = params;
+
+        if self.is_ignored(&text_document.uri) {
+            return Ok(None);
+        }
+
+        self.client
+            .log_message(
+                MessageType::INFO,
+                format!("formatting {}\n", text_document.uri),
+            )
+            .await;
+
+        if let Some(document) = self.get_document(&text_document.uri) {
+            self.clear_diagnostics(&text_document.uri).await;
+            let input = document.text.as_str();
+
+            self.client
+                .log_message(MessageType::INFO, format!("before: {}", input))
+                .await;
+            let result = autocorrect::format_for(input, document.uri.path());
+            self.client
+                .log_message(MessageType::INFO, format!("after: {}", result.out))
+                .await;
+            let range = Range::new(
+                Position::new(0, 0),
+                Position {
+                    line: u32::MAX,
+                    character: u32::MAX,
+                },
+            );
+            return Ok(Some(vec![TextEdit::new(range, result.out)]));
+        }
+
+        Ok(None)
     }
 
     async fn code_action(&self, params: CodeActionParams) -> Result<Option<CodeActionResponse>> {
