@@ -31,12 +31,15 @@ impl Backend {
     }
 
     fn upsert_document(&self, doc: Arc<TextDocumentItem>) {
+        let uri = doc.uri.clone();
         self.documents
             .write()
             .unwrap()
-            .insert(doc.uri.clone(), doc.clone());
+            .get_mut(&uri)
+            .map(|old| std::mem::replace(old, doc.clone()));
     }
 
+    #[allow(unused)]
     fn get_document(&self, uri: &Url) -> Option<Arc<TextDocumentItem>> {
         self.documents.read().unwrap().get(uri).cloned()
     }
@@ -77,7 +80,7 @@ impl Backend {
                         },
                         end: Position {
                             line: (result.line + addition_lines - 1) as u32,
-                            character: (result.col + result.old.chars().count() - 1) as u32,
+                            character: (result.col + result.new.chars().count() - 1) as u32,
                         },
                     },
                     source,
@@ -103,6 +106,7 @@ impl Backend {
     }
 
     async fn clear_diagnostics(&self, uri: &Url) {
+        self.diagnostics.write().unwrap().remove(uri);
         self.client
             .publish_diagnostics(uri.clone(), vec![], None)
             .await;
@@ -180,7 +184,7 @@ impl LanguageServer for Backend {
                         ..Default::default()
                     },
                 )),
-                document_formatting_provider: Some(OneOf::Left(true)),
+                document_formatting_provider: Some(OneOf::Left(false)),
                 code_action_provider: Some(CodeActionProviderCapability::Options(
                     CodeActionOptions {
                         code_action_kinds: Some(vec![
@@ -295,42 +299,8 @@ impl LanguageServer for Backend {
         }
     }
 
-    async fn formatting(&self, params: DocumentFormattingParams) -> Result<Option<Vec<TextEdit>>> {
-        let DocumentFormattingParams { text_document, .. } = params;
-
-        if self.is_ignored(&text_document.uri) {
-            return Ok(None);
-        }
-
-        self.client
-            .log_message(
-                MessageType::INFO,
-                format!("formatting {}\n", text_document.uri),
-            )
-            .await;
-
-        if let Some(document) = self.get_document(&text_document.uri) {
-            self.clear_diagnostics(&text_document.uri).await;
-            let input = document.text.as_str();
-
-            self.client
-                .log_message(MessageType::INFO, format!("before: {}", input))
-                .await;
-            let result = autocorrect::format_for(input, document.uri.path());
-            self.client
-                .log_message(MessageType::INFO, format!("after: {}", result.out))
-                .await;
-            let range = Range::new(
-                Position::new(0, 0),
-                Position {
-                    line: u32::MAX,
-                    character: u32::MAX,
-                },
-            );
-            return Ok(Some(vec![TextEdit::new(range, result.out)]));
-        }
-
-        Ok(None)
+    async fn formatting(&self, _: DocumentFormattingParams) -> Result<Option<Vec<TextEdit>>> {
+        return Ok(None);
     }
 
     async fn code_action(&self, params: CodeActionParams) -> Result<Option<CodeActionResponse>> {
