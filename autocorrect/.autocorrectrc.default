@@ -144,6 +144,8 @@ fileTypes:
   # Shell
   sh: ruby
   shell: ruby
+  # Lua
+  lua: lua
   # Text
   text: text
   plain: text

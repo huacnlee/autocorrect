@@ -1,0 +1,21 @@
+//! Lua Parser
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ regexp | string | other }
+other      = ${ !(string) ~ ANY }
+WHITESPACE =  { " " | "\t" | NEWLINE }
+
+/// Comment
+COMMENT       = ${ line_comment | block_comment }
+line_comment  = _{ "--" ~ (!(NEWLINE) ~ ANY)* }
+block_comment = _{ "--[[" ~ (!("]]") ~ ANY)* ~ "]]" }
+
+/// String
+string       = ${ inner_string }
+inner_string = _{
+    ("'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'")
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
+  | ("[[" ~ (!("]]") ~ ANY)* ~ "]]")
+}
+
+/// Regexp (Lua doesn't have built-in regex, but might use patterns)
+regexp = ${ "find" ~ "(" ~ " "* ~ inner_string ~ (!")" ~ ANY)* ~ ")" }
