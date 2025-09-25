@@ -15,30 +15,8 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn debug_lua_parsing() {
-        use pest::Parser;
-        use pest::iterators::Pair;
-        
-        fn print_pair(pair: Pair<Rule>, depth: usize) {
-            let indent = "  ".repeat(depth);
-            println!("{}{:?}: {:?}", indent, pair.as_rule(), pair.as_str());
-            
-            for inner in pair.into_inner() {
-                print_pair(inner, depth + 1);
-            }
-        }
-        
-        // 测试多行注释
-        let example1 = indoc! {r###"
-[[
-   role上面一些业务自定义 obj 功能测试
-   对应service/roleagent/mods/init.lua
-]]
-        "###};
-        
-        println!("
-=== Debug Lua Full Example ===");
-        let full_example = indoc! {r###"
+    fn it_format_lua_basic() {
+        let example = indoc! {r###"
 --[[
    role上面一些业务自定义 obj 功能测试
    对应service/roleagent/mods/init.lua
@@ -49,49 +27,20 @@ function test()
     print("hello world")
 end
         "###};
-        
-        match LuaParser::parse(Rule::item, full_example) {
-            Ok(pairs) => {
-                for pair in pairs {
-                    print_pair(pair, 0);
-                }
-            }
-            Err(e) => {
-                eprintln!("Parse error: {}", e);
-            }
-        }
-        println!("=== End Debug ===");
-        
-        println!("=== Debug Lua Block Comment ===");
-        match LuaParser::parse(Rule::item, example1) {
-            Ok(pairs) => {
-                for pair in pairs {
-                    print_pair(pair, 0);
-                }
-            }
-            Err(e) => {
-                eprintln!("Parse error: {}", e);
-            }
-        }
-        println!("=== End Debug ===");
-        
-        // 测试单行注释
-        let example2 = indoc! {r###"
--- 单行注释role上面测试
+
+        let expect = indoc! {r###"
+--[[
+   role 上面一些业务自定义 obj 功能测试
+   对应 service/roleagent/mods/init.lua
+]]
+
+-- 单行注释 role 上面测试
+function test()
+    print("hello world")
+end
         "###};
-        
-        println!("\n=== Debug Lua Line Comment ===");
-        match LuaParser::parse(Rule::item, example2) {
-            Ok(pairs) => {
-                for pair in pairs {
-                    print_pair(pair, 0);
-                }
-            }
-            Err(e) => {
-                eprintln!("Parse error: {}", e);
-            }
-        }
-        println!("=== End Debug ===");
+
+        assert_eq!(expect, format_for(example, "lua").to_string());
     }
 
     #[test]
@@ -113,7 +62,7 @@ end
         -- 第 1 行注释
         -- 第 2 行注释
         function hello(a)
-          re = string.find("hello你好")
+          re = string.find("hello 你好")
           
           a = "hello 世界"
           b = '你好 hello 世界'
@@ -209,6 +158,60 @@ print("hello")
 print("hello")
         "###};
 
+        assert_eq!(expect, format_for(example, "lua").to_string());
+    }
+
+    #[test]
+    fn it_format_lua_string_functions() {
+        let example = indoc! {r###"
+-- 测试 Lua 字符串模式匹配函数
+local text = "Hello世界测试123ABC"
+
+-- string.find 函数
+local start_pos, end_pos = string.find(text, "世界")
+
+-- string.match 函数  
+local matched = string.match(text, "测试(%d+)")
+
+-- string.gmatch 函数
+for word in string.gmatch(text, "(%a+)") do
+    print(word)
+end
+
+-- string.gsub 函数
+local replaced = string.gsub(text, "测试", "Test")
+
+-- 直接使用函数名（不加 string. 前缀）
+local direct_find = find(text, "Hello")
+local direct_match = match(text, "(%a+)")
+local direct_gsub = gsub(text, "123", "456")
+        "###};
+
+        let expect = indoc! {r###"
+-- 测试 Lua 字符串模式匹配函数
+local text = "Hello 世界测试 123ABC"
+
+-- string.find 函数
+local start_pos, end_pos = string.find(text, "世界")
+
+-- string.match 函数  
+local matched = string.match(text, "测试 (%d+)")
+
+-- string.gmatch 函数
+for word in string.gmatch(text, "(%a+)") do
+    print(word)
+end
+
+-- string.gsub 函数
+local replaced = string.gsub(text, "测试", "Test")
+
+-- 直接使用函数名（不加 string. 前缀）
+local direct_find = find(text, "Hello")
+local direct_match = match(text, "(%a+)")
+local direct_gsub = gsub(text, "123", "456")
+        "###};
+
+        // 注意：模式字符串现在会按照普通字符串处理
         assert_eq!(expect, format_for(example, "lua").to_string());
     }
 }
