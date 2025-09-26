@@ -76,6 +76,17 @@ $ scoop install autocorrect
 
 </details>
 
+<details>
+<summary>Build from source</summary>
+
+```bash
+$ git clone https://github.com/huacnlee/autocorrect.git
+$ cd autocorrect
+$ cargo build --release -p emmylua_ls
+```
+
+</details>
+
 Or you can just install it via this on Unix-like system:
 
 ```bash
