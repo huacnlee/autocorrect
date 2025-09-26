@@ -7,8 +7,9 @@ WHITESPACE =  { " " | "\t" | NEWLINE }
 /// Comment
 COMMENT       = ${ block_comment | line_comment }
 line_comment  = _{ "--" ~ (!(NEWLINE | "[") ~ ANY)* }
-block_comment = ${ "--[[" ~ block_comment_content ~ "]]" }
-block_comment_content = { (!("]]") ~ ANY)* }
+block_comment = ${ "--[[" ~ inner_text ~ "]]" }
+/// block_comment inner text
+inner_text = { (!("]]") ~ ANY)* }
 
 /// String
 string       = ${ inner_string }
