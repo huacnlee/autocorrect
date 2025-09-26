@@ -1,0 +1,22 @@
+//! Lua Parser
+item       = _{ SOI ~ line* ~ EOI }
+line       = _{ block_comment | line_comment | string | other }
+other      = ${ !(COMMENT | string | "--") ~ ANY }
+WHITESPACE =  { " " | "\t" | NEWLINE }
+
+/// Comment
+COMMENT       = ${ block_comment | line_comment }
+line_comment  = _{ "--" ~ (!(NEWLINE | "[") ~ ANY)* }
+block_comment = ${ "--[[" ~ inner_text ~ "]]" }
+/// block_comment inner text
+inner_text = { (!("]]") ~ ANY)* }
+
+/// String
+string       = ${ inner_string }
+
+/// Inner string - the core string parsing rule
+inner_string = _{ 
+    ("'" ~ (!(NEWLINE | "'") ~ ANY)* ~ "'")
+  | ("\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\"")
+  | ("[[" ~ (!("]]") ~ ANY)* ~ "]]")
+}
