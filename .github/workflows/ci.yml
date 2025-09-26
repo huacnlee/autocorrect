@@ -26,6 +26,7 @@ jobs:
           key: ubuntu-test-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Test
         run: |
+          rustup component add clippy
           cargo install cargo-machete
           cargo machete
           cargo clippy
