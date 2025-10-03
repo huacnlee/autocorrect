@@ -6,6 +6,8 @@ use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 
+mod typocheck;
+
 struct Backend {
     client: Client,
     work_dir: RwLock<PathBuf>,
@@ -19,7 +21,7 @@ const DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
 const DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
 
 const DIAGNOSTIC_SOURCE: &str = "AutoCorrect";
-const DIAGNOSTIC_SOURCE_SPELLCHECK: &str = "Spellcheck";
+pub(crate) const DIAGNOSTIC_SOURCE_SPELLCHECK: &str = "Typo";
 
 impl Backend {
     fn work_dir(&self) -> PathBuf {
@@ -53,7 +55,7 @@ impl Backend {
         let path = document.uri.path();
         let result = autocorrect::lint_for(input, path);
 
-        let diagnostics = result
+        let mut diagnostics: Vec<Diagnostic> = result
             .lines
             .iter()
             .map(|result| {
@@ -88,6 +90,9 @@ impl Backend {
                 }
             })
             .collect();
+
+        let typo_diagnostics = typocheck::check_typos(input);
+        diagnostics.extend(typo_diagnostics);
 
         self.send_diagnostics(document, diagnostics).await;
     }
@@ -392,21 +397,34 @@ impl LanguageServer for Backend {
         };
 
         for diagnostic in context.diagnostics.iter() {
+            let suggestions = diagnostic
+                .data
+                .as_ref()
+                .and_then(|data| serde_json::from_value::<Vec<String>>(data.clone()).ok())
+                .unwrap_or(vec![diagnostic.message.clone()]);
+            let edits = suggestions
+                .iter()
+                .map(|suggestion| TextEdit {
+                    range: diagnostic.range,
+                    new_text: suggestion.clone(),
+                })
+                .collect::<Vec<TextEdit>>();
+
             let action = CodeAction {
-                title: diagnostic.source.clone().unwrap_or("AutoCorrect".into()),
+                title: if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
+                    format!("AutoCorrect: {}", diagnostic.message)
+                } else if diagnostic.source == Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string()) {
+                    format!("Typo: {}", diagnostic.message)
+                } else {
+                    format!("Fix: {}", diagnostic.message)
+                },
                 kind: Some(CodeActionKind::QUICKFIX),
                 diagnostics: Some(vec![diagnostic.clone()]),
                 edit: Some(WorkspaceEdit {
                     changes: Some(
-                        vec![(
-                            text_document.uri.clone(),
-                            vec![TextEdit {
-                                range: diagnostic.range,
-                                new_text: diagnostic.message.clone(),
-                            }],
-                        )]
-                        .into_iter()
-                        .collect(),
+                        vec![(text_document.uri.clone(), edits)]
+                            .into_iter()
+                            .collect(),
                     ),
                     ..Default::default()
                 }),
