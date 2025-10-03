@@ -40,6 +40,7 @@ AutoCorrect 是一个基于 Rust 编写的工具，用于「自动纠正」或�
 - Allows using `.gitignore` or `.autocorrectignore` to ignore files that you want to ignore.
 - Support more than [28 file types](https://github.com/huacnlee/autocorrect/tree/main/autocorrect/grammar) (Markdown, JSON, YAML, JavaScript, HTML ...), use AST parser to only check for strings, and comments.
 - LSP server: [autocorrect-lsp](https://github.com/huacnlee/autocorrect/tree/main/autocorrect-lsp)
+- Based on [typos](https://github.com/crate-ci/typos) for spellcheck (LSP only).
 - Cross-platform for Linux, macOS, Windows, and WebAssembly, and as Native SDK for programming (Node.js, JavaScript Browser, Ruby, Python, Java).
 
 ## 典型应用场景
