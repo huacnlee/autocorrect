@@ -6,6 +6,8 @@ use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 
+mod typocheck;
+
 struct Backend {
     client: Client,
     work_dir: RwLock<PathBuf>,
@@ -19,7 +21,7 @@ const DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
 const DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
 
 const DIAGNOSTIC_SOURCE: &str = "AutoCorrect";
-const DIAGNOSTIC_SOURCE_SPELLCHECK: &str = "Spellcheck";
+pub(crate) const DIAGNOSTIC_SOURCE_TYPO: &str = "Typo";
 
 impl Backend {
     fn work_dir(&self) -> PathBuf {
@@ -53,7 +55,7 @@ impl Backend {
         let path = document.uri.path();
         let result = autocorrect::lint_for(input, path);
 
-        let diagnostics = result
+        let mut diagnostics: Vec<Diagnostic> = result
             .lines
             .iter()
             .map(|result| {
@@ -65,7 +67,7 @@ impl Backend {
                     ),
                     autocorrect::Severity::Warning => (
                         Some(DiagnosticSeverity::INFORMATION),
-                        Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string()),
+                        Some(DIAGNOSTIC_SOURCE_TYPO.to_string()),
                     ),
                     _ => (None, None),
                 };
@@ -88,6 +90,9 @@ impl Backend {
                 }
             })
             .collect();
+
+        let typo_diagnostics = typocheck::check_typos(input);
+        diagnostics.extend(typo_diagnostics);
 
         self.send_diagnostics(document, diagnostics).await;
     }
@@ -348,76 +353,66 @@ impl LanguageServer for Backend {
 
         let mut response = CodeActionResponse::new();
 
-        let all_diagnostics = self
-            .diagnostics
-            .read()
-            .unwrap()
-            .get(&text_document.uri)
-            .cloned();
+        let mut all_changes = vec![];
+        for diagnostic in context.diagnostics.iter() {
+            let suggestions = diagnostic
+                .data
+                .as_ref()
+                .and_then(|data| serde_json::from_value::<Vec<String>>(data.clone()).ok())
+                .unwrap_or(vec![diagnostic.message.clone()]);
 
-        let mut show_fix_all = false;
-
-        let all_changes = all_diagnostics.map(|diagnostics| {
-            let mut map = HashMap::new();
-
-            if !show_fix_all {
-                show_fix_all = diagnostics.iter().any(|diagnostic| {
-                    diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string())
-                        || diagnostic.source == Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string())
-                });
+            if let Some(suggestion) = suggestions.first() {
+                all_changes.push((
+                    text_document.uri.clone(),
+                    vec![TextEdit::new(diagnostic.range, suggestion.clone())],
+                ));
             }
 
-            map.insert(
-                text_document.uri.clone(),
-                diagnostics
-                    .iter()
-                    .map(|diagnostic| TextEdit {
-                        range: diagnostic.range,
-                        new_text: diagnostic.message.clone(),
-                    })
-                    .collect(),
-            );
-            map
-        });
-
-        let fix_all_action = CodeAction {
-            title: "AutoCorrect All".into(),
-            kind: Some(CodeActionKind::SOURCE_FIX_ALL),
-            diagnostics: None,
-            edit: Some(WorkspaceEdit {
-                changes: all_changes,
-                ..Default::default()
-            }),
-            ..Default::default()
-        };
-
-        for diagnostic in context.diagnostics.iter() {
-            let action = CodeAction {
-                title: diagnostic.source.clone().unwrap_or("AutoCorrect".into()),
-                kind: Some(CodeActionKind::QUICKFIX),
-                diagnostics: Some(vec![diagnostic.clone()]),
-                edit: Some(WorkspaceEdit {
-                    changes: Some(
-                        vec![(
-                            text_document.uri.clone(),
-                            vec![TextEdit {
-                                range: diagnostic.range,
-                                new_text: diagnostic.message.clone(),
-                            }],
-                        )]
-                        .into_iter()
-                        .collect(),
-                    ),
+            for suggestion in suggestions.iter() {
+                let action = CodeAction {
+                    title: if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
+                        "AutoCorrect Fix".to_string()
+                    } else {
+                        format!("Suggest: {}", suggestion)
+                    },
+                    kind: Some(CodeActionKind::QUICKFIX),
+                    diagnostics: Some(vec![diagnostic.clone()]),
+                    edit: Some(WorkspaceEdit {
+                        changes: Some(
+                            vec![(
+                                text_document.uri.clone(),
+                                vec![TextEdit {
+                                    range: diagnostic.range,
+                                    new_text: suggestion.clone(),
+                                }],
+                            )]
+                            .into_iter()
+                            .collect(),
+                        ),
+                        ..Default::default()
+                    }),
+                    is_preferred: Some(true),
                     ..Default::default()
-                }),
-                is_preferred: Some(true),
-                ..Default::default()
-            };
-            response.push(CodeActionOrCommand::CodeAction(action));
-            if show_fix_all {
-                response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+                };
+                response.push(CodeActionOrCommand::CodeAction(action));
             }
         }
+
+        if !all_changes.is_empty() {
+            let fix_all_action = CodeAction {
+                title: "AutoCorrect All".into(),
+                kind: Some(CodeActionKind::SOURCE_FIX_ALL),
+                diagnostics: None,
+                edit: Some(WorkspaceEdit {
+                    changes: Some(all_changes.into_iter().collect()),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+
+            response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+        }
+
         return Ok(Some(response));
     }
 }

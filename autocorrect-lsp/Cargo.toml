@@ -13,3 +13,7 @@ tokio = { version = "1.37.0", features = [
     "rt-multi-thread",
 ] }
 tower-lsp = "0.20.0"
+typos-cli = "1.37.1"
+typos = "0.10.36"
+ropey = "1.6.1"
+serde_json = "1.0.145"
