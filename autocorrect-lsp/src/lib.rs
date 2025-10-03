@@ -21,7 +21,7 @@ const DEFAULT_CONFIG_FILE: &str = ".autocorrectrc";
 const DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
 
 const DIAGNOSTIC_SOURCE: &str = "AutoCorrect";
-pub(crate) const DIAGNOSTIC_SOURCE_SPELLCHECK: &str = "Typo";
+pub(crate) const DIAGNOSTIC_SOURCE_TYPO: &str = "Typo";
 
 impl Backend {
     fn work_dir(&self) -> PathBuf {
@@ -67,7 +67,7 @@ impl Backend {
                     ),
                     autocorrect::Severity::Warning => (
                         Some(DiagnosticSeverity::INFORMATION),
-                        Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string()),
+                        Some(DIAGNOSTIC_SOURCE_TYPO.to_string()),
                     ),
                     _ => (None, None),
                 };
@@ -353,38 +353,7 @@ impl LanguageServer for Backend {
 
         let mut response = CodeActionResponse::new();
 
-        let all_diagnostics = self
-            .diagnostics
-            .read()
-            .unwrap()
-            .get(&text_document.uri)
-            .cloned();
-
-        let mut show_fix_all = false;
-
-        let all_changes = all_diagnostics.map(|diagnostics| {
-            let mut map = HashMap::new();
-
-            if !show_fix_all {
-                show_fix_all = diagnostics.iter().any(|diagnostic| {
-                    diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string())
-                        || diagnostic.source == Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string())
-                });
-            }
-
-            map.insert(
-                text_document.uri.clone(),
-                diagnostics
-                    .iter()
-                    .map(|diagnostic| TextEdit {
-                        range: diagnostic.range,
-                        new_text: diagnostic.message.clone(),
-                    })
-                    .collect(),
-            );
-            map
-        });
-
+        let mut all_changes = vec![];
         for diagnostic in context.diagnostics.iter() {
             let suggestions = diagnostic
                 .data
@@ -392,12 +361,19 @@ impl LanguageServer for Backend {
                 .and_then(|data| serde_json::from_value::<Vec<String>>(data.clone()).ok())
                 .unwrap_or(vec![diagnostic.message.clone()]);
 
+            if let Some(suggestion) = suggestions.first() {
+                all_changes.push((
+                    text_document.uri.clone(),
+                    vec![TextEdit::new(diagnostic.range, suggestion.clone())],
+                ));
+            }
+
             for suggestion in suggestions.iter() {
                 let action = CodeAction {
                     title: if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
                         "AutoCorrect Fix".to_string()
                     } else {
-                        format!("Typo Fix: {}", suggestion)
+                        format!("Suggest: {}", suggestion)
                     },
                     kind: Some(CodeActionKind::QUICKFIX),
                     diagnostics: Some(vec![diagnostic.clone()]),
@@ -420,35 +396,23 @@ impl LanguageServer for Backend {
                 };
                 response.push(CodeActionOrCommand::CodeAction(action));
             }
+        }
 
-            let all_changes = suggestions.iter().fold(
-                all_changes.clone().unwrap_or_default(),
-                |mut acc, suggestion| {
-                    acc.entry(text_document.uri.clone())
-                        .or_insert_with(Vec::new)
-                        .push(TextEdit {
-                            range: diagnostic.range,
-                            new_text: suggestion.clone(),
-                        });
-                    acc
-                },
-            );
-
+        if !all_changes.is_empty() {
             let fix_all_action = CodeAction {
                 title: "AutoCorrect All".into(),
                 kind: Some(CodeActionKind::SOURCE_FIX_ALL),
                 diagnostics: None,
                 edit: Some(WorkspaceEdit {
-                    changes: Some(all_changes),
+                    changes: Some(all_changes.into_iter().collect()),
                     ..Default::default()
                 }),
                 ..Default::default()
             };
 
-            if show_fix_all {
-                response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
-            }
+            response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
         }
+
         return Ok(Some(response));
     }
 }

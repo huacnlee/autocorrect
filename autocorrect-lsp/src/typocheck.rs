@@ -4,7 +4,7 @@ use ropey::Rope;
 use tower_lsp::lsp_types::{self, Diagnostic};
 use typos::Status;
 
-use crate::DIAGNOSTIC_SOURCE_SPELLCHECK;
+use crate::DIAGNOSTIC_SOURCE_TYPO;
 
 static POLICY: LazyLock<typos_cli::policy::Policy> = LazyLock::new(|| {
     let policy = typos_cli::policy::Policy::new();
@@ -48,11 +48,15 @@ pub(crate) fn check_typos(text: &str) -> Vec<Diagnostic> {
                     severity: Some(lsp_types::DiagnosticSeverity::WARNING),
                     code: None,
                     code_description: None,
-                    source: Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string()),
+                    source: Some(DIAGNOSTIC_SOURCE_TYPO.to_string()),
                     message: format!(
-                        "Possible typo: '{}', suggestions: {}",
+                        "`{}` should be {}",
                         typo.typo,
-                        corrections.join(", ")
+                        corrections
+                            .into_iter()
+                            .map(|correct| format!("`{}`", correct))
+                            .collect::<Vec<String>>()
+                            .join(", ")
                     ),
                     related_information: None,
                     tags: None,
@@ -76,17 +80,14 @@ mod tests {
 
     #[test]
     fn test_check_typos() {
-        let text = "This is 你好 a smaple text with a typo.\nAnother line without typos.\nThis line has a eror.";
+        let text = "This is 你好 a smaple text with a typo.\nAnother line without typos.\nThis line has a soure.";
         let diagnostics = check_typos(text);
         assert_eq!(diagnostics.len(), 2);
-        assert_eq!(
-            diagnostics[0].message,
-            "Possible typo: 'smaple', suggestions: sample"
-        );
+        assert_eq!(diagnostics[0].message, "`smaple` should be `sample`");
         assert_eq!(diagnostics[0].range.start, Position::new(0, 13));
         assert_eq!(
             diagnostics[1].message,
-            "Possible typo: 'eror', suggestions: error"
+            "`soure` should be `source`, `sure`, `sore`, `sour`, `soured`"
         );
         assert_eq!(diagnostics[1].range.start, Position::new(2, 16));
     }
