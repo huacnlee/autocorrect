@@ -385,53 +385,66 @@ impl LanguageServer for Backend {
             map
         });
 
-        let fix_all_action = CodeAction {
-            title: "AutoCorrect All".into(),
-            kind: Some(CodeActionKind::SOURCE_FIX_ALL),
-            diagnostics: None,
-            edit: Some(WorkspaceEdit {
-                changes: all_changes,
-                ..Default::default()
-            }),
-            ..Default::default()
-        };
-
         for diagnostic in context.diagnostics.iter() {
             let suggestions = diagnostic
                 .data
                 .as_ref()
                 .and_then(|data| serde_json::from_value::<Vec<String>>(data.clone()).ok())
                 .unwrap_or(vec![diagnostic.message.clone()]);
-            let edits = suggestions
-                .iter()
-                .map(|suggestion| TextEdit {
-                    range: diagnostic.range,
-                    new_text: suggestion.clone(),
-                })
-                .collect::<Vec<TextEdit>>();
 
-            let action = CodeAction {
-                title: if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
-                    format!("AutoCorrect: {}", diagnostic.message)
-                } else if diagnostic.source == Some(DIAGNOSTIC_SOURCE_SPELLCHECK.to_string()) {
-                    format!("Typo: {}", diagnostic.message)
-                } else {
-                    format!("Fix: {}", diagnostic.message)
-                },
-                kind: Some(CodeActionKind::QUICKFIX),
-                diagnostics: Some(vec![diagnostic.clone()]),
-                edit: Some(WorkspaceEdit {
-                    changes: Some(
-                        vec![(text_document.uri.clone(), edits)]
+            for suggestion in suggestions.iter() {
+                let action = CodeAction {
+                    title: if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
+                        "AutoCorrect Fix".to_string()
+                    } else {
+                        format!("Typo Fix: {}", suggestion)
+                    },
+                    kind: Some(CodeActionKind::QUICKFIX),
+                    diagnostics: Some(vec![diagnostic.clone()]),
+                    edit: Some(WorkspaceEdit {
+                        changes: Some(
+                            vec![(
+                                text_document.uri.clone(),
+                                vec![TextEdit {
+                                    range: diagnostic.range,
+                                    new_text: suggestion.clone(),
+                                }],
+                            )]
                             .into_iter()
                             .collect(),
-                    ),
+                        ),
+                        ..Default::default()
+                    }),
+                    is_preferred: Some(true),
+                    ..Default::default()
+                };
+                response.push(CodeActionOrCommand::CodeAction(action));
+            }
+
+            let all_changes = suggestions.iter().fold(
+                all_changes.clone().unwrap_or_default(),
+                |mut acc, suggestion| {
+                    acc.entry(text_document.uri.clone())
+                        .or_insert_with(Vec::new)
+                        .push(TextEdit {
+                            range: diagnostic.range,
+                            new_text: suggestion.clone(),
+                        });
+                    acc
+                },
+            );
+
+            let fix_all_action = CodeAction {
+                title: "AutoCorrect All".into(),
+                kind: Some(CodeActionKind::SOURCE_FIX_ALL),
+                diagnostics: None,
+                edit: Some(WorkspaceEdit {
+                    changes: Some(all_changes),
                     ..Default::default()
                 }),
-                is_preferred: Some(true),
                 ..Default::default()
             };
-            response.push(CodeActionOrCommand::CodeAction(action));
+
             if show_fix_all {
                 response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
             }

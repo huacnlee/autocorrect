@@ -20,7 +20,8 @@ pub(crate) fn check_typos(text: &str) -> Vec<Diagnostic> {
     for typo in results {
         let offset = typo.byte_offset;
         let line = rope.byte_to_line(offset);
-        let character = offset - rope.line_to_byte(line);
+        let char_offset = rope.byte_to_char(offset);
+        let character = char_offset - rope.line_to_char(line);
 
         let start_pos = lsp_types::Position {
             line: line as u32,
@@ -28,7 +29,7 @@ pub(crate) fn check_typos(text: &str) -> Vec<Diagnostic> {
         };
         let end_pos = lsp_types::Position {
             line: line as u32,
-            character: (character + typo.typo.len()) as u32,
+            character: (character + typo.typo.chars().count()) as u32,
         };
         let range = lsp_types::Range {
             start: start_pos,
@@ -82,7 +83,7 @@ mod tests {
             diagnostics[0].message,
             "Possible typo: 'smaple', suggestions: sample"
         );
-        assert_eq!(diagnostics[0].range.start, Position::new(0, 17));
+        assert_eq!(diagnostics[0].range.start, Position::new(0, 13));
         assert_eq!(
             diagnostics[1].message,
             "Possible typo: 'eror', suggestions: error"
