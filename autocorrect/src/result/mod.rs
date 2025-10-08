@@ -49,10 +49,10 @@ pub trait Results {
     fn get_toggle(&self) -> &toggle::Toggle;
     fn toggle_mut(&mut self) -> &mut toggle::Toggle;
 
-    /// Move and save current line,col return the previus line number
+    /// Move and save current line,col return the previous line number
     fn move_cursor(&mut self, part: &str) -> (usize, usize);
 
-    /// Toggle AutoCorrrect template enable or disable
+    /// Toggle AutoCorrect template enable or disable
     /// If new toggle is None, ignore
     fn toggle(&mut self, new_toggle: &toggle::Toggle) {
         if new_toggle.is_none() {
@@ -67,7 +67,7 @@ pub trait Results {
             .merge(toggle::Toggle::disable(vec!["halfwidth-punctuation"]));
     }
 
-    /// Is AutoCorrrect current is enable
+    /// Is AutoCorrect current is enable
     fn is_enabled(&self) -> bool {
         self.get_toggle().match_rule("").unwrap_or(true)
     }

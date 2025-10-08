@@ -16,12 +16,12 @@ inner_string = _{
   | "\"" ~ (!(NEWLINE | "\"") ~ ANY)* ~ "\""
 }
 
-/// Ingores
-ingore_methods   = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
+/// Ignores
+ignore_methods   = _{ "NSRegularExpression" | "NSLocalizedString" | "Match" }
 ignore_arguments = _{ ("pattern" | "key") ~ ":" }
 ignore_string    = ${
     ignore_arguments ~ BLANK* ~ inner_string
-  | ingore_methods ~ "(" ~ BLANK* ~ inner_string
+  | ignore_methods ~ "(" ~ BLANK* ~ inner_string
 }
 
 /// Misc

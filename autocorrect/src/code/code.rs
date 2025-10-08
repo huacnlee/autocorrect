@@ -126,7 +126,7 @@ pub fn format_or_lint<R: RuleType, O: Results>(results: &mut O, rule_name: &str,
 
             let current_line = line + sub_line;
             let current_col = if sub_line > 0 {
-                // col will equal numner of removed leading whitespace
+                // col will equal number of removed leading whitespace
                 leading_spaces + 1
             } else {
                 col

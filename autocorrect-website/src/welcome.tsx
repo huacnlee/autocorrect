@@ -196,8 +196,8 @@ export const Welcome = () => {
         <div className="intro">
           <p>
             Like Eslint, Rubocop, Gofmt ..., AutoCorrect allow us to checking
-            soure code, and output as colorized diff with corrected suggest. You
-            can intergrating to CI (GitLab CI, GitHub Action, Travis CI....) for
+            source code, and output as colorized diff with corrected suggest. You
+            can integrating to CI (GitLab CI, GitHub Action, Travis CI....) for
             use to checking the contents in source code. Recognize the file
             name, and find out the strings and the comment part.
           </p>

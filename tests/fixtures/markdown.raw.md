@@ -122,7 +122,7 @@ console.log(p.a, p.b); // 1, 42
       <td>
         <ul>
           <li>
-            <code>getOwnPropertyDescripton</code>
+            <code>getOwnPropertyDescription</code>
             只能返回对象或者<code>undefined</code>.
           </li>
           <li>

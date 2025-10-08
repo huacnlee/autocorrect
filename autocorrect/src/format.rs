@@ -59,11 +59,11 @@ mod tests {
     #[track_caller]
     fn assert_cases(cases: HashMap<&str, &str>) {
         let mut fails: Vec<(String, String)> = Vec::new();
-        for (source, exptected) in cases.into_iter() {
+        for (source, expected) in cases.into_iter() {
             let actual = format(source);
 
-            if exptected != actual {
-                fails.push((exptected.to_string(), actual));
+            if expected != actual {
+                fails.push((expected.to_string(), actual));
             }
         }
 
