@@ -34,7 +34,7 @@ comment_normal    = _{ comment_tag_start ~ (!comment_tag_end ~ ANY)* ~ comment_t
 comment_tag_start = _{ chevron_left_bang ~ "--" }
 comment_tag_end   = _{ "--" ~ chevron_right_normal }
 
-/// Compatability with old IE browsers... This is not necessary for newer browsers
+/// Compatibility with old IE browsers... This is not necessary for newer browsers
 comment_if       = _{ comment_if_start ~ (!comment_if_end ~ ANY)* ~ comment_if_end }
 comment_if_start = _{ comment_tag_start ~ "[" ~ ^"if" }
 comment_if_end   = _{ chevron_left_bang ~ "[" ~ ^"endif" ~ "]" ~ comment_tag_end }
@@ -42,7 +42,7 @@ comment_if_end   = _{ chevron_left_bang ~ "[" ~ ^"endif" ~ "]" ~ comment_tag_end
 /// ATTRIBUTES
 attr            =  { attr_key ~ (equal ~ (attr_non_quoted | attr_quoted))? }
 attr_quoted     =  { PUSH(quote) ~ attr_value ~ end_attr_quoted }
-end_attr_quoted = { POP }
+end_attr_quoted =  { POP }
 attr_non_quoted = @{ !quote ~ (!(WHITESPACE | chevron_right) ~ ANY)* }
 attr_key        = ${ !WHITESPACE ~ (":" | "@" | "#" | ".")? ~ ASCII_ALPHA ~ text_chars* }
 attr_value      = ${ WHITESPACE* ~ (!PEEK ~ ANY)* ~ WHITESPACE* }
@@ -138,5 +138,5 @@ chevron_right          = _{
 }
 
 /// other
-equal        = @{ "=" }
-quote        = @{ "\"" | "'" }
+equal = @{ "=" }
+quote = @{ "\"" | "'" }

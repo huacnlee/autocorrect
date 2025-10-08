@@ -252,9 +252,9 @@ mod tests {
 
     #[track_caller]
     fn assert_cases(cases: HashMap<&str, &str>) {
-        for (source, exptected) in cases.into_iter() {
+        for (source, expected) in cases.into_iter() {
             let actual = format_punctuation(source);
-            assert_eq!(exptected, actual);
+            assert_eq!(expected, actual);
         }
     }
 

@@ -1,6 +1,6 @@
 //! Gettext Parser
 item       = _{ SOI ~ line* ~ EOI }
-line       = _{ pair | key | value | string | refrence | other }
+line       = _{ pair | key | value | string | reference | other }
 other      = ${ !(string) ~ ANY }
 WHITESPACE =  { " " | "\t" | NEWLINE }
 
@@ -9,8 +9,8 @@ line_comment  = _{ "#" ~ (!(NEWLINE) ~ ANY)* }
 block_comment = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 COMMENT       = ${ line_comment | block_comment }
 
-/// refrence
-refrence = ${ "#:" ~ (!(NEWLINE) ~ ANY)* }
+/// reference
+reference = ${ "#:" ~ (!(NEWLINE) ~ ANY)* }
 
 /// string
 string       = @{ inner_string }

@@ -12,7 +12,7 @@ lazy_static! {
         Strategery::new(r"[^%\$\\][a-zA-Z0-9]", r"\p{CJK}"),
         // Number, -100, +100
         Strategery::new(r"\p{CJK}", r"[\-+][\d]+").with_reverse(),
-        // Spcial format Letter, Number leading case, because the before Strategery can't cover eg. A开头的case测试
+        // Special format Letter, Number leading case, because the before Strategery can't cover eg. A开头的case测试
         Strategery::new(r"^[a-zA-Z0-9]", r"\p{CJK}"),
         // 10%中文
         Strategery::new(r"[0-9][%]", r"\p{CJK}"),

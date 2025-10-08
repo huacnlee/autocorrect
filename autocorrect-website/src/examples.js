@@ -57,7 +57,7 @@ function application() {
   scss: {
     title: 'CSS / SCSS',
     raw: `
-/* 
+/*
   这是多行CSS第1行
   这是第2行
 */
@@ -200,7 +200,7 @@ func helloWorld(name: String) -> String {
   },
   kotlin: {
     title: 'Kotlin',
-    raw: `/** 
+    raw: `/**
 * 第1行注释
 * 第2行注释
 */
@@ -220,7 +220,7 @@ fun helloWorld(name: String) {
     raw: `<div class="container">
 <p>目前html tag里的无法处理</p>
 <?php
-  /** 
+  /**
    * 第1行注释
    * 第2行注释
    */
@@ -241,7 +241,7 @@ fun helloWorld(name: String) {
 * 第1行注释
 * 第2行注释
 */
-public String helloWorld(stirng name) {
+public String helloWorld(string name) {
   // 第3行注释
   string singleLineString = "第1个字符串string";
   string stringLiteral = $"这是stringLiteral {name}!";
@@ -276,7 +276,7 @@ end`,
   },
   dart: {
     title: 'Dart',
-    raw: `/** 
+    raw: `/**
 * 第1行注释
 * 第2行注释
 */
@@ -302,9 +302,9 @@ String helloWorld(String name) {
 COMMENT ON COLUMN "topics"."user_id" IS 'topic创建者';
 -- Comment注释信息
 COMMENT ON COLUMN "topics"."status" IS '3屏蔽 1审核中 2已发布';
-/* 
+/*
   多行，且带有换行
-  注释comment信息 
+  注释comment信息
 */
 COMMENT ON COLUMN "topics"."kind" IS '0普通 1转发';`,
   },
@@ -330,19 +330,19 @@ region:
   "publisher": "huacnlee",
   "meta": {
     // 第1行注释
-    "title": "第1个meta", 
-    /** 
+    "title": "第1个meta",
+    /**
      * 第2行注释
      * 第3行注释
      */
-    "description": "第2个meta", 
+    "description": "第2个meta",
     "测试key不格式化": false
   }
 }`,
   },
   strings: {
     title: 'Strings',
-    raw: `/* 
+    raw: `/*
   InfoPlist.strings测试
   Created by某某
 */

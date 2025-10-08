@@ -74,7 +74,7 @@ impl Toggle {
         }
     }
 
-    // Merge two toggle if it posible, otherwise override
+    // Merge two toggle if it possible, otherwise override
     pub fn merge(&mut self, new_toggle: Self) {
         match new_toggle {
             Toggle::Disable(rules) => {

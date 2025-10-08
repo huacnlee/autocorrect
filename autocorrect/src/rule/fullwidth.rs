@@ -2,7 +2,7 @@
 use regex::Regex;
 use std::{borrow::Cow, collections::HashMap};
 
-const SPCIAL_PUNCTUATIONS: &str = "[.:!]([ ]*)";
+const SPECIAL_PUNCTUATIONS: &str = "[.:!]([ ]*)";
 const NORMAL_PUNCTUATIONS: &str = "[,?]([ ]*)";
 
 lazy_static! {
@@ -22,12 +22,12 @@ lazy_static! {
     );
     static ref PUNCTUATION_WITH_RIGHT_CJK_RE: Regex =
         regexp!("{}{}", r"[\p{CJ}]+", NORMAL_PUNCTUATIONS);
-    static ref PUNCTUATION_WITH_SPEICAL_CJK_RE: Regex =
-        regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r"[\p{CJ}]+");
-    static ref PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE: Regex =
-        regexp!("{}{}{}", r"[\p{CJ}]+", SPCIAL_PUNCTUATIONS, r#"["']?$"#);
+    static ref PUNCTUATION_WITH_SEPEICAL_CJK_RE: Regex =
+        regexp!("{}{}{}", r"[\p{CJ}]+", SPECIAL_PUNCTUATIONS, r"[\p{CJ}]+");
+    static ref PUNCTUATION_WITH_SEPEICAL_LAST_CJK_RE: Regex =
+        regexp!("{}{}{}", r"[\p{CJ}]+", SPECIAL_PUNCTUATIONS, r#"["']?$"#);
     static ref PUNCTUATIONS_RE: Regex =
-        regexp!("({}|{})", SPCIAL_PUNCTUATIONS, NORMAL_PUNCTUATIONS);
+        regexp!("({}|{})", SPECIAL_PUNCTUATIONS, NORMAL_PUNCTUATIONS);
 }
 
 // fullwidth correct punctuations near the CJK chars
@@ -35,8 +35,8 @@ pub fn format(text: &str) -> Cow<'_, str> {
     let patterns = [
         &*PUNCTUATION_WITH_LEFT_CJK_RE,
         &*PUNCTUATION_WITH_RIGHT_CJK_RE,
-        &*PUNCTUATION_WITH_SPEICAL_CJK_RE,
-        &*PUNCTUATION_WITH_SPEICAL_LAST_CJK_RE,
+        &*PUNCTUATION_WITH_SEPEICAL_CJK_RE,
+        &*PUNCTUATION_WITH_SEPEICAL_LAST_CJK_RE,
     ];
 
     let mut result = Cow::Borrowed(text);
@@ -67,9 +67,9 @@ mod tests {
 
     #[track_caller]
     fn assert_cases(cases: HashMap<&str, &str>) {
-        for (source, exptected) in cases.into_iter() {
+        for (source, expected) in cases.into_iter() {
             let actual = format(source);
-            assert_eq!(exptected, actual);
+            assert_eq!(expected, actual);
         }
     }
 

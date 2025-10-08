@@ -209,7 +209,7 @@ export const AppEditor = () => {
           </div>
         </div>
       </div>
-      <div className="editor-wraper absolute bottom-4 left-4 right-4 top-[110px]">
+      <div className="editor-wrapper absolute bottom-4 left-4 right-4 top-[110px]">
         <Editor
           defaultLanguage="markdown"
           theme={editorOptions.theme}

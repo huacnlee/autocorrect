@@ -99,13 +99,13 @@ Calculating -------------------------------------
 
 | Test Case   | Duration (Rust) | Duration (Pure Ruby) | Speedup |
 | ----------- | --------------- | -------------------- | ------- |
-| Foramt 50   | 0.008ms         | 0.031ms              | ~3.8x   |
+| Format 50   | 0.008ms         | 0.031ms              | ~3.8x   |
 | Format 100  | 0.017ms         | 0.062ms              | ~3.6x   |
 | Format 400  | 0.052ms         | 0.2ms                | ~3.8x   |
 | Format HTML | 0.183ms         | 0.67ms               | ~3.6x   |
 
 > 🎈 Rust version about 3.5 ~ 3.8x fast then Ruby (pure version).
-> 
+>
 > By this result, we can see the Ruby version is also fast, but the Rust version is more better.
 
 ## Know issues

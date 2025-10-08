@@ -21,7 +21,7 @@ mod tests {
          * 第1行注释
          * 第2行注释
          */
-        public String helloWorld(stirng name) {
+        public String helloWorld(string name) {
           // 第3行注释
           string singleLineString = "第1个字符串string";
           string stringLiteral = $"这是stringLiteral {name}!";
@@ -40,7 +40,7 @@ mod tests {
          * 第 1 行注释
          * 第 2 行注释
          */
-        public String helloWorld(stirng name) {
+        public String helloWorld(string name) {
           // 第 3 行注释
           string singleLineString = "第 1 个字符串 string";
           string stringLiteral = $"这是 stringLiteral {name}!";
