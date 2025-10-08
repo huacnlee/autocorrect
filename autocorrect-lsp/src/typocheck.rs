@@ -11,7 +11,6 @@ static POLICY: LazyLock<typos_cli::policy::Policy> = LazyLock::new(|| {
     policy
 });
 
-// hallo worl你好
 pub(crate) fn check_typos(text: &str) -> Vec<Diagnostic> {
     let rope = Rope::from_str(text);
     let results = typos::check_str(text, &POLICY.tokenizer, POLICY.dict);

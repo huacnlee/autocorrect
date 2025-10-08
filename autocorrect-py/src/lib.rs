@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
@@ -69,7 +71,7 @@ impl Ignorer {
     #[new]
     fn new(work_dir: &str) -> Self {
         Ignorer {
-            core: autocorrect::ignorer::Ignorer::new(work_dir),
+            core: autocorrect::ignorer::Ignorer::new(&PathBuf::from(work_dir)),
         }
     }
 

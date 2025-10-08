@@ -1,7 +1,9 @@
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
 
+use autocorrect::ignorer::Ignorer;
+use notify::Watcher as _;
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
@@ -11,9 +13,9 @@ mod typocheck;
 struct Backend {
     client: Client,
     work_dir: RwLock<PathBuf>,
-    documents: RwLock<HashMap<Url, Arc<TextDocumentItem>>>,
-    ignorer: RwLock<Option<autocorrect::ignorer::Ignorer>>,
-    diagnostics: RwLock<HashMap<Url, Vec<Diagnostic>>>,
+    documents: Arc<RwLock<HashMap<Url, Arc<TextDocumentItem>>>>,
+    ignorer: Arc<RwLock<Option<Ignorer>>>,
+    diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
 }
 
 const LSP_NAME: &str = "AutoCorrect";
@@ -22,6 +24,12 @@ const DEFAULT_IGNORE_FILE: &str = ".autocorrectignore";
 
 const DIAGNOSTIC_SOURCE: &str = "AutoCorrect";
 pub(crate) const DIAGNOSTIC_SOURCE_TYPO: &str = "Typo";
+
+fn is_config_file(path: &PathBuf) -> bool {
+    path.ends_with(DEFAULT_IGNORE_FILE)
+        || path.ends_with(DEFAULT_CONFIG_FILE)
+        || path.ends_with(".gitignore")
+}
 
 impl Backend {
     fn work_dir(&self) -> PathBuf {
@@ -49,13 +57,21 @@ impl Backend {
     }
 
     async fn lint_document(&self, document: &TextDocumentItem) {
-        self.clear_diagnostics(&document.uri).await;
+        Self::_lint_document(&self.client, self.diagnostics.clone(), document).await;
+    }
+
+    async fn _lint_document(
+        client: &Client,
+        diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
+        document: &TextDocumentItem,
+    ) {
+        Self::_clear_diagnostics(client, diagnostics.clone(), &document.uri).await;
 
         let input = document.text.as_str();
         let path = document.uri.path();
         let result = autocorrect::lint_for(input, path);
 
-        let mut diagnostics: Vec<Diagnostic> = result
+        let mut new_diagnostics: Vec<Diagnostic> = result
             .lines
             .iter()
             .map(|result| {
@@ -92,27 +108,29 @@ impl Backend {
             .collect();
 
         let typo_diagnostics = typocheck::check_typos(input);
-        diagnostics.extend(typo_diagnostics);
+        new_diagnostics.extend(typo_diagnostics);
 
-        self.send_diagnostics(document, diagnostics).await;
-    }
-
-    async fn send_diagnostics(&self, document: &TextDocumentItem, diagnostics: Vec<Diagnostic>) {
-        if let Ok(mut map) = self.diagnostics.write() {
+        if let Ok(mut map) = diagnostics.write() {
             map.entry(document.uri.clone())
-                .and_modify(|old_diagnostics| old_diagnostics.extend_from_slice(&diagnostics))
-                .or_insert_with(|| diagnostics.clone());
+                .and_modify(|old_diagnostics| old_diagnostics.extend_from_slice(&new_diagnostics))
+                .or_insert_with(|| new_diagnostics.clone());
         }
-        self.client
-            .publish_diagnostics(document.uri.clone(), diagnostics, None)
+        client
+            .publish_diagnostics(document.uri.clone(), new_diagnostics, None)
             .await;
     }
 
     async fn clear_diagnostics(&self, uri: &Url) {
-        self.diagnostics.write().unwrap().remove(uri);
-        self.client
-            .publish_diagnostics(uri.clone(), vec![], None)
-            .await;
+        Self::_clear_diagnostics(&self.client, self.diagnostics.clone(), uri).await;
+    }
+
+    async fn _clear_diagnostics(
+        client: &Client,
+        diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
+        uri: &Url,
+    ) {
+        diagnostics.write().unwrap().remove(uri);
+        client.publish_diagnostics(uri.clone(), vec![], None).await;
     }
 
     async fn clear_all_diagnostic(&self) {
@@ -129,22 +147,128 @@ impl Backend {
         }
     }
 
-    fn reload_config(&self) {
-        let conf_file = self.work_dir().join(DEFAULT_CONFIG_FILE);
-        autocorrect::config::load_file(&conf_file.to_string_lossy()).ok();
+    async fn recheck_all_documents(
+        client: &Client,
+        diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
+        documents: Arc<RwLock<HashMap<Url, Arc<TextDocumentItem>>>>,
+    ) {
+        let documents = documents
+            .read()
+            .unwrap()
+            .values()
+            .cloned()
+            .collect::<Vec<_>>();
+        for document in documents.iter() {
+            Self::_lint_document(client, diagnostics.clone(), document).await;
+        }
+    }
 
-        let ignorer = autocorrect::ignorer::Ignorer::new(&self.work_dir().to_string_lossy());
-        self.ignorer.write().unwrap().replace(ignorer);
+    async fn reload(&self) {
+        Self::reload_config(
+            self.work_dir(),
+            self.ignorer.clone(),
+            &self.client,
+            self.diagnostics.clone(),
+            self.documents.clone(),
+        )
+        .await;
+    }
+
+    async fn reload_config<P>(
+        workdir: P,
+        ignorer: Arc<RwLock<Option<Ignorer>>>,
+        client: &Client,
+        diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
+        documents: Arc<RwLock<HashMap<Url, Arc<TextDocumentItem>>>>,
+    ) where
+        P: AsRef<Path>,
+    {
+        let workdir = workdir.as_ref();
+        let conf_file = workdir.join(DEFAULT_CONFIG_FILE);
+        autocorrect::config::load_file(&conf_file).ok();
+
+        let new_ignorer = Ignorer::new(&workdir);
+        ignorer.write().unwrap().replace(new_ignorer);
+
+        Self::recheck_all_documents(client, diagnostics, documents).await;
     }
 
     fn is_ignored(&self, uri: &Url) -> bool {
         if let Some(ignorer) = self.ignorer.read().unwrap().as_ref() {
             if let Ok(filepath) = uri.to_file_path() {
-                return ignorer.is_ignored(&filepath.to_string_lossy());
+                return ignorer.is_ignored(&filepath);
             }
         }
 
         false
+    }
+
+    fn watch_config(&self) -> anyhow::Result<()> {
+        let work_dir = self.work_dir().clone();
+        let ignorer = self.ignorer.clone();
+        let client = self.client.clone();
+        let documents = self.documents.clone();
+        let diagnostics = self.diagnostics.clone();
+        let (tx, rx) = smol::channel::bounded(100);
+
+        let mut watcher =
+            notify::recommended_watcher(move |res: notify::Result<notify::Event>| {
+                if let Ok(event) = &res {
+                    if !event.paths.iter().any(|p| is_config_file(p)) {
+                        return;
+                    }
+
+                    match event.kind {
+                        notify::EventKind::Create(_)
+                        | notify::EventKind::Modify(_)
+                        | notify::EventKind::Remove(_) => {
+                            if let Err(err) = tx.send_blocking(res) {
+                                eprintln!("Failed to send theme event: {:?}", err);
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            })?;
+
+        smol::spawn(async move {
+            if let Err(err) = watcher.watch(&work_dir, notify::RecursiveMode::Recursive) {
+                client
+                    .log_message(
+                        MessageType::ERROR,
+                        format!("Failed to watch root directory: {:?}", err),
+                    )
+                    .await;
+            }
+
+            while let Ok(Ok(event)) = rx.recv().await {
+                let paths = event.paths;
+                let changed_file = paths
+                    .iter()
+                    .flat_map(|p| if is_config_file(p) { Some(p) } else { None })
+                    .next();
+
+                if let Some(changed_file) = changed_file {
+                    client
+                        .log_message(
+                            MessageType::INFO,
+                            format!("{:?} config file changed, reload config.", changed_file),
+                        )
+                        .await;
+                    Backend::reload_config(
+                        &work_dir,
+                        ignorer.clone(),
+                        &client,
+                        diagnostics.clone(),
+                        documents.clone(),
+                    )
+                    .await;
+                }
+            }
+        })
+        .detach();
+
+        Ok(())
     }
 }
 
@@ -161,11 +285,19 @@ impl LanguageServer for Backend {
                 )
                 .await;
 
-            let ignorer = autocorrect::ignorer::Ignorer::new(&root_path.to_string_lossy());
+            let ignorer = Ignorer::new(&root_path);
             self.ignorer.write().unwrap().replace(ignorer);
-        }
+            self.reload().await;
 
-        self.reload_config();
+            if let Err(err) = self.watch_config() {
+                self.client
+                    .log_message(
+                        MessageType::ERROR,
+                        format!("Failed to watch root directory: {:?}", err),
+                    )
+                    .await;
+            }
+        }
 
         Ok(InitializeResult {
             server_info: Some(ServerInfo {
@@ -188,6 +320,7 @@ impl LanguageServer for Backend {
                     },
                 )),
                 document_formatting_provider: Some(OneOf::Left(false)),
+
                 code_action_provider: Some(CodeActionProviderCapability::Options(
                     CodeActionOptions {
                         code_action_kinds: Some(vec![
@@ -217,11 +350,7 @@ impl LanguageServer for Backend {
 
     async fn did_open(&self, params: DidOpenTextDocumentParams) {
         let DidOpenTextDocumentParams { text_document } = params;
-
-        if self.is_ignored(&text_document.uri) {
-            return;
-        }
-
+        self.clear_diagnostics(&text_document.uri).await;
         self.client
             .log_message(
                 MessageType::INFO,
@@ -234,24 +363,13 @@ impl LanguageServer for Backend {
             .await;
 
         self.upsert_document(Arc::new(text_document.clone()));
-
-        self.lint_document(&text_document).await;
+        if !self.is_ignored(&text_document.uri) {
+            self.lint_document(&text_document).await;
+        }
     }
 
     async fn did_close(&self, params: DidCloseTextDocumentParams) {
         let DidCloseTextDocumentParams { text_document } = params;
-
-        if self.is_ignored(&text_document.uri) {
-            return;
-        }
-
-        self.client
-            .log_message(
-                MessageType::INFO,
-                format!("did_close {}\n", text_document.uri),
-            )
-            .await;
-
         self.remove_document(&text_document.uri);
         self.clear_diagnostics(&text_document.uri).await;
     }
@@ -263,6 +381,7 @@ impl LanguageServer for Backend {
         } = params;
         let VersionedTextDocumentIdentifier { uri, version } = text_document;
 
+        self.clear_diagnostics(&uri).await;
         if self.is_ignored(&uri) {
             return;
         }
@@ -291,14 +410,12 @@ impl LanguageServer for Backend {
             )
             .await;
 
-        if text_document.uri.path().ends_with(DEFAULT_CONFIG_FILE)
-            || text_document.uri.path().ends_with(DEFAULT_IGNORE_FILE)
-        {
+        if is_config_file(&text_document.uri.to_file_path().unwrap()) {
             self.clear_all_diagnostic().await;
             self.client
                 .log_message(MessageType::INFO, "reload config\n")
                 .await;
-            self.reload_config();
+            self.reload().await;
         }
     }
 
@@ -353,7 +470,7 @@ impl LanguageServer for Backend {
 
         let mut response = CodeActionResponse::new();
 
-        let mut all_changes = vec![];
+        // let mut all_changes = vec![];
         for diagnostic in context.diagnostics.iter() {
             let suggestions = diagnostic
                 .data
@@ -361,20 +478,27 @@ impl LanguageServer for Backend {
                 .and_then(|data| serde_json::from_value::<Vec<String>>(data.clone()).ok())
                 .unwrap_or(vec![diagnostic.message.clone()]);
 
-            if let Some(suggestion) = suggestions.first() {
-                all_changes.push((
-                    text_document.uri.clone(),
-                    vec![TextEdit::new(diagnostic.range, suggestion.clone())],
-                ));
-            }
+            // if let Some(suggestion) = suggestions.first() {
+            //     all_changes.push((
+            //         text_document.uri.clone(),
+            //         vec![TextEdit::new(diagnostic.range, suggestion.clone())],
+            //     ));
+            // }
 
             for suggestion in suggestions.iter() {
+                let title = if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
+                    Some("AutoCorrect Fix".to_string())
+                } else if diagnostic.source == Some(DIAGNOSTIC_SOURCE_TYPO.to_string()) {
+                    Some(format!("Suggest: {}", suggestion))
+                } else {
+                    None
+                };
+                let Some(title) = title else {
+                    continue;
+                };
+
                 let action = CodeAction {
-                    title: if diagnostic.source == Some(DIAGNOSTIC_SOURCE.to_string()) {
-                        "AutoCorrect Fix".to_string()
-                    } else {
-                        format!("Suggest: {}", suggestion)
-                    },
+                    title,
                     kind: Some(CodeActionKind::QUICKFIX),
                     diagnostics: Some(vec![diagnostic.clone()]),
                     edit: Some(WorkspaceEdit {
@@ -398,20 +522,20 @@ impl LanguageServer for Backend {
             }
         }
 
-        if !all_changes.is_empty() {
-            let fix_all_action = CodeAction {
-                title: "AutoCorrect All".into(),
-                kind: Some(CodeActionKind::SOURCE_FIX_ALL),
-                diagnostics: None,
-                edit: Some(WorkspaceEdit {
-                    changes: Some(all_changes.into_iter().collect()),
-                    ..Default::default()
-                }),
-                ..Default::default()
-            };
+        // if !all_changes.is_empty() {
+        //     let fix_all_action = CodeAction {
+        //         title: "AutoCorrect All".into(),
+        //         kind: Some(CodeActionKind::SOURCE_FIX_ALL),
+        //         diagnostics: None,
+        //         edit: Some(WorkspaceEdit {
+        //             changes: Some(all_changes.into_iter().collect()),
+        //             ..Default::default()
+        //         }),
+        //         ..Default::default()
+        //     };
 
-            response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
-        }
+        //     response.push(CodeActionOrCommand::CodeAction(fix_all_action.clone()))
+        // }
 
         return Ok(Some(response));
     }
@@ -424,9 +548,9 @@ pub async fn start() {
     let (service, socket) = LspService::new(|client| Backend {
         client,
         work_dir: RwLock::new(PathBuf::new()),
-        documents: RwLock::new(HashMap::new()),
-        ignorer: RwLock::new(None),
-        diagnostics: RwLock::new(HashMap::new()),
+        documents: Arc::new(RwLock::new(HashMap::new())),
+        ignorer: Arc::new(RwLock::new(None)),
+        diagnostics: Arc::new(RwLock::new(HashMap::new())),
     });
 
     Server::new(stdin, stdout, socket).serve(service).await;
