@@ -29,6 +29,11 @@ fn is_config_file(path: &PathBuf) -> bool {
     path.ends_with(DEFAULT_IGNORE_FILE)
         || path.ends_with(DEFAULT_CONFIG_FILE)
         || path.ends_with(".gitignore")
+        || path.ends_with("package-lock.json") || path.ends_with("pnpm-lock.yaml")
+        // Cargo.lock || Gemfile.lock
+        || path.ends_with(".lock")
+        // Bun
+        || path.ends_with(".lockb")
 }
 
 impl Backend {
