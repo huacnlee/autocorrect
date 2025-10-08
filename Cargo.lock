@@ -336,7 +336,7 @@ dependencies = [
 
 [[package]]
 name = "autocorrect"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
  "autocorrect-derive 0.3.0",
  "criterion",
@@ -357,9 +357,9 @@ dependencies = [
 
 [[package]]
 name = "autocorrect-cli"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
- "autocorrect 2.16.0",
+ "autocorrect 2.16.1",
  "autocorrect-lsp",
  "clap",
  "ignore",
@@ -393,9 +393,9 @@ dependencies = [
 
 [[package]]
 name = "autocorrect-java"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
- "autocorrect 2.16.0",
+ "autocorrect 2.16.1",
  "jni",
 ]
 
@@ -404,7 +404,7 @@ name = "autocorrect-lsp"
 version = "2.9.4"
 dependencies = [
  "anyhow",
- "autocorrect 2.16.0",
+ "autocorrect 2.16.1",
  "notify",
  "ropey",
  "serde_json",
@@ -417,9 +417,9 @@ dependencies = [
 
 [[package]]
 name = "autocorrect-node"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
- "autocorrect 2.16.0",
+ "autocorrect 2.16.1",
  "autocorrect-cli",
  "napi",
  "napi-build",
@@ -428,15 +428,15 @@ dependencies = [
 
 [[package]]
 name = "autocorrect-py"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
- "autocorrect 2.16.0",
+ "autocorrect 2.16.1",
  "pyo3",
 ]
 
 [[package]]
 name = "autocorrect-rb"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
  "autocorrect 2.14.0",
  "magnus",
@@ -444,9 +444,9 @@ dependencies = [
 
 [[package]]
 name = "autocorrect-wasm"
-version = "2.16.0"
+version = "2.16.1"
 dependencies = [
- "autocorrect 2.16.0",
+ "autocorrect 2.16.1",
  "serde_json",
  "wasm-bindgen",
 ]
