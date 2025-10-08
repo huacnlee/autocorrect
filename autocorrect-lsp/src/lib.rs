@@ -57,15 +57,23 @@ impl Backend {
     }
 
     async fn lint_document(&self, document: &TextDocumentItem) {
-        Self::_lint_document(&self.client, self.diagnostics.clone(), document).await;
+        Self::_lint_document(&self.client, &self.ignorer, &self.diagnostics, document).await;
     }
 
     async fn _lint_document(
         client: &Client,
-        diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
+        ignorer: &Arc<RwLock<Option<Ignorer>>>,
+        diagnostics: &Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
         document: &TextDocumentItem,
     ) {
         Self::_clear_diagnostics(client, diagnostics.clone(), &document.uri).await;
+        if let Some(ignorer) = ignorer.read().unwrap().as_ref() {
+            if let Ok(filepath) = document.uri.to_file_path() {
+                if ignorer.is_ignored(&filepath) {
+                    return;
+                }
+            }
+        }
 
         let input = document.text.as_str();
         let path = document.uri.path();
@@ -149,6 +157,7 @@ impl Backend {
 
     async fn recheck_all_documents(
         client: &Client,
+        ignorer: Arc<RwLock<Option<Ignorer>>>,
         diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
         documents: Arc<RwLock<HashMap<Url, Arc<TextDocumentItem>>>>,
     ) {
@@ -159,15 +168,15 @@ impl Backend {
             .cloned()
             .collect::<Vec<_>>();
         for document in documents.iter() {
-            Self::_lint_document(client, diagnostics.clone(), document).await;
+            Self::_lint_document(client, &ignorer, &diagnostics, document).await;
         }
     }
 
     async fn reload(&self) {
         Self::reload_config(
             self.work_dir(),
-            self.ignorer.clone(),
             &self.client,
+            self.ignorer.clone(),
             self.diagnostics.clone(),
             self.documents.clone(),
         )
@@ -176,8 +185,8 @@ impl Backend {
 
     async fn reload_config<P>(
         workdir: P,
-        ignorer: Arc<RwLock<Option<Ignorer>>>,
         client: &Client,
+        ignorer: Arc<RwLock<Option<Ignorer>>>,
         diagnostics: Arc<RwLock<HashMap<Url, Vec<Diagnostic>>>>,
         documents: Arc<RwLock<HashMap<Url, Arc<TextDocumentItem>>>>,
     ) where
@@ -190,7 +199,7 @@ impl Backend {
         let new_ignorer = Ignorer::new(&workdir);
         ignorer.write().unwrap().replace(new_ignorer);
 
-        Self::recheck_all_documents(client, diagnostics, documents).await;
+        Self::recheck_all_documents(client, ignorer, diagnostics, documents).await;
     }
 
     fn is_ignored(&self, uri: &Url) -> bool {
@@ -257,8 +266,8 @@ impl Backend {
                         .await;
                     Backend::reload_config(
                         &work_dir,
-                        ignorer.clone(),
                         &client,
+                        ignorer.clone(),
                         diagnostics.clone(),
                         documents.clone(),
                     )
