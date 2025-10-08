@@ -8,6 +8,7 @@ use std::fs;
 use std::io;
 use std::io::BufRead;
 use std::path::Path;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::SystemTime;
@@ -151,7 +152,7 @@ where
             .follow_links(false);
 
         // create ignorer for ignore directly file
-        let ignorer = autocorrect::ignorer::Ignorer::new("./");
+        let ignorer = autocorrect::ignorer::Ignorer::new(&PathBuf::from("./"));
 
         for result in walker.build() {
             if let Err(err) = result {
@@ -305,7 +306,7 @@ fn read_stdin() -> String {
 pub fn load_config(filename: &str) {
     log::debug!("Load config: {}", filename);
 
-    autocorrect::config::load_file(filename).unwrap_or_else(|e| {
+    autocorrect::config::load_file(&filename).unwrap_or_else(|e| {
         panic!("Load config file: {}\nerror: {}", filename, e);
     });
 }
@@ -346,13 +347,13 @@ fn lint_and_output(
     cli: &Cli,
     results: &mut Vec<LintResult>,
     errors_count: &mut usize,
-    warings_count: &mut usize,
+    warrings_count: &mut usize,
 ) {
     let mut result = autocorrect::lint_for(raw, filetype);
     result.filepath = String::from(filepath);
 
     *errors_count += result.errors_count();
-    *warings_count += result.warnings_count();
+    *warrings_count += result.warnings_count();
 
     // do not print anything, when not lint results
     if result.lines.is_empty() {
@@ -362,7 +363,7 @@ fn lint_and_output(
 
     if *errors_count > 0 {
         progress::err(cli);
-    } else if *warings_count > 0 {
+    } else if *warrings_count > 0 {
         progress::warn(cli);
     }
 

@@ -54,7 +54,7 @@ pub struct Config {
     pub spellcheck: SpellcheckConfig,
     #[serde(default)]
     pub rules: HashMap<String, SeverityMode>,
-    // Speical text to ignore
+    // Special text to ignore
     #[serde(default)]
     pub text_rules: HashMap<String, SeverityMode>,
     // Addition file types map, high priority than default
@@ -64,13 +64,16 @@ pub struct Config {
     pub context: HashMap<String, SeverityMode>,
 }
 
-pub fn load_file(config_file: &str) -> Result<Config, Error> {
-    let config_path = Path::new(config_file);
-    if !Path::exists(config_path) {
+pub fn load_file<P>(config_file: P) -> Result<Config, Error>
+where
+    P: AsRef<Path>,
+{
+    let config_file = config_file.as_ref();
+    if !config_file.exists() {
         return Ok(Config::default());
     }
 
-    let config_str = fs::read_to_string(Path::new(config_file))?;
+    let config_str = fs::read_to_string(config_file)?;
 
     load(&config_str)
 }
