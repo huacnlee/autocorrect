@@ -80,9 +80,9 @@ mod tests {
 
     #[test]
     fn test_check_typos() {
-        let text = "This is 你好 a smaple text with a typo.\nAnother line without typos.\nThis line has a soure.";
+        let text = "This is 你好 a smaple text with a typo.\nAnother line without typos.\nThis line has a soure.\nlet has_actived_menu = false;";
         let diagnostics = check_typos(text);
-        assert_eq!(diagnostics.len(), 2);
+        assert_eq!(diagnostics.len(), 3);
         assert_eq!(diagnostics[0].message, "`smaple` should be `sample`");
         assert_eq!(diagnostics[0].range.start, Position::new(0, 13));
         assert_eq!(
@@ -90,5 +90,10 @@ mod tests {
             "`soure` should be `source`, `sure`, `sore`, `sour`, `soured`"
         );
         assert_eq!(diagnostics[1].range.start, Position::new(2, 16));
+        assert_eq!(
+            diagnostics[2].message,
+            "`actived` should be `activated`, `active`"
+        );
+        assert_eq!(diagnostics[2].range.start, Position::new(3, 8));
     }
 }
