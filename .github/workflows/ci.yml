@@ -7,10 +7,13 @@ on:
     tags:
       - "*"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}-${{ github.ref_name == 'main' && github.sha || 'anysha' }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Test
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +42,6 @@ jobs:
         run: make test:lint-json
 
   test_node:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Test for Node.js
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +70,6 @@ jobs:
           make test:node
 
   test_python:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Test for Python
     runs-on: ubuntu-latest
     steps:
@@ -93,7 +94,6 @@ jobs:
         run: make test:python
 
   test_ruby:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Test for Ruby
     runs-on: ubuntu-latest
     steps:
@@ -116,7 +116,6 @@ jobs:
         run: make test:ruby
 
   test_java:
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     strategy:
       fail-fast: true
       matrix:
