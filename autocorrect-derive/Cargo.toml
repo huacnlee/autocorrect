@@ -1,6 +1,6 @@
 [package]
 description = "proc-marcro-derive for autocorrect."
-edition = "2021"
+edition = "2024"
 homepage = "https://github.com/huacnlee/autocorrect"
 keywords = ["autocorrect", "lint", "format"]
 license = "MIT"

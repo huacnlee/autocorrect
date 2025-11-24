@@ -1,6 +1,6 @@
 [package]
 description = "A linter and formatter for help you improve copywriting, to correct spaces, words, punctuations between CJK (Chinese, Japanese, Korean)."
-edition = "2018"
+edition = "2024"
 homepage = "https://github.com/huacnlee/autocorrect"
 license = "MIT"
 name = "autocorrect-py"

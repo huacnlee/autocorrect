@@ -1,7 +1,7 @@
 [package]
 name = "autocorrect-lsp"
 version = "2.9.4"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 autocorrect.workspace = true
