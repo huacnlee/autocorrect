@@ -76,7 +76,6 @@ where
             return;
         }
         Some(cli::Commands::Server {}) => {
-            log::info!("Starting AutoCorrect LSP server...");
             autocorrect_lsp::start().await;
             return;
         }
