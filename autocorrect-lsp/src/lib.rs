@@ -237,7 +237,7 @@ impl Backend {
                         | notify::EventKind::Modify(_)
                         | notify::EventKind::Remove(_) => {
                             if let Err(err) = tx.send_blocking(res) {
-                                eprintln!("Failed to send theme event: {:?}", err);
+                                eprintln!("Failed to send event: {:?}", err);
                             }
                         }
                         _ => {}
