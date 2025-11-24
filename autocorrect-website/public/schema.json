@@ -114,67 +114,67 @@
           "$ref": "#/definitions/SeverityMode"
         }
       }
+    }
+  },
+  "definitions": {
+    "SeverityMode": {
+      "type": ["number", "string"],
+      "enum": ["off", 0, "error", 1, "warning", 2]
     },
-    "definitions": {
-      "SeverityMode": {
-        "type": ["number", "string"],
-        "enum": ["off", 0, "error", 1, "warning", 2]
-      },
-      "FileType": {
-        "type": "string",
-        "enum": [
-          "html",
-          "yaml",
-          "sql",
-          "rust",
-          "ruby",
-          "elixir",
-          "go",
-          "javascript",
-          "css",
-          "json",
-          "python",
-          "objective_c",
-          "strings",
-          "csharp",
-          "swift",
-          "java",
-          "scala",
-          "kotlin",
-          "php",
-          "dart",
-          "markdown",
-          "latex",
-          "asciidoc",
-          "gettext",
-          "conf",
-          "c",
-          "xml",
-          "jupyter",
-          "text"
-        ]
-      },
-      "SpellcheckConfig": {
-        "type": "object",
-        "properties": {
-          "mode": {
-            "description": "DEPRECATED: use `rules.spellcheck` instead",
-            "default": null,
-            "anyOf": [
-              {
-                "$ref": "#/definitions/SeverityMode"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "words": {
-            "default": [],
-            "type": "array",
-            "items": {
-              "type": "string"
+    "FileType": {
+      "type": "string",
+      "enum": [
+        "html",
+        "yaml",
+        "sql",
+        "rust",
+        "ruby",
+        "elixir",
+        "go",
+        "javascript",
+        "css",
+        "json",
+        "python",
+        "objective_c",
+        "strings",
+        "csharp",
+        "swift",
+        "java",
+        "scala",
+        "kotlin",
+        "php",
+        "dart",
+        "markdown",
+        "latex",
+        "asciidoc",
+        "gettext",
+        "conf",
+        "c",
+        "xml",
+        "jupyter",
+        "text"
+      ]
+    },
+    "SpellcheckConfig": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "description": "DEPRECATED: use `rules.spellcheck` instead",
+          "default": null,
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SeverityMode"
+            },
+            {
+              "type": "null"
             }
+          ]
+        },
+        "words": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         }
       }
