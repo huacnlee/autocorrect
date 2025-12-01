@@ -155,6 +155,7 @@ mod tests {
         - [link链接](https://google.com/a/b/url不处理)
         - Escher puzzle（[链接](https://google.com)）
         - 一个[[Wikilinks测试]]示例
+        - 一个![[obsidian style img测试.png]]示例
 
         请记住:对该仓库的贡献,应遵循我们的GitHub社区准则。
 
@@ -295,6 +296,7 @@ mod tests {
         - [link 链接](https://google.com/a/b/url不处理)
         - Escher puzzle（[链接](https://google.com)）
         - 一个[[Wikilinks测试]]示例
+        - 一个![[obsidian style img测试.png]]示例
 
         请记住：对该仓库的贡献，应遵循我们的 GitHub 社区准则。
 

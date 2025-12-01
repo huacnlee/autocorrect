@@ -94,7 +94,7 @@ meta_tags_val     = @{ meta_tags_item ~ meta_tags_divider }
 meta_tags_item    =  { (!(newline | ",") ~ (CJK | " " | ASCII_ALPHANUMERIC))* }
 meta_tags_divider =  { " "* ~ "," ~ " "* }
 image_prefix      = @{ "!" }
-img               = ${ image_prefix ~ link }
+img               = ${ image_prefix ~ (wikilinks | link) }
 
 /// Matches link, e.g.: `[Hello](/hello)` or `[Hello]`
 link             = ${ link_string_wrap ~ href? }
