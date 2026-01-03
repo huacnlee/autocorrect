@@ -44,7 +44,7 @@ pub(crate) fn check_typos(text: &str) -> Vec<Diagnostic> {
 
                 let diagnostic = Diagnostic {
                     range,
-                    severity: Some(lsp_types::DiagnosticSeverity::WARNING),
+                    severity: Some(lsp_types::DiagnosticSeverity::INFORMATION),
                     code: None,
                     code_description: None,
                     source: Some(DIAGNOSTIC_SOURCE_TYPO.to_string()),
