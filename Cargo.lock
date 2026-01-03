@@ -4090,9 +4090,9 @@ checksum = "1dccffe3ce07af9386bfd29e80c0ab1a8205a2fc34e4bcd40364df902cfa8f3f"
 
 [[package]]
 name = "typos"
-version = "0.10.36"
+version = "0.10.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68a9d9616d93bdd67a46d0971e051cd331aa9d695f7df3c388d2d4272107eb50"
+checksum = "1278bd7c884fdee500dd919cdac4cb97a4730ccab0e18441dec4fb2147d90206"
 dependencies = [
  "bstr",
  "itertools 0.14.0",
