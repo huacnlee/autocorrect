@@ -1,6 +1,9 @@
 name: "Release RubyGem"
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - support-ruby-4.0
 jobs:
   build:
     name: Build compile gems
