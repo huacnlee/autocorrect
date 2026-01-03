@@ -16,9 +16,9 @@ jobs:
           - x86_64-linux-musl
     steps:
       - uses: actions/checkout@v4
-      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.3.0
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.4.4
         with:
-          ruby-version: "4.0"
+          ruby-version: "3.4"
           bundler-cache: true
           cargo-cache: true
           cargo-vendor: false
@@ -27,7 +27,7 @@ jobs:
         run: |
           touch Rakefile
 
-      - uses: oxidize-rb/actions/cross-gem@v1.3.0
+      - uses: oxidize-rb/actions/cross-gem@v1.4.4
         with:
           platform: ${{ matrix.ruby-platform }}
           working-directory: autocorrect-rb/
@@ -44,9 +44,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.3.0
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.4.4
         with:
-          ruby-version: "4.0"
+          ruby-version: "3.4"
           bundler-cache: false
           cargo-cache: true
           cargo-vendor: true
@@ -73,7 +73,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "4.0"
+          ruby-version: "3.4"
           bundler-cache: true
       - uses: actions/download-artifact@v4
         with:
