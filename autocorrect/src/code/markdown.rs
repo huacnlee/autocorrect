@@ -18,6 +18,31 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
+    fn test_frontmatter() {
+        crate::config::setup_test();
+
+        let example = indoc! {r###"
+        ---
+        title: 示例标题Title
+        tags: 测试, 示例
+        ---
+
+        这是正文content，包含一些test文本。
+        "###};
+
+        let expected = indoc! {r###"
+        ---
+        title: 示例标题 Title
+        tags: 测试, 示例
+        ---
+
+        这是正文 content，包含一些 test 文本。
+        "###};
+
+        assert_eq!(expected, format_for(example, "markdown").to_string());
+    }
+
+    #[test]
     fn test_format_markdown() {
         crate::config::setup_test();
 
@@ -28,6 +53,7 @@ mod tests {
         Slug: /appstore/ipad_and_ios
         user.name: Jason
         original_slug: Web/CSS/网格-模板-列
+        tags: 模版, 网格, CSS
         ---
 
         This_Page-Tags: 美国, 中国,德国 , France 法国
@@ -169,6 +195,7 @@ mod tests {
         Slug: /appstore/ipad_and_ios
         user.name: Jason
         original_slug: Web/CSS/网格-模板-列
+        tags: 模版, 网格, CSS
         ---
 
         This_Page-Tags: 美国, 中国,德国 , France 法国
