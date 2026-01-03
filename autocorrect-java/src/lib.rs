@@ -1,9 +1,8 @@
 use autocorrect::{LineResult, LintResult};
+use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::{jboolean, jintArray, jlong, jsize, jstring};
-use jni::JNIEnv;
 
-#[no_mangle]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_format(
     env: JNIEnv,
     _class: JClass,
@@ -16,7 +15,6 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_format(
     output.into_raw()
 }
 
-#[no_mangle]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_formatFor(
     env: JNIEnv,
     _class: JClass,
@@ -31,7 +29,6 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_formatFor(
     output.into_raw()
 }
 
-#[no_mangle]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintFor(
     env: JNIEnv,
     _class: JClass,
@@ -45,7 +42,6 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintFor(
     Box::into_raw(Box::new(result)) as jlong
 }
 
-#[no_mangle]
 /// # Safety
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResultString(
     env: JNIEnv,
@@ -53,7 +49,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResu
     lint_result: jlong,
     field: JString,
 ) -> jstring {
-    let result = &*(lint_result as *const LintResult);
+    let result = unsafe { &*(lint_result as *const LintResult) };
     let field: String = env.get_string(field).unwrap().into();
 
     let val = match field.as_str() {
@@ -66,14 +62,13 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResu
     output.into_raw()
 }
 
-#[no_mangle]
 /// # Safety
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResultLines(
     env: JNIEnv,
     _class: JClass,
     lint_result: jlong,
 ) -> jintArray {
-    let result = &*(lint_result as *const LintResult);
+    let result = unsafe { &*(lint_result as *const LintResult) };
 
     let mut line_ptrs: Vec<jlong> = vec![];
     for line in result.lines.clone() {
@@ -86,7 +81,6 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResu
     lines
 }
 
-#[no_mangle]
 /// # Safety
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResultString(
     env: JNIEnv,
@@ -94,7 +88,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     line_result: jlong,
     field: JString,
 ) -> jstring {
-    let result = &*(line_result as *const LineResult);
+    let result = unsafe { &*(line_result as *const LineResult) };
     let field: String = env.get_string(field).unwrap().into();
     let val = match field.as_str() {
         "new" => result.new.clone(),
@@ -106,7 +100,6 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     output.into_raw()
 }
 
-#[no_mangle]
 /// # Safety
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResultLong(
     env: JNIEnv,
@@ -114,7 +107,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     line_result: jlong,
     field: JString,
 ) -> jlong {
-    let result = &*(line_result as *const LineResult);
+    let result = unsafe { &*(line_result as *const LineResult) };
     let field: String = env.get_string(field).unwrap().into();
 
     let val = match field.as_str() {
@@ -127,7 +120,6 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     val as jlong
 }
 
-#[no_mangle]
 #[allow(unused)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
     env: JNIEnv,
@@ -142,7 +134,6 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
     };
 }
 
-#[no_mangle]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeNewIgnorer(
     env: JNIEnv,
     _class: JClass,
@@ -155,7 +146,6 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeNewIgnorer(
     Box::into_raw(Box::new(ignorer)) as jlong
 }
 
-#[no_mangle]
 /// # Safety
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeIgnorerIsIgnored(
     env: JNIEnv,
@@ -163,7 +153,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeIgnorerI
     ignorer: jlong,
     filepath: JString,
 ) -> jboolean {
-    let ignorer = &*(ignorer as *const autocorrect::ignorer::Ignorer);
+    let ignorer = unsafe { &*(ignorer as *const autocorrect::ignorer::Ignorer) };
     let filepath: String = env.get_string(filepath).unwrap().into();
 
     ignorer.is_ignored(&filepath) as jboolean
