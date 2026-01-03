@@ -1,4 +1,4 @@
-name: "Release Crate & RubyGem"
+name: "Release RubyGem"
 on:
   workflow_dispatch:
 jobs:
