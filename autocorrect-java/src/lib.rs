@@ -3,6 +3,7 @@ use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::{jboolean, jintArray, jlong, jsize, jstring};
 
+#[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_format(
     env: JNIEnv,
     _class: JClass,
@@ -15,6 +16,7 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_format(
     output.into_raw()
 }
 
+#[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_formatFor(
     env: JNIEnv,
     _class: JClass,
@@ -29,6 +31,7 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_formatFor(
     output.into_raw()
 }
 
+#[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintFor(
     env: JNIEnv,
     _class: JClass,
@@ -42,7 +45,7 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintFor(
     Box::into_raw(Box::new(result)) as jlong
 }
 
-/// # Safety
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResultString(
     env: JNIEnv,
     _class: JClass,
@@ -62,7 +65,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResu
     output.into_raw()
 }
 
-/// # Safety
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResultLines(
     env: JNIEnv,
     _class: JClass,
@@ -81,7 +84,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLintResu
     lines
 }
 
-/// # Safety
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResultString(
     env: JNIEnv,
     _class: JClass,
@@ -100,7 +103,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     output.into_raw()
 }
 
-/// # Safety
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResultLong(
     env: JNIEnv,
     _class: JClass,
@@ -120,7 +123,7 @@ pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeLineResu
     val as jlong
 }
 
-#[allow(unused)]
+#[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
     env: JNIEnv,
     _class: JClass,
@@ -128,12 +131,13 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_loadConfig(
 ) {
     let config_str: String = env.get_string(config_str).unwrap().into();
 
-    match autocorrect::config::load(&config_str) {
+    _ = match autocorrect::config::load(&config_str) {
         Ok(_config) => Ok(()),
         Err(e) => Err(&format!("{e}")),
     };
 }
 
+#[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeNewIgnorer(
     env: JNIEnv,
     _class: JClass,
@@ -146,7 +150,7 @@ pub extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeNewIgnorer(
     Box::into_raw(Box::new(ignorer)) as jlong
 }
 
-/// # Safety
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_huacnlee_AutoCorrect_nativeIgnorerIsIgnored(
     env: JNIEnv,
     _class: JClass,
