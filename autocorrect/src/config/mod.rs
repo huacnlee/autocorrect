@@ -81,7 +81,10 @@ where
 pub fn load(config_str: &str) -> Result<Config, Error> {
     let config: Config = Config::from_str(config_str)?;
 
-    let new_config: Config = CURRENT_CONFIG.write().unwrap().merge(&config)?;
+    let new_config: Config = CURRENT_CONFIG
+        .write()
+        .expect("Failed to acquire write lock on CURRENT_CONFIG")
+        .merge(&config)?;
 
     Ok(new_config)
 }
@@ -129,7 +132,11 @@ impl From<std::string::String> for Error {
 
 impl Config {
     pub fn current() -> Rc<RwLockReadGuard<'static, Config>> {
-        Rc::new(CURRENT_CONFIG.read().unwrap())
+        Rc::new(
+            CURRENT_CONFIG
+                .read()
+                .expect("Failed to acquire read lock on CURRENT_CONFIG"),
+        )
     }
 
     pub fn get_file_type(&self, ext: &str) -> Option<&str> {
@@ -153,8 +160,8 @@ impl Config {
     }
 
     pub fn merge(&mut self, config: &Config) -> Result<Config, Error> {
-        for (k, v) in config.rules.clone() {
-            self.rules.insert(k, v);
+        for (k, v) in &config.rules {
+            self.rules.insert(k.clone(), *v);
         }
 
         // DEPRECATED: since 2.0.0, remove this in 3.0.0

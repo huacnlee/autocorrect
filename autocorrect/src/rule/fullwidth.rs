@@ -1,19 +1,11 @@
 // autocorrect: false
 use regex::Regex;
-use std::{borrow::Cow, collections::HashMap};
+use std::borrow::Cow;
 
 const SPECIAL_PUNCTUATIONS: &str = "[.:!]([ ]*)";
 const NORMAL_PUNCTUATIONS: &str = "[,?]([ ]*)";
 
 lazy_static! {
-    static ref FULLWIDTH_MAPS: HashMap<&'static str, &'static str> = map!(
-      "," => "，",
-      "." => "。",
-      ";" => "；",
-      ":" => "：",
-      "!" => "！",
-      "?" => "？",
-    );
     static ref PUNCTUATION_WITH_LEFT_CJK_RE: Regex = regexp!(
         "{}{}{}",
         r"[\p{CJ}\w\d]+",
@@ -57,13 +49,25 @@ pub fn format(text: &str) -> Cow<'_, str> {
 
 fn fullwidth_replace_part(part: &str) -> String {
     PUNCTUATIONS_RE
-        .replace_all(part, |cap: &regex::Captures| FULLWIDTH_MAPS[&cap[0].trim()])
+        .replace_all(part, |cap: &regex::Captures| {
+            let key = cap[0].trim();
+            match key {
+                "," => Cow::Borrowed("，"),
+                "." => Cow::Borrowed("。"),
+                ";" => Cow::Borrowed("；"),
+                ":" => Cow::Borrowed("："),
+                "!" => Cow::Borrowed("！"),
+                "?" => Cow::Borrowed("？"),
+                _ => Cow::Owned(key.to_string()),
+            }
+        })
         .to_string()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashMap;
 
     #[track_caller]
     fn assert_cases(cases: HashMap<&str, &str>) {

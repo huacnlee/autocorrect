@@ -25,9 +25,9 @@ pub fn get_file_extension(filename: &str) -> String {
         return String::from(filename);
     }
 
-    let filename = filename.split('/').next_back().unwrap().to_string();
+    let filename = filename.split('/').next_back().unwrap_or(filename).to_string();
     let path_parts: Vec<&str> = filename.split('.').collect();
-    let mut ext: String = path_parts.last().unwrap().to_string();
+    let mut ext: String = path_parts.last().unwrap_or(&"").to_string();
 
     let part_len = path_parts.len();
     if part_len > 2 {
