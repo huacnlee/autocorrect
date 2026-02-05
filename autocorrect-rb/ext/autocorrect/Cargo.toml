@@ -10,4 +10,5 @@ name = "autocorrect"
 
 [dependencies]
 autocorrect = "2"
-magnus = "0.7"
+# Wait 0.9.0
+magnus = { git = "https://github.com/matsadler/magnus.git", rev = "c7e33c181c44860a33e7d8cd8f39090145f061d0" }
