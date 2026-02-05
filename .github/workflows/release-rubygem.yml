@@ -84,7 +84,9 @@ jobs:
 
       - name: Display structure of built gems
         run: |
-          ls -lha
+          mkdir -p dist/
+          cp -f cross-gem-*/*.gem dist/
+          tree
         working-directory: pkg/
 
       - name: Publish to RubyGem
@@ -96,7 +98,7 @@ jobs:
           touch $HOME/.gem/credentials
           chmod 0600 $HOME/.gem/credentials
           printf -- "---\n:rubygems_api_key: ${RUBYGEM_TOKEN}\n" > $HOME/.gem/credentials
-          for filename in autocorrect-*.gem; do
+          for filename in dist/autocorrect-*.gem; do
             echo $filename
             gem push $filename
           done
