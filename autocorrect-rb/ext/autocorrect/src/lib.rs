@@ -144,7 +144,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     class.define_singleton_method("lint_for", function!(lint_for, 2))?;
     class.define_singleton_method("load_config", function!(load_config, 1))?;
 
-    let ignorer_class = ruby.define_class("Ignorer", ruby.class_object())?;
+    let ignorer_class = class.define_class("Ignorer", ruby.class_object())?;
     ignorer_class.define_singleton_method("new", function!(Ignorer::new, 1))?;
     ignorer_class.define_method("ignored?", method!(Ignorer::is_ignored, 1))?;
 
