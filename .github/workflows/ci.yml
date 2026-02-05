@@ -30,7 +30,7 @@ jobs:
       - name: Test
         run: |
           rustup component add clippy
-          cargo install cargo-machete
+          cargo install cargo-machete -f
           cargo machete
           cargo clippy
           cargo test

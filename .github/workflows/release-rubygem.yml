@@ -84,7 +84,7 @@ jobs:
 
       - name: Display structure of built gems
         run: |
-          ls -lha autocorrect-*.gem
+          ls -lha
         working-directory: pkg/
 
       - name: Publish to RubyGem
