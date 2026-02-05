@@ -85,7 +85,7 @@ jobs:
       - name: Display structure of built gems
         run: |
           mkdir -p dist/
-          cp -f cross-gem-*/*.gem dist/
+          cp -n cross-gem-*/*.gem dist/
           tree
         working-directory: pkg/
 
