@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.4.4
         with:
-          ruby-version: "3.4"
+          ruby-version: "4.0"
           bundler-cache: true
           cargo-cache: true
           cargo-vendor: false
@@ -34,7 +34,7 @@ jobs:
         with:
           platform: ${{ matrix.ruby-platform }}
           working-directory: autocorrect-rb/
-          ruby-versions: "4.0, 3.4, 3.3" # optional
+          ruby-versions: "4.0, 3.4, 3.3"
 
       - name: Upload Gem
         uses: actions/upload-artifact@v4
@@ -49,7 +49,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oxidize-rb/actions/setup-ruby-and-rust@v1.4.4
         with:
-          ruby-version: "3.4"
+          ruby-version: "4.0"
           bundler-cache: false
           cargo-cache: true
           cargo-vendor: true
@@ -76,7 +76,7 @@ jobs:
     steps:
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.4"
+          ruby-version: "4.0"
           bundler-cache: true
       - uses: actions/download-artifact@v4
         with:
