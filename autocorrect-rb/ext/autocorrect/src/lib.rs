@@ -1,4 +1,4 @@
-use magnus::{define_class, function, method, Error, IntoValue, Module, Object};
+use magnus::{Error, IntoValue, Module, Object, Ruby, function, method};
 
 #[derive(Debug, Clone)]
 pub struct LineResult {
@@ -137,14 +137,14 @@ pub fn load_config(config_str: String) {
 }
 
 #[magnus::init(name = "autocorrect")]
-fn init() -> Result<(), Error> {
-    let class = define_class("AutoCorrect", magnus::class::object())?;
+fn init(ruby: &Ruby) -> Result<(), Error> {
+    let class = ruby.define_class("AutoCorrect", ruby.class_object())?;
     class.define_singleton_method("format", function!(format, 1))?;
     class.define_singleton_method("format_for", function!(format_for, 2))?;
     class.define_singleton_method("lint_for", function!(lint_for, 2))?;
     class.define_singleton_method("load_config", function!(load_config, 1))?;
 
-    let ignorer_class = class.define_class("Ignorer", magnus::class::object())?;
+    let ignorer_class = class.define_class("Ignorer", ruby.class_object())?;
     ignorer_class.define_singleton_method("new", function!(Ignorer::new, 1))?;
     ignorer_class.define_method("ignored?", method!(Ignorer::is_ignored, 1))?;
 

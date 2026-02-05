@@ -37,7 +37,7 @@ test\:node\:cli:
 test\:python:
 	cd autocorrect-py && python3 -m pip install . &&  python3 -m pytest
 test\:ruby:
-	cd autocorrect-rb && bundle && rake compile && rake test
+	cd autocorrect-rb && bundle && bundle exec rake compile && bundle exec rake test
 test\:java:
 	cd autocorrect-java && make test
 install:
