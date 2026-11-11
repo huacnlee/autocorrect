@@ -7,7 +7,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (8.0.1)
+    activesupport (8.0.5.2)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -20,16 +20,16 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    base64 (0.2.0)
-    benchmark (0.4.0)
+    base64 (0.3.0)
+    benchmark (0.5.0)
     benchmark-ips (2.14.0)
-    bigdecimal (3.1.9)
-    concurrent-ruby (1.3.4)
-    connection_pool (2.4.1)
-    drb (2.2.1)
-    i18n (1.14.6)
+    bigdecimal (4.1.3)
+    concurrent-ruby (1.3.8)
+    connection_pool (3.0.2)
+    drb (2.2.3)
+    i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    logger (1.6.4)
+    logger (1.7.0)
     memory_profiler (1.1.0)
     minitest (6.0.1)
       prism (~> 1.5)
@@ -41,7 +41,7 @@ GEM
     securerandom (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uri (1.0.2)
+    uri (1.1.2)
 
 PLATFORMS
   arm64-darwin-20
